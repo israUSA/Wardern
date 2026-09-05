@@ -106,6 +106,27 @@ export function updateTopBar(state) {
 
 // ---------- Panel de provincia ----------
 
+// Dibuja TODOS los canvas de icono del panel con nitidez: el canvas se rasteriza
+// a devicePixelRatio (si no, el navegador lo estira y se ve pixelado en pantallas
+// con escala 125-150%) y el sprite se centra según el tamaño lógico de cada uno.
+function drawPanelIcons(panel) {
+  const dpr = window.devicePixelRatio || 1;
+  panel.querySelectorAll("canvas[data-symbol]").forEach((cv) => {
+    const w = parseInt(cv.getAttribute("width"), 10) || 34;
+    const h = parseInt(cv.getAttribute("height"), 10) || 28;
+    cv.style.width = w + "px";
+    cv.style.height = h + "px";
+    cv.width = Math.round(w * dpr);
+    cv.height = Math.round(h * dpr);
+    const g = cv.getContext("2d");
+    g.scale(dpr, dpr);
+    g.imageSmoothingQuality = "high";
+    drawUnitSymbol(g, cv.dataset.symbol, w / 2, h / 2, Math.round(Math.min(w, h) * 0.74), cv.dataset.color, {
+      variant: cv.dataset.variant,
+    });
+  });
+}
+
 // Botón de golpe con misiles en filas de unidad propia (docs/MISSILES.md)
 function strikeButtonsFor(state, u) {
   const sws = strikeWeaponsFor(u.type);
@@ -144,7 +165,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       const isMine = u.owner === state.player;
       const strike = isMine && !u.edgeLeft ? strikeButtonsFor(state, u) : "";
       html += `<div class="unit-row" data-unit="${u.id}">
-        <canvas width="34" height="28" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${S.countries[u.owner].color}"></canvas>
+        <canvas width="40" height="32" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${S.countries[u.owner].color}"></canvas>
         <div>${un.name}${isMine ? "" : ` (${S.countries[u.owner].name})`}
           ${u.cargo?.length ? `<div class="cost">Carga: ${u.cargo.length} unidades</div>` : ""}
           <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
@@ -157,9 +178,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     }
     html += `</div>`;
     panel.innerHTML = html;
-    panel.querySelectorAll("canvas[data-symbol]").forEach((cv) => {
-      drawUnitSymbol(cv.getContext("2d"), cv.dataset.symbol, 17, 13, 20, cv.dataset.color, { variant: cv.dataset.variant });
-    });
+    drawPanelIcons(panel);
     panel.querySelectorAll("[data-move]").forEach((b) =>
       b.addEventListener("click", () => hooks.onMove(parseInt(b.dataset.move, 10)))
     );
@@ -331,7 +350,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     const vet = vetLevel(u);
     const cargo = u.cargo?.length ? ` <span class="cost">[carga: ${u.cargo.length}]</span>` : "";
     html += `<div class="unit-row" data-unit="${u.id}">
-      <canvas width="34" height="28" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
+      <canvas width="40" height="32" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
       <div>${un.name}${vet ? ` <span style="color:#ffe9a0">${"▲".repeat(vet)}</span>` : ""}${isMine ? "" : ` <span style="color:${color}">(${S.countries[u.owner].name})</span>`}${cargo}
         <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
       </div>
@@ -355,10 +374,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   panel.innerHTML = html;
 
   // Iconos de unidad en los canvas del panel
-  panel.querySelectorAll("canvas[data-symbol]").forEach((cv) => {
-    const g = cv.getContext("2d");
-    drawUnitSymbol(g, cv.dataset.symbol, 17, 13, 20, cv.dataset.color, { variant: cv.dataset.variant });
-  });
+  drawPanelIcons(panel);
 
   panel.querySelectorAll("[data-build]").forEach((b) =>
     b.addEventListener("click", () => hooks.onBuild(selId, b.dataset.build))
