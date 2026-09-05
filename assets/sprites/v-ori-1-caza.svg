@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- MiG-23MLD - vista superior, morro al norte. ALA DE GEOMETRIA VARIABLE MUY EN
+       FLECHA (70 grados, lanzadas hacia atras desde los guantes), morro con pitot de
+       cono, UNA deriva vertical, UNA tobera, tomas laterales de caja.
+       Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.metalS/.metalL, .glass, .dark. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="mg23f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
+  <filter id="mg23f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
+  <radialGradient id="mg23gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="mg23g1" gradientUnits="userSpaceOnUse" x1="54" y1="60" x2="74" y2="60">
+    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".22" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff" stop-opacity=".26"/><stop offset=".62" stop-color="#fff" stop-opacity=".05"/><stop offset=".82" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".44"/>
+  </linearGradient>
+  <linearGradient id="mg23g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="112">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  </linearGradient>
+  <linearGradient id="mg23g3" gradientUnits="userSpaceOnUse" x1="26" y1="52" x2="26" y2="88">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <linearGradient id="mg23g4" gradientUnits="userSpaceOnUse" x1="60" y1="24" x2="60" y2="40">
+    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".85"/><stop offset=".35" stop-color="#9cc4dc" stop-opacity=".35"/><stop offset=".75" stop-color="#28495e" stop-opacity=".55"/><stop offset="1" stop-color="#14293a" stop-opacity=".8"/>
+  </linearGradient>
+  </defs>
+
+  <ellipse cx="62" cy="62" rx="48" ry="58" fill="url(#mg23gs)"/>
+
+  <!-- ===== alas en flecha lanzadas (swing wings) ===== -->
+  <path class="base" d="M56.4 42 C48 50 36 62 25 74.5 L19 82 L17.5 87.5 L22.5 88.5 L50 92 L57 92.6 Z"/>
+  <path class="base" d="M71.6 42 C80 50 92 62 103 74.5 L109 82 L110.5 87.5 L105.5 88.5 L78 92 L71 92.6 Z"/>
+  <path d="M56.4 42 C48 50 36 62 25 74.5 L19 82 L17.5 87.5 L22.5 88.5 L50 92 L57 92.6 Z" fill="url(#mg23g3)"/>
+  <path d="M71.6 42 C80 50 92 62 103 74.5 L109 82 L110.5 87.5 L105.5 88.5 L78 92 L71 92.6 Z" fill="url(#mg23g3)"/>
+  <path class="light" d="M56.4 42 C48 50 36 62 25 74.5 L19.4 81.2 L52 46 Z" opacity=".9"/>
+  <path class="light" d="M71.6 42 C80 50 92 62 103 74.5 L108.6 81.2 L76 46 Z" opacity=".9"/>
+  <path d="M56 42.8 C48 50.4 36.4 62.4 25.6 74.6" stroke="#fff" stroke-width=".9" opacity=".45" fill="none"/>
+  <path d="M72 42.8 C80 50.4 91.6 62.4 102.4 74.6" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
+  <path d="M50.5 90.4 L23 87.6 M77.5 90.4 L105 87.6" stroke="#000" stroke-width="1.2" opacity=".18" fill="none" filter="url(#mg23f1)"/>
+  <!-- flaps y paneles -->
+  <path d="M52 50 L30 72 M50 66 L32 82 M76 50 L98 72 M78 66 L96 82" stroke="#000" stroke-width=".6" opacity=".22" fill="none"/>
+  <path d="M56.8 44 L56.8 90 M71.2 44 L71.2 90" stroke="#000" stroke-width=".5" opacity=".18" fill="none"/>
+  <!-- sombra del fuselaje sobre las alas -->
+  <path d="M57.2 46 L60.8 46 L59 91 L54.6 90.6 Z" fill="#000" opacity=".2" filter="url(#mg23f2)"/>
+  <path d="M70.8 46 L67.2 46 L69 91 L73.4 90.6 Z" fill="#000" opacity=".2" filter="url(#mg23f2)"/>
+  <!-- rail de misil R-60 bajo ala -->
+  <path class="dark" d="M40 74 L42.4 74 L42.4 79 L40 79 Z M85.6 74 L83.2 74 L83.2 79 L85.6 79 Z" opacity=".85"/>
+  <path class="metalS" d="M41.2 68 L42.8 71 L42.8 88 L44.2 91.5 L41.2 89.8 L38.2 91.5 L39.6 88 L39.6 71 Z"/>
+  <path class="metalS" d="M86.8 68 L85.2 71 L85.2 88 L83.8 91.5 L86.8 89.8 L89.8 91.5 L88.4 88 L88.4 71 Z"/>
+  <path class="hi" d="M40.6 71 L41.2 71 L41.2 87 L40.6 87 Z" opacity=".6"/>
+  <path class="hi" d="M87.4 71 L86.8 71 L86.8 87 L87.4 87 Z" opacity=".6"/>
+
+  <!-- ===== estabilizadores ===== -->
+  <path class="shade" d="M59.4 94 L42 101.5 L38.5 109.5 L58.6 106.4 Z"/>
+  <path class="shade" d="M68.6 94 L86 101.5 L89.5 109.5 L69.4 106.4 Z"/>
+  <path class="light" d="M59.4 94 L42 101.5 L43 103 L60.4 96.4 Z" opacity=".85"/>
+  <path class="light" d="M68.6 94 L86 101.5 L85 103 L67.6 96.4 Z" opacity=".85"/>
+  <path class="dark" d="M38.5 109.5 L42 101.5 L44.2 104.8 L40.4 110.6 Z" opacity=".8"/>
+  <path class="dark" d="M89.5 109.5 L86 101.5 L83.8 104.8 L87.6 110.6 Z" opacity=".8"/>
+
+  <!-- ===== fuselaje con caja de tomas ===== -->
+  <path class="base" d="M64 10 C61.4 12.6 60 17 59.7 22 L59.4 26.5 C58.4 32 57.6 38 57.3 44 L57.1 50 C57.3 60 57.9 70 58.8 80 L60 96 L61.8 105 L64 108.5 L66.2 105 L67.4 96 L68.7 80 C69.6 70 70.2 60 70.4 50 L70.2 44 C70 38 69.2 32 68.2 26.5 L67.9 22 C67.6 17 66.6 12.6 64 10 Z" stroke="#3d4232" stroke-width="1.4"/>
+  <path d="M64 10 C61.4 12.6 60 17 59.7 22 L59.4 26.5 C58.4 32 57.6 38 57.3 44 L57.1 50 C57.3 60 57.9 70 58.8 80 L60 96 L61.8 105 L64 108.5 L66.2 105 L67.4 96 L68.7 80 C69.6 70 70.2 60 70.4 50 L70.2 44 C70 38 69.2 32 68.2 26.5 L67.9 22 C67.6 17 66.6 12.6 64 10 Z" fill="url(#mg23g1)"/>
+  <path d="M64 10 C61.4 12.6 60 17 59.7 22 L59.4 26.5 C58.4 32 57.6 38 57.3 44 L57.1 50 C57.3 60 57.9 70 58.8 80 L60 96 L61.8 105 L64 108.5 L66.2 105 L67.4 96 L68.7 80 C69.6 70 70.2 60 70.4 50 L70.2 44 C70 38 69.2 32 68.2 26.5 L67.9 22 C67.6 17 66.6 12.6 64 10 Z" fill="url(#mg23g2)"/>
+  <path d="M59.9 24 C58.2 34 57.3 48 57.2 60 C57.1 72 58 84 59.2 93" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M68.1 24 C69.8 34 70.7 48 70.8 60 C70.9 72 70 84 68.8 93" stroke="#000" stroke-width="1.6" opacity=".24" fill="none" filter="url(#mg23f1)"/>
+  <!-- guantes de ala -->
+  <path class="shade" d="M57.2 42 C53.4 47 48.6 53 43.6 58.6 C49.4 58.2 54.6 60.2 58.4 64 C57.6 56.6 57.2 49.2 57.2 42 Z" opacity=".55"/>
+  <path class="shade" d="M70.8 42 C74.6 47 79.4 53 84.4 58.6 C78.6 58.2 73.4 60.2 69.6 64 C70.4 56.6 70.8 49.2 70.8 42 Z" opacity=".55"/>
+  <!-- tomas de aire laterales de caja -->
+  <path class="dark" d="M56.8 38 C56.4 42 56.2 46 56.6 50 L59.8 50 C59.4 46 59.2 42 59.6 38 C58.6 38.3 57.6 38.2 56.8 38 Z" opacity=".55"/>
+  <path class="dark" d="M71.2 38 C71.6 42 71.8 46 71.4 50 L68.2 50 C68.6 46 68.8 42 68.4 38 C69.4 38.3 70.4 38.2 71.2 38 Z" opacity=".55"/>
+  <!-- lomo dorsal prominente -->
+  <path class="shade" d="M59.9 48 C59.5 58 59.6 68 60.4 80 L67.6 80 C68.4 68 68.5 58 68.1 48 C66.2 50 61.8 50 59.9 48 Z"/>
+  <path d="M60.3 54 C61.6 55 66.4 55 67.7 54 M60.5 63 C61.6 64 66.4 64 67.5 63 M60.7 72 C61.6 73 66.4 73 67.3 72" stroke="#000" stroke-width=".55" opacity=".25" fill="none"/>
+  <!-- antena de cuchilla -->
+  <path class="dark" d="M60.2 82 L61 82 L61 88 L60.2 88 Z" opacity=".9"/>
+
+  <!-- ===== pitot con cono ===== -->
+  <path class="metal" d="M63.4 4 L64.6 4 L64.5 11 L63.5 11 Z"/>
+  <path class="metalL" d="M63.6 1 L64.4 1 L64.5 4.2 L63.5 4.2 Z"/>
+  <path d="M63.7 4.6 L63.6 10.6" stroke="#fff" stroke-width=".4" opacity=".5" fill="none"/>
+
+  <!-- ===== cabina ===== -->
+  <ellipse cx="64" cy="33" rx="5" ry="9.6" class="dark" opacity=".55"/>
+  <path class="glass" d="M64 22.6 C61.6 24.6 60 28.6 60 33.4 C60 38.2 61.8 41.4 64 42 C66.2 41.4 68 38.2 68 33.4 C68 28.6 66.4 24.6 64 22.6 Z"/>
+  <path d="M64 22.6 C61.6 24.6 60 28.6 60 33.4 C60 38.2 61.8 41.4 64 42 C66.2 41.4 68 38.2 68 33.4 C68 28.6 66.4 24.6 64 22.6 Z" fill="url(#mg23g4)"/>
+  <path d="M64 22.6 C61.6 24.6 60 28.6 60 33.4 C60 38.2 61.8 41.4 64 42 C66.2 41.4 68 38.2 68 33.4 C68 28.6 66.4 24.6 64 22.6 Z" fill="none" stroke="#243b4d" stroke-width=".8"/>
+  <ellipse cx="62" cy="31.5" rx="1.4" ry="5.6" transform="rotate(-3 62 31.5)" fill="#fff" opacity=".85"/>
+  <ellipse cx="65.9" cy="28.5" rx=".8" ry="3" transform="rotate(5 65.9 28.5)" fill="#fff" opacity=".5"/>
+  <path d="M60.7 27.6 C62.3 26.4 65.7 26.4 67.3 27.6" stroke="#3d4232" stroke-width=".9" fill="none" opacity=".8"/>
+
+  <!-- ===== UNA tobera grande ===== -->
+  <ellipse class="metal" cx="64" cy="106.5" rx="4.6" ry="4.2"/>
+  <ellipse class="rubber" cx="64" cy="107" rx="2.7" ry="2.5"/>
+  <path class="metalL" d="M64 109.4 L62.6 107 L64 105 L65.4 107 Z" opacity=".9"/>
+  <path d="M60.6 101.5 L67.4 101.5" stroke="#000" stroke-width=".7" opacity=".35" fill="none"/>
+</svg>

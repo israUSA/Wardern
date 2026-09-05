@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- RQ-1 Predator - vista superior, morro al norte. MALE de ISR SIN ARMAMENTO:
+       fuselaje mas esbelto, V-tail invertida con aleta ventral, helice propulsora,
+       bulge SATCOM, sin Hellfire. Tinte por pais: .base/.shade/.light/.hi.
+       Fijos: .metal/.metalS/.metalL (bujes, rieles), .glass (sensor), .dark, .rubber. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="d2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
+  <filter id="d2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  <radialGradient id="d2gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="d2g1" gradientUnits="userSpaceOnUse" x1="10" y1="59" x2="118" y2="59">
+    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".16" stop-color="#000" stop-opacity=".08"/><stop offset=".34" stop-color="#fff" stop-opacity=".16"/><stop offset=".46" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity=".06"/><stop offset=".82" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".42"/>
+  </linearGradient>
+  <linearGradient id="d2g2" gradientUnits="userSpaceOnUse" x1="57" y1="60" x2="71" y2="60">
+    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".24" stop-color="#fff" stop-opacity=".2"/><stop offset=".42" stop-color="#fff" stop-opacity=".24"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+  </linearGradient>
+  <linearGradient id="d2g3" gradientUnits="userSpaceOnUse" x1="64" y1="18" x2="64" y2="104">
+    <stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/>
+  </linearGradient>
+  <linearGradient id="d2g4" gradientUnits="userSpaceOnUse" x1="64" y1="29" x2="64" y2="36.4">
+    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".85"/><stop offset=".4" stop-color="#9cc4dc" stop-opacity=".4"/><stop offset=".8" stop-color="#28495e" stop-opacity=".6"/><stop offset="1" stop-color="#14293a" stop-opacity=".8"/>
+  </linearGradient>
+  </defs>
+
+  <!-- sombra de contacto grande y suava -->
+  <ellipse cx="63" cy="61" rx="55" ry="53" fill="url(#d2gs)"/>
+
+  <!-- ===== alas rectas de gran envergadura ===== -->
+  <path class="base" d="M62.4 51.6 L17 54.4 Q9.7 55.7 9.2 60.7 Q9.7 65.6 17 66.9 L62.4 66.3 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path class="base" d="M65.6 51.6 L111 54.4 Q118.3 55.7 118.8 60.7 Q118.3 65.6 111 66.9 L65.6 66.3 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M62.4 51.6 L17 54.4 Q9.7 55.7 9.2 60.7 Q9.7 65.6 17 66.9 L62.4 66.3 Z" fill="url(#d2g1)"/>
+  <path d="M65.6 51.6 L111 54.4 Q118.3 55.7 118.8 60.7 Q118.3 65.6 111 66.9 L65.6 66.3 Z" fill="url(#d2g1)"/>
+  <path d="M62.4 51.6 L17 54.4 Q9.7 55.7 9.2 60.7 Q9.7 65.6 17 66.9 L62.4 66.3 Z" fill="url(#d2g3)"/>
+  <path d="M65.6 51.6 L111 54.4 Q118.3 55.7 118.8 60.7 Q118.3 65.6 111 66.9 L65.6 66.3 Z" fill="url(#d2g3)"/>
+  <!-- bordes de ataque iluminados + rim light -->
+  <path d="M62 52.3 L15.5 55.2 M66 52.3 L112.5 55.2" stroke="#b8bfa2" stroke-width=".9" opacity=".55" fill="none"/>
+  <path d="M62.2 51.8 L14.5 54.8" stroke="#fff" stroke-width=".7" opacity=".45" fill="none"/>
+  <path d="M65.8 51.8 L113.5 54.8" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
+  <!-- sombra del fuselaje sobre las alas -->
+  <path d="M62.2 51.4 L65.8 51.4 L65.4 66.8 L61.8 66.8 Z" fill="#000" opacity=".2" filter="url(#d2f1)"/>
+  <!-- luces de punta de ala -->
+  <circle class="dark" cx="10.8" cy="60.7" r="1"/><circle class="dark" cx="117.2" cy="60.7" r="1"/>
+  <!-- flaperaones y lineas de panel -->
+  <path d="M20 60.6 L59.5 60.9 M68.5 60.9 L108 60.6" stroke="#000" stroke-width=".55" opacity=".24" fill="none"/>
+  <path d="M25 56 L25 65.6 M102 56 L102 65.6 M46 54.4 L46 66.1 M82 54.4 L82 66.1" stroke="#000" stroke-width=".5" opacity=".2" fill="none"/>
+
+  <!-- rieles vacios bajo las alas (RQ-1 sin armas) -->
+  <path class="dark" d="M34.2 55 L35.6 55 L35.9 67.4 L33.9 67.4 Z" opacity=".7"/>
+  <path class="dark" d="M44.6 55 L46 55 L46.3 67.4 L44.3 67.4 Z" opacity=".7"/>
+  <path class="dark" d="M82 55 L83.4 55 L83.7 67.4 L81.7 67.4 Z" opacity=".7"/>
+  <path class="dark" d="M92.4 55 L93.8 55 L94.1 67.4 L92.1 67.4 Z" opacity=".7"/>
+
+  <!-- ===== fuselaje esbelto ===== -->
+  <path class="base" d="M64 17.2 C61.3 18.9 59.4 21.7 58.5 25.4 L57.2 31.4 L56.4 41 L56.1 52 L56.8 63 L57.8 74.5 L59 86.5 C59.5 92.5 60.2 96.8 61.3 99.8 L64 103.2 L66.7 99.8 C67.8 96.8 68.5 92.5 69 86.5 L70.2 74.5 L71.2 63 L71.9 52 L71.6 41 L70.8 31.4 L69.5 25.4 C68.6 21.7 66.7 18.9 64 17.2 Z" stroke="#3d4232" stroke-width="1.3"/>
+  <path d="M64 17.2 C61.3 18.9 59.4 21.7 58.5 25.4 L57.2 31.4 L56.4 41 L56.1 52 L56.8 63 L57.8 74.5 L59 86.5 C59.5 92.5 60.2 96.8 61.3 99.8 L64 103.2 L66.7 99.8 C67.8 96.8 68.5 92.5 69 86.5 L70.2 74.5 L71.2 63 L71.9 52 L71.6 41 L70.8 31.4 L69.5 25.4 C68.6 21.7 66.7 18.9 64 17.2 Z" fill="url(#d2g2)"/>
+  <path d="M64 17.2 C61.3 18.9 59.4 21.7 58.5 25.4 L57.2 31.4 L56.4 41 L56.1 52 L56.8 63 L57.8 74.5 L59 86.5 C59.5 92.5 60.2 96.8 61.3 99.8 L64 103.2 L66.7 99.8 C67.8 96.8 68.5 92.5 69 86.5 L70.2 74.5 L71.2 63 L71.9 52 L71.6 41 L70.8 31.4 L69.5 25.4 C68.6 21.7 66.7 18.9 64 17.2 Z" fill="url(#d2g3)"/>
+  <!-- rim light en el flanco de babor + sombra profunda a estribor -->
+  <path d="M58.6 24 C57.4 32 56.6 44 56.5 56 C56.4 70 57.6 84 59.2 94" stroke="#fff" stroke-width=".9" opacity=".4" fill="none"/>
+  <path d="M69.4 24 C70.6 32 71.4 44 71.5 56 C71.6 70 70.4 84 68.8 94" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#d2f1)"/>
+  <!-- linea de crujia y paneles -->
+  <path d="M64 19 L64 100" stroke="#b8bfa2" stroke-width=".7" opacity=".35" fill="none"/>
+  <path d="M56.9 45 L71.1 45 M57.3 56.5 L70.7 56.5 M58 68 L70 68" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
+
+  <!-- ===== cupula de sensores del morro ===== -->
+  <path d="M60.4 25.8 L67.6 25.8 L67 28.6 L61 28.6 Z" fill="#000" opacity=".22" filter="url(#d2f1)"/>
+  <ellipse class="dark" cx="64" cy="24.6" rx="3.4" ry="3"/>
+  <ellipse cx="64" cy="24.6" rx="3.4" ry="3" fill="url(#d2g4)" opacity=".4"/>
+  <circle class="glass" cx="64" cy="24" r="1.9"/>
+  <circle cx="63.5" cy="23.4" r=".6" fill="#fff" opacity=".9"/>
+
+  <!-- ===== cabina ===== -->
+  <path class="glass" d="M64 29.2 C61.9 29.8 61.2 31.4 61 33.2 L61.2 36.6 L66.8 36.6 L67 33.2 C66.8 31.4 66.1 29.8 64 29.2 Z"/>
+  <path d="M64 29.2 C61.9 29.8 61.2 31.4 61 33.2 L61.2 36.6 L66.8 36.6 L67 33.2 C66.8 31.4 66.1 29.8 64 29.2 Z" fill="url(#d2g4)"/>
+  <path d="M64 29.2 C61.9 29.8 61.2 31.4 61 33.2 L61.2 36.6 L66.8 36.6 L67 33.2 C66.8 31.4 66.1 29.8 64 29.2 Z" fill="none" stroke="#243b4d" stroke-width=".6"/>
+  <ellipse cx="62.6" cy="31.6" rx=".8" ry="1.6" transform="rotate(12 62.6 31.6)" fill="#fff" opacity=".7"/>
+
+  <!-- ===== lomo dorsal: bulge SATCOM y toma de aire ===== -->
+  <ellipse class="light" cx="64" cy="83.5" rx="3.1" ry="4.6"/>
+  <path d="M61.6 81 C63.2 82.4 64.8 82.4 66.4 81" stroke="#000" stroke-width=".5" opacity=".25" fill="none"/>
+  <path class="dark" d="M61.8 88.6 L66.2 88.6 L65.8 91.4 L62.2 91.4 Z" opacity=".9"/>
+  <!-- escapes de motor a banda -->
+  <path class="rubber" d="M57.6 79.2 L60 78.6 L60.4 81.4 L58 82 Z"/>
+  <path class="rubber" d="M70.4 79.2 L68 78.6 L67.6 81.4 L70 82 Z"/>
+
+  <!-- ===== V-tail ===== -->
+  <path class="shade" d="M61.7 91.5 L50.6 111.6 L53 113.5 L63.8 95.9 Z" stroke="#3d4232" stroke-width="1"/>
+  <path class="shade" d="M66.3 91.5 L77.4 111.6 L75 113.5 L64.2 95.9 Z" stroke="#3d4232" stroke-width="1"/>
+  <path d="M61.8 92 L51.3 111.9 M66.2 92 L76.7 111.9" stroke="#b8bfa2" stroke-width=".8" opacity=".5" fill="none"/>
+  <path d="M58 98.2 L60 99.2 M70 98.2 L68 99.2" stroke="#000" stroke-width=".5" opacity=".25" fill="none"/>
+
+  <!-- aleta ventral de la Y invertida -->
+  <path class="shade" d="M63 96.5 L65 96.5 L65.6 102.5 L62.4 102.5 Z" opacity=".9"/>
+  <path class="light" d="M63 96.5 L63.8 96.5 L63.5 102.5 L62.4 102.5 Z" opacity=".6"/>
+
+  <!-- ===== helice propulsora trasera (semitransparente) ===== -->
+  <g class="dark" opacity=".42">
+    <path d="M62.9 87.6 L65.1 87.6 L65.4 100.4 L62.6 100.4 Z" transform="rotate(40 64 102.4)"/>
+    <path d="M62.9 87.6 L65.1 87.6 L65.4 100.4 L62.6 100.4 Z" transform="rotate(130 64 102.4)"/>
+    <path d="M62.9 87.6 L65.1 87.6 L65.4 100.4 L62.6 100.4 Z" transform="rotate(220 64 102.4)"/>
+    <path d="M62.9 87.6 L65.1 87.6 L65.4 100.4 L62.6 100.4 Z" transform="rotate(310 64 102.4)"/>
+  </g>
+  <g class="dark" opacity=".8">
+    <path d="M62.8 87.8 L65.2 87.8 L65.3 92.6 L62.7 92.6 Z" transform="rotate(40 64 102.4)"/>
+    <path d="M62.8 87.8 L65.2 87.8 L65.3 92.6 L62.7 92.6 Z" transform="rotate(130 64 102.4)"/>
+    <path d="M62.8 87.8 L65.2 87.8 L65.3 92.6 L62.7 92.6 Z" transform="rotate(220 64 102.4)"/>
+    <path d="M62.8 87.8 L65.2 87.8 L65.3 92.6 L62.7 92.6 Z" transform="rotate(310 64 102.4)"/>
+  </g>
+  <circle class="shade" cx="64" cy="102.4" r="2.6"/>
+  <circle class="metal" cx="64" cy="102.4" r="1.5"/>
+  <circle class="metalL" cx="64" cy="102.4" r=".6"/>
+  <!-- buje del rotor entre derivas -->
+  <path d="M62.6 100 L65.4 100" stroke="#4a5057" stroke-width="1.4" fill="none"/>
+</svg>

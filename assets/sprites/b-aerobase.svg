@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Base aerea - hangar arqueado, pista con marcas y torre de control, vista 3/4 superior.
+       Tinte por pais: sobreescribir .base/.shade/.light (hangar, torre, plataformas).
+       Fijos: .glass (cabina), .rubber (asfalto), .dark (contornos). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
+    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}.rubber{fill:#2b2e28}
+  </style></defs>
+
+  <!-- pista -->
+  <path class="rubber" d="M60 6 L80 10 L72 122 L52 118 Z"/>
+  <path d="M60 6 L80 10 L72 122 L52 118 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path d="M66 14 L62 112" stroke="#9aa378" stroke-width="1.5" stroke-dasharray="9 6" fill="none" opacity=".8"/>
+  <path d="M56 108 L58 116 M61.5 109 L63.5 117 M67 110 L69 118 M72.5 111 L74.5 119" stroke="#9aa378" stroke-width="1.4" opacity=".8"/>
+  <path d="M61 12 L69 13.6 M60.5 24 L68.5 25.6" stroke="#9aa378" stroke-width="1.4" opacity=".6"/>
+
+  <!-- plataforma de estacionamiento -->
+  <path class="shade" d="M40 62 L58 66 L56 88 L38 84 Z" opacity=".8"/>
+  <path d="M40 62 L58 66 L56 88 L38 84 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8" opacity=".5"/>
+
+  <!-- hangar arqueado -->
+  <path class="shade" d="M10 40 Q27 20 44 40 L44 46 L10 46 Z"/>
+  <path d="M10 40 Q27 20 44 40 L44 46 L10 46 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="light" d="M13 38 Q27 24 41 38" stroke="#9aa378" stroke-width="1.6" fill="none" opacity=".7"/>
+  <rect class="base" x="10" y="44" width="34" height="26"/>
+  <rect class="base" x="10" y="44" width="34" height="26" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <rect class="dark" x="16" y="50" width="22" height="20"/>
+  <path d="M20 50 L20 70 M25 50 L25 70 M30 50 L30 70 M34 50 L34 70" stroke="#9aa378" stroke-width="1.1" opacity=".65"/>
+
+  <!-- caza estacionado en plataforma -->
+  <path class="metalL" d="M45 68 L50.5 72 L48 80 L46.5 84 L45 80 L41.5 72 Z"/>
+  <path class="metalL" d="M98 78 L103.5 82 L101 90 L99.5 94 L98 90 L94.5 82 Z"/>
+
+  <!-- torre de control -->
+  <rect class="shade" x="92" y="72" width="12" height="12"/>
+  <rect class="shade" x="92" y="72" width="12" height="12" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <rect class="base" x="88" y="58" width="20" height="14"/>
+  <rect class="base" x="88" y="58" width="20" height="14" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <rect class="glass" x="90.5" y="60.5" width="15" height="6.5"/>
+  <path class="glassL" d="M92 61.5 L96 61.5 L96 66 L92 66 Z" opacity=".8"/>
+  <rect class="metalS" x="96.5" y="52" width="3" height="6"/>
+  <rect class="metalL" x="93" y="53.5" width="10" height="2.2"/>
+</svg>

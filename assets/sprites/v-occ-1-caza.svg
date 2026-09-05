@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<defs>
+  <linearGradient id="body" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#c6ced6"/>
+    <stop offset="0.34" stop-color="#99a2ab"/>
+    <stop offset="0.62" stop-color="#79828b"/>
+    <stop offset="1" stop-color="#4f575f"/>
+  </linearGradient>
+  <linearGradient id="spine" x1="0.3" y1="0" x2="0.75" y2="0">
+    <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+    <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
+    <stop offset="0" stop-color="#f5dc90"/>
+    <stop offset="0.35" stop-color="#d0a53f"/>
+    <stop offset="1" stop-color="#6a4f15"/>
+  </linearGradient>
+  <linearGradient id="fin" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d2d9e0"/>
+    <stop offset="0.42" stop-color="#8c959e"/>
+    <stop offset="1" stop-color="#3f474e"/>
+  </linearGradient>
+  <radialGradient id="nozzle" cx="0.5" cy="0.4" r="0.6">
+    <stop offset="0" stop-color="#12151a"/>
+    <stop offset="0.6" stop-color="#2c3138"/>
+    <stop offset="1" stop-color="#5b636b"/>
+  </radialGradient>
+  <linearGradient id="msl" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e3e8ec"/>
+    <stop offset="0.55" stop-color="#a8b0b7"/>
+    <stop offset="1" stop-color="#666e75"/>
+  </linearGradient>
+
+  <!-- airframe silhouette, reused for the drop shadow -->
+  <path id="hull" d="
+    M100 9
+    C105 14 107 26 108 40
+    L109 62
+    C111 76 112 88 114 98
+    C116 106 118 112 120 119
+    L177 180 L178 186 L176 199
+    L125 197 L123 203 L121 208
+    L161 238 L159 244
+    L119 241 L116 248 L113 263
+    C111 269 106 271 100 271
+    C94 271 89 269 87 263
+    L84 248 L81 241
+    L41 244 L39 238
+    L79 208 L77 203 L75 197
+    L24 199 L22 186 L23 180
+    L80 119
+    C82 112 84 106 86 98
+    C88 88 89 76 91 62
+    L92 40
+    C93 26 95 14 100 9 Z"/>
+</defs>
+
+<g id="f16a">
+
+  <!-- ===== ground shadow (delete this group for a flat icon) ===== -->
+  <g opacity="0.28">
+    <use href="#hull" fill="#0a0d11" transform="translate(7,9)"/>
+  </g>
+
+  <!-- ===== wingtip missiles (AIM-9) ===== -->
+  <g fill="url(#msl)">
+    <path d="M177.5 160 l2.4 7 v40 h-4.8 v-40 z"/>
+    <path d="M22.5 160 l2.4 7 v40 h-4.8 v-40 z"/>
+  </g>
+  <g fill="#596168">
+    <path d="M175.1 172 l-4 5 v5 h4 z M179.9 172 l4 5 v5 h-4 z"/>
+    <path d="M20.1 172 l-4 5 v5 h4 z M24.9 172 l4 5 v5 h-4 z"/>
+  </g>
+
+  <!-- ===== underwing pylons + stores ===== -->
+  <g fill="#5c646c">
+    <rect x="141" y="163" width="5.5" height="36" rx="2.7"/>
+    <rect x="156" y="172" width="5" height="31" rx="2.5"/>
+    <rect x="53.5" y="163" width="5.5" height="36" rx="2.7"/>
+    <rect x="39" y="172" width="5" height="31" rx="2.5"/>
+  </g>
+
+  <!-- ===== main airframe ===== -->
+  <use href="#hull" fill="url(#body)"/>
+
+  <!-- wings read slightly darker than the fuselage -->
+  <g fill="#000000" fill-opacity="0.10">
+    <path d="M120 119 L177 180 L178 186 L176 199 L127 197 Z"/>
+    <path d="M80 119 L23 180 L22 186 L24 199 L73 197 Z"/>
+    <path d="M121 208 L161 238 L159 244 L120 241 Z"/>
+    <path d="M79 208 L39 238 L41 244 L80 241 Z"/>
+  </g>
+
+  <!-- soft spine highlight -->
+  <path fill="url(#spine)" d="
+    M100 11 C104 20 106 32 107 46 L108 110 L112 200 L110 262
+    C107 268 93 268 90 262 L88 200 L92 110 L93 46
+    C94 32 96 20 100 11 Z"/>
+
+  <!-- ===== panel lines ===== -->
+  <g fill="none" stroke="#394047" stroke-opacity="0.52" stroke-width="0.9" stroke-linecap="round">
+    <path d="M113 96 C116 108 119 118 124 128 L128 196"/>
+    <path d="M87 96 C84 108 81 118 76 128 L72 196"/>
+    <path d="M172 186 L128 184"/>
+    <path d="M28 186 L72 184"/>
+    <path d="M126 122 L172 172"/>
+    <path d="M74 122 L28 172"/>
+    <path d="M124 212 L155 235"/>
+    <path d="M76 212 L45 235"/>
+    <path d="M93 40 L107 40"/>
+    <path d="M91 118 L109 118"/>
+    <path d="M112 205 L88 205"/>
+  </g>
+
+  <!-- ===== chin intake shadow ===== -->
+  <path fill="#2f363d" fill-opacity="0.55" d="M92 78 C92 72 108 72 108 78 L109 104 C109 110 91 110 91 104 Z"/>
+
+  <!-- ===== canopy ===== -->
+  <path fill="url(#glass)" d="
+    M100 48 C106 53 109 65 109 80
+    C109 94 105 105 100 105
+    C95 105 91 94 91 80
+    C91 65 94 53 100 48 Z"/>
+  <path fill="#ffffff" fill-opacity="0.5" d="
+    M99 51 C96 57 94 67 94 79 C94 88 95 96 97 101
+    C94 96 92 88 92 79 C92 66 95 55 99 51 Z"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1.1" stroke-opacity="0.78" d="M91.5 66 C96 62 104 62 108.5 66"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.55" d="M91 100 C96 103 104 103 109 100"/>
+
+  <!-- ===== vertical tail (cast shadow + fin) ===== -->
+  <path fill="#0e1216" fill-opacity="0.3" d="M101 162 L112 250 L112 259 L104 259 L103 250 Z"/>
+  <path fill="url(#fin)" d="M100 160 L107.5 250 L107.5 259 L92.5 259 L92.5 250 Z"/>
+  <path fill="#ffffff" fill-opacity="0.4" d="M100 163 L101.8 250 L97.6 250 Z"/>
+  <path fill="none" stroke="#394047" stroke-opacity="0.6" stroke-width="0.9" d="M93.5 245 L106.5 245"/>
+
+  <!-- ===== exhaust nozzle ===== -->
+  <path fill="url(#nozzle)" d="M88 258 C88 253 112 253 112 258 L110.5 268 C108 271 92 271 89.5 268 Z"/>
+  <ellipse cx="100" cy="264" rx="7.5" ry="4.5" fill="#0e1116"/>
+  <ellipse cx="100" cy="263" rx="4" ry="2.4" fill="#3a2a1c" fill-opacity="0.8"/>
+
+  <!-- ===== nose pitot ===== -->
+  <path d="M100 9 L101 1 L99 1 Z" fill="#464e55"/>
+
+</g>
+</svg>

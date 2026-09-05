@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- 9K37 Buk TELAR - vista superior, tubos elevados hacia el norte. Chasis de orugas
+       GM-567, canister de 4 misiles elevado en angulo, radar giratorio de iluminacion
+       a popa. Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal, .dark, .rubber. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="bk2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4"/></filter>
+  <filter id="bk2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
+  <radialGradient id="bk2gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".4"/><stop offset=".5" stop-color="#000" stop-opacity=".2"/><stop offset=".8" stop-color="#000" stop-opacity=".07"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="bk2g1" gradientUnits="userSpaceOnUse" x1="44" y1="48" x2="84" y2="110">
+    <stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset=".68" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".28"/>
+  </linearGradient>
+  <linearGradient id="bk2g2" gradientUnits="userSpaceOnUse" x1="42" y1="74" x2="86" y2="74">
+    <stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset=".08" stop-color="#000" stop-opacity=".24"/><stop offset=".24" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity=".24"/><stop offset=".76" stop-color="#000" stop-opacity=".04"/><stop offset=".94" stop-color="#000" stop-opacity=".26"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
+  </linearGradient>
+  <linearGradient id="bk2g3" gradientUnits="userSpaceOnUse" x1="52" y1="16" x2="76" y2="46">
+    <stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".35" stop-color="#fff" stop-opacity=".08"/><stop offset=".7" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <linearGradient id="bk2g4" gradientUnits="userSpaceOnUse" x1="52" y1="83" x2="76" y2="97">
+    <stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".28"/>
+  </linearGradient>
+  <radialGradient id="bk2g5" cx=".4" cy=".34" r=".8">
+    <stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </radialGradient>
+  </defs>
+
+  <!-- sombra de contacto grande y suava -->
+  <ellipse cx="63" cy="72" rx="48" ry="60" fill="url(#bk2gs)"/>
+
+  <!-- ===== orugas ===== -->
+  <path class="rubber" d="M32 36 C32 30.5 35.5 28 39.5 28 C43.5 28 47 30.5 47 36 L47 108 C47 113.5 43.5 116 39.5 116 C35.5 116 32 113.5 32 108 Z"/>
+  <path class="rubber" d="M81 36 C81 30.5 84.5 28 88.5 28 C92.5 28 96 30.5 96 36 L96 108 C96 113.5 92.5 116 88.5 116 C84.5 116 81 113.5 81 108 Z"/>
+  <path d="M33.5 30 L33.5 114 M37.9 28.4 L37.9 115.6 M41.1 28.4 L41.1 115.6 M45.5 30 L45.5 114" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".9" fill="none"/>
+  <path d="M82.5 30 L82.5 114 M86.9 28.4 L86.9 115.6 M90.1 28.4 L90.1 115.6 M94.5 30 L94.5 114" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".9" fill="none"/>
+  <path d="M39.5 29.5 L39.5 116.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".55" fill="none"/>
+  <path d="M88.5 29.5 L88.5 116.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".55" fill="none"/>
+  <path d="M37.5 32 L37.5 112 M91.5 32 L91.5 112" stroke="#8a929b" stroke-width=".7" stroke-dasharray="1.6 3.4" opacity=".7" fill="none"/>
+  <circle class="metalL" cx="39.5" cy="33" r="5.4"/><circle class="metal" cx="39.5" cy="33" r="3"/>
+  <circle class="metalL" cx="88.5" cy="33" r="5.4"/><circle class="metal" cx="88.5" cy="33" r="3"/>
+  <circle class="metalL" cx="39.5" cy="111" r="5.4"/><circle class="metal" cx="39.5" cy="111" r="3"/>
+  <circle class="metalL" cx="88.5" cy="111" r="5.4"/><circle class="metal" cx="88.5" cy="111" r="3"/>
+
+  <!-- faldones -->
+  <path class="shade" d="M28.5 34 L33.5 32 L33.5 114 L28.5 110 Z"/>
+  <path class="shade" d="M99.5 34 L94.5 32 L94.5 114 L99.5 110 Z"/>
+  <path d="M31 35 L32.5 34 M31 45 L32.5 45 M31 55 L32.5 55 M31 65 L32.5 65 M31 75 L32.5 75 M31 85 L32.5 85 M31 95 L32.5 95 M31 105 L32.5 106" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
+  <path d="M97 35 L95.5 34 M97 45 L95.5 45 M97 55 L95.5 55 M97 65 L95.5 65 M97 75 L95.5 75 M97 85 L95.5 85 M97 95 L95.5 95 M97 105 L95.5 106" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
+
+  <!-- ===== casco ===== -->
+  <path class="base" d="M64 34 L82 41 L84.5 52 L84.5 103 L78 115 L50 115 L43.5 103 L43.5 52 L46 41 Z" stroke="#3d4232" stroke-width="1.4"/>
+  <path d="M64 34 L82 41 L84.5 52 L84.5 103 L78 115 L50 115 L43.5 103 L43.5 52 L46 41 Z" fill="url(#bk2g2)"/>
+  <path d="M64 34 L82 41 L84.5 52 L84.5 103 L78 115 L50 115 L43.5 103 L43.5 52 L46 41 Z" fill="url(#bk2g1)"/>
+  <!-- cara iluminada del morro + rim light NO + sombra SE -->
+  <path d="M64 35 L80.6 41 L47.4 41 Z" fill="#fff" opacity=".12"/>
+  <path d="M64 35 L47.4 41" stroke="#fff" stroke-width="1.1" opacity=".5" fill="none"/>
+  <path d="M45.4 52 L45.4 102 L50 113" stroke="#fff" stroke-width="1" opacity=".35" fill="none"/>
+  <path d="M83.4 42 L84 52 L84 102 L78.4 113" stroke="#000" stroke-width="2" opacity=".28" fill="none" filter="url(#bk2f1)"/>
+  <path class="light" d="M64 34 L82 41 L81 42.7 L64 36.4 L47 42.7 L46 41 Z" opacity=".85"/>
+  <!-- faros y escotilla -->
+  <rect class="shade" x="48" y="42" width="5.6" height="4.6" rx="1"/>
+  <rect class="shade" x="74.4" y="42" width="5.6" height="4.6" rx="1"/>
+  <rect class="hi" x="48.8" y="43" width="2.3" height="2.6" rx=".6"/>
+  <rect class="hi" x="75.2" y="43" width="2.3" height="2.6" rx=".6"/>
+  <circle class="metal" cx="56" cy="47.5" r="3.8"/>
+  <circle cx="56" cy="47.5" r="3.8" fill="none" stroke="#3d4232" stroke-width=".9"/>
+  <circle class="shade" cx="56" cy="47.5" r="1.5"/>
+  <path class="glass" d="M52.6 45.6 L53.5 44.7 L55 44.7 L54.4 46.1 Z" opacity=".9"/>
+  <!-- cofres laterales -->
+  <path class="shade" d="M43.5 60 L46.5 60 L46.5 66 L43.5 66 Z M43.5 70 L46.5 70 L46.5 76 L43.5 76 Z"/>
+  <path class="shade" d="M84.5 60 L81.5 60 L81.5 66 L84.5 66 Z M84.5 70 L81.5 70 L81.5 76 L84.5 76 Z"/>
+  <path d="M44.2 60.5 L44.2 75.5 M83.8 60.5 L83.8 75.5" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+  <!-- humeras frontales -->
+  <g class="dark">
+    <circle cx="49.5" cy="51.5" r=".9"/><circle cx="51.7" cy="50.3" r=".9"/>
+    <circle cx="78.5" cy="51.5" r=".9"/><circle cx="76.3" cy="50.3" r=".9"/>
+  </g>
+
+  <!-- sombra del canister elevado sobre el casco (oclusion suave y ancha) -->
+  <path d="M50.5 46.6 L77.5 46.6 L80 59 L48 59 Z" fill="#000" opacity=".26" filter="url(#bk2f2)"/>
+  <path d="M53 47 L75 47 L77 58 L51 58 Z" fill="#000" opacity=".16"/>
+  <path d="M57 51.6 L71 51.6 L70.6 55 L57.4 55 Z" fill="#000" opacity=".3" filter="url(#bk2f1)"/>
+
+  <!-- ===== pedestal y canister elevado 2x2 ===== -->
+  <path class="dark" d="M59.5 45 L68.5 45 L69.5 52 L58.5 52 Z"/>
+  <path class="metalS" d="M55.5 46 L49 56 M72.5 46 L79 56" stroke="#8a929b" stroke-width="2.2" fill="none"/>
+  <path d="M55.5 46 L49 56 M72.5 46 L79 56" stroke="#4a5057" stroke-width=".6" fill="none"/>
+  <!-- caja de tubos -->
+  <path class="shade" d="M55 15 L73 15 L76.5 46 L51.5 46 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M55 15 L73 15 L76.5 46 L51.5 46 Z" fill="url(#bk2g3)"/>
+  <path d="M55.6 15.6 L72.4 15.6" stroke="#fff" stroke-width="1" opacity=".55" fill="none"/>
+  <path d="M52 16.4 L50.2 45.4" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
+  <path d="M76 16.4 L75.9 45.4" stroke="#000" stroke-width="1" opacity=".24" fill="none" filter="url(#bk2f1)"/>
+  <path class="light" d="M55 15 L73 15 L72.5 17.2 L55.5 17.2 Z" opacity=".85"/>
+  <!-- costuras de los 4 tubos -->
+  <path d="M64 18.5 L64 45 M60.2 19.5 L56.5 45 M67.8 19.5 L71.5 45" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
+  <path d="M55.8 30 C60.5 31.2 67.5 31.2 72.2 30 M55.2 38 C60.5 39.2 67.5 39.2 74.8 38" stroke="#000" stroke-width=".6" opacity=".3" fill="none"/>
+  <!-- bocas de los tubos delanteros -->
+  <circle class="dark" cx="60.4" cy="18.1" r="2.4"/>
+  <circle cx="59.6" cy="17.3" r=".7" fill="#fff" opacity=".4"/>
+  <circle class="metalL" cx="60.4" cy="18.1" r="1.2"/>
+  <circle class="dark" cx="67.6" cy="18.1" r="2.4"/>
+  <circle cx="66.8" cy="17.3" r=".7" fill="#fff" opacity=".4"/>
+  <circle class="metalL" cx="67.6" cy="18.1" r="1.2"/>
+  <!-- bocas de la segunda hilera, asomando detras -->
+  <path class="dark" d="M56.9 21.4 A2.2 2.2 0 0 1 61 21.4 Z M67 21.4 A2.2 2.2 0 0 1 71.1 21.4 Z" opacity=".9"/>
+  <!-- banda trasera del canister -->
+  <path d="M52.3 43.5 C58 44.6 70 44.6 75.7 43.5" stroke="#000" stroke-width=".8" opacity=".4" fill="none"/>
+
+  <!-- ===== radar rotatorio a popa ===== -->
+  <path d="M56 92.4 L72 92.4 L71.4 97.4 L56.6 97.4 Z" fill="#000" opacity=".24" filter="url(#bk2f1)"/>
+  <circle cx="64" cy="90" r="11.5" fill="none" stroke="#b8bfa2" stroke-width=".6" stroke-dasharray="2 3" opacity=".28"/>
+  <circle class="metal" cx="64" cy="90" r="6.8"/>
+  <circle cx="64" cy="90" r="6.8" fill="url(#bk2g5)"/>
+  <circle cx="64" cy="90" r="6.8" fill="none" stroke="#3d4232" stroke-width=".9"/>
+  <path d="M59.6 85.8 A6.4 6.4 0 0 1 66.6 84.4" stroke="#fff" stroke-width=".9" opacity=".4" fill="none"/>
+  <circle class="metalL" cx="64" cy="90" r="2"/>
+  <circle class="dark" cx="60" cy="87.6" r=".7"/><circle class="dark" cx="68" cy="87.6" r=".7"/>
+  <circle class="dark" cx="60" cy="92.4" r=".7"/><circle class="dark" cx="68" cy="92.4" r=".7"/>
+  <!-- panel de antena girado -->
+  <g transform="rotate(-24 64 90)">
+    <path class="metalS" d="M52.5 83.5 L75.5 83.5 L75.5 96.5 L52.5 96.5 Z" stroke="#3d4232" stroke-width="1"/>
+    <path d="M52.5 83.5 L75.5 83.5 L75.5 96.5 L52.5 96.5 Z" fill="url(#bk2g4)"/>
+    <path d="M56.3 84 L56.3 96 M60.1 84 L60.1 96 M63.9 84 L63.9 96 M67.7 84 L67.7 96 M71.5 84 L71.5 96" stroke="#4a5057" stroke-width=".5" opacity=".8" fill="none"/>
+    <path d="M52.5 90 L75.5 90" stroke="#4a5057" stroke-width=".5" opacity=".8" fill="none"/>
+    <rect class="dark" x="62.4" y="81.4" width="3.2" height="2.6" rx=".6"/>
+  </g>
+  <!-- tirantes del radar -->
+  <path d="M56.5 95 L60.5 99 M71.5 95 L67.5 99" stroke="#3d4232" stroke-width="1" opacity=".8" fill="none"/>
+
+  <!-- ===== popa: APU y herramientas ===== -->
+  <rect class="dark" x="54.5" y="103.5" width="8.5" height="6" rx=".8"/>
+  <path d="M56.5 104.5 L56.5 108.5 M59 104.5 L59 108.5 M61.3 104.5 L61.3 108.5" stroke="#9aa378" stroke-width=".55" opacity=".6" fill="none"/>
+  <rect class="shade" x="66" y="104" width="8" height="5" rx=".7"/>
+  <rect class="light" x="68.5" y="104.6" width="3" height="4.4" rx=".6" opacity=".85"/>
+  <!-- antenas -->
+  <path d="M48 96 L44.5 107 M80 96 L83.5 107" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
+  <circle class="dark" cx="48" cy="96" r="1"/><circle class="dark" cx="80" cy="96" r="1"/>
+  <!-- escapes -->
+  <rect class="rubber" x="45.2" y="99" width="3" height="6" rx="1"/>
+  <rect class="rubber" x="79.8" y="99" width="3" height="6" rx="1"/>
+</svg>

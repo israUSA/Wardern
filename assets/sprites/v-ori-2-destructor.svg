@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Destructor ASW proyecto 1155 UDALOY (1980) - vista superior, proa al norte.
+       Canon unico AK-100 a proa, dos RBU-6000 delante del puente, gran radar
+       "Top Steer" en mastil piramidal, chimenea ancha, lanzadores cuadruples
+       Metel (ASW) a los flancos, DOS hangares gemelos a popa con CIWS AK-630
+       entre ellos, sin lanzadores antiaereos pesados a popa, helipad amplio.
+       Tinte por pais: sobreescribir .base/.shade/.light/.hi (casco, cubierta, superestructuras).
+       Fijos: .metal/.metalS/.metalL (canon, RBU, radares), .dark, .glass, .rubber.
+       Volumen: g1 transversal del casco, g2 longitudinal cubierta, g3 bloques, g4 chimenea. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="or2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
+  <filter id="or2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
+  <radialGradient id="or2gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="or2g1" gradientUnits="userSpaceOnUse" x1="42" y1="64" x2="86" y2="64">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#fff" stop-opacity=".18"/><stop offset=".42" stop-color="#fff" stop-opacity=".22"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+  </linearGradient>
+  <linearGradient id="or2g2" gradientUnits="userSpaceOnUse" x1="64" y1="8" x2="64" y2="119">
+    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".24"/>
+  </linearGradient>
+  <linearGradient id="or2g3" gradientUnits="userSpaceOnUse" x1="52" y1="70" x2="76" y2="70">
+    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".28" stop-color="#fff" stop-opacity=".14"/><stop offset=".6" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <linearGradient id="or2g4" gradientUnits="userSpaceOnUse" x1="55" y1="83" x2="73" y2="83">
+    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".35" stop-color="#fff" stop-opacity=".14"/><stop offset=".55" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <linearGradient id="or2g5" gradientUnits="userSpaceOnUse" x1="46" y1="14" x2="84" y2="114">
+    <stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  </linearGradient>
+  </defs>
+
+  <!-- sombra de contacto grande y suava -->
+  <ellipse cx="63" cy="66" rx="34" ry="63" fill="url(#or2gs)"/>
+
+  <!-- ===== casco ===== -->
+  <path class="shade" d="M64 7 C56.5 11.5 49 20 45.6 32 L43.2 43 L42.6 98 L46.8 111.5 L50.8 118.4 L77.2 118.4 L81.2 111.5 L85.4 98 L84.8 43 L82.4 32 C79 20 71.5 11.5 64 7 Z" stroke="#3d4232" stroke-width="1.4"/>
+  <path d="M64 7 C56.5 11.5 49 20 45.6 32 L43.2 43 L42.6 98 L46.8 111.5 L50.8 118.4 L77.2 118.4 L81.2 111.5 L85.4 98 L84.8 43 L82.4 32 C79 20 71.5 11.5 64 7 Z" fill="url(#or2g1)"/>
+  <!-- cubierta -->
+  <path class="base" d="M64 9.8 C57.8 14 51.2 22 48.4 32.6 L46.2 43.2 L45.8 97.4 L49.6 110.2 L53 116 L75 116 L78.4 110.2 L82.2 97.4 L81.8 43.2 L79.6 32.6 C76.8 22 70.2 14 64 9.8 Z"/>
+  <path d="M64 9.8 C57.8 14 51.2 22 48.4 32.6 L46.2 43.2 L45.8 97.4 L49.6 110.2 L53 116 L75 116 L78.4 110.2 L82.2 97.4 L81.8 43.2 L79.6 32.6 C76.8 22 70.2 14 64 9.8 Z" fill="url(#or2g2)"/>
+  <path d="M64 9.8 C57.8 14 51.2 22 48.4 32.6 L46.2 43.2 L45.8 97.4 L49.6 110.2 L53 116 L75 116 L78.4 110.2 L82.2 97.4 L81.8 43.2 L79.6 32.6 C76.8 22 70.2 14 64 9.8 Z" fill="url(#or2g5)"/>
+  <!-- rim light babor + sombra estribor -->
+  <path d="M47 42.6 L47.4 96 L51 108.6" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M81 42.6 L80.6 96 L77 108.6" stroke="#000" stroke-width="1.6" opacity=".24" fill="none" filter="url(#or2f1)"/>
+  <!-- linea de crujia -->
+  <path d="M64 11 L64 114.5" stroke="#b8bfa2" stroke-width=".8" opacity=".4" fill="none"/>
+  <!-- brillete de proa -->
+  <path class="light" d="M64 9.8 C57.8 14 51.2 22 48.4 32.6 L50.4 33 C53.2 22.8 59.4 15.4 65.4 11.2 Z" opacity=".7"/>
+  <!-- anclas y cabrestantes -->
+  <circle class="metalL" cx="52.5" cy="18.5" r="1.3"/><circle class="metalL" cx="75.5" cy="18.5" r="1.3"/>
+  <path d="M50.8 16 L54 20 M74.6 20 L77.8 16" stroke="#4a5057" stroke-width=".8" fill="none"/>
+  <path d="M49 24.5 L52 27.5 M79 24.5 L76 27.5" stroke="#3d4232" stroke-width=".9" opacity=".6" fill="none"/>
+
+  <!-- ===== canon unico AK-100 de proa ===== -->
+  <path class="dark" d="M60.2 29.8 L67.8 29.8 L66.8 35.8 L61.2 35.8 Z" opacity=".85"/>
+  <path class="metal" d="M63.25 17.4 L64.75 17.4 L64.65 28.8 L63.35 28.8 Z"/>
+  <path class="hi" d="M63.5 17.8 L63.9 17.8 L63.8 28.4 L63.5 28.4 Z" opacity=".6"/>
+  <path class="metalL" d="M62.9 15.6 L65.1 15.6 L65 18 L63 18 Z"/>
+  <!-- torre unica redondeada -->
+  <path class="metalS" d="M59.6 28.2 L68.4 28.2 L68.4 32.8 Q68.4 35.2 66 35.2 L62 35.2 Q59.6 35.2 59.6 32.8 Z"/>
+  <path d="M60.4 29 L67.6 29" stroke="#fff" stroke-width=".7" opacity=".4" fill="none"/>
+  <path class="shade" d="M60.2 34 L67.8 34 L67 36.8 L61 36.8 Z"/>
+  <!-- oclusion del canon -->
+  <path d="M60.4 37.2 L67.6 37.2 L67 39.8 L61 39.8 Z" fill="#000" opacity=".22" filter="url(#or2f1)"/>
+
+  <!-- ===== dos RBU-6000 delante del puente ===== -->
+  <g>
+    <rect class="shade" x="51.4" y="38.8" width="8.8" height="8.8" rx="2.2" stroke="#000" stroke-opacity=".35" stroke-width=".5"/>
+    <circle class="metalL" cx="55.8" cy="43.2" r="3.3"/>
+    <circle class="dark" cx="55.8" cy="43.2" r=".5"/>
+    <g class="dark">
+      <circle cx="58" cy="43.2" r=".5"/><circle cx="57.7" cy="44.3" r=".5"/><circle cx="56.9" cy="45.1" r=".5"/>
+      <circle cx="55.8" cy="45.4" r=".5"/><circle cx="54.7" cy="45.1" r=".5"/><circle cx="53.9" cy="44.3" r=".5"/>
+      <circle cx="53.6" cy="43.2" r=".5"/><circle cx="53.9" cy="42.1" r=".5"/><circle cx="54.7" cy="41.3" r=".5"/>
+      <circle cx="55.8" cy="41" r=".5"/><circle cx="56.9" cy="41.3" r=".5"/><circle cx="57.7" cy="42.1" r=".5"/>
+    </g>
+    <path d="M53.2 41.6 A3.3 3.3 0 0 1 57.4 40.4" stroke="#fff" stroke-width=".5" opacity=".4" fill="none"/>
+  </g>
+  <g>
+    <rect class="shade" x="67.8" y="38.8" width="8.8" height="8.8" rx="2.2" stroke="#000" stroke-opacity=".35" stroke-width=".5"/>
+    <circle class="metalL" cx="72.2" cy="43.2" r="3.3"/>
+    <circle class="dark" cx="72.2" cy="43.2" r=".5"/>
+    <g class="dark">
+      <circle cx="74.4" cy="43.2" r=".5"/><circle cx="74.1" cy="44.3" r=".5"/><circle cx="73.3" cy="45.1" r=".5"/>
+      <circle cx="72.2" cy="45.4" r=".5"/><circle cx="71.1" cy="45.1" r=".5"/><circle cx="70.3" cy="44.3" r=".5"/>
+      <circle cx="70" cy="43.2" r=".5"/><circle cx="70.3" cy="42.1" r=".5"/><circle cx="71.1" cy="41.3" r=".5"/>
+      <circle cx="72.2" cy="41" r=".5"/><circle cx="73.3" cy="41.3" r=".5"/><circle cx="74.1" cy="42.1" r=".5"/>
+    </g>
+    <path d="M69.6 41.6 A3.3 3.3 0 0 1 73.8 40.4" stroke="#fff" stroke-width=".5" opacity=".4" fill="none"/>
+  </g>
+  <!-- oclusion de los RBU -->
+  <path d="M51.8 47.6 L60.2 47.6 L60 49.8 L52 49.8 Z" fill="#000" opacity=".2" filter="url(#or2f1)"/>
+  <path d="M67.8 47.6 L76.2 47.6 L76 49.8 L68 49.8 Z" fill="#000" opacity=".2" filter="url(#or2f1)"/>
+
+  <!-- ===== superestructura ===== -->
+  <path class="base" d="M53.2 50.6 L74.8 50.6 L76.2 54.8 L76.2 64 L51.8 64 L51.8 54.8 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M53.2 50.6 L74.8 50.6 L76.2 54.8 L76.2 64 L51.8 64 L51.8 54.8 Z" fill="url(#or2g3)"/>
+  <path d="M52.8 50.8 L75.2 50.8" stroke="#fff" stroke-width="1" opacity=".45" fill="none"/>
+  <path d="M52.2 51.4 L52.2 63.6" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
+  <path d="M75.8 51.4 L75.8 63.6" stroke="#000" stroke-width="1.3" opacity=".26" fill="none" filter="url(#or2f1)"/>
+  <!-- oclusion al pie de la superestructura -->
+  <path d="M51 64 L77 64 L76.8 66.6 L51.2 66.6 Z" fill="#000" opacity=".22" filter="url(#or2f1)"/>
+  <!-- ventanas del puente -->
+  <path class="glass" d="M57.4 52.6 L61 52.6 L60.2 55 L58.2 55 Z M70.6 52.6 L67 52.6 L67.8 55 L70 55 Z"/>
+  <path class="glassL" d="M58.1 53.1 L59.6 53.1 L59.2 54 L58.4 54 Z" opacity=".8"/>
+  <path class="glassL" d="M69.9 53.1 L68.4 53.1 L68.8 54 L69.6 54 Z" opacity=".8"/>
+  <!-- balsas a banda -->
+  <rect class="light" x="49.9" y="60.4" width="2.2" height="3.4" rx=".8"/>
+  <rect class="light" x="75.9" y="60.4" width="2.2" height="3.4" rx=".8"/>
+
+  <!-- ===== mastil piramidal con gran radar Top Steer ===== -->
+  <path d="M60 66.8 L58.6 65.2 M68 66.8 L69.4 65.2 M60 73 L58.6 74.4 M68 73 L69.4 74.4" stroke="#3d4232" stroke-width=".8" fill="none"/>
+  <path class="shade" d="M59.8 66.4 L68.2 66.4 L68.2 73.4 L59.8 73.4 Z"/>
+  <path d="M60.2 66.8 L67.8 66.8" stroke="#fff" stroke-width=".6" opacity=".4" fill="none"/>
+  <rect class="metalL" x="61.9" y="68" width="4.2" height="3.8" rx=".4"/>
+  <rect class="dark" x="63.4" y="69.1" width="1.2" height="1.6" rx=".3"/>
+  <!-- gran radar Top Steer (rectangular curvo) -->
+  <path class="metalL" d="M56.8 68.6 L71.2 68.6 L70.8 72.8 L57.2 72.8 Z"/>
+  <path d="M58.9 68.6 L58.9 72.8 M61.1 68.6 L61.1 72.8 M63.4 68.6 L63.4 72.8 M65.7 68.6 L65.7 72.8 M68 68.6 L68 72.8 M57.6 70.7 L70.4 70.7" stroke="#4a5057" stroke-width=".4" opacity=".8" fill="none"/>
+  <path d="M57.4 68.9 L70.6 68.9" stroke="#fff" stroke-width=".5" opacity=".45" fill="none"/>
+  <!-- radar Top Plate giratorio a popa del mastil -->
+  <circle class="metalS" cx="64" cy="75.6" r="1.7"/>
+  <path d="M64 75.6 L66.4 74.4 M64 75.6 L64 78.1" stroke="#3d4232" stroke-width=".6" fill="none"/>
+  <path d="M64 75.6 L65.8 77" stroke="#b8bfa2" stroke-width=".7" fill="none"/>
+  <!-- oclusion bajo el mastil -->
+  <path d="M59.4 73.6 L68.6 73.6 L68.4 75.6 L59.6 75.6 Z" fill="#000" opacity=".18" filter="url(#or2f1)"/>
+
+  <!-- ===== chimenea ancha ===== -->
+  <path class="shade" d="M55.6 77.8 L72.4 77.8 L73.6 82.2 L73.2 88.4 L54.8 88.4 L54.4 82.2 Z"/>
+  <path d="M55.6 77.8 L72.4 77.8 L73.6 82.2 L73.2 88.4 L54.8 88.4 L54.4 82.2 Z" fill="url(#or2g4)"/>
+  <path d="M56 78.1 L72 78.1" stroke="#fff" stroke-width=".7" opacity=".45" fill="none"/>
+  <rect class="dark" x="58.2" y="81" width="5" height="6" rx=".9"/>
+  <rect class="dark" x="64.8" y="81" width="5" height="6" rx=".9"/>
+  <rect x="58.5" y="81.3" width="2" height="2" rx=".6" fill="#fff" opacity=".16"/>
+  <rect x="65.1" y="81.3" width="2" height="2" rx=".6" fill="#fff" opacity=".16"/>
+  <!-- oclusion bajo la chimenea -->
+  <path d="M54.2 88.4 L73.8 88.4 L73.6 90.8 L54.4 90.8 Z" fill="#000" opacity=".22" filter="url(#or2f1)"/>
+
+  <!-- ===== lanzadores cuadruples Metel (ASW) a los flancos ===== -->
+  <g>
+    <rect class="dark" x="49.7" y="82" width="3.8" height="4" rx=".8" opacity=".9"/>
+    <circle class="metalS" cx="50.9" cy="83.2" r=".55"/><circle class="metalS" cx="52.3" cy="83.2" r=".55"/>
+    <circle class="metalS" cx="50.9" cy="84.8" r=".55"/><circle class="metalS" cx="52.3" cy="84.8" r=".55"/>
+    <path d="M49.9 82.2 L53.3 82.2" stroke="#fff" stroke-width=".4" opacity=".35" fill="none"/>
+  </g>
+  <g>
+    <rect class="dark" x="74.5" y="82" width="3.8" height="4" rx=".8" opacity=".9"/>
+    <circle class="metalS" cx="75.7" cy="83.2" r=".55"/><circle class="metalS" cx="77.1" cy="83.2" r=".55"/>
+    <circle class="metalS" cx="75.7" cy="84.8" r=".55"/><circle class="metalS" cx="77.1" cy="84.8" r=".55"/>
+    <path d="M74.7 82.2 L78.1 82.2" stroke="#fff" stroke-width=".4" opacity=".35" fill="none"/>
+  </g>
+
+  <!-- ===== dos hangares gemelos a popa ===== -->
+  <rect class="base" x="54.4" y="92" width="8.5" height="9" rx="1.2" stroke="#3d4232" stroke-width="1"/>
+  <rect class="base" x="65.1" y="92" width="8.5" height="9" rx="1.2" stroke="#3d4232" stroke-width="1"/>
+  <path d="M54.6 92.3 L62.7 92.3 M65.3 92.3 L73.4 92.3" stroke="#fff" stroke-width=".8" opacity=".4" fill="none"/>
+  <path d="M62.8 92.4 L62.8 100.8 M73.4 92.4 L73.4 100.8" stroke="#000" stroke-width="1.1" opacity=".24" fill="none" filter="url(#or2f1)"/>
+  <path d="M57 93 L57 100 M60.2 93 L60.2 100 M67.8 93 L67.8 100 M71 93 L71 100" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
+  <!-- portones a popa -->
+  <path d="M55.2 99.4 L62.1 99.4 M65.9 99.4 L72.8 99.4" stroke="#000" stroke-width=".6" opacity=".35" fill="none"/>
+  <rect class="rubber" x="55.4" y="99.8" width="6" height=".8" rx=".4" opacity=".85"/>
+  <rect class="rubber" x="66.1" y="99.8" width="6" height=".8" rx=".4" opacity=".85"/>
+  <!-- oclusion bajo los hangares -->
+  <path d="M53.6 101 L74.4 101 L74.2 103.4 L53.8 103.4 Z" fill="#000" opacity=".22" filter="url(#or2f1)"/>
+
+  <!-- CIWS AK-630 entre los hangares -->
+  <circle class="metalS" cx="64" cy="96.4" r="1.8"/>
+  <path d="M64 98 L64 100" stroke="#2b2e28" stroke-width="1" fill="none"/>
+  <path d="M63 95.8 L64.8 96.3" stroke="#e6e9e2" stroke-width=".5" opacity=".6" fill="none"/>
+  <!-- CIWS AK-630 en las esquinas de los hangares -->
+  <circle class="metalS" cx="51.9" cy="99.8" r="1.7"/><path d="M51.9 101.3 L51.9 103" stroke="#2b2e28" stroke-width=".9" fill="none"/>
+  <circle class="metalS" cx="76.1" cy="99.8" r="1.7"/><path d="M76.1 101.3 L76.1 103" stroke="#2b2e28" stroke-width=".9" fill="none"/>
+
+  <!-- ===== helipad a popa ===== -->
+  <path d="M64 103.5 L64 116.5" stroke="#b8bfa2" stroke-width=".7" opacity=".45" fill="none"/>
+  <ellipse class="dark" cx="64" cy="108.6" rx="5.8" ry="4.6"/>
+  <ellipse cx="64" cy="108.6" rx="5.8" ry="4.6" fill="none" stroke="#b8bfa2" stroke-width=".9" opacity=".85"/>
+  <path d="M62.8 108.6 L65.2 108.6 M64 107.3 L64 109.9" stroke="#b8bfa2" stroke-width=".8" opacity=".85" fill="none"/>
+  <path d="M54 107 L58.6 107 M69.4 107 L74 107 M54 110.2 L58.6 110.2 M69.4 110.2 L74 110.2" stroke="#b8bfa2" stroke-width=".6" opacity=".5" fill="none"/>
+
+  <!-- bote de maniobras a estribor -->
+  <path class="light" d="M82.6 60 C84.6 61.4 84.6 64.6 82.6 66 C81.8 64.6 81.8 61.4 82.6 60 Z"/>
+  <path d="M82.6 61.4 L82.6 65" stroke="#4a5057" stroke-width=".4" opacity=".6" fill="none"/>
+</svg>

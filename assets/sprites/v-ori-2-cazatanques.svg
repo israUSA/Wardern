@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Shturm-S (9K114 sobre MT-LB) - vista superior, morro al norte. Chasis de orugas
+       cerrado SIN torreta, LANZADOR DE 6 MISILES en caja 2x3 elevada sobre el techo,
+       escotillas frontales, rejillas de motor traseras.
+       Tinte por pais: .base/.shade/.light/.hi (casco, techo, faldones).
+       Fijos: .metal/.metalS/.metalL (cupola, canon), .dark, .rubber (orugas). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="m1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
+  <filter id="m1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
+  <radialGradient id="m1gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="m1g1" gradientUnits="userSpaceOnUse" x1="38" y1="58" x2="90" y2="58">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".22"/><stop offset=".64" stop-color="#fff" stop-opacity=".04"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+  </linearGradient>
+  <linearGradient id="m1g2" gradientUnits="userSpaceOnUse" x1="64" y1="22" x2="64" y2="106">
+    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  </linearGradient>
+  <radialGradient id="m1g5" cx=".38" cy=".32" r=".8">
+    <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  </radialGradient>
+  </defs>
+
+  <ellipse cx="64" cy="64" rx="42" ry="52" fill="url(#m1gs)"/>
+
+  <!-- ===== orugas (mas estrechas que un MBT) ===== -->
+  <path class="rubber" d="M36.5 26 C36.5 20.5 39.5 18 43 18 C46.5 18 49.5 20.5 49.5 26 L49.5 104 C49.5 109.5 46.5 112 43 112 C39.5 112 36.5 109.5 36.5 104 Z"/>
+  <path class="rubber" d="M78.5 26 C78.5 20.5 81.5 18 85 18 C88.5 18 91.5 20.5 91.5 26 L91.5 104 C91.5 109.5 88.5 112 85 112 C81.5 112 78.5 109.5 78.5 104 Z"/>
+  <path d="M37 26 C37 21 39.6 18.6 43 18.6 C46.4 18.6 49 21 49 26 L49 104 C49 109 46.4 111.4 43 111.4 C39.6 111.4 37 109 37 104 Z" fill="url(#m1g1)" opacity=".45"/>
+  <path d="M79 26 C79 21 81.6 18.6 85 18.6 C88.4 18.6 91 21 91 26 L91 104 C91 109 88.4 111.4 85 111.4 C81.6 111.4 79 109 79 104 Z" fill="url(#m1g1)" opacity=".45"/>
+  <path d="M37.2 24 L37.2 106 M80.2 24 L80.2 106" stroke="#fff" stroke-width=".8" opacity=".16" fill="none"/>
+  <path d="M38 16 L38 114 M41.4 14.4 L41.4 115.6 M44.6 14.4 L44.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
+  <path d="M80 16 L80 114 M83.4 14.4 L83.4 115.6 M86.6 14.4 L86.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
+  <path d="M43 15.5 L43 116.5 M85 15.5 L85 116.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".5" fill="none"/>
+  <circle class="metalL" cx="43" cy="21" r="4.8"/><circle class="metal" cx="43" cy="21" r="2.7"/>
+  <circle cx="41.8" cy="19.8" r="1.3" fill="#fff" opacity=".26"/>
+  <circle class="metalL" cx="85" cy="21" r="4.8"/><circle class="metal" cx="85" cy="21" r="2.7"/>
+  <circle cx="83.8" cy="19.8" r="1.3" fill="#fff" opacity=".26"/>
+  <circle class="metalL" cx="43" cy="109" r="4.8"/><circle class="metal" cx="43" cy="109" r="2.7"/>
+  <circle class="metalL" cx="85" cy="109" r="4.8"/><circle class="metal" cx="85" cy="109" r="2.7"/>
+
+  <!-- ===== casco en caja (M113) ===== -->
+  <path class="base" d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" stroke="#3d4232" stroke-width="1.3"/>
+  <path d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" fill="url(#m1g1)"/>
+  <path d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" fill="url(#m1g2)"/>
+  <path d="M52.4 20.6 L75.6 20.6 L77.6 26.4 L50.4 26.4 Z" fill="#fff" opacity=".14"/>
+  <path d="M50.3 28 L50 100" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M77.7 28 L78 100" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#m1f1)"/>
+  <!-- parachoques delantero -->
+  <path class="dark" d="M53.5 17.5 L74.5 17.5 L74.5 20 L53.5 20 Z"/>
+  <path d="M56 18.2 L56 19.6 M72 18.2 L72 19.6" stroke="#8a929b" stroke-width=".6" opacity=".7" fill="none"/>
+  <!-- oclusion de la oruga bajo el casco -->
+  <path d="M49.2 26 L52 25 L52 103 L49.2 101 Z" fill="#000" opacity=".3" filter="url(#m1f1)"/>
+  <path d="M78.8 26 L76 25 L76 103 L78.8 101 Z" fill="#000" opacity=".3" filter="url(#m1f1)"/>
+  <!-- cresteria central del techo -->
+  <path d="M64 27 L64 106" stroke="#b8bfa2" stroke-width=".8" opacity=".45" fill="none"/>
+
+  <!-- ===== escotilla del conductor (izq) ===== -->
+  <ellipse class="metal" cx="56.5" cy="33" rx="4.6" ry="3.6"/>
+  <ellipse cx="56.5" cy="33" rx="4.6" ry="3.6" fill="url(#m1g5)"/>
+  <ellipse cx="56.5" cy="33" rx="4.6" ry="3.6" fill="none" stroke="#3d4232" stroke-width=".8"/>
+  <path class="glass" d="M53 30.6 L55 29.6 L55.6 31.2 L53.6 32.2 Z" opacity=".9"/>
+  <path d="M59 30.4 L60.6 30.4" stroke="#8a929b" stroke-width=".8" fill="none"/>
+  <!-- visores del casco delanteros -->
+  <rect class="dark" x="61.5" y="27.5" width="5" height="2.4" rx=".6" opacity=".85"/>
+  <rect class="dark" x="68.5" y="27.5" width="5" height="2.4" rx=".6" opacity=".85"/>
+
+  <!-- ===== lanzador de 6 misiles Shturm (caja 2x3) ===== -->
+  <path d="M56 52 L74 52 L73 57 L57 57 Z" fill="#000" opacity=".24" filter="url(#m1f1)"/>
+  <rect class="shade" x="57.5" y="53.5" width="13" height="5" rx="1"/>
+  <circle class="metal" cx="64" cy="56" r="1.5"/>
+  <!-- caja elevada con 6 tubos -->
+  <rect class="metal" x="55.5" y="38" width="17" height="14.5" rx="1.4"/>
+  <rect x="55.9" y="38.4" width="16.2" height="1.4" rx=".6" fill="#fff" opacity=".22"/>
+  <path d="M57.5 40 L57.5 50.5 M61.7 40 L61.7 50.5 M65.9 40 L65.9 50.5 M70.1 40 L70.1 50.5" stroke="#3d4232" stroke-width=".7" opacity=".8" fill="none"/>
+  <path d="M55.5 45.2 L72.5 45.2" stroke="#000" stroke-width=".6" opacity=".3" fill="none"/>
+  <!-- bocas de los 6 misiles -->
+  <g class="metalS">
+    <circle cx="59.6" cy="39.6" r="1.5"/><circle cx="63.8" cy="39.4" r="1.5"/><circle cx="68" cy="39.4" r="1.5"/>
+  </g>
+  <g class="dark">
+    <circle cx="59.6" cy="39.6" r=".6"/><circle cx="63.8" cy="39.4" r=".6"/><circle cx="68" cy="39.4" r=".6"/>
+  </g>
+  <path class="dark" d="M56.9 36 L58.9 36 L59.5 38 L57.5 38 Z M61.1 35.8 L63.1 35.8 L63.7 37.8 L61.7 37.8 Z M65.3 35.8 L67.3 35.8 L67.9 37.8 L65.9 37.8 Z" opacity=".9"/>
+  <!-- brazo elevador -->
+  <path class="dark" d="M62.4 58.5 L65.6 58.5 L65.4 61.4 L62.6 61.4 Z" opacity=".85"/>
+
+  <!-- ===== rampa trasera ===== -->
+  <path d="M53.4 100 L74.6 100 L74.8 102.6 L53.2 102.6 Z" fill="#000" opacity=".2" filter="url(#m1f1)"/>
+  <rect class="shade" x="53.6" y="100.6" width="20.8" height="5.2" rx=".6"/>
+  <path d="M53.9 100.9 L74.1 100.9" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
+  <path d="M58 100.9 L58 105.6 M70 100.9 L70 105.6" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+  <path class="dark" d="M54.4 106.4 L73.6 106.4 L74 107.4 L54 107.4 Z"/>
+
+  <!-- ===== rejillas y detalles traseros ===== -->
+  <rect class="dark" x="67.5" y="94" width="8" height="5.5" rx=".8"/>
+  <path d="M69 94.6 L69 98.9 M71 94.6 L71 98.9 M73 94.6 L73 98.9" stroke="#9aa378" stroke-width=".6" opacity=".6" fill="none"/>
+  <!-- bidones de combustible a estribor -->
+  <rect class="shade" x="70.5" y="62" width="6" height="9" rx="1"/>
+  <path d="M70.8 62.3 L76.2 62.3" stroke="#fff" stroke-width=".5" opacity=".25" fill="none"/>
+  <path d="M73.5 62.5 L73.5 70.5" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+  <!-- cajas de estiba a babor -->
+  <rect class="shade" x="51.5" y="62" width="6" height="5" rx=".8"/>
+  <rect class="shade" x="51.5" y="68.5" width="6" height="5" rx=".8"/>
+  <path d="M51.8 62.3 L57.2 62.3 M51.8 68.8 L57.2 68.8" stroke="#fff" stroke-width=".5" opacity=".25" fill="none"/>
+  <!-- antena -->
+  <path d="M52.6 60 L48.5 50.5" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
+  <circle class="dark" cx="52.6" cy="60" r="1"/>
+</svg>

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- M2 Bradley IFV - vista superior, morro al norte. Casco ancho con falda sobre
+       las orugas, torreta con canon Bushmaster 25mm al norte y lanzador TOW doble
+       a babor, escotillas de jefe y tirador, lanzagranadas en el glacis, rampa trasera.
+       Tinte por pais: .base/.shade/.light/.hi (casco, torreta, faldones).
+       Fijos: .metal/.metalS/.metalL (canon, escotillas, TOW), .dark, .rubber (orugas). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="m2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
+  <filter id="m2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
+  <radialGradient id="m2gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="m2g1" gradientUnits="userSpaceOnUse" x1="36" y1="58" x2="92" y2="58">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".22"/><stop offset=".64" stop-color="#fff" stop-opacity=".04"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+  </linearGradient>
+  <linearGradient id="m2g2" gradientUnits="userSpaceOnUse" x1="64" y1="20" x2="64" y2="108">
+    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  </linearGradient>
+  <linearGradient id="m2g3" gradientUnits="userSpaceOnUse" x1="52" y1="62" x2="76" y2="62">
+    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".18" stop-color="#fff" stop-opacity=".18"/><stop offset=".45" stop-color="#fff" stop-opacity=".24"/><stop offset=".7" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <radialGradient id="m2g5" cx=".38" cy=".32" r=".8">
+    <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  </radialGradient>
+  </defs>
+
+  <ellipse cx="64" cy="64" rx="44" ry="54" fill="url(#m2gs)"/>
+
+  <!-- ===== orugas ===== -->
+  <path class="rubber" d="M34.5 24 C34.5 18.5 37.5 16 41 16 C44.5 16 47.5 18.5 47.5 24 L47.5 106 C47.5 111.5 44.5 114 41 114 C37.5 114 34.5 111.5 34.5 106 Z"/>
+  <path class="rubber" d="M80.5 24 C80.5 18.5 83.5 16 87 16 C90.5 16 93.5 18.5 93.5 24 L93.5 106 C93.5 111.5 90.5 114 87 114 C83.5 114 80.5 111.5 80.5 106 Z"/>
+  <path d="M35 24 C35 19 37.6 16.6 41 16.6 C44.4 16.6 47 19 47 24 L47 106 C47 111 44.4 113.4 41 113.4 C37.6 113.4 35 111 35 106 Z" fill="url(#m2g1)" opacity=".45"/>
+  <path d="M81 24 C81 19 83.6 16.6 87 16.6 C90.4 16.6 93 19 93 24 L93 106 C93 111 90.4 113.4 87 113.4 C83.6 113.4 81 111 81 106 Z" fill="url(#m2g1)" opacity=".45"/>
+  <path d="M35.2 22 L35.2 108 M81.2 22 L81.2 108" stroke="#fff" stroke-width=".8" opacity=".16" fill="none"/>
+  <path d="M36 14 L36 116 M39.4 12.4 L39.4 117.6 M42.6 12.4 L42.6 117.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
+  <path d="M82 14 L82 116 M85.4 12.4 L85.4 117.6 M88.6 12.4 L88.6 117.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
+  <path d="M41 13.5 L41 118.5 M87 13.5 L87 118.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".5" fill="none"/>
+  <circle class="metalL" cx="41" cy="19" r="4.8"/><circle class="metal" cx="41" cy="19" r="2.7"/>
+  <circle cx="39.8" cy="17.8" r="1.3" fill="#fff" opacity=".26"/>
+  <circle class="metalL" cx="87" cy="19" r="4.8"/><circle class="metal" cx="87" cy="19" r="2.7"/>
+  <circle cx="85.8" cy="17.8" r="1.3" fill="#fff" opacity=".26"/>
+  <circle class="metalL" cx="41" cy="111" r="4.8"/><circle class="metal" cx="41" cy="111" r="2.7"/>
+  <circle class="metalL" cx="87" cy="111" r="4.8"/><circle class="metal" cx="87" cy="111" r="2.7"/>
+
+  <!-- ===== casco ancho con faldones sobre la oruga ===== -->
+  <path class="base" d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" stroke="#3d4232" stroke-width="1.3"/>
+  <path d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" fill="url(#m2g1)"/>
+  <path d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" fill="url(#m2g2)"/>
+  <path d="M50.6 18.6 L77.4 18.6 L80.6 26 L47.4 26 Z" fill="#fff" opacity=".14"/>
+  <path d="M46.8 28 L46.4 99" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M81.2 28 L81.6 99" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#m2f1)"/>
+  <path d="M47.2 26 L49.8 25 L49.8 103 L47.2 101 Z" fill="#000" opacity=".3" filter="url(#m2f1)"/>
+  <path d="M80.8 26 L78.2 25 L78.2 103 L80.8 101 Z" fill="#000" opacity=".3" filter="url(#m2f1)"/>
+  <!-- faldones de oruga (skirt) -->
+  <path class="shade" d="M45 30 L48.6 29 L48.6 101 L45 99 Z"/>
+  <path class="shade" d="M83 30 L79.4 29 L79.4 101 L83 99 Z"/>
+  <path d="M45.3 31 L48 30.2 M45.3 40 L48 40 M45.3 50 L48 50 M45.3 60 L48 60 M45.3 70 L48 70 M45.3 80 L48 80 M45.3 90 L48 90" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+  <path d="M82.7 31 L80 30.2 M82.7 40 L80 40 M82.7 50 L80 50 M82.7 60 L80 60 M82.7 70 L80 70 M82.7 80 L80 80 M82.7 90 L80 90" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+
+  <!-- ===== glacis con lanzagranadas ===== -->
+  <path d="M51.5 22.5 L76.5 22.5 L79.5 28 L48.5 28 Z" fill="#fff" opacity=".12"/>
+  <path d="M52.8 27.5 L58.4 27.5 L58.4 30.3 L52.8 30.3 Z" fill="none" stroke="#000" stroke-width=".5" opacity=".3"/>
+  <circle class="dark" cx="54.1" cy="28.9" r="1"/><circle class="dark" cx="57.1" cy="28.9" r="1"/>
+  <circle class="dark" cx="54.1" cy="31.4" r="0"/><circle cx="54.1" cy="30.6" r=".3" fill="#fff" opacity=".35"/>
+  <path d="M69.6 27.5 L75.2 27.5 L75.2 30.3 L69.6 30.3 Z" fill="none" stroke="#000" stroke-width=".5" opacity=".3"/>
+  <circle class="dark" cx="70.9" cy="28.9" r="1"/><circle class="dark" cx="73.9" cy="28.9" r="1"/>
+  <!-- visores del conductor -->
+  <rect class="dark" x="60.5" y="21.8" width="7" height="2.6" rx=".6" opacity=".85"/>
+  <path d="M61 22.4 L66.5 22.4" stroke="#fff" stroke-width=".4" opacity=".3" fill="none"/>
+
+  <!-- sombra de la torreta sobre el casco -->
+  <path d="M50.5 52 L77.5 52 L78 76 L50 76 Z" fill="#000" opacity=".18" filter="url(#m2f2)"/>
+
+  <!-- ===== torreta Bradley ===== -->
+  <path class="base" d="M64 50 L73.5 54.5 L76 62 L76 72 L71.5 76.5 L56.5 76.5 L52 72 L52 62 L54.5 54.5 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M64 50 L73.5 54.5 L76 62 L76 72 L71.5 76.5 L56.5 76.5 L52 72 L52 62 L54.5 54.5 Z" fill="url(#m2g3)"/>
+  <path d="M64 50.6 L72.6 54.9" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
+  <path d="M53 57 L52.6 71" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
+  <path d="M75 57 L75.4 71 L71.5 75.7" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#m2f1)"/>
+  <!-- canon Bushmaster 25mm al norte (offset a estribor) -->
+  <path class="shade" d="M66 50 L72 50 L71 54 L67 54 Z"/>
+  <path class="dark" d="M67.9 40 L69.9 40 L69.7 50 L68.1 50 Z"/>
+  <path class="metalS" d="M67.6 38.2 L70.2 38.2 L70.1 40.4 L67.7 40.4 Z"/>
+  <path class="hi" d="M68.3 41 L68.6 41 L68.5 49 L68.3 49 Z" opacity=".55"/>
+  <path d="M68 42.4 L69.8 42.4 M68 45.4 L69.8 45.4" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
+  <!-- lanzador TOW doble a babor de la torreta -->
+  <rect class="metal" x="54.2" y="57.5" width="4.6" height="11" rx="1.2"/>
+  <rect x="54.5" y="57.8" width="4" height="1.2" rx=".5" fill="#fff" opacity=".25"/>
+  <path d="M55.4 58.5 L55.4 67.5 M57.6 58.5 L57.6 67.5" stroke="#2b2e28" stroke-width="1.4" fill="none"/>
+  <path class="metalL" d="M54.9 56.6 L58.1 56.6 L58.1 57.6 L54.9 57.6 Z"/>
+  <!-- escotillas de jefe (atrás-izq) y tirador (atrás-der) -->
+  <circle class="metal" cx="58.5" cy="70.5" r="4.4"/>
+  <circle cx="58.5" cy="70.5" r="4.4" fill="url(#m2g5)"/>
+  <circle cx="58.5" cy="70.5" r="4.4" fill="none" stroke="#3d4232" stroke-width=".9"/>
+  <circle class="shade" cx="58.5" cy="70.5" r="1.7"/>
+  <circle cx="57.9" cy="69.7" r=".6" fill="#fff" opacity=".5"/>
+  <circle class="metal" cx="69.5" cy="70.5" r="4.4"/>
+  <circle cx="69.5" cy="70.5" r="4.4" fill="url(#m2g5)"/>
+  <circle cx="69.5" cy="70.5" r="4.4" fill="none" stroke="#3d4232" stroke-width=".9"/>
+  <circle class="shade" cx="69.5" cy="70.5" r="1.7"/>
+  <circle cx="68.9" cy="69.7" r=".6" fill="#fff" opacity=".5"/>
+  <!-- visor del tirador -->
+  <rect class="dark" x="63.4" y="55.5" width="3" height="2.2" rx=".5"/>
+
+  <!-- ===== techo trasero de tropa ===== -->
+  <rect class="shade" x="50" y="80" width="28" height="18" rx="1"/>
+  <path d="M50.3 80.3 L77.7 80.3" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
+  <rect class="rubber" x="52.5" y="82.5" width="23" height="13" opacity=".45"/>
+  <path d="M53.2 85.5 L74.8 85.5 M53.2 89 L74.8 89 M53.2 92.5 L74.8 92.5" stroke="#b8bfa2" stroke-width=".6" opacity=".3" fill="none"/>
+  <!-- porton-rampa trasero -->
+  <path d="M50.5 98.4 L77.5 98.4 L77.7 100.8 L50.3 100.8 Z" fill="#000" opacity=".2" filter="url(#m2f1)"/>
+  <rect class="shade" x="50.6" y="101" width="26.8" height="4.8" rx=".6"/>
+  <path d="M50.9 101.3 L77.1 101.3" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
+  <path class="dark" d="M51.4 106 L76.6 106 L77 107.2 L51 107.2 Z"/>
+  <!-- rejillas de escape a estribor -->
+  <rect class="dark" x="76" y="84" width="4.6" height="10" rx=".7"/>
+  <path d="M77 85 L77 93 M78.5 85 L78.5 93 M80 85 L80 93" stroke="#9aa378" stroke-width=".5" opacity=".6" fill="none"/>
+  <!-- antenas -->
+  <path d="M50.8 79 L46.5 68" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
+  <path d="M77.4 79 L81.5 68" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
+  <circle class="dark" cx="50.8" cy="79" r="1"/><circle class="dark" cx="77.4" cy="79" r="1"/>
+</svg>

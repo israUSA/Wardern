@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- USS Independence (LCS-2, trimaran) - vista superior, proa al norte. SILUETA UNICA:
+       casco trimaran MUY ancho en forma de flecha, superestructura stealth angular
+       avanzada a proa, cubierta de vuelo ENORME a popa (dos circulos), hangs laterales.
+       Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.metalS/.metalL (canon,
+       RAM, radares), .glass (puente), .dark, .rubber. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="cb2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
+  <filter id="cb2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  <radialGradient id="cb2gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="cb2g1" gradientUnits="userSpaceOnUse" x1="38" y1="62" x2="90" y2="62">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#fff" stop-opacity=".18"/><stop offset=".42" stop-color="#fff" stop-opacity=".22"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+  </linearGradient>
+  <linearGradient id="cb2g2" gradientUnits="userSpaceOnUse" x1="64" y1="20" x2="64" y2="102">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".35" stop-color="#fff" stop-opacity=".05"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/>
+  </linearGradient>
+  <linearGradient id="cb2g3" gradientUnits="userSpaceOnUse" x1="54" y1="42" x2="74" y2="52">
+    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".24" stop-color="#fff" stop-opacity=".2"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  </defs>
+
+  <ellipse cx="64" cy="60" rx="36" ry="46" fill="url(#cb2gs)"/>
+
+  <!-- ===== casco trimaran ancho en flecha ===== -->
+  <path class="shade" d="M64 17.5 C57 21.5 46 28 36.5 36 L26 47 L22.5 60 L24 82 L30 94 L36 99.5 L92 99.5 L98 94 L104 82 L105.5 60 L102 47 L91.5 36 C82 28 71 21.5 64 17.5 Z" stroke="#3d4232" stroke-width="1.4"/>
+  <path d="M64 17.5 C57 21.5 46 28 36.5 36 L26 47 L22.5 60 L24 82 L30 94 L36 99.5 L92 99.5 L98 94 L104 82 L105.5 60 L102 47 L91.5 36 C82 28 71 21.5 64 17.5 Z" fill="url(#cb2g1)"/>
+  <!-- cubierta -->
+  <path class="base" d="M64 20.5 C57.8 24.2 47.6 30.2 38.6 38 L29.5 48 L26.5 60.5 L28 81 L33.5 92 L38.5 96.5 L89.5 96.5 L94.5 92 L100 81 L101.5 60.5 L98.5 48 L89.4 38 C80.4 30.2 70.2 24.2 64 20.5 Z"/>
+  <path d="M64 20.5 C57.8 24.2 47.6 30.2 38.6 38 L29.5 48 L26.5 60.5 L28 81 L33.5 92 L38.5 96.5 L89.5 96.5 L94.5 92 L100 81 L101.5 60.5 L98.5 48 L89.4 38 C80.4 30.2 70.2 24.2 64 20.5 Z" fill="url(#cb2g2)"/>
+  <!-- cuernos laterales del trimaran: linea de union -->
+  <path d="M30 49 L33.5 90 M98 49 L94.5 90" stroke="#000" stroke-width=".8" opacity=".3" fill="none"/>
+  <!-- rim light babor + sombra estribor -->
+  <path d="M30.5 50 L28 60.5 L29.5 80" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M97.5 50 L100 60.5 L98.5 80" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#cb2f1)"/>
+  <!-- linea de crujia y brillete -->
+  <path d="M64 21.5 L64 95" stroke="#b8bfa2" stroke-width=".8" opacity=".4" fill="none"/>
+  <path class="light" d="M64 20.5 C57.8 24.2 47.6 30.2 38.6 38 L40.4 39.6 C48.6 32.2 58.4 26 64 22.4 Z" opacity=".7"/>
+  <!-- anclas -->
+  <circle class="metalL" cx="55" cy="27.5" r="1.1"/><circle class="metalL" cx="73" cy="27.5" r="1.1"/>
+
+  <!-- ===== canon 57mm a proa ===== -->
+  <circle class="metal" cx="64" cy="35" r="3"/>
+  <circle cx="64" cy="35" r="3" fill="none" stroke="#3d4232" stroke-width=".7"/>
+  <circle class="metalS" cx="64" cy="35" r="1.6"/>
+  <path class="metal" d="M63.2 27.5 L64.8 27.5 L64.7 32.2 L63.3 32.2 Z"/>
+  <path class="shade" d="M61 37.2 L67 37.2 L66.6 38.8 L61.4 38.8 Z"/>
+
+  <!-- ===== superestructura stealth angular avanzada ===== -->
+  <path class="base" d="M64 41.5 L75 46 L76.8 52 L77.4 60.5 L76 66.5 L52 66.5 L50.6 60.5 L51.2 52 L53 46 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M64 41.5 L75 46 L76.8 52 L77.4 60.5 L76 66.5 L52 66.5 L50.6 60.5 L51.2 52 L53 46 Z" fill="url(#cb2g3)"/>
+  <path d="M64 42 L74 46.4" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
+  <path d="M51.6 54 L51 60 L52.2 65.6" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
+  <path d="M76.4 54 L77 60 L75.8 65.6" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#cb2f1)"/>
+  <path d="M52.2 66.7 L75.8 66.7 L75.6 69.7 L52.4 69.7 Z" fill="#000" opacity=".22" filter="url(#cb2f1)"/>
+  <!-- ventanas en trama ancha -->
+  <path class="glass" d="M58 44.6 L64 44.6 L64 47.2 L57.2 47.2 Z M70 44.6 L64 44.6 L64 47.2 L70.8 47.2 Z"/>
+  <path class="glassL" d="M58.8 45 L61 45 L60.8 46.2 L58.5 46.2 Z" opacity=".8"/>
+  <!-- mastil integrado con SEA GIRAFFE -->
+  <path class="shade" d="M61.4 48 L66.6 48 L67.4 62 L60.6 62 Z"/>
+  <path class="light" d="M61.4 48 L62.6 48 L61.9 62 L60.6 62 Z" opacity=".55"/>
+  <path class="metalL" d="M58.4 52.6 L69.6 52.6 L69.2 55.2 L58.8 55.2 Z"/>
+  <path d="M61 52.6 L61 55.2 M64 52.6 L64 55.2 M67 52.6 L67 55.2" stroke="#4a5057" stroke-width=".4" opacity=".8" fill="none"/>
+  <!-- RAM lanzador a popa de la superestructura -->
+  <rect class="metal" x="60.6" y="70.5" width="6.8" height="3.2" rx="1.1"/>
+  <path d="M62.2 70.9 L62.2 73.3 M64 70.9 L64 73.3 M65.8 70.9 L65.8 73.3" stroke="#4a5057" stroke-width=".5" opacity=".8" fill="none"/>
+
+  <!-- ===== cubierta de vuelo ENORME a popa ===== -->
+  <path d="M34 72 L94 72 L94 95 L34 95 Z" fill="#000" opacity=".14" filter="url(#cb2f2)"/>
+  <rect class="shade" x="36.5" y="73.5" width="55" height="21" rx="1.5"/>
+  <path d="M37 73.8 L91 73.8" stroke="#fff" stroke-width=".8" opacity=".3" fill="none"/>
+  <path d="M37 84 L91 84" stroke="#b8bfa2" stroke-width=".6" opacity=".4" fill="none"/>
+  <ellipse class="dark" cx="52" cy="84" rx="7.5" ry="6.5"/>
+  <ellipse cx="52" cy="84" rx="7.5" ry="6.5" fill="none" stroke="#b8bfa2" stroke-width=".9" opacity=".85"/>
+  <path d="M50.9 84 L53.1 84 M52 82.6 L52 85.4" stroke="#b8bfa2" stroke-width=".7" opacity=".85" fill="none"/>
+  <ellipse class="dark" cx="76" cy="84" rx="7.5" ry="6.5"/>
+  <ellipse cx="76" cy="84" rx="7.5" ry="6.5" fill="none" stroke="#b8bfa2" stroke-width=".9" opacity=".85"/>
+  <path d="M74.9 84 L77.1 84 M76 82.6 L76 85.4" stroke="#b8bfa2" stroke-width=".7" opacity=".85" fill="none"/>
+  <!-- porton del hangar a popa -->
+  <path class="dark" d="M58 94.5 L70 94.5 L70 96.5 L58 96.5 Z"/>
+  <!-- antenas -->
+  <path d="M38.5 71 L35 62 M89.5 71 L93 62" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
+  <!-- toberas de agua a popa -->
+  <ellipse class="dark" cx="42" cy="95.8" rx="2" ry="1.2"/>
+  <ellipse class="dark" cx="86" cy="95.8" rx="2" ry="1.2"/>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Oficina de reclutamiento - edificio administrativo con asta y bandera, vista 3/4.
+       Tinte por pais: sobreescribir .base/.shade/.light (edificio, bandera).
+       Fijos: .glass (ventanas), .metal (asta), .dark (contornos). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
+    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}.rubber{fill:#2b2e28}
+  </style></defs>
+
+  <!-- suelo / explanada -->
+  <path class="shade" d="M14 100 L114 94 L118 116 L10 120 Z" opacity=".6"/>
+  <path d="M14 100 L114 94 L118 116 L10 120 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8" opacity=".4"/>
+
+  <!-- edificio -->
+  <path class="shade" d="M24 46 L88 46 L98 32 L34 32 Z"/>
+  <path d="M24 46 L88 46 L98 32 L34 32 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="light" d="M24 46 L88 46 L89 44.4 L25 44.4 Z" opacity=".8"/>
+  <rect class="base" x="24" y="44" width="64" height="52"/>
+  <rect class="base" x="24" y="44" width="64" height="52" fill-opacity="0" stroke="#3d4232" stroke-width="1.1"/>
+  <!-- cornisas -->
+  <path d="M24 62 L88 62 M24 78 L88 78" stroke="#3d4232" stroke-width=".9" opacity=".4"/>
+
+  <!-- ventanas (2 filas) -->
+  <rect class="glass" x="30" y="50" width="10" height="9"/>
+  <rect class="glass" x="44" y="50" width="10" height="9"/>
+  <rect class="glass" x="58" y="50" width="10" height="9"/>
+  <rect class="glass" x="72" y="50" width="10" height="9"/>
+  <rect class="glass" x="30" y="66" width="10" height="9"/>
+  <rect class="glass" x="44" y="66" width="10" height="9"/>
+  <rect class="glass" x="58" y="66" width="10" height="9"/>
+  <rect class="glass" x="72" y="66" width="10" height="9"/>
+  <path class="glassL" d="M31.5 51 L35 51 L35 58 L31.5 58 Z" opacity=".7"/>
+  <path class="glassL" d="M45.5 67 L49 67 L49 74 L45.5 74 Z" opacity=".7"/>
+  <path class="glassL" d="M73.5 51 L77 51 L77 58 L73.5 58 Z" opacity=".7"/>
+
+  <!-- puerta de entrada -->
+  <rect class="shade" x="49" y="80" width="14" height="16"/>
+  <rect class="shade" x="49" y="80" width="14" height="16" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="glass" d="M51.5 82.5 L60.5 82.5 L60.5 90 L51.5 90 Z"/>
+  <circle class="hi" cx="59.5" cy="92" r="1"/>
+  <rect class="light" x="47" y="96" width="18" height="3.4"/>
+  <rect class="light" x="45" y="99.4" width="22" height="3.4"/>
+
+  <!-- asta y bandera -->
+  <path class="metal" d="M17 20 L18.4 20 L18.4 66 L17 66 Z"/>
+  <circle class="metalL" cx="17.7" cy="18.8" r="1.6"/>
+  <path class="light" d="M18.4 21 L46 25.5 L44 35 L18.4 31 Z"/>
+  <path d="M18.4 21 L46 25.5 L44 35 L18.4 31 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".9"/>
+  <path class="shade" d="M18.4 24.4 L45 28.7 L44.7 30.6 L18.4 26.6 Z"/>
+
+  <!-- arbustos -->
+  <circle class="shade" cx="28" cy="100" r="4.2"/>
+  <circle class="shade" cx="35.5" cy="101.5" r="3.2"/>
+  <circle class="shade" cx="90" cy="97" r="4.2"/>
+  <circle cx="28" cy="100" r="4.2" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+  <circle cx="35.5" cy="101.5" r="3.2" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+  <circle cx="90" cy="97" r="4.2" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+</svg>

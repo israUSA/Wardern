@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- USS Cyclone (clase Cyclone, patrullero costero) - vista superior, proa al norte.
+       BARCA PEQUENA: sin VLS ni ASCM, canon 25mm Mk38 ligero a proa, ametralladoras
+       a banda, superestructura compacta, RHIBS con davis a popa y rampa de botadura. -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="cb1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
+  <filter id="cb1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
+  <radialGradient id="cb1gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="cb1g1" gradientUnits="userSpaceOnUse" x1="47" y1="58" x2="81" y2="58">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#fff" stop-opacity=".18"/><stop offset=".42" stop-color="#fff" stop-opacity=".22"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+  </linearGradient>
+  <linearGradient id="cb1g2" gradientUnits="userSpaceOnUse" x1="64" y1="19" x2="64" y2="100">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".35" stop-color="#fff" stop-opacity=".05"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/>
+  </linearGradient>
+  <linearGradient id="cb1g4" gradientUnits="userSpaceOnUse" x1="52" y1="22" x2="78" y2="94">
+    <stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  </linearGradient>
+  <linearGradient id="cb1g3" gradientUnits="userSpaceOnUse" x1="54" y1="58" x2="74" y2="58">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity=".12"/><stop offset=".85" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
+  </linearGradient>
+  </defs>
+
+  <!-- sombra de contacto grande y suava -->
+  <ellipse cx="63" cy="58" rx="28" ry="46" fill="url(#cb1gs)"/>
+
+  <!-- ===== casco corto y ancho ===== -->
+  <path class="shade" d="M64 18.5 C58.6 22.2 53.6 28.6 51.2 37 L49.6 45 L49.2 86 L52.2 93.5 L56 97.6 L72 97.6 L75.8 93.5 L78.8 86 L78.4 45 L76.8 37 C74.4 28.6 69.4 22.2 64 18.5 Z" stroke="#3d4232" stroke-width="1.4"/>
+  <path d="M64 18.5 C58.6 22.2 53.6 28.6 51.2 37 L49.6 45 L49.2 86 L52.2 93.5 L56 97.6 L72 97.6 L75.8 93.5 L78.8 86 L78.4 45 L76.8 37 C74.4 28.6 69.4 22.2 64 18.5 Z" fill="url(#cb1g1)"/>
+  <!-- cubierta -->
+  <path class="base" d="M64 21 C59.8 24.3 55.7 29.9 53.6 37.4 L52.3 45.3 L52 85.4 L54.6 92.2 L57.8 95.4 L70.2 95.4 L73.4 92.2 L76 85.4 L75.7 45.3 L74.4 37.4 C72.3 29.9 68.2 24.3 64 21 Z"/>
+  <path d="M64 21 C59.8 24.3 55.7 29.9 53.6 37.4 L52.3 45.3 L52 85.4 L54.6 92.2 L57.8 95.4 L70.2 95.4 L73.4 92.2 L76 85.4 L75.7 45.3 L74.4 37.4 C72.3 29.9 68.2 24.3 64 21 Z" fill="url(#cb1g2)"/>
+  <path d="M64 21 C59.8 24.3 55.7 29.9 53.6 37.4 L52.3 45.3 L52 85.4 L54.6 92.2 L57.8 95.4 L70.2 95.4 L73.4 92.2 L76 85.4 L75.7 45.3 L74.4 37.4 C72.3 29.9 68.2 24.3 64 21 Z" fill="url(#cb1g4)"/>
+  <!-- rim light en babor + sombra profunda a estribor -->
+  <path d="M52.8 38 L52.5 85 L55 92" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+  <path d="M75.2 38 L75.5 85 L73 92" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#cb1f1)"/>
+  <!-- linea de crujia y brillete -->
+  <path d="M64 22.2 L64 93.5" stroke="#b8bfa2" stroke-width=".8" opacity=".4" fill="none"/>
+  <path class="light" d="M64 21 C59.8 24.3 55.7 29.9 53.6 37.4 L55.6 37.8 C57.5 30.6 61 25.4 65.4 22.2 Z" opacity=".7"/>
+  <!-- anclas y cabrestantes -->
+  <circle class="metalL" cx="57" cy="28.6" r="1.1"/><circle class="metalL" cx="71" cy="28.6" r="1.1"/>
+  <path d="M55.8 26.6 L58.2 29.8 M69.8 29.8 L72.2 26.6" stroke="#4a5057" stroke-width=".8" fill="none"/>
+  <circle class="metalS" cx="61" cy="31.6" r=".7"/><circle class="metalS" cx="67" cy="31.6" r=".7"/>
+
+  <!-- ===== canon 25mm Mk38 ligero ===== -->
+  <circle class="metal" cx="64" cy="37" r="2.4"/>
+  <circle cx="64" cy="37" r="2.4" fill="none" stroke="#3d4232" stroke-width=".6"/>
+  <circle class="metalS" cx="64" cy="37" r="1.2"/>
+  <path class="metal" d="M63.4 30.8 L64.6 30.8 L64.5 34.8 L63.5 34.8 Z"/>
+  <path class="shade" d="M61.6 38.8 L66.4 38.8 L66 40.4 L62 40.4 Z"/>
+  <!-- ametralladoras .50 a banda -->
+  <circle class="metalS" cx="56.5" cy="41" r="1.1"/>
+  <path d="M56.5 40 L56.5 38.2" stroke="#2b2e28" stroke-width=".8" fill="none"/>
+  <circle class="metalS" cx="71.5" cy="41" r="1.1"/>
+  <path d="M71.5 40 L71.5 38.2" stroke="#2b2e28" stroke-width=".8" fill="none"/>
+
+  <!-- escotillas de acceso en cubierta -->
+  <rect class="dark" x="60" y="44.4" width="8" height="4" rx=".7" opacity=".85"/>
+  <path d="M60.6 44.9 L67.4 44.9" stroke="#fff" stroke-width=".4" opacity=".25" fill="none"/>
+  <!-- oclusion bajo el canon -->
+  <path d="M61.4 40.6 L66.6 40.6 L66.3 42 L61.7 42 Z" fill="#000" opacity=".2" filter="url(#cb1f1)"/>
+
+  <!-- ===== superestructura con mastil integrado ===== -->
+  <path class="base" d="M58 52.8 L70 52.8 L71.4 56.6 L71.6 63.8 L70.4 67.8 L57.6 67.8 L56.4 63.8 L56.6 56.6 Z" stroke="#3d4232" stroke-width="1.2"/>
+  <path d="M58 52.8 L70 52.8 L71.4 56.6 L71.6 63.8 L70.4 67.8 L57.6 67.8 L56.4 63.8 L56.6 56.6 Z" fill="url(#cb1g3)"/>
+  <path d="M56.6 53.1 L71.4 53.1" stroke="#fff" stroke-width="1" opacity=".45" fill="none"/>
+  <path d="M55 55.4 L54.8 63.4 L56 67.4" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
+  <path d="M73 55.4 L73.2 63.4 L72.2 67.4" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#cb1f1)"/>
+  <path d="M54.6 67.6 L73.4 67.6 L73.2 70.6 L54.8 70.6 Z" fill="#000" opacity=".22" filter="url(#cb1f1)"/>
+  <!-- ventanas del puente -->
+  <path class="glass" d="M58.8 53.8 L62.6 53.8 L62.1 56.2 L58.2 56.2 Z M69.2 53.8 L65.4 53.8 L65.9 56.2 L69.8 56.2 Z"/>
+  <path class="glassL" d="M59.5 54.3 L60.8 54.3 L60.5 55.4 L59.1 55.4 Z" opacity=".8"/>
+  <path class="glassL" d="M68.5 54.3 L67.2 54.3 L67.5 55.4 L68.9 55.4 Z" opacity=".8"/>
+  <!-- mastil piramidal integrado -->
+  <path class="shade" d="M61.6 60 L66.4 60 L67.6 74.5 L60.4 74.5 Z"/>
+  <path class="light" d="M61.6 60 L62.9 60 L61.8 74.5 L60.4 74.5 Z" opacity=".6"/>
+  <!-- radar de busqueda giratorio -->
+  <path class="metalL" d="M57.8 63.4 L70.2 63.4 L69.8 66.2 L58.2 66.2 Z"/>
+  <path d="M60.6 63.4 L60.6 66.2 M63.4 63.4 L63.4 66.2 M66.2 63.4 L66.2 66.2 M58.5 64.8 L69.5 64.8" stroke="#4a5057" stroke-width=".4" opacity=".8" fill="none"/>
+  <circle class="metalS" cx="64" cy="69" r="1.9"/>
+  <path d="M64 69 L66.4 67.7 M64 69 L63.2 71.4" stroke="#3d4232" stroke-width=".6" fill="none"/>
+  <path d="M64 69 L65.8 70.7" stroke="#b8bfa2" stroke-width=".7" fill="none"/>
+  <!-- antenas laterales -->
+  <path d="M57.2 66.5 L57.2 71 M70.8 66.5 L70.8 71" stroke="#3d4232" stroke-width=".7" fill="none"/>
+  <path d="M56 68.4 L57.4 68.4 M72 68.4 L70.6 68.4" stroke="#3d4232" stroke-width=".9" fill="none"/>
+
+  <!-- ===== RHIBs a banda ===== -->
+  <path class="light" d="M52.9 74.6 C54.9 75.6 55.1 78.4 53.3 79.8 C51.9 78.7 51.6 76 52.9 74.6 Z"/>
+  <path d="M53.3 75.8 L53 78.4" stroke="#4a5057" stroke-width=".4" opacity=".6" fill="none"/>
+  <path class="light" d="M75.1 74.6 C73.1 75.6 72.9 78.4 74.7 79.8 C76.1 78.7 76.4 76 75.1 74.6 Z"/>
+  <path d="M74.7 75.8 L75 78.4" stroke="#4a5057" stroke-width=".4" opacity=".6" fill="none"/>
+
+  <!-- ===== RHIB central con davis ===== -->
+  <path d="M58.8 76.4 L69.2 76.4 L69.2 83 L58.8 83 Z" fill="#000" opacity=".2" filter="url(#cb1f1)"/>
+  <rect class="light" x="59.4" y="77" width="9.2" height="5.4" rx="1.2"/>
+  <rect class="rubber" x="61" y="78.2" width="6" height="3" rx=".9" opacity=".75"/>
+  <path d="M59.1 77 L59.1 82.4 M68.9 77 L68.9 82.4" stroke="#4a5057" stroke-width=".6" fill="none"/>
+
+  <!-- ===== rampa de botadura a popa ===== -->
+  <path class="dark" d="M57 85.5 L71 85.5 L71 92.5 L57 92.5 Z" opacity=".92"/>
+  <path d="M58 86.5 L70 86.5 M58 89.5 L70 89.5" stroke="#9aa378" stroke-width=".5" opacity=".5" fill="none"/>
+  <path d="M57 85.5 L71 85.5 L71 86.3 L57 86.3 Z" fill="#fff" opacity=".18"/>
+
+  <!-- toberas de agua a popa -->
+  <ellipse class="dark" cx="59.6" cy="94.4" rx="1.5" ry="1.1"/>
+  <ellipse class="dark" cx="68.4" cy="94.4" rx="1.5" ry="1.1"/>
+  <!-- bolardos -->
+  <circle class="metalL" cx="55.2" cy="90.8" r=".7"/><circle class="metalL" cx="72.8" cy="90.8" r=".7"/>
+</svg>

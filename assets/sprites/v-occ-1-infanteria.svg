@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Infanteria M16 (epoca Vietnam): casco de acero M1 con borda ancha, equipo M1956
+       (correas en Y, portacargadores de lona, cinturon), rifle M16A1 con culata fija
+       triangular, carry handle y guardamanos. Dos soldados 3/4 estilo icono CoN.
+       Tinte por pais: .base/.shade/.light/.hi (uniforme, casco, equipo).
+       Fijos: piel #c8a17b, .dark/.metal/.metalS/.metalL (armas, hebillas), .rubber (botas). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
+    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
+  </style>
+  <filter id="im1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.1"/></filter>
+  <filter id="im1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.8"/></filter>
+  <radialGradient id="im1gs" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".55" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="im1g1" gradientUnits="userSpaceOnUse" x1="0" y1="52" x2="0" y2="86">
+    <stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".3" stop-color="#fff" stop-opacity=".1"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </linearGradient>
+  <linearGradient id="im1g4" gradientUnits="userSpaceOnUse" x1="72" y1="54" x2="94" y2="82">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  </linearGradient>
+  <linearGradient id="im1g4b" gradientUnits="userSpaceOnUse" x1="36" y1="58" x2="59" y2="86">
+    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  </linearGradient>
+  <linearGradient id="im1g3" gradientUnits="userSpaceOnUse" x1="76" y1="54" x2="93" y2="54">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".3" stop-color="#fff" stop-opacity=".2"/><stop offset=".6" stop-color="#fff" stop-opacity=".05"/><stop offset=".82" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
+  </linearGradient>
+  <radialGradient id="im1g5" cx=".36" cy=".28" r=".85">
+    <stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".35" stop-color="#fff" stop-opacity=".12"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </radialGradient>
+  <radialGradient id="im1g5b" cx=".36" cy=".28" r=".85">
+    <stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".35" stop-color="#fff" stop-opacity=".12"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  </radialGradient>
+  <linearGradient id="im1g6" gradientUnits="userSpaceOnUse" x1="0" y1="73" x2="0" y2="98">
+    <stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".25" stop-color="#fff" stop-opacity=".08"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+  </linearGradient>
+  </defs>
+
+  <ellipse cx="85" cy="107.5" rx="16.5" ry="5.2" fill="url(#im1gs)"/>
+  <ellipse cx="48" cy="115" rx="18" ry="5.6" fill="url(#im1gs)"/>
+
+  <!-- ============ SOLDADO TRASERO (derecha, M16A1 en vertical) ============ -->
+  <g>
+    <path class="shade" d="M78.6 78.5 L84.8 78.5 L84.5 102.2 L78.9 102.2 Z"/>
+    <path class="shade" d="M85.4 78.5 L91.3 78.5 L90.8 101.6 L85.7 101.6 Z"/>
+    <path d="M78.6 78.5 L81.2 78.5 L81 102.2 L78.9 102.2 Z" fill="#fff" opacity=".14"/>
+    <path d="M88.9 78.5 L91.3 78.5 L90.8 101.6 L88.4 101.6 Z" fill="#000" opacity=".2"/>
+    <path d="M79 88.5 L84.4 88.5 M85.8 88.5 L90.9 88.5" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
+    <circle class="dark" cx="81.7" cy="89.5" r="2.3" opacity=".75"/>
+    <circle class="dark" cx="88.1" cy="89.5" r="2.3" opacity=".75"/>
+    <path d="M85.1 80 L85.1 100" stroke="#000" stroke-width=".8" opacity=".25" fill="none"/>
+    <path class="rubber" d="M78.2 101 L84.7 101 L84.9 105.6 C84.9 107.7 83.7 108.8 81.5 108.8 C79.3 108.8 78.2 107.7 78.2 105.6 Z"/>
+    <path d="M79.2 101.6 C80 103.6 83 103.8 84.2 102.2 L84.3 105.4 C83 106.6 79.8 106.5 78.6 105 Z" fill="#fff" opacity=".13"/>
+    <path class="dark" d="M78.2 106.4 L84.9 106.4 L84.9 107.4 C84.9 108.4 83.7 109 81.5 109 C79.3 109 78.2 108.4 78.2 107.4 Z"/>
+    <path class="rubber" d="M85.5 100.4 L91.5 100.4 L91.6 104.8 C91.6 106.9 90.4 108 88.4 108 C86.4 108 85.4 106.9 85.4 104.8 Z"/>
+    <path d="M89.6 101 C90.2 103 90.4 104.4 90.2 106 L91.6 104.8 C91.6 103 90.2 101.4 89.6 101 Z" fill="#000" opacity=".28"/>
+    <path class="dark" d="M85.4 105.6 L91.6 105.6 L91.6 106.6 C91.6 107.6 90.4 108.2 88.4 108.2 C86.4 108.2 85.4 107.6 85.4 106.6 Z"/>
+    <path class="base" d="M75.6 57.5 C75.6 55.3 77.1 54 79.2 54 L89 54 C91.1 54 92.6 55.3 92.6 57.5 L92.2 79.5 L76 79.5 Z"/>
+    <path d="M75.6 57.5 C75.6 55.3 77.1 54 79.2 54 L89 54 C91.1 54 92.6 55.3 92.6 57.5 L92.2 79.5 L76 79.5 Z" fill="url(#im1g1)"/>
+    <path d="M75.6 57.5 C75.6 55.3 77.1 54 79.2 54 L89 54 C91.1 54 92.6 55.3 92.6 57.5 L92.2 79.5 L76 79.5 Z" fill="url(#im1g4)"/>
+    <path d="M76.1 58 L76 79" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+    <path d="M92.2 57.5 L92.2 79.5 L90.4 79.5 L90.6 57.6 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <path d="M77.2 76.6 L91 76.6 L90.8 79.8 L77.4 79.8 Z" fill="#000" opacity=".24" filter="url(#im1f1)"/>
+    <!-- equipo M1956: correas en Y de lona -->
+    <path class="shade" d="M77.4 58 L90.8 58 L90.4 77.5 L77.8 77.5 Z"/>
+    <path d="M77.4 58 L90.8 58 L90.4 77.5 L77.8 77.5 Z" fill="url(#im1g3)"/>
+    <path d="M77.4 58 L90.8 58 L90.4 77.5 L77.8 77.5 Z" fill="none" stroke="#000" stroke-width=".5" opacity=".3"/>
+    <path d="M79.4 58.4 L78.6 63.4 M88.8 58.4 L89.6 63.4" stroke="#4a5057" stroke-width="2.2" opacity=".8" fill="none"/>
+    <path d="M78.9 59 L79.9 63 M89.3 59 L88.3 63" stroke="#fff" stroke-width=".5" opacity=".25" fill="none"/>
+    <!-- portacargadores rectangulares de lona -->
+    <path class="shade" d="M78.2 64.6 L83.2 64.6 L83 72 L78.4 72 Z"/>
+    <path class="shade" d="M84.8 64.6 L89.8 64.6 L89.6 72 L85 72 Z"/>
+    <path d="M78.4 66 L83.1 66 M85 66 L89.7 66" stroke="#000" stroke-width=".6" opacity=".4" fill="none"/>
+    <path d="M78.3 64.8 L78.5 71.6 M83.1 64.8 L82.9 71.6 M84.9 64.8 L85.1 71.6 M89.7 64.8 L89.5 71.6" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
+    <path class="hi" d="M78.9 65.2 L82.5 65.2 L82.4 66.2 L78.9 66.2 Z M85.5 65.2 L89.1 65.2 L89 66.2 L85.5 66.2 Z" opacity=".6"/>
+    <path d="M78 72.2 L90.2 72.2 L90 74.6 L78.2 74.6 Z" fill="#000" opacity=".18" filter="url(#im1f1)"/>
+    <!-- cinturon de lona con hebilla metalica -->
+    <path class="dark" d="M77.6 75 L90.6 75 L90.5 77.8 L77.7 77.8 Z" opacity=".85"/>
+    <rect class="metalS" x="83.2" y="75.3" width="1.9" height="2.2" rx=".3"/>
+    <path d="M77.8 75.4 L90.3 75.4" stroke="#fff" stroke-width=".4" opacity=".2" fill="none"/>
+    <!-- manga derecha cruzada -->
+    <path class="base" d="M77.4 55.8 C74.6 57.2 73 60.2 73.1 63.6 C73.2 66.6 74.8 68.8 77.6 69.2 L81.6 70.8 L82.8 66.9 L78.9 65.5 C77.7 63.3 77.8 60.5 79.3 58.1 Z"/>
+    <path d="M77.4 55.8 C74.6 57.2 73 60.2 73.1 63.6 C73.2 66.6 74.8 68.8 77.6 69.2 L81.6 70.8 L82.8 66.9 L78.9 65.5 C77.7 63.3 77.8 60.5 79.3 58.1 Z" fill="url(#im1g1)"/>
+    <path d="M73.5 58.4 C72.8 61.2 73.2 64.4 74.6 66.8 L76.4 68 L77.2 66.2 C75.6 64 75.4 60.8 76.4 58.4 Z" fill="url(#im1g4)"/>
+    <path d="M74 57.8 C72.6 60.6 72.6 64.4 74 67.4" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
+    <path class="base" d="M90.8 55.8 C93.6 57 95.1 60 95 63.6 C94.9 67.8 93.7 72 91.7 75.4 L90.5 77.2 L88.4 75 C89.8 71.9 90.5 68.7 90.3 65.2 C90.2 61.6 90.4 58.4 90.8 55.8 Z"/>
+    <path d="M90.8 55.8 C93.6 57 95.1 60 95 63.6 C94.9 67.8 93.7 72 91.7 75.4 L90.5 77.2 L88.4 75 C89.8 71.9 90.5 68.7 90.3 65.2 C90.2 61.6 90.4 58.4 90.8 55.8 Z" fill="url(#im1g1)"/>
+    <path d="M92.8 56.6 C94.8 59 95.4 63.6 94.6 67.8 C94 70.6 92.8 73.2 91.4 75.2 L92.6 75.6 C94.4 72.4 95.4 67.8 95 63.6 C94.9 60.4 94.2 58 92.8 56.6 Z" fill="#000" opacity=".24" filter="url(#im1f1)"/>
+    <path d="M91.4 56.4 C93.4 58.2 94.4 61.4 94.4 64.8" stroke="#fff" stroke-width=".8" opacity=".3" fill="none"/>
+    <path d="M77 68.8 L82.6 71 L81.8 73.6 L76.2 71.4 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <path d="M88.6 74.6 L91.6 76 L90.4 78.2 L87.4 76.8 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <!-- cabeza y cara -->
+    <path d="M81.8 55.6 L86.4 55.6 L86.2 59.6 L82 59.6 Z" fill="#c8a17b"/>
+    <path d="M81.8 55.6 L86.4 55.6 L86.3 57.4 L81.9 57.4 Z" fill="#000" opacity=".3" filter="url(#im1f2)"/>
+    <path d="M81.3 52.4 C81.3 50.1 82.6 48.6 84.1 48.6 C85.6 48.6 86.9 50.1 86.9 52.4 C86.9 55.1 85.7 57.2 84.1 57.2 C82.5 57.2 81.3 55.1 81.3 52.4 Z" fill="#c8a17b"/>
+    <path d="M84.1 48.6 C85.6 48.6 86.9 50.1 86.9 52.4 C86.9 55.1 85.7 57.2 84.1 57.2 Z" fill="#000" opacity=".18"/>
+    <path d="M82 49.6 C82.4 48.8 83.2 48.4 84.1 48.4" stroke="#fff" stroke-width=".6" opacity=".4" fill="none"/>
+    <!-- casco de acero M1: domo + borda ancha saliente -->
+    <path class="base" d="M78.4 52.8 C78 48.6 80.6 45.8 84 45.8 C87.4 45.8 90 48.6 89.6 52.8 L89.6 53.4 C89.6 54.7 88.2 55.3 84 55.3 C79.8 55.3 78.4 54.7 78.4 53.4 Z"/>
+    <path d="M78.4 52.8 C78 48.6 80.6 45.8 84 45.8 C87.4 45.8 90 48.6 89.6 52.8 L89.6 53.4 C89.6 54.7 88.2 55.3 84 55.3 C79.8 55.3 78.4 54.7 78.4 53.4 Z" fill="url(#im1g5)"/>
+    <path class="shade" d="M77.6 51.8 L90.4 51.8 L90.4 53 C90.4 54.7 88.6 55.7 84 55.7 C79.4 55.7 77.6 54.7 77.6 53 Z"/>
+    <path d="M78 52.1 L90 52.1" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
+    <path d="M77.6 53.4 C78.4 55.2 89.6 55.2 90.4 53.4" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
+    <path d="M79.2 48.2 C79.9 46.6 81.6 45.6 84 45.6" stroke="#fff" stroke-width=".9" opacity=".55" fill="none"/>
+    <path d="M87.6 46.6 C88.8 48 89.5 50 89.4 51.8" stroke="#000" stroke-width=".9" opacity=".25" fill="none"/>
+    <path class="light" d="M79.7 48.8 C80.1 47 81.4 46 83.7 45.9 C82.2 46.7 81.1 47.7 80.7 48.8 Z"/>
+    <path d="M78.7 50.9 L89.3 50.9" stroke="#3d4232" stroke-width="1.5" opacity=".5" fill="none"/>
+    <path class="dark" d="M82.6 46.6 L85.4 46.6 L85.4 47.7 L82.6 47.7 Z" opacity=".85"/>
+    <path d="M80.2 54.6 L81.6 58 M87.8 54.6 L86.5 58" stroke="#3d4232" stroke-width=".8" opacity=".7" fill="none"/>
+  </g>
+
+  <!-- M16A1 vertical (culata fija, carry handle, cargador recto de 20) -->
+  <g>
+    <path class="dark" d="M91.4 56 L96.2 56.6 L96.6 63.4 L90.4 64 Z"/>
+    <path d="M92.4 57.4 L92.2 62.4 M95.2 57.8 L95.5 62.8" stroke="#fff" stroke-width=".4" opacity=".2" fill="none"/>
+    <path class="metalL" d="M90.1 64 L92.9 64 L92.9 72.6 L90.1 72.6 Z"/>
+    <path class="dark" d="M90.3 66 L92.7 66 L92.7 70 L90.3 70 Z" opacity=".85"/>
+    <path class="dark" d="M90.4 62.4 L92.8 62.4 L92.9 64.2 L90.3 64.2 Z"/>
+    <path class="metalL" d="M90.7 60.6 L92.5 60.6 L92.6 62.6 L90.6 62.6 Z"/>
+    <path class="dark" d="M92.9 70.6 L96.4 71.4 L95.2 77.8 L91.7 77.2 Z"/>
+    <path d="M93.5 72.4 L95.8 72.9 M93.2 74.6 L95.4 75" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
+    <path class="metal" d="M89.9 72.6 L93.1 72.6 L93.1 83 L89.9 83 Z"/>
+    <path d="M89.9 72.6 L93.1 72.6 L93.1 83 L89.9 83 Z" fill="url(#im1g6)"/>
+    <path d="M90.5 73.4 L90.5 82.6" stroke="#fff" stroke-width=".6" opacity=".4" fill="none"/>
+    <path d="M91.5 75 L91.5 75.9 M91.5 77.8 L91.5 78.7 M91.5 80.6 L91.5 81.5" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
+    <path class="metalS" d="M90.6 83 L92.4 83 L92.9 90.4 L91.3 90.9 L90.8 90.6 Z"/>
+    <path d="M91.1 83.4 L91.5 90" stroke="#fff" stroke-width=".55" opacity=".45" fill="none"/>
+    <path class="metalL" d="M91.9 90.9 L91.9 94.4 L92.6 94.4 L92.6 90.9 Z"/>
+    <path class="dark" d="M91.7 94.4 L92.9 94.4 L92.9 96.6 L91.7 96.6 Z"/>
+    <path d="M92.3 95 L92.3 96.2" stroke="#fff" stroke-width=".4" opacity=".3" fill="none"/>
+    <path d="M86.2 62 L89.4 62 L89.4 94 L87.4 94 Z" fill="#000" opacity=".2" filter="url(#im1f1)"/>
+    <path d="M90.6 63.4 C86.8 65.4 83.6 67.8 82 69.8" stroke="#3d4232" stroke-width="1" fill="none" opacity=".8"/>
+    <circle class="rubber" cx="91.7" cy="75" r="2.3"/>
+    <path d="M90.2 73.8 C90.8 73 92.4 72.8 93.2 73.4" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
+    <path d="M90 74 L93.4 74" stroke="#000" stroke-width=".5" opacity=".5" fill="none"/>
+    <circle class="rubber" cx="92.4" cy="61.8" r="2.1"/>
+    <path d="M90.9 60.8 C91.5 60 93 59.8 93.8 60.4" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
+  </g>
+
+  <!-- ============ SOLDADO DELANTERO (izquierda, M16A1 cruzado) ============ -->
+  <g>
+    <path class="shade" d="M41.4 83 L48.3 83 L47.9 107.4 L42 107.4 Z"/>
+    <path class="shade" d="M49.1 83 L56.7 83 L56.1 107.4 L50.3 107.4 Z"/>
+    <path d="M41.4 83 L44.4 83 L44.2 107.4 L42 107.4 Z" fill="#fff" opacity=".14"/>
+    <path d="M54 83 L56.7 83 L56.1 107.4 L53.6 107.4 Z" fill="#000" opacity=".2"/>
+    <path d="M41.9 89.5 L47.7 89.5 M49.6 89.5 L56.1 89.5" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
+    <circle class="dark" cx="44.9" cy="91" r="2.6" opacity=".75"/>
+    <circle class="dark" cx="52.9" cy="91" r="2.6" opacity=".75"/>
+    <path d="M52.9 84.5 L52.9 105.5" stroke="#000" stroke-width=".8" opacity=".25" fill="none"/>
+    <path d="M42 96.5 L47.8 96.5" stroke="#000" stroke-width=".5" opacity=".3" fill="none"/>
+    <path class="rubber" d="M41 107 L48.1 107 L48.3 112.4 C48.3 114.6 46.9 115.8 44.6 115.8 C42.3 115.8 41 114.6 41 112.4 Z"/>
+    <path d="M42.2 107.6 C43 109.6 46 109.8 47.2 108.2 L47.3 111.6 C46 112.8 42.6 112.6 41.4 111.2 Z" fill="#fff" opacity=".13"/>
+    <path class="dark" d="M41 113.2 L48.3 113.2 L48.3 114.2 C48.3 115.3 46.9 116 44.6 116 C42.3 116 41 114.6 41 114.2 Z"/>
+    <path class="rubber" d="M49.5 106.4 L56.8 106.4 L56.9 111.6 C56.9 113.8 55.5 115 53.2 115 C50.9 115 49.5 113.8 49.5 111.6 Z"/>
+    <path d="M54.6 107 C55.2 109 55.4 110.6 55.2 112.4 L56.9 111.6 C56.9 109.6 55.4 107.6 54.6 107 Z" fill="#000" opacity=".28"/>
+    <path class="dark" d="M49.5 112.4 L56.9 112.4 L56.9 113.4 C56.9 114.5 55.5 115.2 53.2 115.2 C50.9 115.2 49.5 114.5 49.5 113.4 Z"/>
+    <path class="base" d="M38.6 62 C38.6 59.6 40.2 58.2 42.4 58.2 L53.8 58.2 C56 58.2 57.6 59.6 57.6 62 L57.2 84.5 L39 84.5 Z"/>
+    <path d="M38.6 62 C38.6 59.6 40.2 58.2 42.4 58.2 L53.8 58.2 C56 58.2 57.6 59.6 57.6 62 L57.2 84.5 L39 84.5 Z" fill="url(#im1g1)"/>
+    <path d="M38.6 62 C38.6 59.6 40.2 58.2 42.4 58.2 L53.8 58.2 C56 58.2 57.6 59.6 57.6 62 L57.2 84.5 L39 84.5 Z" fill="url(#im1g4b)"/>
+    <path d="M39.1 62.4 L39 84.5" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
+    <path d="M57.2 62 L57.2 84.5 L55.4 84.5 L55.6 62.2 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <!-- M1956: cinturon de lona + hebilla -->
+    <path class="dark" d="M39.2 78.2 L56.8 78.2 L56.7 81.6 L39.3 81.6 Z" opacity=".9"/>
+    <path d="M39.4 78.6 L56.6 78.6" stroke="#fff" stroke-width=".4" opacity=".15" fill="none"/>
+    <rect class="metalS" x="46.9" y="78.5" width="2.2" height="2.8" rx=".4"/>
+    <!-- portacargadores grandes de lona -->
+    <path class="shade" d="M40.4 64.8 L46 64.8 L45.9 73.4 L40.5 73.4 Z"/>
+    <path class="shade" d="M47.6 64.8 L53.2 64.8 L53.1 73.4 L47.7 73.4 Z"/>
+    <path d="M40.6 66.4 L45.9 66.4 M47.8 66.4 L53.1 66.4" stroke="#000" stroke-width=".6" opacity=".4" fill="none"/>
+    <path d="M40.6 69.4 L45.9 69.4 M47.8 69.4 L53.1 69.4" stroke="#000" stroke-width=".5" opacity=".3" fill="none"/>
+    <path class="hi" d="M41.2 65.4 L45.3 65.4 L45.2 66.5 L41.2 66.5 Z M48.4 65.4 L52.5 65.4 L52.4 66.5 L48.4 66.5 Z" opacity=".6"/>
+    <path d="M40.6 73.6 L53.4 73.6 L53.3 75.4 L40.7 75.4 Z" fill="#000" opacity=".18" filter="url(#im1f1)"/>
+    <!-- granada de fragmentacion colgando -->
+    <ellipse class="dark" cx="55.4" cy="75.4" rx="1.9" ry="2.3" opacity=".85"/>
+    <path d="M54.4 74.4 C54.9 75.4 54.9 76.4 54.5 77.4 M56.3 74.4 C55.9 75.4 55.9 76.4 56.3 77.4" stroke="#fff" stroke-width=".35" opacity=".25" fill="none"/>
+    <path d="M55.4 73.1 L55.4 72" stroke="#4a5057" stroke-width=".7" fill="none"/>
+    <!-- mangas -->
+    <path class="base" d="M40.4 60.2 C37.6 61.4 35.8 64.4 35.6 68 C35.5 70.4 36.6 72.3 38.8 72.7 L42.9 68.7 C41.6 66.2 41.8 63.4 43.2 61 Z"/>
+    <path d="M40.4 60.2 C37.6 61.4 35.8 64.4 35.6 68 C35.5 70.4 36.6 72.3 38.8 72.7 L42.9 68.7 C41.6 66.2 41.8 63.4 43.2 61 Z" fill="url(#im1g1)"/>
+    <path d="M36.6 61 C35.4 63.6 35.4 67 36.4 69.8 L38.4 71.6 L39.2 70 C37.8 67.6 37.8 63.8 38.8 61.4 Z" fill="url(#im1g4b)"/>
+    <path d="M36.2 61.4 C35.2 64.4 35.2 68.2 36.4 71.2" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
+    <path class="base" d="M55.8 60.2 C58.8 61.6 60.4 64.8 60.2 68.6 C60.1 71.4 58.6 73.4 56.2 73.8 L51.3 75.9 L50.1 72 L54.3 70.4 C55.1 68 54.9 65 53.7 61.8 Z"/>
+    <path d="M55.8 60.2 C58.8 61.6 60.4 64.8 60.2 68.6 C60.1 71.4 58.6 73.4 56.2 73.8 L51.3 75.9 L50.1 72 L54.3 70.4 C55.1 68 54.9 65 53.7 61.8 Z" fill="url(#im1g1)"/>
+    <path d="M58.6 61 C60 63.4 60.4 67.4 59.6 70.6 C59.2 71.8 58.4 72.8 57.4 73.4 L58.6 74.2 C60.2 72.6 61.2 69.6 60.9 66.4 C60.7 64.2 60 62.2 58.6 61 Z" fill="#000" opacity=".24" filter="url(#im1f1)"/>
+    <path d="M56.6 60.6 C58.8 62.4 60 65.6 59.8 68.8" stroke="#fff" stroke-width=".8" opacity=".3" fill="none"/>
+    <path d="M38.4 72 L43 68.6 L43.8 70.4 L39.2 73.6 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <path d="M51.2 75.6 L56.2 73.6 L57 75.4 L52 77.4 Z" fill="#000" opacity=".22" filter="url(#im1f1)"/>
+    <!-- M16A1 cruzado: culata triangular, carry handle, guardamanos -->
+    <g transform="rotate(37.6 47.5 71)">
+      <path class="dark" d="M30.4 69 L36.1 69.4 L36.1 72.8 L30.6 73.4 C30 72 30 70.4 30.4 69 Z"/>
+      <path d="M31.6 69.8 L31.8 72.6" stroke="#fff" stroke-width=".4" opacity=".2" fill="none"/>
+      <path class="dark" d="M33.6 70.2 L36.1 70.2 L36.1 72 L33.6 72 Z"/>
+      <path class="metalS" d="M36.1 66.6 L44.4 66.6 L44.4 67.8 L36.1 67.8 Z"/>
+      <path class="dark" d="M37.4 65 L38.6 65 L38.8 66.8 L37.2 66.8 Z M42.2 65 L43.4 65 L43.6 66.8 L42 66.8 Z"/>
+      <path class="metal" d="M36.1 67.8 L44.4 67.8 L44.4 68.6 L36.1 68.6 Z"/>
+      <path d="M36.3 67.1 L44.2 67.1" stroke="#fff" stroke-width=".4" opacity=".3" fill="none"/>
+      <path class="metal" d="M36.1 68.6 L49.6 68.6 L49.6 72.4 L36.1 72.4 Z"/>
+      <path d="M36.1 69.5 L49.6 69.5" stroke="#fff" stroke-width=".5" opacity=".4" fill="none"/>
+      <path d="M43 70.4 L43.6 70.4 M45.2 70.4 L45.8 70.4 M47.4 70.4 L48 70.4" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
+      <circle class="metalL" cx="44.9" cy="70.5" r="1.15"/>
+      <path class="dark" d="M50.4 66.8 L52.6 66.8 L52.6 68.6 L50.4 68.6 Z"/>
+      <path class="dark" d="M49.6 69.2 L55.4 69.4 L55.4 72.8 L49.6 72.8 Z"/>
+      <path d="M50.6 69.9 L50.6 72.4 M52.4 69.9 L52.4 72.4 M54 69.9 L54 72.4" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
+      <path class="dark" d="M50.4 72.8 L53.4 72.8 L53.8 79.6 L51 79.6 Z"/>
+      <path d="M51.2 74.6 L53.4 74.8 M51.4 77 L53.6 77.2" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
+      <path d="M50.6 73.4 L53.2 73.4" stroke="#fff" stroke-width=".5" opacity=".25" fill="none"/>
+      <path class="metalL" d="M55.4 70 L61 70 L61 72.2 L55.4 72.2 Z"/>
+      <path class="dark" d="M61 68.9 L64.3 68.9 L64.3 73.5 L61 73.5 Z"/>
+      <path d="M61.4 69.6 L61.4 72.8 M63.8 69.6 L63.8 72.8" stroke="#fff" stroke-width=".35" opacity=".25" fill="none"/>
+    </g>
+    <path d="M44.6 74.4 L53 68 L54 69.6 L45.6 76 Z" fill="#000" opacity=".16" filter="url(#im1f2)"/>
+    <circle class="rubber" cx="42.9" cy="67.2" r="2.4"/>
+    <path d="M41.2 66 C42 65.2 43.6 65.2 44.4 65.8" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
+    <path d="M40.9 66.4 L44.9 66.6" stroke="#000" stroke-width=".5" opacity=".5" fill="none"/>
+    <circle class="rubber" cx="50.5" cy="76.4" r="2.4"/>
+    <path d="M48.8 75.4 C49.6 74.6 51.2 74.6 52 75.2" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
+    <path d="M48.6 75.5 L52.4 75.7" stroke="#000" stroke-width=".5" opacity=".5" fill="none"/>
+    <!-- cabeza -->
+    <path d="M45.7 56.2 L50.6 56.2 L50.4 60.2 L45.9 60.2 Z" fill="#c8a17b"/>
+    <path d="M45.7 56.2 L50.6 56.2 L50.5 58 L45.8 58 Z" fill="#000" opacity=".3" filter="url(#im1f2)"/>
+    <path d="M45.1 52.5 C45.1 50 46.5 48.4 48.1 48.4 C49.7 48.4 51.1 50 51.1 52.5 C51.1 55.4 49.8 57.6 48.1 57.6 C46.5 57.6 45.1 55.4 45.1 52.5 Z" fill="#c8a17b"/>
+    <path d="M48.1 48.4 C49.7 48.4 51.1 50 51.1 52.5 C51.1 55.4 49.8 57.6 48.1 57.6 Z" fill="#000" opacity=".18"/>
+    <path d="M46 49.8 C46.4 48.9 47.2 48.5 48.1 48.5" stroke="#fff" stroke-width=".6" opacity=".4" fill="none"/>
+    <path d="M46.4 52.3 L47.1 52.3 M49.2 52.3 L49.9 52.3" stroke="#3d4232" stroke-width=".6" opacity=".8" fill="none"/>
+    <!-- casco M1: domo + borda ancha -->
+    <path class="base" d="M42.5 50.2 C42.1 44.8 45 41.8 48.1 41.8 C51.3 41.8 54.2 44.8 53.8 50.2 L53.8 50.6 C53.8 51.8 52.3 52.4 48.1 52.4 C44 52.4 42.5 51.8 42.5 50.6 Z"/>
+    <path d="M42.5 50.2 C42.1 44.8 45 41.8 48.1 41.8 C51.3 41.8 54.2 44.8 53.8 50.2 L53.8 50.6 C53.8 51.8 52.3 52.4 48.1 52.4 C44 52.4 42.5 51.8 42.5 50.6 Z" fill="url(#im1g5b)"/>
+    <path class="shade" d="M41.8 49.4 L54.5 49.4 L54.5 50.5 C54.5 52.2 52.7 53.2 48.1 53.2 C43.6 53.2 41.8 52.2 41.8 50.5 Z"/>
+    <path d="M42.2 49.7 L54.1 49.7" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
+    <path d="M41.8 51 C42.7 52.8 53.6 52.8 54.5 51" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
+    <path d="M43.4 45.8 C44.2 43.4 46 42.1 48.1 42" stroke="#fff" stroke-width=".9" opacity=".55" fill="none"/>
+    <path d="M51.8 42.6 C53 44.2 53.7 46.2 53.6 48.2" stroke="#000" stroke-width=".9" opacity=".25" fill="none"/>
+    <path class="light" d="M43.8 46.2 C44.2 43.8 45.7 42.5 48 42.3 C46.4 43.3 45.2 44.7 44.8 46.2 Z"/>
+    <path d="M42.9 48.1 L53.4 48.1" stroke="#3d4232" stroke-width="1.5" opacity=".5" fill="none"/>
+    <path class="dark" d="M46.8 42.8 L49.4 42.8 L49.4 43.9 L46.8 43.9 Z" opacity=".85"/>
+    <path d="M44.3 50.7 L45.8 54 M52 50.7 L50.5 54" stroke="#3d4232" stroke-width=".8" opacity=".7" fill="none"/>
+  </g>
+</svg>

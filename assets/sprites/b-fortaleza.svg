@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Fortaleza - bunker con bastiones en las esquinas y almenas, vista superior 3/4.
+       Tinte por pais: sobreescribir .base/.shade/.light (muros, baluartes, torre).
+       Fijos: .dark (troneras, contornos), .metal (puertas). -->
+  <defs><style>
+    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
+    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
+    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}.rubber{fill:#2b2e28}
+  </style></defs>
+
+  <!-- muro exterior estrellado -->
+  <path class="base" d="M64 12 L100 32 L114 64 L100 96 L64 116 L28 96 L14 64 L28 32 Z"/>
+  <path d="M64 12 L100 32 L114 64 L100 96 L64 116 L28 96 L14 64 L28 32 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1.2"/>
+  <path class="light" d="M64 12 L100 32 L96.5 34 L64 16 L31.5 34 L28 32 Z" opacity=".7"/>
+
+  <!-- patio interior -->
+  <path class="shade" d="M64 30 L88 43 L97 64 L88 85 L64 98 L40 85 L31 64 L40 43 Z" opacity=".9"/>
+
+  <!-- baluartes en las esquinas -->
+  <path class="shade" d="M28 20 L42 32 L28 44 L14 32 Z"/>
+  <path d="M28 20 L42 32 L28 44 L14 32 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="shade" d="M100 20 L114 32 L100 44 L86 32 Z"/>
+  <path d="M100 20 L114 32 L100 44 L86 32 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="shade" d="M28 84 L42 96 L28 108 L14 96 Z"/>
+  <path d="M28 84 L42 96 L28 108 L14 96 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="shade" d="M100 84 L114 96 L100 108 L86 96 Z"/>
+  <path d="M100 84 L114 96 L100 108 L86 96 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <!-- troneras de los baluartes -->
+  <circle class="dark" cx="28" cy="32" r="2.2"/>
+  <circle class="dark" cx="100" cy="32" r="2.2"/>
+  <circle class="dark" cx="28" cy="96" r="2.2"/>
+  <circle class="dark" cx="100" cy="96" r="2.2"/>
+
+  <!-- almenas sobre los muros frontales -->
+  <rect class="light" x="38" y="98" width="7" height="7"/>
+  <rect class="light" x="50" y="103" width="7" height="7"/>
+  <rect class="light" x="62" y="105" width="7" height="7"/>
+  <rect class="light" x="74" y="103" width="7" height="7"/>
+  <rect class="light" x="86" y="98" width="7" height="7"/>
+  <path d="M38 98 L45 98 L45 105 M50 103 L57 103 L57 110 M62 105 L69 105 L69 112 M74 103 L81 103 L81 110 M86 98 L93 98 L93 105" fill="none" stroke="#3d4232" stroke-width=".9"/>
+
+  <!-- torre del homenaje con almenas -->
+  <rect class="base" x="50" y="48" width="28" height="26"/>
+  <rect class="base" x="50" y="48" width="28" height="26" fill-opacity="0" stroke="#3d4232" stroke-width="1.1"/>
+  <rect class="light" x="51" y="44" width="7" height="6"/>
+  <rect class="light" x="60.5" y="43" width="7" height="6"/>
+  <rect class="light" x="70" y="44" width="7" height="6"/>
+  <path d="M51 44 L58 44 L58 50 M60.5 43 L67.5 43 L67.5 49 M70 44 L77 44 L77 50" fill="none" stroke="#3d4232" stroke-width=".9"/>
+  <rect class="dark" x="58" y="54" width="12" height="10"/>
+  <rect class="dark" x="55" y="60" width="2.4" height="6"/>
+  <rect class="dark" x="70.6" y="60" width="2.4" height="6"/>
+
+  <!-- puerta de armas -->
+  <path class="metalS" d="M58 76 L70 76 L70 92 L64 96 L58 92 Z"/>
+  <path d="M58 76 L70 76 L70 92 L64 96 L58 92 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
+  <path class="dark" d="M61 80 L67 80 L67 88 L64 90.5 L61 88 Z"/>
+  <!-- camino al patio -->
+  <path d="M40 78 L56 84 M88 78 L72 84" stroke="#3d4232" stroke-width="1.2" opacity=".4" fill="none"/>
+</svg>
