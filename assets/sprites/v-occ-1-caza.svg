@@ -1,146 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- F-16A Fighting Falcon — T1 occidental. 1 deriva, 1 tobera, delta recortada + LERX, canopy burbuja adelantada, rieles en puntas. -->
 <defs>
-  <linearGradient id="body" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#c6ced6"/>
-    <stop offset="0.34" stop-color="#99a2ab"/>
-    <stop offset="0.62" stop-color="#79828b"/>
-    <stop offset="1" stop-color="#4f575f"/>
+  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#c6ced6"/><stop offset="0.34" stop-color="#99a2ab"/>
+    <stop offset="0.62" stop-color="#79828b"/><stop offset="1" stop-color="#4f575f"/>
   </linearGradient>
-  <linearGradient id="spine" x1="0.3" y1="0" x2="0.75" y2="0">
-    <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
-    <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.45"/>
-    <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
   </linearGradient>
-  <linearGradient id="glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
-    <stop offset="0" stop-color="#f5dc90"/>
-    <stop offset="0.35" stop-color="#d0a53f"/>
+  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
+    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
     <stop offset="1" stop-color="#6a4f15"/>
   </linearGradient>
-  <linearGradient id="fin" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#d2d9e0"/>
-    <stop offset="0.42" stop-color="#8c959e"/>
+  <linearGradient id="g-fin" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d2d9e0"/><stop offset="0.42" stop-color="#8c959e"/>
     <stop offset="1" stop-color="#3f474e"/>
   </linearGradient>
-  <radialGradient id="nozzle" cx="0.5" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="#12151a"/>
-    <stop offset="0.6" stop-color="#2c3138"/>
-    <stop offset="1" stop-color="#5b636b"/>
-  </radialGradient>
-  <linearGradient id="msl" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#e3e8ec"/>
-    <stop offset="0.55" stop-color="#a8b0b7"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e3e8ec"/><stop offset="0.55" stop-color="#a8b0b7"/>
     <stop offset="1" stop-color="#666e75"/>
   </linearGradient>
-
-  <!-- airframe silhouette, reused for the drop shadow -->
+  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
+    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
+    <stop offset="1" stop-color="#5b636b"/>
+  </radialGradient>
   <path id="hull" d="
-    M100 9
-    C105 14 107 26 108 40
-    L109 62
-    C111 76 112 88 114 98
-    C116 106 118 112 120 119
-    L177 180 L178 186 L176 199
-    L125 197 L123 203 L121 208
-    L161 238 L159 244
-    L119 241 L116 248 L113 263
-    C111 269 106 271 100 271
-    C94 271 89 269 87 263
-    L84 248 L81 241
-    L41 244 L39 238
-    L79 208 L77 203 L75 197
-    L24 199 L22 186 L23 180
-    L80 119
-    C82 112 84 106 86 98
-    C88 88 89 76 91 62
-    L92 40
-    C93 26 95 14 100 9 Z"/>
+    M128 14 C132 18 134 28 135 40 L136 58 C137 70 138 80 140 88
+    C142 95 144 100 146 106 L196 160 L197 165 L195 176 L152 174
+    L150 179 L148 183 L180 210 L178 215 L147 212 L144 218 L142 232
+    C140 237 135 239 128 239 C121 239 116 237 114 232 L112 218
+    L109 212 L78 215 L76 210 L106 183 L104 179 L102 174 L61 176
+    L59 165 L60 160 L110 106 C112 100 114 95 116 88 C118 80 119 70
+    120 58 L121 40 C122 28 124 18 128 14 Z"/>
 </defs>
-
-<g id="f16a">
-
-  <!-- ===== ground shadow (delete this group for a flat icon) ===== -->
-  <g opacity="0.28">
-    <use href="#hull" fill="#0a0d11" transform="translate(7,9)"/>
-  </g>
-
-  <!-- ===== wingtip missiles (AIM-9) ===== -->
-  <g fill="url(#msl)">
-    <path d="M177.5 160 l2.4 7 v40 h-4.8 v-40 z"/>
-    <path d="M22.5 160 l2.4 7 v40 h-4.8 v-40 z"/>
+<g id="unit">
+  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
+  <g fill="url(#g-metal)">
+    <path d="M196.5 142 l2 6 v34 h-4 v-34 z"/>
+    <path d="M59.5 142 l2 6 v34 h-4 v-34 z"/>
   </g>
   <g fill="#596168">
-    <path d="M175.1 172 l-4 5 v5 h4 z M179.9 172 l4 5 v5 h-4 z"/>
-    <path d="M20.1 172 l-4 5 v5 h4 z M24.9 172 l4 5 v5 h-4 z"/>
+    <path d="M194.5 152 l-3.5 4 v4 h3.5 z M198.5 152 l3.5 4 v4 h-3.5 z"/>
+    <path d="M57.5 152 l-3.5 4 v4 h3.5 z M61.5 152 l3.5 4 v4 h-3.5 z"/>
   </g>
-
-  <!-- ===== underwing pylons + stores ===== -->
   <g fill="#5c646c">
-    <rect x="141" y="163" width="5.5" height="36" rx="2.7"/>
-    <rect x="156" y="172" width="5" height="31" rx="2.5"/>
-    <rect x="53.5" y="163" width="5.5" height="36" rx="2.7"/>
-    <rect x="39" y="172" width="5" height="31" rx="2.5"/>
+    <rect x="167" y="143" width="5" height="30" rx="2.5"/>
+    <rect x="180" y="150" width="4.5" height="26" rx="2.2"/>
+    <rect x="84" y="143" width="5" height="30" rx="2.5"/>
+    <rect x="71.5" y="150" width="4.5" height="26" rx="2.2"/>
   </g>
-
-  <!-- ===== main airframe ===== -->
-  <use href="#hull" fill="url(#body)"/>
-
-  <!-- wings read slightly darker than the fuselage -->
-  <g fill="#000000" fill-opacity="0.10">
-    <path d="M120 119 L177 180 L178 186 L176 199 L127 197 Z"/>
-    <path d="M80 119 L23 180 L22 186 L24 199 L73 197 Z"/>
-    <path d="M121 208 L161 238 L159 244 L120 241 Z"/>
-    <path d="M79 208 L39 238 L41 244 L80 241 Z"/>
+  <use href="#hull" fill="url(#g-hull)"/>
+  <g fill="#000" fill-opacity="0.10">
+    <path d="M146 106 L196 160 L197 165 L195 176 L154 174 Z"/>
+    <path d="M110 106 L60 160 L59 165 L61 176 L102 174 Z"/>
+    <path d="M148 183 L180 210 L178 215 L147 212 Z"/>
+    <path d="M106 183 L76 210 L78 215 L109 212 Z"/>
   </g>
-
-  <!-- soft spine highlight -->
-  <path fill="url(#spine)" d="
-    M100 11 C104 20 106 32 107 46 L108 110 L112 200 L110 262
-    C107 268 93 268 90 262 L88 200 L92 110 L93 46
-    C94 32 96 20 100 11 Z"/>
-
-  <!-- ===== panel lines ===== -->
+  <path fill="url(#g-spine)" d="
+    M128 16 C131 24 133 34 134 46 L135 100 L138 178 L137 230
+    C134 236 122 236 119 230 L118 178 L121 100 L122 46
+    C123 34 125 24 128 16 Z"/>
   <g fill="none" stroke="#394047" stroke-opacity="0.52" stroke-width="0.9" stroke-linecap="round">
-    <path d="M113 96 C116 108 119 118 124 128 L128 196"/>
-    <path d="M87 96 C84 108 81 118 76 128 L72 196"/>
-    <path d="M172 186 L128 184"/>
-    <path d="M28 186 L72 184"/>
-    <path d="M126 122 L172 172"/>
-    <path d="M74 122 L28 172"/>
-    <path d="M124 212 L155 235"/>
-    <path d="M76 212 L45 235"/>
-    <path d="M93 40 L107 40"/>
-    <path d="M91 118 L109 118"/>
-    <path d="M112 205 L88 205"/>
+    <path d="M139 86 C142 96 145 105 150 114 L154 174"/>
+    <path d="M117 86 C114 96 111 105 106 114 L102 174"/>
+    <path d="M191 165 L154 163"/>
+    <path d="M65 165 L102 163"/>
+    <path d="M152 108 L191 150"/>
+    <path d="M104 108 L65 150"/>
+    <path d="M150 187 L175 207"/>
+    <path d="M106 187 L81 207"/>
+    <path d="M122 38 L134 38"/>
+    <path d="M120 105 L136 105"/>
+    <path d="M139 182 L117 182"/>
   </g>
-
-  <!-- ===== chin intake shadow ===== -->
-  <path fill="#2f363d" fill-opacity="0.55" d="M92 78 C92 72 108 72 108 78 L109 104 C109 110 91 110 91 104 Z"/>
-
-  <!-- ===== canopy ===== -->
-  <path fill="url(#glass)" d="
-    M100 48 C106 53 109 65 109 80
-    C109 94 105 105 100 105
-    C95 105 91 94 91 80
-    C91 65 94 53 100 48 Z"/>
-  <path fill="#ffffff" fill-opacity="0.5" d="
-    M99 51 C96 57 94 67 94 79 C94 88 95 96 97 101
-    C94 96 92 88 92 79 C92 66 95 55 99 51 Z"/>
-  <path fill="none" stroke="#2b3137" stroke-width="1.1" stroke-opacity="0.78" d="M91.5 66 C96 62 104 62 108.5 66"/>
-  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.55" d="M91 100 C96 103 104 103 109 100"/>
-
-  <!-- ===== vertical tail (cast shadow + fin) ===== -->
-  <path fill="#0e1216" fill-opacity="0.3" d="M101 162 L112 250 L112 259 L104 259 L103 250 Z"/>
-  <path fill="url(#fin)" d="M100 160 L107.5 250 L107.5 259 L92.5 259 L92.5 250 Z"/>
-  <path fill="#ffffff" fill-opacity="0.4" d="M100 163 L101.8 250 L97.6 250 Z"/>
-  <path fill="none" stroke="#394047" stroke-opacity="0.6" stroke-width="0.9" d="M93.5 245 L106.5 245"/>
-
-  <!-- ===== exhaust nozzle ===== -->
-  <path fill="url(#nozzle)" d="M88 258 C88 253 112 253 112 258 L110.5 268 C108 271 92 271 89.5 268 Z"/>
-  <ellipse cx="100" cy="264" rx="7.5" ry="4.5" fill="#0e1116"/>
-  <ellipse cx="100" cy="263" rx="4" ry="2.4" fill="#3a2a1c" fill-opacity="0.8"/>
-
-  <!-- ===== nose pitot ===== -->
-  <path d="M100 9 L101 1 L99 1 Z" fill="#464e55"/>
-
+  <path fill="#2f363d" fill-opacity="0.55" d="M121 70 C121 65 135 65 135 70 L136 92 C136 97 120 97 120 92 Z"/>
+  <path fill="url(#g-glass)" d="
+    M128 44 C133 48 136 58 136 70 C136 82 133 91 128 91
+    C123 91 120 82 120 70 C120 58 123 48 128 44 Z"/>
+  <path fill="#fff" fill-opacity="0.5" d="
+    M127 47 C124 52 123 60 123 70 C123 78 124 84 126 88
+    C123 84 121 78 121 70 C121 60 124 51 127 47 Z"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1.1" stroke-opacity="0.78" d="M120.5 60 C125 56 131 56 135.5 60"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.55" d="M120 87 C125 90 131 90 136 87"/>
+  <path fill="#0e1216" fill-opacity="0.3" d="M129 142 L138 218 L138 226 L132 226 L131 218 Z"/>
+  <path fill="url(#g-fin)" d="M128 140 L135 218 L135 226 L121 226 L121 218 Z"/>
+  <path fill="#fff" fill-opacity="0.4" d="M128 143 L129.5 218 L126 218 Z"/>
+  <path fill="none" stroke="#394047" stroke-opacity="0.6" stroke-width="0.9" d="M122 214 L134 214"/>
+  <path fill="url(#g-nozzle)" d="M117 226 C117 222 139 222 139 226 L137.5 235 C136 237 120 237 118.5 235 Z"/>
+  <ellipse cx="128" cy="232" rx="6.5" ry="4" fill="#0e1116"/>
+  <ellipse cx="128" cy="231" rx="3.5" ry="2.2" fill="#3a2a1c" fill-opacity="0.8"/>
+  <path d="M128 14 L129 7 L127 7 Z" fill="#464e55"/>
 </g>
 </svg>

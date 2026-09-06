@@ -1,95 +1,115 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- BMP-1 - vista superior, morro al norte. Casco BAJO y picudo con orugas visibles,
-       torreta redonda pequeña descentrada con canon 73mm y RIEL LANZADOR de misil
-       Malyutka sobre el tubo, escotillas de tropa en el techo, chapas de motor traseras.
-       Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.metalS/.metalL, .dark, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="bp1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="bp1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="bp1gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="bp1g1" gradientUnits="userSpaceOnUse" x1="36" y1="60" x2="92" y2="60">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".22"/><stop offset=".64" stop-color="#fff" stop-opacity=".04"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- BMP-1 (T1 oriental, motorizada). Verde ruso. Camara y escala del set (20.9 px/m).
+     Casco 6.74 x 2.94 x 2.07 m: largo, estrecho y bajisimo.
+     Identidad: 6 ruedas pequenas con MOTRIZ DELANTERA y 3 rodillos, proa muy
+     apuntada de casco anfibio, torreta troncoconica DIMINUTA con el canon corto
+     2A28 Grom de 73 mm y el rail del misil Malyutka encima del canon,
+     4 escotillas de tropa en la cubierta trasera. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#9aa878"/><stop offset="0.34" stop-color="#7c8b5d"/>
+    <stop offset="0.68" stop-color="#66744c"/><stop offset="1" stop-color="#52603c"/>
   </linearGradient>
-  <linearGradient id="bp1g2" gradientUnits="userSpaceOnUse" x1="64" y1="22" x2="64" y2="106">
-    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#6b7a4e"/><stop offset="0.45" stop-color="#5a6942"/>
+    <stop offset="1" stop-color="#455233"/>
   </linearGradient>
-  <linearGradient id="bp1g3" gradientUnits="userSpaceOnUse" x1="57" y1="54" x2="71" y2="54">
-    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".55" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  <linearGradient id="g-turret" x1="0.2" y1="0" x2="0.85" y2="1">
+    <stop offset="0" stop-color="#8b9a69"/><stop offset="0.5" stop-color="#6d7c50"/>
+    <stop offset="1" stop-color="#4e5c38"/>
   </linearGradient>
-  <radialGradient id="bp1g5" cx=".38" cy=".32" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#485636"/><stop offset="0.6" stop-color="#374327"/>
+    <stop offset="1" stop-color="#2a331e"/>
+  </linearGradient>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#a6b28a"/><stop offset="0.5" stop-color="#717d5a"/>
+    <stop offset="1" stop-color="#464f35"/>
+  </linearGradient>
+  <linearGradient id="g-trk" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#3a3a30"/><stop offset="0.5" stop-color="#26261f"/>
+    <stop offset="1" stop-color="#171712"/>
+  </linearGradient>
+</defs>
+<path d="M31 148 L162 111 L194 140 L61 178 Z" fill="#080a06" opacity="0.30"/>
 
-  <ellipse cx="64" cy="64" rx="42" ry="52" fill="url(#bp1gs)"/>
+<!-- popa: dos puertas que son depositos de combustible -->
+<path d="M34.8 116.6 L63.4 144.6 L63.4 171.6 L34.8 143.6 Z" fill="url(#g-rear)"/>
+<g fill="#4c5a35" stroke="#1f2716" stroke-width="0.9">
+  <path d="M37.5 123 L48 133.3 L48 156 L37.5 145.7 Z"/>
+  <path d="M50 135.2 L60.5 145.5 L60.5 168 L50 157.7 Z"/>
+</g>
+<circle cx="36.5" cy="120" r="2.2" fill="#8f5b30"/>
 
-  <!-- ===== orugas ===== -->
-  <path class="rubber" d="M35.5 26 C35.5 20.5 38.5 18 42 18 C45.5 18 48.5 20.5 48.5 26 L48.5 104 C48.5 109.5 45.5 112 42 112 C38.5 112 35.5 109.5 35.5 104 Z"/>
-  <path class="rubber" d="M79.5 26 C79.5 20.5 82.5 18 86 18 C89.5 18 92.5 20.5 92.5 26 L92.5 104 C92.5 109.5 89.5 112 86 112 C82.5 112 79.5 109.5 79.5 104 Z"/>
-  <path d="M36 26 C36 21 38.6 18.6 42 18.6 C45.4 18.6 48 21 48 26 L48 104 C48 109 45.4 111.4 42 111.4 C38.6 111.4 36 109 36 104 Z" fill="url(#bp1g1)" opacity=".45"/>
-  <path d="M80 26 C80 21 82.6 18.6 86 18.6 C89.4 18.6 92 21 92 26 L92 104 C92 109 89.4 111.4 86 111.4 C82.6 111.4 80 109 80 104 Z" fill="url(#bp1g1)" opacity=".45"/>
-  <path d="M36.2 24 L36.2 106 M80.2 24 L80.2 106" stroke="#fff" stroke-width=".8" opacity=".16" fill="none"/>
-  <path d="M37 16 L37 114 M40.4 14.4 L40.4 115.6 M43.6 14.4 L43.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M81 16 L81 114 M84.4 14.4 L84.4 115.6 M87.6 14.4 L87.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M42 15.5 L42 116.5 M86 15.5 L86 116.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".5" fill="none"/>
-  <circle class="metalL" cx="42" cy="21" r="4.8"/><circle class="metal" cx="42" cy="21" r="2.7"/>
-  <circle class="metalL" cx="86" cy="21" r="4.8"/><circle class="metal" cx="86" cy="21" r="2.7"/>
-  <circle class="metalL" cx="42" cy="109" r="4.8"/><circle class="metal" cx="42" cy="109" r="2.7"/>
-  <circle class="metalL" cx="86" cy="109" r="4.8"/><circle class="metal" cx="86" cy="109" r="2.7"/>
+<!-- cubierta y proa apuntada -->
+<path d="M34.8 116.6 L112.5 95.1 L141.1 123.1 L63.4 144.6 Z" fill="url(#g-deck)"/>
+<path d="M112.5 95.1 L159.3 94.2 L187.9 122.2 L141.1 123.1 Z" fill="url(#g-deck)"/>
+<path d="M112.5 95.1 L141.1 123.1" fill="none" stroke="#3b4728" stroke-opacity="0.55" stroke-width="1.2"/>
+<path d="M112.5 95.1 L159.3 94.2 L187.9 122.2 L141.1 123.1 Z" fill="#ffffff" fill-opacity="0.08"/>
+<ellipse cx="150" cy="107" rx="6" ry="4" fill="#6d7c50" stroke="#333d22" stroke-width="1"/>
+<g fill="#3b4728">
+  <path d="M163 98 L168 103 L165.4 104.2 L160.4 99.2 Z"/>
+  <path d="M174 109 L179 114 L176.4 115.2 L171.4 110.2 Z"/>
+</g>
+<!-- 4 escotillas de tropa -->
+<g fill="#6d7c50" stroke="#333d22" stroke-width="0.9">
+  <path d="M48.3 118.8 L64.2 114.4 L71.7 121.7 L55.8 126.1 Z"/>
+  <path d="M58.6 128.9 L74.5 124.5 L82.0 131.9 L66.1 136.2 Z"/>
+  <path d="M67.7 113.4 L83.6 109.0 L91.1 116.4 L75.2 120.8 Z"/>
+  <path d="M78.0 123.5 L93.9 119.1 L101.4 126.5 L85.5 130.9 Z"/>
+</g>
 
-  <!-- ===== casco bajo picudo ===== -->
-  <path class="base" d="M64 20 C54 23 45 28.5 41 34 L39 40 L38.5 100 L43 106.5 L85 106.5 L89.5 100 L89 40 L87 34 C83 28.5 74 23 64 20 Z" stroke="#3d4232" stroke-width="1.3"/>
-  <path d="M64 20 C54 23 45 28.5 41 34 L39 40 L38.5 100 L43 106.5 L85 106.5 L89.5 100 L89 40 L87 34 C83 28.5 74 23 64 20 Z" fill="url(#bp1g1)"/>
-  <path d="M64 20 C54 23 45 28.5 41 34 L39 40 L38.5 100 L43 106.5 L85 106.5 L89.5 100 L89 40 L87 34 C83 28.5 74 23 64 20 Z" fill="url(#bp1g2)"/>
-  <path d="M64 21 L84.5 31.5 L43.5 31.5 Z" fill="#fff" opacity=".12"/>
-  <path d="M64 21 L43.8 31.4" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
-  <path d="M39.4 40 L38.9 99" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M88.6 40 L89.1 99 L84.8 105.6" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#bp1f1)"/>
-  <path d="M39 36 L48 35 L48 103 L39.2 102 Z" fill="#000" opacity=".28" filter="url(#bp1f1)"/>
-  <path d="M89 36 L80 35 L80 103 L88.8 102 Z" fill="#000" opacity=".28" filter="url(#bp1f1)"/>
-  <!-- visores del conductor en el pico -->
-  <rect class="dark" x="59.5" y="27.5" width="4.4" height="2" rx=".5" opacity=".85"/>
-  <rect class="dark" x="66" y="27.5" width="4.4" height="2" rx=".5" opacity=".85"/>
+<!-- flanco -->
+<path d="M63.4 144.6 L141.1 123.1 L187.9 122.2 L63.4 156.6 Z" fill="url(#g-flank)"/>
+<path d="M63.4 144.6 L141.1 123.1" fill="none" stroke="#000000" stroke-opacity="0.2" stroke-width="2"/>
 
-  <!-- sombra de la torreta -->
-  <path d="M55 48 L76 48 L77.5 64 L53.5 64 Z" fill="#000" opacity=".18" filter="url(#bp1f2)"/>
+<!-- tren de rodaje -->
+<path d="M62.2 173.7 L191.9 137.9 L191.9 122.9 L62.2 158.7 Z" fill="url(#g-trk)"/>
+<g fill="#3d4433" stroke="#17190f" stroke-width="1">
+  <ellipse cx="75.4"  cy="162.6" rx="5.2" ry="6.2"/>
+  <ellipse cx="96.6"  cy="156.7" rx="5.2" ry="6.2"/>
+  <ellipse cx="117.8" cy="150.9" rx="5.2" ry="6.2"/>
+  <ellipse cx="139.0" cy="145.0" rx="5.2" ry="6.2"/>
+  <ellipse cx="160.2" cy="139.2" rx="5.2" ry="6.2"/>
+  <ellipse cx="181.4" cy="133.3" rx="5.2" ry="6.2"/>
+</g>
+<g fill="#5a6247">
+  <ellipse cx="75.4"  cy="162.6" rx="1.9" ry="2.3"/>
+  <ellipse cx="96.6"  cy="156.7" rx="1.9" ry="2.3"/>
+  <ellipse cx="117.8" cy="150.9" rx="1.9" ry="2.3"/>
+  <ellipse cx="139.0" cy="145.0" rx="1.9" ry="2.3"/>
+  <ellipse cx="160.2" cy="139.2" rx="1.9" ry="2.3"/>
+  <ellipse cx="181.4" cy="133.3" rx="1.9" ry="2.3"/>
+</g>
+<ellipse cx="186.7" cy="128.3" rx="6.8" ry="8"   fill="#454c39" stroke="#17190f" stroke-width="1.1"/>
+<ellipse cx="66.6"  cy="161.5" rx="6.2" ry="7.4" fill="#454c39" stroke="#17190f" stroke-width="1.1"/>
+<g fill="#454c39" stroke="#17190f" stroke-width="0.8">
+  <ellipse cx="91.3"  cy="149.7" rx="2.4" ry="2.8"/>
+  <ellipse cx="123.1" cy="140.9" rx="2.4" ry="2.8"/>
+  <ellipse cx="154.9" cy="132.1" rx="2.4" ry="2.8"/>
+</g>
+<path d="M63 174 L192.5 138.3" fill="none" stroke="#080a06" stroke-opacity="0.55" stroke-width="3"/>
 
-  <!-- ===== torreta redonda con canon 73mm ===== -->
-  <circle class="base" cx="65" cy="57" r="8.6"/>
-  <circle cx="65" cy="57" r="8.6" fill="url(#bp1g3)"/>
-  <circle cx="65" cy="57" r="8.6" fill="none" stroke="#3d4232" stroke-width="1"/>
-  <path d="M58.4 53 A8 8 0 0 1 65 49.2" stroke="#fff" stroke-width=".9" opacity=".5" fill="none"/>
-  <path d="M71.6 61 A8 8 0 0 1 65.4 65.5" stroke="#000" stroke-width="1" opacity=".25" fill="none" filter="url(#bp1f1)"/>
-  <!-- canon 73mm al norte -->
-  <path class="shade" d="M62.4 48 L67.6 48 L66.8 51.4 L63.2 51.4 Z"/>
-  <path class="dark" d="M63.3 37 L66.7 37 L66.5 48.2 L63.5 48.2 Z"/>
-  <path class="hi" d="M64 38 L64.4 38 L64.3 47 L64 47 Z" opacity=".55"/>
-  <!-- riel lanzador Malyutka sobre el tubo -->
-  <rect class="metal" x="63.9" y="33.2" width="2.2" height="5" rx=".5"/>
-  <path class="metalS" d="M64.2 32 L65.8 32 L65.8 33.4 L64.2 33.4 Z"/>
-  <path d="M64.4 33.6 L64.4 37.8" stroke="#fff" stroke-width=".35" opacity=".4" fill="none"/>
-  <!-- escotillas de la torreta -->
-  <circle class="metal" cx="60.5" cy="61" r="2.3"/>
-  <circle class="metal" cx="69.5" cy="61" r="2.3"/>
+<!-- torreta troncoconica diminuta -->
+<path d="M118.8 111.4 C123.2 115.7 120.1 121.0 111.8 123.3
+         C103.5 125.6 93.2 123.9 88.8 119.6
+         C84.4 115.3 87.5 110.0 95.8 107.7
+         C104.1 105.4 114.4 107.1 118.8 111.4 Z" fill="url(#g-flank)"/>
+<path d="M118.8 95.4 C123.2 99.7 120.1 105.0 111.8 107.3
+         C103.5 109.6 93.2 107.9 88.8 103.6
+         C84.4 99.3 87.5 94.0 95.8 91.7
+         C104.1 89.4 114.4 91.1 118.8 95.4 Z" fill="url(#g-turret)"/>
+<path d="M88.8 103.6 C84.4 99.3 87.5 94.0 95.8 91.7 C104.1 89.4 114.4 91.1 118.8 95.4"
+      fill="none" stroke="#ffffff" stroke-opacity="0.32" stroke-width="1.3"/>
+<ellipse cx="99" cy="97" rx="4.6" ry="3.2" fill="#5f6f42" stroke="#333d22" stroke-width="0.9"/>
 
-  <!-- ===== techo de tropa con escotillas ===== -->
-  <rect class="shade" x="47.5" y="70.5" width="33" height="22" rx="1"/>
-  <path d="M47.8 70.8 L80.2 70.8" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
-  <ellipse class="dark" cx="53.5" cy="76" rx="3.4" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="53.5" cy="82.5" rx="3.4" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="74.5" cy="76" rx="3.4" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="74.5" cy="82.5" rx="3.4" ry="2.6" opacity=".85"/>
-  <path d="M50.4 76 L50.4 88 M77.6 76 L77.6 88" stroke="#000" stroke-width=".4" opacity=".3" fill="none"/>
-  <!-- tapas del motor detras -->
-  <rect class="dark" x="55" y="95" width="18" height="8" rx="1"/>
-  <path d="M57.5 95.6 L57.5 102.4 M61 95.6 L61 102.4 M64.5 95.6 L64.5 102.4 M68 95.6 L68 102.4 M71.5 95.6 L71.5 102.4" stroke="#9aa378" stroke-width=".55" opacity=".6" fill="none"/>
-  <!-- antena -->
-  <path d="M49 70 L45 61" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <circle class="dark" cx="49" cy="70" r="1"/>
+<!-- canon corto 2A28 de 73 mm -->
+<path d="M114 105 L121 99 L127 103 L120 109 Z" fill="#6d7c50" stroke="#333d22" stroke-width="0.9"/>
+<path d="M117.9 98.8 L152.3 89.3 L154.3 96.3 L119.9 105.8 Z" fill="url(#g-metal)"/>
+<ellipse cx="153.3" cy="92.8" rx="1.6" ry="3.4" fill="#12150e"/>
+<path d="M117.9 98.8 L152.3 89.3 L152.6 90.5 L118.2 100 Z" fill="#ffffff" fill-opacity="0.32"/>
+<!-- rail y misil Malyutka encima del canon: marca del BMP-1 -->
+<path d="M119 92 L120.5 89.5 L138 84.7 L141 85.6 L139.5 88.2 L122 93 Z" fill="#7e8d5e" stroke="#333d22" stroke-width="0.8"/>
+<path d="M124 91.5 L127 88 L129 88.6 L126 92.1 Z" fill="#4e5c38"/>
+<path d="M120 100 L120 95.5 L124 94.4 L124 98.9 Z" fill="#5f6f42" stroke="#333d22" stroke-width="0.8"/>
 </svg>

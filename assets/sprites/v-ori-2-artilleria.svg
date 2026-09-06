@@ -1,167 +1,111 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- 2S19 Msta-S - vista superior, canon hacia el norte. TORRETA CAJA angular sovietica
-       (laterales rectos) sobre chasis T-72, canon 152mm con eyector a media ala y
-       freno sencillo, dos escotillas, cesta de estiba trasera. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="ms2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4"/></filter>
-  <filter id="ms2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
-  <radialGradient id="ms2gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".4"/><stop offset=".5" stop-color="#000" stop-opacity=".2"/><stop offset=".8" stop-color="#000" stop-opacity=".07"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="ms2g1" gradientUnits="userSpaceOnUse" x1="44" y1="40" x2="84" y2="96">
-    <stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset=".68" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- 2S19 Msta-S (T2 oriental, artilleria). Verde ruso. Camara y escala del set.
+     Chasis derivado del T-80: 6 ruedas grandes, 3 rodillos de retorno, RUEDA
+     MOTRIZ TRASERA (al reves que los occidentales) y faldones.
+     Identidad: torreta cajon enorme de costados rectos, canon 2A64 de 152 mm con
+     evacuador de humos a media cana y freno de boca de doble deflector, y cupula
+     del jefe con la NSVT antiaerea. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#9aa878"/><stop offset="0.34" stop-color="#7c8b5d"/>
+    <stop offset="0.68" stop-color="#66744c"/><stop offset="1" stop-color="#52603c"/>
   </linearGradient>
-  <linearGradient id="ms2g2" gradientUnits="userSpaceOnUse" x1="42" y1="64" x2="86" y2="64">
-    <stop offset="0" stop-color="#fff" stop-opacity=".1"/><stop offset=".08" stop-color="#000" stop-opacity=".24"/><stop offset=".24" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#fff" stop-opacity=".26"/><stop offset=".76" stop-color="#000" stop-opacity=".04"/><stop offset=".94" stop-color="#000" stop-opacity=".26"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#6b7a4e"/><stop offset="0.45" stop-color="#5a6942"/>
+    <stop offset="1" stop-color="#455233"/>
   </linearGradient>
-  <linearGradient id="ms2g3" gradientUnits="userSpaceOnUse" x1="48" y1="62" x2="80" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".14" stop-color="#fff" stop-opacity=".22"/><stop offset=".4" stop-color="#fff" stop-opacity=".28"/><stop offset=".62" stop-color="#fff" stop-opacity=".08"/><stop offset=".84" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#485636"/><stop offset="0.6" stop-color="#374327"/>
+    <stop offset="1" stop-color="#2a331e"/>
   </linearGradient>
-  <linearGradient id="ms2g4" gradientUnits="userSpaceOnUse" x1="61" y1="4" x2="67" y2="42">
-    <stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".36"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#a6b28a"/><stop offset="0.5" stop-color="#717d5a"/>
+    <stop offset="1" stop-color="#464f35"/>
   </linearGradient>
-  <radialGradient id="ms2g5" cx=".38" cy=".32" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-trk" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#3a3a30"/><stop offset="0.5" stop-color="#26261f"/>
+    <stop offset="1" stop-color="#171712"/>
+  </linearGradient>
+</defs>
+<path d="M15 152 L138 118 L172 152 L47 187 Z" fill="#080a06" opacity="0.30"/>
 
-  <!-- sombra de contacto grande y suava -->
-  <ellipse cx="62" cy="64" rx="48" ry="62" fill="url(#ms2gs)"/>
+<path d="M18 117 L51.3 149.6 L51.3 164.6 L18 132.0 Z" fill="url(#g-rear)"/>
+<path d="M21 126 L47 151.4 L47 162 L21 136.6 Z" fill="#2a331e"/>
+<g stroke="#7e8d5e" stroke-opacity="0.7" stroke-width="1.1">
+  <path d="M23 130 L45 151.5"/><path d="M22 135 L44 156.5"/>
+</g>
+<circle cx="20" cy="121" r="2.4" fill="#8f5b30"/>
 
-  <!-- ===== canon 155mm L/52 ===== -->
-  <!-- freno de boca de ranura simple -->
-  <path class="metal" d="M61.2 3.6 L66.8 3.6 L66.5 10 L61.5 10 Z"/>
-  <path d="M61.6 4 L62.6 4 L62.4 9.6 L61.8 9.6 Z" fill="#fff" opacity=".3"/>
-  <path class="dark" d="M62.8 4.6 L65.2 4.6 L65.2 9 L62.8 9 Z" opacity=".85"/>
-  <path d="M61.2 5 L66.8 5 M61.2 8.6 L66.8 8.6" stroke="#000" stroke-width=".5" opacity=".5" fill="none"/>
-  <!-- tubo -->
-  <path class="metal" d="M62.7 10.4 L65.3 10.4 L65.1 32 L64.9 44 L63.1 44 L62.9 32 Z"/>
-  <path d="M62.7 10.4 L65.3 10.4 L65.1 32 L64.9 44 L63.1 44 L62.9 32 Z" fill="url(#ms2g4)"/>
-  <path d="M63.2 11 L63.1 42" stroke="#fff" stroke-width=".6" opacity=".5" fill="none"/>
-  <path d="M64.9 11 L65 42" stroke="#000" stroke-width=".6" opacity=".35" fill="none"/>
-  <path class="hi" d="M63.2 11 L63.8 11 L63.7 42 L63.2 42 Z" opacity=".55"/>
-  <!-- recuperador y munitor -->
-  <path class="metalS" d="M62.1 22 L65.9 22 L65.8 28.4 L62.2 28.4 Z"/>
-  <path d="M62.2 23.4 L65.8 23.4 M62.2 27 L65.8 27" stroke="#000" stroke-width=".45" opacity=".4" fill="none"/>
-  <path class="metalS" d="M61.9 31.4 L66.1 31.4 L66 37 L62 37 Z"/>
-  <path d="M61.9 33.6 L66.1 33.6" stroke="#000" stroke-width=".45" opacity=".4" fill="none"/>
-  <path d="M63 12 L63 20.5 M65 12 L65 20.5 M63 29.4 L63 30.9 M65 29.4 L65 30.9 M63 38 L63 43 L65 43 L65 38" stroke="#000" stroke-width=".55" opacity=".45" fill="none"/>
+<path d="M18 117 L99.2 94.6 L132.5 127.2 L51.3 149.6 Z" fill="url(#g-deck)"/>
+<path d="M99.2 94.6 L129.3 101.3 L162.6 133.9 L132.5 127.2 Z" fill="url(#g-deck)"/>
+<path d="M99.2 94.6 L132.5 127.2" fill="none" stroke="#3b4728" stroke-opacity="0.55" stroke-width="1.2"/>
+<path d="M99.2 94.6 L129.3 101.3 L162.6 133.9 L132.5 127.2 Z" fill="#ffffff" fill-opacity="0.07"/>
+<g fill="#3b4728">
+  <path d="M134 105 L139 110 L136.4 111.2 L131.4 106.2 Z"/>
+  <path d="M148 118 L153 123 L150.4 124.2 L145.4 119.2 Z"/>
+</g>
 
-  <!-- ===== orugas ===== -->
-  <path class="rubber" d="M31.5 24 C31.5 18.5 35 16 39 16 C43 16 46.5 18.5 46.5 24 L46.5 104 C46.5 109.5 43 112 39 112 C35 112 31.5 109.5 31.5 104 Z"/>
-  <path class="rubber" d="M81.5 24 C81.5 18.5 85 16 89 16 C93 16 96.5 18.5 96.5 24 L96.5 104 C96.5 109.5 93 112 89 112 C85 112 81.5 109.5 81.5 104 Z"/>
-  <path d="M33 18 L33 110 M37.4 16.4 L37.4 111.6 M40.6 16.4 L40.6 111.6 M45 18 L45 110" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".9" fill="none"/>
-  <path d="M83 18 L83 110 M87.4 16.4 L87.4 111.6 M90.6 16.4 L90.6 111.6 M95 18 L95 110" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".9" fill="none"/>
-  <path d="M39 17.5 L39 112.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".55" fill="none"/>
-  <path d="M89 17.5 L89 112.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".55" fill="none"/>
-  <path d="M37 20 L37 108 M91 20 L91 108" stroke="#8a929b" stroke-width=".7" stroke-dasharray="1.6 3.4" opacity=".7" fill="none"/>
-  <circle class="metalL" cx="39" cy="21" r="5.4"/><circle class="metal" cx="39" cy="21" r="3"/>
-  <circle class="metalL" cx="89" cy="21" r="5.4"/><circle class="metal" cx="89" cy="21" r="3"/>
-  <circle class="metalL" cx="39" cy="107" r="5.4"/><circle class="metal" cx="39" cy="107" r="3"/>
-  <circle class="metalL" cx="89" cy="107" r="5.4"/><circle class="metal" cx="89" cy="107" r="3"/>
+<path d="M51.3 149.6 L132.5 127.2 L162.6 133.9 L51.3 164.6 Z" fill="url(#g-flank)"/>
 
-  <!-- ===== faldones ===== -->
-  <path class="shade" d="M28 22 L33 20 L33 110 L28 106 Z"/>
-  <path class="shade" d="M100 22 L95 20 L95 110 L100 106 Z"/>
-  <path d="M30.5 23 L32 22 M30.5 33 L32 33 M30.5 43 L32 43 M30.5 53 L32 53 M30.5 63 L32 63 M30.5 73 L32 73 M30.5 83 L32 83 M30.5 93 L32 93 M30.5 102 L32 103" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
-  <path d="M97.5 23 L96 22 M97.5 33 L96 33 M97.5 43 L96 43 M97.5 53 L96 53 M97.5 63 L96 63 M97.5 73 L96 73 M97.5 83 L96 83 M97.5 93 L96 93 M97.5 102 L96 103" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
-  <!-- cajas destowage sobre faldon -->
-  <path class="shade" d="M32 56 L44 56 L44 60.5 L32 60.5 Z M32 62.5 L44 62.5 L44 67 L32 67 Z"/>
-  <path class="shade" d="M84 56 L96 56 L96 60.5 L84 60.5 Z M84 62.5 L96 62.5 L96 67 L84 67 Z"/>
-  <path d="M32.8 56.5 L32.8 66.4 M95.2 56.5 L95.2 66.4" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
+<path d="M50.1 182.7 L166.6 150.5 L166.6 134.5 L50.1 166.7 Z" fill="url(#g-trk)"/>
+<g fill="#3d4433" stroke="#17190f" stroke-width="1.1">
+  <ellipse cx="63.3"  cy="171.1" rx="6.4" ry="7.4"/>
+  <ellipse cx="84.5"  cy="165.2" rx="6.4" ry="7.4"/>
+  <ellipse cx="105.7" cy="159.4" rx="6.4" ry="7.4"/>
+  <ellipse cx="126.9" cy="153.5" rx="6.4" ry="7.4"/>
+  <ellipse cx="146.3" cy="148.1" rx="6.4" ry="7.4"/>
+  <ellipse cx="162.2" cy="143.7" rx="6.4" ry="7.4"/>
+</g>
+<g fill="#5a6247">
+  <ellipse cx="63.3"  cy="171.1" rx="2.4" ry="2.8"/>
+  <ellipse cx="84.5"  cy="165.2" rx="2.4" ry="2.8"/>
+  <ellipse cx="105.7" cy="159.4" rx="2.4" ry="2.8"/>
+  <ellipse cx="126.9" cy="153.5" rx="2.4" ry="2.8"/>
+  <ellipse cx="146.3" cy="148.1" rx="2.4" ry="2.8"/>
+  <ellipse cx="162.2" cy="143.7" rx="2.4" ry="2.8"/>
+</g>
+<ellipse cx="52.7"  cy="171.0" rx="7.6" ry="8.8" fill="#454c39" stroke="#17190f" stroke-width="1.2"/>
+<ellipse cx="163.9" cy="140.3" rx="7"   ry="8.2" fill="#454c39" stroke="#17190f" stroke-width="1.2"/>
+<g fill="#454c39" stroke="#17190f" stroke-width="0.9">
+  <ellipse cx="77.4"  cy="158.2" rx="2.8" ry="3.2"/>
+  <ellipse cx="107.4" cy="149.9" rx="2.8" ry="3.2"/>
+  <ellipse cx="137.5" cy="141.6" rx="2.8" ry="3.2"/>
+</g>
+<path d="M51 183 L167.2 150.9" fill="none" stroke="#080a06" stroke-opacity="0.55" stroke-width="3"/>
 
-  <!-- ===== casco ===== -->
-  <path class="base" d="M64 24 L84.5 33 L86 45 L86.5 98 L80 110 L48 110 L41.5 98 L42 45 L43.5 33 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 24 L84.5 33 L86 45 L86.5 98 L80 110 L48 110 L41.5 98 L42 45 L43.5 33 Z" fill="url(#ms2g2)"/>
-  <path d="M64 24 L84.5 33 L86 45 L86.5 98 L80 110 L48 110 L41.5 98 L42 45 L43.5 33 Z" fill="url(#ms2g1)"/>
-  <!-- cara superior del glacis atrapa luz + rim light NO + sombra SE -->
-  <path d="M64 25 L83.4 33 L44.6 33 Z" fill="#fff" opacity=".12"/>
-  <path d="M64 25 L44.6 33" stroke="#fff" stroke-width="1.1" opacity=".5" fill="none"/>
-  <path d="M43.4 44 L43 97 L48 108.6" stroke="#fff" stroke-width="1" opacity=".35" fill="none"/>
-  <path d="M84.6 33.4 L86 45 L86 97 L80.6 108.6" stroke="#000" stroke-width="2" opacity=".28" fill="none" filter="url(#ms2f1)"/>
-  <path d="M64 25 L83.4 32.6" stroke="#000" stroke-width="1.2" opacity=".18" fill="none" filter="url(#ms2f1)"/>
-  <path class="light" d="M64 24 L84.5 33 L83.6 34.6 L64 26.6 L44.4 34.6 L43.5 33 Z" opacity=".85"/>
-  <path d="M48 38.5 L80 38.5" stroke="#000" stroke-width=".7" opacity=".25" fill="none"/>
-  <!-- cable de remolque -->
-  <path d="M50 30.5 C55 35 73 35 78 30.5" stroke="#3d4232" stroke-width="1.1" fill="none" opacity=".8"/>
-  <!-- faros -->
-  <rect class="shade" x="45.5" y="40" width="6" height="5" rx="1"/>
-  <rect class="shade" x="76.5" y="40" width="6" height="5" rx="1"/>
-  <rect class="hi" x="46.4" y="41.1" width="2.4" height="2.8" rx=".6"/>
-  <rect class="hi" x="77.4" y="41.1" width="2.4" height="2.8" rx=".6"/>
-  <!-- escotilla del conductor -->
-  <circle class="metal" cx="52.5" cy="46.5" r="4.2"/>
-  <circle cx="52.5" cy="46.5" r="4.2" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <circle class="shade" cx="52.5" cy="46.5" r="1.7"/>
-  <path class="glass" d="M48.4 44.4 L49.4 43.4 L51 43.4 L50.4 44.9 Z" opacity=".9"/>
+<path d="M50.4 168.0 L159.9 137.7 L159.9 120.7 L50.4 151.0 Z" fill="url(#g-flank)"/>
+<g stroke="#3b4728" stroke-opacity="0.7" stroke-width="1.2">
+  <path d="M71.6 145.1 L71.6 162.1"/><path d="M92.8 139.3 L92.8 156.3"/>
+  <path d="M114.0 133.4 L114.0 150.4"/><path d="M135.2 127.6 L135.2 144.6"/>
+</g>
+<path d="M50.4 151.0 L159.9 120.7" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="2"/>
 
-  <!-- sombra proyectada de la torreta (oclusion suave) -->
-  <path d="M48 88 L80 88 L82 99 L77.5 108 L50.5 108 L46 99 Z" fill="#000" opacity=".2" filter="url(#ms2f2)"/>
-  <path d="M54 84.8 L74 84.8 L74.6 88.4 L53.4 88.4 Z" fill="#000" opacity=".26" filter="url(#ms2f1)"/>
+<!-- torreta cajon de costados rectos -->
+<path d="M20.8 119.8 L48.9 147.3 L48.9 116.3 L20.8 88.8 Z" fill="url(#g-rear)"/>
+<path d="M48.9 147.3 L109.1 133.0 L126.4 121.1 L126.4 90.1 L109.1 102.0 L48.9 116.3 Z" fill="url(#g-flank)"/>
+<path d="M20.8 88.8 L77.2 70.7 L106.7 70.8 L126.4 90.1 L109.1 102.0 L48.9 116.3 Z" fill="url(#g-deck)"/>
+<path d="M20.8 88.8 L77.2 70.7 L106.7 70.8" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M77.2 70.7 L109.1 102.0" fill="none" stroke="#3b4728" stroke-opacity="0.5" stroke-width="1.1"/>
+<!-- cajones de estiba y escotilla de reaprovisionamiento -->
+<path d="M56 138 L82 131.8 L82 111 L56 117.2 Z" fill="#5f6f42" stroke="#333d22" stroke-width="0.9"/>
+<path d="M88 130 L108 125.2 L108 105 L88 109.8 Z" fill="#5f6f42" stroke="#333d22" stroke-width="0.9"/>
+<path d="M26 96 L40 91.5 L46 97.5 L32 102 Z" fill="#4e5c38" stroke="#222a17" stroke-width="0.9"/>
+<!-- cupula del jefe con la NSVT -->
+<path d="M56 96 L56 88 A8 5.4 0 0 1 72 88 L72 96 Z" fill="#5f6f42"/>
+<ellipse cx="64" cy="88" rx="8" ry="5.4" fill="#8b9a69" stroke="#333d22" stroke-width="1"/>
+<path d="M58 86 L70 86" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+<path d="M66 85 L70 83.5 L88 77 L89 79.3 L71 85.8 L67.5 87.3 Z" fill="url(#g-metal)"/>
+<ellipse cx="84" cy="80" rx="6.5" ry="4.4" fill="#6d7c50" stroke="#333d22" stroke-width="1"/>
+<path d="M30 90 L27 64" fill="none" stroke="#243019" stroke-width="1.4"/>
 
-  <!-- ===== rejillas y escape traseros ===== -->
-  <rect class="dark" x="49" y="98.5" width="14" height="8" rx="1"/>
-  <rect class="dark" x="65" y="98.5" width="14" height="8" rx="1"/>
-  <path d="M51.5 99.5 L51.5 105.5 M55 99.5 L55 105.5 M58.5 99.5 L58.5 105.5 M61.5 99.5 L61.5 105.5 M67.5 99.5 L67.5 105.5 M71 99.5 L71 105.5 M74.5 99.5 L74.5 105.5 M77.5 99.5 L77.5 105.5" stroke="#9aa378" stroke-width=".8" opacity=".65" fill="none"/>
-  <!-- escapes laterales -->
-  <rect class="rubber" x="43.2" y="86" width="3.4" height="7" rx="1"/>
-  <rect class="rubber" x="81.4" y="86" width="3.4" height="7" rx="1"/>
-
-  <!-- ===== torreta grande ===== -->
-  <path class="base" d="M64 37 L76 41.5 L79.5 52 L79.5 71 L76 84.5 L52 84.5 L48.5 71 L48.5 52 L52 41.5 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 37 L76 41.5 L79.5 52 L79.5 71 L76 84.5 L52 84.5 L48.5 71 L48.5 52 L52 41.5 Z" fill="url(#ms2g3)"/>
-  <path d="M64 37 L76 41.5 L79.5 52 L79.5 71 L76 84.5 L52 84.5 L48.5 71 L48.5 52 L52 41.5 Z" fill="#fff" opacity=".07"/>
-  <path d="M64 37.6 L53.5 42.5" stroke="#fff" stroke-width="1.1" opacity=".55" fill="none"/>
-  <path d="M49 55.6 L48.8 70.4" stroke="#fff" stroke-width=".9" opacity=".4" fill="none"/>
-  <path d="M76 41.8 L79.3 52 L79.3 70.4 L76 84" stroke="#000" stroke-width="2" opacity=".3" fill="none" filter="url(#ms2f1)"/>
-  <path class="light" d="M64 37 L76 41.5 L74.6 43 L64 39.2 Z" opacity=".8"/>
-  <path d="M76 41.5 L79.5 52 L79.5 71 L76 84.5" stroke="#000" stroke-width="1" opacity=".22" fill="none"/>
-  <path class="dark" d="M74 84.5 L79.5 70 L78.5 54 L75.3 55.8 L76.1 69 L72.4 81 Z" opacity=".35"/>
-  <!-- collar del canon -->
-  <path class="shade" d="M59.4 40.4 L68.6 40.4 L67.6 45.4 L60.4 45.4 Z"/>
-  <path d="M59.9 41.4 L68.1 41.4 M59.7 43.4 L68.3 43.4" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
-  <!-- escotillas de torreta -->
-  <circle class="metal" cx="55" cy="55" r="4.4"/>
-  <circle cx="55" cy="55" r="4.4" fill="url(#ms2g5)"/>
-  <circle cx="55" cy="55" r="4.4" fill="none" stroke="#3d4232" stroke-width="1"/>
-  <circle class="shade" cx="55" cy="55" r="1.8"/>
-  <circle cx="53.9" cy="53.9" r=".7" fill="#fff" opacity=".5"/>
-  <path d="M51.2 51.7 L52.9 50.1 M58.8 51.7 L57.1 50.1" stroke="#8a929b" stroke-width="1.1" fill="none"/>
-  <circle class="metal" cx="73" cy="55" r="4.4"/>
-  <circle cx="73" cy="55" r="4.4" fill="url(#ms2g5)"/>
-  <circle cx="73" cy="55" r="4.4" fill="none" stroke="#3d4232" stroke-width="1"/>
-  <circle class="shade" cx="73" cy="55" r="1.8"/>
-  <circle cx="71.9" cy="53.9" r=".7" fill="#fff" opacity=".5"/>
-  <path d="M69.2 51.7 L70.9 50.1 M76.8 51.7 L75.1 50.1" stroke="#8a929b" stroke-width="1.1" fill="none"/>
-  <!-- sombra del canon sobre el glacis -->
-  <path d="M57.6 39.6 L70.4 39.6 L70 43 L58 43 Z" fill="#000" opacity=".22" filter="url(#ms2f1)"/>
-  <!-- oclusion del collar sobre la torreta -->
-  <path d="M60.6 45.2 L67.4 45.2 L67 48 L61 48 Z" fill="#000" opacity=".2" filter="url(#ms2f1)"/>
-  <!-- M2 en la cupola del jefe -->
-  <rect class="dark" x="71.6" y="48.6" width="4" height="3.4" rx=".8"/>
-  <path d="M73.6 48.6 L73.6 46" stroke="#2b2e28" stroke-width="1.1" fill="none"/>
-  <circle class="glass" cx="70.8" cy="49.8" r=".8"/>
-  <!-- lanzagranadas de humo -->
-  <g class="dark">
-    <circle cx="50.2" cy="48.4" r=".9"/><circle cx="52.4" cy="47" r=".9"/><circle cx="50.4" cy="50.8" r=".9"/><circle cx="52.6" cy="49.4" r=".9"/>
-    <circle cx="77.8" cy="48.4" r=".9"/><circle cx="75.6" cy="47" r=".9"/><circle cx="77.6" cy="50.8" r=".9"/><circle cx="75.4" cy="49.4" r=".9"/>
-  </g>
-  <!-- panza de recarga trasera con estanteria -->
-  <path class="shade" d="M54 84.5 C53.5 87 54.5 88.5 56.5 89 C57.5 91 59.5 91.6 61.5 91 C63.5 92.2 66.5 92.2 68.5 91 C70.5 91.6 72.5 91 73.5 89 C75.5 88.5 76.5 87 76 84.5 Z"/>
-  <path d="M57 85 C56.7 86.5 57.1 87.9 58.1 88.7 M62.5 85.5 C62.3 87.5 62.7 89.3 63.5 90.5 M68.5 85.5 C68.7 87.5 68.3 89.3 67.5 90.5" stroke="#000" stroke-width=".6" opacity=".3" fill="none"/>
-  <path class="dark" d="M59 87 C60.1 85.9 61.9 86.1 62.5 87.3 C63.1 88.5 61.7 89.7 60.3 89.3 C58.9 88.9 58.4 87.9 59 87 Z" opacity=".8"/>
-  <path class="dark" d="M67 87.5 C68.1 86.5 69.9 86.9 70.3 88.1 C70.7 89.3 69.1 90.1 67.9 89.5 C66.7 88.9 66.4 88.1 67 87.5 Z" opacity=".8"/>
-  <!-- riel de proyectiles abierto a babor -->
-  <rect class="metalS" x="49.4" y="59" width="3" height="11" rx=".6"/>
-  <path d="M49.9 61 L52 61 M49.9 64 L52 64 M49.9 67 L52 67" stroke="#4a5057" stroke-width=".5" opacity=".8" fill="none"/>
-  <!-- antenas -->
-  <path d="M49.5 81 L45.5 93 M78.5 81 L82.5 93" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <circle class="dark" cx="49.5" cy="81" r="1"/><circle class="dark" cx="78.5" cy="81" r="1"/>
-  <!-- eslabones de repuesto en el glacis -->
-  <path class="shade" d="M45 33.5 L48.5 32.5 L49 36.5 L45.5 37.5 Z" opacity=".9"/>
-  <path class="shade" d="M83 33.5 L79.5 32.5 L79 36.5 L82.5 37.5 Z" opacity=".9"/>
+<!-- canon 2A64 de 152 mm -->
+<path d="M108 100 L118 92 L127 98 L117 106 Z" fill="#6d7c50" stroke="#333d22" stroke-width="1"/>
+<path d="M115.7 93.3 L237.6 59.6 L239.4 66.2 L117.5 99.9 Z" fill="url(#g-metal)"/>
+<path d="M173.6 75.0 L190.7 70.3 L193.7 81.1 L176.6 85.8 Z" fill="#95a274" stroke="#3b4728" stroke-width="0.8"/>
+<path d="M228.2 59.1 L236.8 56.7 L240.2 69.1 L231.6 71.5 Z" fill="#8b9a69" stroke="#333d22" stroke-width="0.9"/>
+<g stroke="#243019" stroke-width="1.3">
+  <path d="M231.0 58.3 L234.2 69.9"/><path d="M234.4 57.4 L237.6 69"/>
+</g>
+<ellipse cx="238.5" cy="62.9" rx="1.4" ry="3.3" fill="#12150e"/>
+<path d="M115.7 93.3 L237.6 59.6 L237.9 60.9 L116.0 94.6 Z" fill="#ffffff" fill-opacity="0.32"/>
 </svg>

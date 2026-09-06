@@ -89,7 +89,18 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       con fase propia); misión de patrulla con radio como mecánica → pendiente
 - [x] Unidades en marcha ORIENTADAS a su rumbo (sprites rotan; sprites miran al norte)
       + etiqueta "Llega en Xh Ym" para unidades propias (estilo "Arrives in" de CoN)
-- [ ] Sprites nivel CoN (pintorescos semi-3D con oclusión ambiental, rim light y
-      sombras suaves): agente en curso con la nueva referencia
+- [x] Sprites nivel CoN (pintorescos semi-3D con rim light y sombras): **los 96 sprites
+      por variante están hechos**. Aire cenital (sin tocar); los 36 terrestres en 3/4 de
+      cámara baja a escala común 20,9 px/m con paleta arena (occ) / verde ruso (ori); los
+      36 navales en 3/4 de cámara alta con gris OTAN / gris ruso y casco negro para
+      submarinos. Convención completa en docs/ARTE.md
+- [ ] **Rotación al rumbo vs. sprites 3/4** — bloquea al punto de arriba. Los sprites de
+      tierra y mar son 3/4: rotarlos al rumbo los deja boca abajo. Solo la familia de aire
+      tolera rotación. Decidir: quitar la rotación a tierra y mar (marcando el rumbo con
+      flecha o estela) y dejarla solo en aire
+- [ ] **Tinte por país en los sprites por variante** — los 96 usan gradientes propios en vez
+      de las clases CSS `.base/.shade/.light/.hi`, así que hoy no responden al tinte. La
+      doctrina se lee por paleta, el país no. Opciones: reescribir los `stop-color` en el
+      sprite-cache, o aplicar un filtro suave por país
 - [ ] Misiones de aire (patrulla con radio, apoyo aéreo cercano), formaciones al
       mover, ciudades con red vial bajo las unidades (como la referencia)

@@ -1,147 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- USS Kitty Hawk (CV-63, CONVENCIONAL) - vista superior, proa al norte. Difiere del
-       Nimitz: GRAN CHIMENEA detras de la isla (propulsion de vapor), isla mas alargada,
-       3 ascensores. Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.dark/.glass. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="pc1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="pc1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="pc1gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="pc1g1" gradientUnits="userSpaceOnUse" x1="33" y1="66" x2="95" y2="66">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".16"/><stop offset=".6" stop-color="#fff" stop-opacity=".02"/><stop offset=".84" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity=".36"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- USS Kitty Hawk (T1 occidental, portaviones). Gris OTAN. Portaviones convencional. Identidad: cubierta de vuelo angulada con la isla a estribor y CUATRO ascensores de borde, tres a babor-proa y uno a popa de la isla; isla mas larga y con chimenea propia, al ser de propulsion convencional y no nuclear.
+     Camara naval del set: acimut 28 grados, elevacion 45 grados, mas alta que la
+     de los vehiculos terrestres porque en un buque la identidad esta en la
+     cubierta. Manga exagerada un 40 por ciento para que la cubierta sea legible. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#c3ccd4"/><stop offset="0.45" stop-color="#a3adb6"/>
+    <stop offset="1" stop-color="#8a949d"/>
   </linearGradient>
-  <linearGradient id="pc1g2" gradientUnits="userSpaceOnUse" x1="64" y1="6" x2="64" y2="119">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff" stop-opacity=".04"/><stop offset=".65" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  <linearGradient id="g-side" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#8a949d"/><stop offset="0.5" stop-color="#727c85"/>
+    <stop offset="1" stop-color="#565f68"/>
   </linearGradient>
-  <linearGradient id="pc1g5" gradientUnits="userSpaceOnUse" x1="42" y1="12" x2="90" y2="114">
-    <stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".24"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#dfe5ea"/><stop offset="0.5" stop-color="#9aa4ad"/>
+    <stop offset="1" stop-color="#5d666e"/>
   </linearGradient>
-  <linearGradient id="pc1g3" gradientUnits="userSpaceOnUse" x1="76" y1="60" x2="90" y2="60">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".26" stop-color="#fff" stop-opacity=".2"/><stop offset=".6" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
-  </linearGradient>
-  <radialGradient id="pc1g6" cx=".4" cy=".34" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </radialGradient>
-  <linearGradient id="pc1g4" gradientUnits="userSpaceOnUse" x1="40" y1="88" x2="66" y2="88">
-    <stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".05"/>
-  </linearGradient>
-  </defs>
-
-  <!-- sombra de contacto grande y suava -->
-  <ellipse cx="63" cy="65" rx="40" ry="63" fill="url(#pc1gs)"/>
-
-  <!-- ===== casco bajo la cubierta (visible en elogiios y popa) ===== -->
-  <path class="shade" d="M64 8 C55 12 46 20 41.5 30 L40.5 46 L40 100 L44 112 L52 118.8 L76 118.8 L84 112 L88 100 L87.5 46 L86.5 30 C82 20 73 12 64 8 Z" stroke="#3d4232" stroke-width="1.2"/>
-
-  <!-- ===== cubierta de vuelo ===== -->
-  <path class="base" d="M64 5.6 C56 9.4 47.5 16.5 43 25 C39.8 31.2 37.6 37.6 36.6 44.5 L36 88 L32.8 107 L36.2 114.4 L42 119 L86 119 L91.8 114.4 L95.2 107 L92 88 L93.4 44.5 C92.4 37.6 90.2 31.2 87 25 C82.5 16.5 72 9.4 64 5.6 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 5.6 C56 9.4 47.5 16.5 43 25 C39.8 31.2 37.6 37.6 36.6 44.5 L36 88 L32.8 107 L36.2 114.4 L42 119 L86 119 L91.8 114.4 L95.2 107 L92 88 L93.4 44.5 C92.4 37.6 90.2 31.2 87 25 C82.5 16.5 72 9.4 64 5.6 Z" fill="url(#pc1g1)"/>
-  <path d="M64 5.6 C56 9.4 47.5 16.5 43 25 C39.8 31.2 37.6 37.6 36.6 44.5 L36 88 L32.8 107 L36.2 114.4 L42 119 L86 119 L91.8 114.4 L95.2 107 L92 88 L93.4 44.5 C92.4 37.6 90.2 31.2 87 25 C82.5 16.5 72 9.4 64 5.6 Z" fill="url(#pc1g2)"/>
-  <path d="M64 5.6 C56 9.4 47.5 16.5 43 25 C39.8 31.2 37.6 37.6 36.6 44.5 L36 88 L32.8 107 L36.2 114.4 L42 119 L86 119 L91.8 114.4 L95.2 107 L92 88 L93.4 44.5 C92.4 37.6 90.2 31.2 87 25 C82.5 16.5 72 9.4 64 5.6 Z" fill="url(#pc1g5)"/>
-  <!-- rim light en la borda de babor + sombra profunda a estribor -->
-  <path d="M38.6 45 L38.2 86 L34.6 105.6" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M91.2 45 L91.8 86 L88.4 105.6" stroke="#000" stroke-width="1.6" opacity=".24" fill="none" filter="url(#pc1f1)"/>
-  <!-- paseo perimetral con redes -->
-  <path d="M64 8.2 C57 11.6 49.4 18 45.2 25.8 C42.2 31.6 40.2 37.8 39.2 44.6 L38.6 84 L35.8 103.6 L38.4 110.8 L42.6 115.2 L85.4 115.2 L89.6 110.8 L92.2 103.6 L91.4 84 L91.4 44.6 C90.4 37.8 88.4 31.6 85.4 25.8 C81.2 18 71 11.6 64 8.2 Z" fill="none" stroke="#b8bfa2" stroke-width=".7" opacity=".38"/>
-  <path d="M40.4 50 L39.6 100 M87.6 50 L88.4 100" stroke="#000" stroke-width=".5" stroke-dasharray="1.4 1.6" opacity=".3" fill="none"/>
-
-  <!-- ===== cubierta angular (zona de aterrizaje) ===== -->
-  <path d="M66.8 59.5 L70.6 59.5 L52.5 115 L47.5 114.5 Z" fill="url(#pc1g4)"/>
-  <path d="M66.8 59.5 L52.2 115 M71.2 59.5 L53.4 115.5" stroke="#b8bfa2" stroke-width=".8" opacity=".55" fill="none"/>
-  <path d="M68.9 61.5 L49.4 112.5" stroke="#b8bfa2" stroke-width="1" stroke-dasharray="3.4 2.6" opacity=".8" fill="none"/>
-  <!-- fila de ganchos/amarres en la cubierta -->
-  <path d="M42 52 L41 78 M92.6 46 L92.6 44.5 M60 112 L84 112" stroke="#000" stroke-width=".4" stroke-dasharray=".8 2.4" opacity=".35" fill="none"/>
-
-  <!-- ===== catapultas ===== -->
-  <path d="M59.5 14 L54.5 41 M68.5 14 L73.5 41" stroke="#000" stroke-width="1" opacity=".3" fill="none"/>
-  <path d="M60.1 15 L55.2 40 M67.9 15 L72.8 40" stroke="#b8bfa2" stroke-width=".5" opacity=".5" fill="none"/>
-  <path d="M75.5 58 L81.5 97" stroke="#000" stroke-width="1" opacity=".28" fill="none"/>
-  <!-- deflectores de chorro -->
-  <path class="shade" d="M52.8 43 L58.4 42.2 L58.8 50 L53.4 50.6 Z" stroke="#3d4232" stroke-width=".6"/>
-  <path class="shade" d="M69.6 42.2 L75.2 43 L74.6 50.6 L69.2 50 Z" stroke="#3d4232" stroke-width=".6"/>
-  <path d="M53.4 45 L58.2 44.4 M70 44.4 L74.8 45" stroke="#000" stroke-width=".5" opacity=".3" fill="none"/>
-
-  <!-- ===== ascensores ===== -->
-  <path class="shade" d="M88.8 60 L94.2 60 L94 69.6 L88.8 69.6 Z" stroke="#3d4232" stroke-width=".7"/>
-  <path d="M88.8 62 L94 62 M88.8 64.5 L94 64.5 M88.8 67 L94 67" stroke="#000" stroke-width=".4" opacity=".3" fill="none"/>
-  <path class="shade" d="M33.6 36 L39 36.4 L38.6 45.4 L33.8 45 Z" stroke="#3d4232" stroke-width=".7"/>
-  <path d="M34 38.5 L38.8 38.9 M34 41 L38.8 41.4 M34 43.4 L38.8 43.7" stroke="#000" stroke-width=".4" opacity=".3" fill="none"/>
-
-  <!-- ===== isla a estribor ===== -->
-  <path d="M75.6 45.1 L90 45.1 L90.2 74.4 L75.4 74.4 Z" fill="#000" opacity=".24" filter="url(#pc1f1)"/>
-  <path class="base" d="M76.4 45.5 L88.4 45.5 L89.6 49.5 L89.8 69.5 L87.4 73.8 L77.8 73.8 L76 69.5 Z" stroke="#3d4232" stroke-width="1.1"/>
-  <path d="M76.4 45.5 L88.4 45.5 L89.6 49.5 L89.8 69.5 L87.4 73.8 L77.8 73.8 L76 69.5 Z" fill="url(#pc1g3)"/>
-  <path d="M76.8 45.8 L88 45.8" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
-  <path d="M89.4 50 L89.6 69 L87.4 73.4" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#pc1f1)"/>
-  <path class="light" d="M76.4 45.5 L88.4 45.5 L88.9 47 L76.8 47 Z" opacity=".7"/>
-  <!-- ventanas del puente -->
-  <path class="glass" d="M78 46.6 L82.6 46.6 L82.6 49.4 L77.4 49.4 Z M85.8 46.6 L88 46.6 L88.6 49.4 L85.8 49.4 Z"/>
-  <path class="glassL" d="M78.4 47 L80.6 47 L80.6 48 L78.4 48 Z" opacity=".85"/>
-  <!-- radar rotatorio principal -->
-  <path class="dark" d="M80.6 52.6 L84.4 52.6 L84.8 55 L80.2 55 Z" opacity=".9"/>
-  <path class="metalL" d="M76.8 55.4 L88.2 55.4 L88 58.4 L77 58.4 Z"/>
-  <path d="M79.5 55.4 L79.5 58.4 M82.5 55.4 L82.5 58.4 M85.5 55.4 L85.5 58.4" stroke="#4a5057" stroke-width=".4" opacity=".8" fill="none"/>
-  <path d="M74.5 57 L88.6 56.6" stroke="#b8bfa2" stroke-width=".7" opacity=".5" fill="none"/>
-  <!-- mastil de nav y domos -->
-  <path d="M82.9 49.6 L82.9 52.4" stroke="#3d4232" stroke-width="1.1" fill="none"/>
-  <path d="M81.2 50.6 L84.6 50.6" stroke="#3d4232" stroke-width=".8" fill="none"/>
-  <circle class="metalS" cx="79" cy="61.5" r="1.5"/><circle class="metalS" cx="86.8" cy="61.5" r="1.5"/>
-  <path d="M77.9 61 L80 61" stroke="#e6e9e2" stroke-width=".5" opacity=".5" fill="none"/>
-  <!-- GRAN chimenea del portaaviones convencional -->
-  <path d="M75.8 73.5 L90.4 73.5 L90.2 92 L75.6 92 Z" fill="#000" opacity=".24" filter="url(#pc1f1)"/>
-  <rect class="dark" x="76.6" y="74.2" width="12.8" height="17" rx="1.2"/>
-  <rect class="dark" x="78.4" y="76" width="9.2" height="13.4" rx="1" opacity=".92"/>
-  <path d="M79.6 77.4 L79.6 88 M82 77.4 L82 88 M84.4 77.4 L84.4 88 M86.8 77.4 L86.8 88" stroke="#9aa378" stroke-width=".6" opacity=".55" fill="none"/>
-  <path d="M77 74.6 L89 74.6" stroke="#fff" stroke-width=".6" opacity=".25" fill="none"/>
-  <rect class="shade" x="77.2" y="91.6" width="11.6" height="2" rx=".6"/>
-  <!-- radar sobre la chimenea -->
-  <circle class="metalS" cx="83" cy="73.6" r="1.6"/>
-  <path d="M83 73.6 L85.4 72.4 M83 73.6 L82.2 75.8" stroke="#3d4232" stroke-width=".6" fill="none"/>
-
-  <!-- ===== cazas estacionados ===== -->
-  <!-- caza 1: proa babor -->
-  <g transform="translate(51 24.5) rotate(-24) scale(1.15)">
-    <path class="dark" d="M-1 -3.6 L-4.6 1.8 L-1 1.8 Z M1 -3.6 L4.6 1.8 L1 1.8 Z" opacity=".9"/>
-    <path class="metalS" d="M0 -6.4 L1.5 -2.4 L1.5 4.6 L0 6.8 L-1.5 4.6 L-1.5 -2.4 Z"/>
-    <path class="metalS" d="M1.3 -0.4 L7.4 2.4 L7.4 4 L1.3 3.2 Z M-1.3 -0.4 L-7.4 2.4 L-7.4 4 L-1.3 3.2 Z"/>
-    <path class="metalL" d="M1.1 4.4 L3.4 5.6 L3.4 6.4 L1.1 5.8 Z M-1.1 4.4 L-3.4 5.6 L-3.4 6.4 L-1.1 5.8 Z"/>
-    <path d="M0 -5.4 L0 3.4" stroke="#4a5057" stroke-width=".4" opacity=".7" fill="none"/>
-    <circle class="dark" cx="0" cy="-3.4" r=".8"/>
-  </g>
-  <!-- caza 2: babor junto a isla -->
-  <g transform="translate(49.5 45) rotate(-14) scale(1.15)">
-    <path class="dark" d="M-1 -3.6 L-4.6 1.8 L-1 1.8 Z M1 -3.6 L4.6 1.8 L1 1.8 Z" opacity=".9"/>
-    <path class="metalS" d="M0 -6.4 L1.5 -2.4 L1.5 4.6 L0 6.8 L-1.5 4.6 L-1.5 -2.4 Z"/>
-    <path class="metalS" d="M1.3 -0.4 L7.4 2.4 L7.4 4 L1.3 3.2 Z M-1.3 -0.4 L-7.4 2.4 L-7.4 4 L-1.3 3.2 Z"/>
-    <path class="metalL" d="M1.1 4.4 L3.4 5.6 L3.4 6.4 L1.1 5.8 Z M-1.1 4.4 L-3.4 5.6 L-3.4 6.4 L-1.1 5.8 Z"/>
-    <path d="M0 -5.4 L0 3.4" stroke="#4a5057" stroke-width=".4" opacity=".7" fill="none"/>
-    <circle class="dark" cx="0" cy="-3.4" r=".8"/>
-  </g>
-  <!-- caza 3: en cubierta angular, mirando a popa -->
-  <g transform="translate(57.5 76) rotate(196) scale(1.15)">
-    <path class="dark" d="M-1 -3.6 L-4.6 1.8 L-1 1.8 Z M1 -3.6 L4.6 1.8 L1 1.8 Z" opacity=".9"/>
-    <path class="metalS" d="M0 -6.4 L1.5 -2.4 L1.5 4.6 L0 6.8 L-1.5 4.6 L-1.5 -2.4 Z"/>
-    <path class="metalS" d="M1.3 -0.4 L7.4 2.4 L7.4 4 L1.3 3.2 Z M-1.3 -0.4 L-7.4 2.4 L-7.4 4 L-1.3 3.2 Z"/>
-    <path class="metalL" d="M1.1 4.4 L3.4 5.6 L3.4 6.4 L1.1 5.8 Z M-1.1 4.4 L-3.4 5.6 L-3.4 6.4 L-1.1 5.8 Z"/>
-    <path d="M0 -5.4 L0 3.4" stroke="#4a5057" stroke-width=".4" opacity=".7" fill="none"/>
-    <circle class="dark" cx="0" cy="-3.4" r=".8"/>
-  </g>
-  <!-- caza 4: popa estribor -->
-  <g transform="translate(82.5 90) rotate(172) scale(1.15)">
-    <path class="dark" d="M-1 -3.6 L-4.6 1.8 L-1 1.8 Z M1 -3.6 L4.6 1.8 L1 1.8 Z" opacity=".9"/>
-    <path class="metalS" d="M0 -6.4 L1.5 -2.4 L1.5 4.6 L0 6.8 L-1.5 4.6 L-1.5 -2.4 Z"/>
-    <path class="metalS" d="M1.3 -0.4 L7.4 2.4 L7.4 4 L1.3 3.2 Z M-1.3 -0.4 L-7.4 2.4 L-7.4 4 L-1.3 3.2 Z"/>
-    <path class="metalL" d="M1.1 4.4 L3.4 5.6 L3.4 6.4 L1.1 5.8 Z M-1.1 4.4 L-3.4 5.6 L-3.4 6.4 L-1.1 5.8 Z"/>
-    <path d="M0 -5.4 L0 3.4" stroke="#4a5057" stroke-width=".4" opacity=".7" fill="none"/>
-    <circle class="dark" cx="0" cy="-3.4" r=".8"/>
-  </g>
-
-  <!-- ===== marcas de popa ===== -->
-  <path d="M58 116.2 L58 118 M64 116.2 L64 118.4 M70 116.2 L70 118" stroke="#b8bfa2" stroke-width=".7" opacity=".5" fill="none"/>
-  <path d="M45 108 C50 110 78 110 84.5 108" stroke="#000" stroke-width=".6" opacity=".2" fill="none"/>
+</defs>
+<path d="M24.9 153.5 L39.9 173.5 L131.2 142.4 L197.0 111.3 L231.1 88.8 L185.7 96.3 L112.4 117.4 Z" fill="#0a1a22" opacity="0.26" transform="translate(4,5)"/>
+<path d="M30.8 154.5 L42.0 169.5 L2.8 191.9 L-17.5 165.0 Z" fill="#eaf4f9" opacity="0.20"/>
+<path d="M203.0 119.2 L241.0 85.1 L179.7 88.3" fill="none" stroke="#eaf4f9" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M39.9 173.5 L131.2 142.4 L197.0 111.3 L231.1 88.8 L231.1 82.5 L197.0 104.9 L131.2 136.0 L39.9 167.2 Z" fill="url(#g-side)"/>
+<path d="M24.9 153.5 L39.9 173.5 L39.9 167.2 L24.9 147.2 Z" fill="#565f68"/>
+<path d="M24.9 147.2 L39.9 167.2 L131.2 136.0 L197.0 104.9 L231.1 82.5 L185.7 89.9 L112.4 111.1 Z" fill="url(#g-deck)"/>
+<path d="M24.9 147.2 L112.4 111.1 L185.7 89.9 L231.1 82.5" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M39.9 167.2 L131.2 136.0 L197.0 104.9 L231.1 82.5" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.6"/>
+<path d="M21.4 134.4 L214.1 62.0 L242.6 99.9 L49.9 172.4 Z" fill="#565f68"/>
+<path d="M21.4 133.6 L214.1 61.1 L242.6 99.1 L49.9 171.5 Z" fill="url(#g-deck)"/>
+<path d="M21.4 133.6 L214.1 61.1 L242.6 99.1 L49.9 171.5 Z" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.4"/>
+<path d="M47.2 157.5 L147.3 97.5 L151.1 102.5 L51.0 162.5 Z" fill="#39414a"/>
+<path d="M49.1 159.8 L149.2 99.8" fill="none" stroke="#e8eef2" stroke-opacity="0.75" stroke-width="1.6" stroke-dasharray="7 6"/>
+<path d="M77.0 112.7 L79.6 116.2 L79.6 115.7 L77.0 112.2 Z" fill="#20262c"/>
+<path d="M79.6 116.2 L107.4 105.7 L107.4 105.3 L79.6 115.7 Z" fill="#2b323a"/>
+<path d="M77.0 112.2 L104.8 101.8 L107.4 105.3 L79.6 115.7 Z" fill="#39414a"/>
+<path d="M77.0 112.2 L104.8 101.8 L107.4 105.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M140.6 88.8 L143.2 92.3 L143.2 91.8 L140.6 88.3 Z" fill="#20262c"/>
+<path d="M143.2 92.3 L171.0 81.8 L171.0 81.4 L143.2 91.8 Z" fill="#2b323a"/>
+<path d="M140.6 88.3 L168.4 77.9 L171.0 81.4 L143.2 91.8 Z" fill="#39414a"/>
+<path d="M140.6 88.3 L168.4 77.9 L171.0 81.4" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M71.1 159.1 L73.7 162.6 L73.7 162.1 L71.1 158.6 Z" fill="#20262c"/>
+<path d="M73.7 162.6 L97.6 153.6 L97.6 153.2 L73.7 162.1 Z" fill="#2b323a"/>
+<path d="M71.1 158.6 L94.9 149.7 L97.6 153.2 L73.7 162.1 Z" fill="#39414a"/>
+<path d="M71.1 158.6 L94.9 149.7 L97.6 153.2" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M99.9 143.1 L104.4 149.1 L104.4 141.3 L99.9 135.3 Z" fill="#565f68"/>
+<path d="M104.4 149.1 L144.1 134.2 L144.1 126.4 L104.4 141.3 Z" fill="url(#g-side)"/>
+<path d="M99.9 135.3 L139.6 120.4 L144.1 126.4 L104.4 141.3 Z" fill="url(#g-deck)"/>
+<path d="M99.9 135.3 L139.6 120.4 L144.1 126.4" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M112.9 132.4 L115.2 135.4 L115.2 129.7 L112.9 126.7 Z" fill="#565f68"/>
+<path d="M115.2 135.4 L133.1 128.6 L133.1 123.0 L115.2 129.7 Z" fill="url(#g-side)"/>
+<path d="M112.9 126.7 L130.8 120.0 L133.1 123.0 L115.2 129.7 Z" fill="url(#g-deck)"/>
+<path d="M112.9 126.7 L130.8 120.0 L133.1 123.0" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M124.0 124.5 L124.0 116.0" fill="none" stroke="#565f68" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M120.8 115.6 L127.2 124.0" fill="none" stroke="#727c85" stroke-width="3.4" stroke-linecap="round"/>
+<ellipse cx="124.0" cy="117.7" rx="7.4" ry="4.1" fill="#a3adb6"/>
+<ellipse cx="124.0" cy="118.8" rx="8.3" ry="4.3" fill="#a3adb6" stroke="#565f68" stroke-width="1"/>
 </svg>

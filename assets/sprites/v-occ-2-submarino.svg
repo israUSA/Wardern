@@ -1,108 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- USS Virginia (SSN-774) - vista superior, proa al norte. Casco elastico oscuro,
-       vela con radomo, DOS filas de 4 trampas VLS a ambas bandas de la quilla,
-       planes de proa, propulsor a chorro.
-       Tinte: este sprite usa ACERO (.metal/.metalS/.metalL) como superficie principal
-       (casco y vela); para diferenciar paises conviene filtro suave de brillo/tono.
-       Fijos: .dark (escotillas de misiles, periscopios, quilla), .glass no aplicable,
-       .hi (lineas de cubierta), .rubber (revestimiento anecoico de la vela).
-       Casco elipptico oscuro, vela con periscopios, planes de proa y popa,
-       hatches de misiles a ambas bandas del eje y propulsor a chorro en la popa. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="sb2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
-  <filter id="sb2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
-  <radialGradient id="sb2gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="sb2g1" gradientUnits="userSpaceOnUse" x1="50" y1="62" x2="78" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".2" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".24"/><stop offset=".6" stop-color="#fff" stop-opacity=".04"/><stop offset=".8" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".44"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- USS Virginia (T2 occidental, submarino). Casco negro. Identidad frente al Los Angeles: los timones de profundidad ya NO van en la vela sino a PROA, en el casco, y la vela es mas baja y con la base carenada. Casco liso sin resaltes.
+     Camara naval del set: acimut 28 grados, elevacion 45 grados, mas alta que la
+     de los vehiculos terrestres porque en un buque la identidad esta en la
+     cubierta. Manga exagerada un 40 por ciento para que la cubierta sea legible. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#79828a"/><stop offset="0.45" stop-color="#5c656d"/>
+    <stop offset="1" stop-color="#454d54"/>
   </linearGradient>
-  <linearGradient id="sb2g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="114">
-    <stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  <linearGradient id="g-side" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#454d54"/><stop offset="0.5" stop-color="#353c42"/>
+    <stop offset="1" stop-color="#262b30"/>
   </linearGradient>
-  <linearGradient id="sb2g3" gradientUnits="userSpaceOnUse" x1="58" y1="49" x2="70" y2="49">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".24" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity=".12"/><stop offset=".85" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".36"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#dfe5ea"/><stop offset="0.5" stop-color="#9aa4ad"/>
+    <stop offset="1" stop-color="#5d666e"/>
   </linearGradient>
-  </defs>
-
-  <!-- sombra de contacto grande y suava -->
-  <ellipse cx="63" cy="62" rx="20" ry="57" fill="url(#sb2gs)"/>
-
-  <!-- ===== casco presion eliptico ===== -->
-  <path class="metal" d="M64 10.5 C57.8 14.6 52.8 21 50.2 29.6 L48.6 41 L48.8 84 L50.8 94.5 L55.2 104 L60 110 L64 112.4 L68 110 L72.8 104 L77.2 94.5 L79.2 84 L79.4 41 L77.8 29.6 C75.2 21 70.2 14.6 64 10.5 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 10.5 C57.8 14.6 52.8 21 50.2 29.6 L48.6 41 L48.8 84 L50.8 94.5 L55.2 104 L60 110 L64 112.4 L68 110 L72.8 104 L77.2 94.5 L79.2 84 L79.4 41 L77.8 29.6 C75.2 21 70.2 14.6 64 10.5 Z" fill="url(#sb2g1)"/>
-  <path d="M64 10.5 C57.8 14.6 52.8 21 50.2 29.6 L48.6 41 L48.8 84 L50.8 94.5 L55.2 104 L60 110 L64 112.4 L68 110 L72.8 104 L77.2 94.5 L79.2 84 L79.4 41 L77.8 29.6 C75.2 21 70.2 14.6 64 10.5 Z" fill="url(#sb2g2)"/>
-  <!-- rim light en el flanco de babor + sombra profunda a estribor -->
-  <path d="M50.4 30 L48.9 41 L49 84 L51 94 L55.4 103.6" stroke="#fff" stroke-width="1.1" opacity=".4" fill="none"/>
-  <path d="M77.6 30 L79.1 41 L79 84 L77 94 L72.6 103.6" stroke="#000" stroke-width="1.6" opacity=".26" fill="none" filter="url(#sb2f1)"/>
-  <!-- domo de sonar de proa -->
-  <ellipse class="metalL" cx="64" cy="20.5" rx="5.2" ry="7" opacity=".55"/>
-  <path d="M59.6 17.5 C61.5 19.8 66.5 19.8 68.4 17.5 M58.9 21.5 C61.4 23.6 66.6 23.6 69.1 21.5" stroke="#4a5057" stroke-width=".5" opacity=".7" fill="none"/>
-  <!-- tuneles de empuje transversal -->
-  <path class="dark" d="M55.2 25.9 L56.9 26.7 M55.2 28.3 L56.9 27.5 M72.8 25.9 L71.1 26.7 M72.8 28.3 L71.1 27.5" stroke-width="1" fill="none"/>
-  <!-- muettes de amarre -->
-  <path d="M52.4 35.6 L53.8 34.9 M52.4 36.2 L53.8 36.9 M53 34.9 L53 36.9 M75.6 35.6 L74.2 34.9 M75.6 36.2 L74.2 36.9 M75 34.9 L75 36.9" stroke="#4a5057" stroke-width=".6" fill="none"/>
-  <!-- anillos estructurales del casco -->
-  <path d="M50.3 31.5 C56.5 33.2 71.5 33.2 77.7 31.5 M49.2 44 C56.6 45.6 71.4 45.6 78.8 44 M48.9 66 C56.6 67.6 71.4 67.6 79.1 66 M49.6 90 C56.5 91.6 71.5 91.6 78.4 90" stroke="#000" stroke-width=".55" opacity=".18" fill="none"/>
-  <path d="M49.5 77.5 C56.6 79 71.4 79 78.5 77.5" stroke="#000" stroke-width=".55" opacity=".15" fill="none"/>
-  <!-- bulge del sonar remolcado a popa -->
-  <path class="metalL" d="M63.2 104.2 L64.8 104.2 L65.6 111 L62.4 111 Z" opacity=".7"/>
-  <!-- linea de cubierta central -->
-  <path d="M64 12.5 L64 38 M64 64 L64 106" stroke="#b8bfa2" stroke-width=".7" opacity=".28" fill="none"/>
-  <!-- imbornales de drenaje -->
-  <circle class="dark" cx="53.8" cy="52" r=".55"/><circle class="dark" cx="52.9" cy="60" r=".55"/><circle class="dark" cx="52.9" cy="72" r=".55"/><circle class="dark" cx="53.8" cy="80" r=".55"/>
-  <circle class="dark" cx="74.2" cy="52" r=".55"/><circle class="dark" cx="75.1" cy="60" r=".55"/><circle class="dark" cx="75.1" cy="72" r=".55"/><circle class="dark" cx="74.2" cy="80" r=".55"/>
-
-  <!-- ===== planes de profundidad de proa ===== -->
-  <path class="metalS" d="M50.6 31.2 L42.8 33.4 L42.4 36.2 L50.3 37.2 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M77.4 31.2 L85.2 33.4 L85.6 36.2 L77.7 37.2 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path d="M44.4 34.2 L49.6 34.6 M83.6 34.2 L78.4 34.6" stroke="#b8bfa2" stroke-width=".6" opacity=".5" fill="none"/>
-
-  <!-- ===== vela (sail) con periscopios ===== -->
-  <path d="M57.8 38.4 L70.2 38.4 L69.8 63 L58.2 63 Z" fill="#000" opacity=".24" filter="url(#sb2f1)"/>
-  <path class="metalS" d="M64 37.2 C60.6 38.3 59 40.4 58.6 43.2 L58.2 55.2 C58.6 58.9 60.3 61.1 64 61.9 C67.7 61.1 69.4 58.9 69.8 55.2 L69.4 43.2 C69 40.4 67.4 38.3 64 37.2 Z" stroke="#3d4232" stroke-width="1.1"/>
-  <path d="M64 37.2 C60.6 38.3 59 40.4 58.6 43.2 L58.2 55.2 C58.6 58.9 60.3 61.1 64 61.9 C67.7 61.1 69.4 58.9 69.8 55.2 L69.4 43.2 C69 40.4 67.4 38.3 64 37.2 Z" fill="url(#sb2g3)"/>
-  <path d="M59.4 40.6 C60 38.8 61.6 37.8 63.8 37.5" stroke="#fff" stroke-width=".9" opacity=".5" fill="none"/>
-  <path d="M68.8 42 L69 55 C68.8 57.6 67.4 59.8 65.4 60.8" stroke="#000" stroke-width="1" opacity=".26" fill="none" filter="url(#sb2f1)"/>
-  <!-- radomo delantero de la vela -->
-  <ellipse class="metalL" cx="64" cy="41.6" rx="2.6" ry="2" opacity=".7"/>
-  <!-- puente abierto -->
-  <ellipse class="dark" cx="64" cy="46.6" rx="2.7" ry="3.4"/>
-  <ellipse cx="64" cy="45.6" rx="1.7" ry="2.1" fill="#0d1116" opacity=".6"/>
-  <!-- periscopios y mastros -->
-  <circle class="metalL" cx="61.6" cy="40.4" r=".95"/><circle cx="61.6" cy="40.4" r=".4" fill="#2b2e28"/>
-  <circle class="metal" cx="66.4" cy="40.4" r=".95"/><circle cx="66.4" cy="40.4" r=".4" fill="#2b2e28"/>
-  <circle class="dark" cx="60.2" cy="42.8" r=".6"/><circle class="dark" cx="67.8" cy="42.8" r=".6"/>
-  <!-- revestimiento de goma (anechoico) en flancos de vela -->
-  <path class="rubber" d="M59 47.4 L59.3 55 C59.6 57.7 60.8 59.6 62.6 60.6 L62.8 59 C61.4 58.1 60.5 56.4 60.2 54.2 L60 47.4 Z" opacity=".55"/>
-  <path class="rubber" d="M69 47.4 L68.7 55 C68.4 57.7 67.2 59.6 65.4 60.6 L65.2 59 C66.6 58.1 67.5 56.4 67.8 54.2 L68 47.4 Z" opacity=".55"/>
-
-  <!-- ===== hatches de misiles (2x4 por banda) ===== -->
-  <rect class="dark" x="55.6" y="66.6" width="5" height="5.2" rx="1"/><rect class="dark" x="67.4" y="66.6" width="5" height="5.2" rx="1"/>
-  <rect class="dark" x="55.6" y="74.2" width="5" height="5.2" rx="1"/><rect class="dark" x="67.4" y="74.2" width="5" height="5.2" rx="1"/>
-  <rect class="dark" x="55.6" y="81.8" width="5" height="5.2" rx="1"/><rect class="dark" x="67.4" y="81.8" width="5" height="5.2" rx="1"/>
-  <rect class="dark" x="55.6" y="89.4" width="5" height="5.2" rx="1"/><rect class="dark" x="67.4" y="89.4" width="5" height="5.2" rx="1"/>
-  <path d="M57 68 L57 70.4 M68.8 68 L68.8 70.4 M57 75.6 L57 78 M68.8 75.6 L68.8 78 M57 83.2 L57 85.6 M68.8 83.2 L68.8 85.6 M57 90.8 L57 93.2 M68.8 90.8 L68.8 93.2" stroke="#8a929b" stroke-width=".5" opacity=".7" fill="none"/>
-  <path d="M56 69.2 L60.2 69.2 M67.8 69.2 L72 69.2 M56 76.8 L60.2 76.8 M67.8 76.8 L72 76.8 M56 84.4 L60.2 84.4 M67.8 84.4 L72 84.4 M56 92 L60.2 92 M67.8 92 L72 92" stroke="#4a5057" stroke-width=".5" opacity=".7" fill="none"/>
-  <!-- troncos de escape entre hatches -->
-  <circle class="metalS" cx="64" cy="71.6" r="1.1"/><circle class="metalS" cx="64" cy="86.8" r="1.1"/>
-  <circle class="dark" cx="64" cy="71.6" r=".5"/><circle class="dark" cx="64" cy="86.8" r=".5"/>
-
-  <!-- ===== planes y timon de popa ===== -->
-  <path class="metalS" d="M52 95 L43.6 97.2 L43.2 100.2 L51.6 101.4 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M76 95 L84.4 97.2 L84.8 100.2 L76.4 101.4 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path d="M45 98.2 L50.8 98.6 M83 98.2 L77.2 98.6" stroke="#b8bfa2" stroke-width=".6" opacity=".5" fill="none"/>
-  <!-- timon vertical (cuchilla a proa de la helice) -->
-  <path class="dark" d="M63.1 98.5 L64.9 98.5 L65.2 107.5 L62.8 107.5 Z"/>
-
-  <!-- ===== propulsor a chorro (pump-jet) ===== -->
-  <circle class="dark" cx="64" cy="108.2" r="4.8"/>
-  <circle cx="64" cy="108.2" r="4.8" fill="none" stroke="#3d4232" stroke-width=".7"/>
-  <circle cx="64" cy="108.2" r="3.4" fill="none" stroke="#8a929b" stroke-width="1.4" opacity=".85"/>
-  <path d="M61.4 105.9 L66.6 110.5 M66.6 105.9 L61.4 110.5" stroke="#4a5057" stroke-width=".6" opacity=".8" fill="none"/>
-  <circle class="metalL" cx="64" cy="108.2" r="1.2"/>
+</defs>
+<path d="M42.0 156.8 L44.9 160.7 L103.2 148.7 L187.7 112.0 L218.3 93.0 L179.0 100.4 L114.9 119.5 Z" fill="#0a1a22" opacity="0.26" transform="translate(4,5)"/>
+<path d="M42.6 151.6 L51.3 163.2 L16.4 182.4 L0.7 161.5 Z" fill="#eaf4f9" opacity="0.20"/>
+<path d="M192.4 118.2 L227.1 89.7 L174.3 94.2" fill="none" stroke="#eaf4f9" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M44.9 160.7 L103.2 148.7 L187.7 112.0 L218.3 93.0 L218.3 89.5 L187.7 108.4 L103.2 145.2 L44.9 157.2 Z" fill="url(#g-side)"/>
+<path d="M42.0 156.8 L44.9 160.7 L44.9 157.2 L42.0 153.3 Z" fill="#262b30"/>
+<path d="M42.0 153.3 L44.9 157.2 L103.2 145.2 L187.7 108.4 L218.3 89.5 L179.0 96.8 L114.9 116.0 Z" fill="url(#g-deck)"/>
+<path d="M42.0 153.3 L114.9 116.0 L179.0 96.8 L218.3 89.5" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M44.9 157.2 L103.2 145.2 L187.7 108.4 L218.3 89.5" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.6"/>
+<path d="M54.0 151.0 L207.8 93.2" fill="none" stroke="#79828a" stroke-opacity="0.85" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M142.9 114.4 L146.9 119.8 L146.9 109.2 L142.9 103.8 Z" fill="#262b30"/>
+<path d="M146.9 119.8 L167.9 111.9 L167.9 101.3 L146.9 109.2 Z" fill="url(#g-side)"/>
+<path d="M142.9 103.8 L163.8 95.9 L167.9 101.3 L146.9 109.2 Z" fill="url(#g-deck)"/>
+<path d="M142.9 103.8 L163.8 95.9 L167.9 101.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M149.0 95.1 L161.8 112.1" fill="none" stroke="#353c42" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M155.4 102.5 L155.4 97.6" fill="none" stroke="#262b30" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M172.3 87.9 L179.3 85.3 L201.4 114.7 L194.4 117.3 Z" fill="#353c42"/>
+<path d="M172.3 86.9 L179.3 84.3 L201.4 113.7 L194.4 116.3 Z" fill="#5c656d"/>
+<path d="M47.3 151.3 L50.2 155.2 L50.2 150.9 L47.3 147.1 Z" fill="#262b30"/>
+<path d="M50.2 155.2 L62.4 150.6 L62.4 146.3 L50.2 150.9 Z" fill="url(#g-side)"/>
+<path d="M47.3 147.1 L59.5 142.5 L62.4 146.3 L50.2 150.9 Z" fill="url(#g-deck)"/>
+<path d="M47.3 147.1 L59.5 142.5 L62.4 146.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
 </svg>
