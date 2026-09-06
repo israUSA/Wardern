@@ -1,154 +1,102 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- Kornet-D (cazatanques ligero 4x4) - vista superior, morro al norte. Vehiculo de
-       ruedas con DOS BATERIAS CUADRUPLES de misiles Kornet elevadas a banda (4 bocas
-       cada una), mastil de sensor retráctil, sin torreta. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="kd1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
-  <filter id="kd1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
-  <radialGradient id="kd1gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="kd1g1" gradientUnits="userSpaceOnUse" x1="49" y1="62" x2="79" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".42" stop-color="#fff" stop-opacity=".24"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- Kornet-D sobre GAZ Tigr (T3 oriental, cazatanques). Verde ruso.
+     Camara y escala del set (20.9 px/m). Vehiculo 5.70 x 2.40 x 2.40 m.
+     Identidad: blindado ligero de RUEDAS 4x4 con capo delantero bajo y cabina
+     cuadrada atras, y sobre el techo el montaje giratorio con DOS bancadas de
+     cuatro tubos Kornet cada una. Silueta: furgon blindado con dos racimos de
+     tubos encima. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#9aa878"/><stop offset="0.34" stop-color="#7c8b5d"/>
+    <stop offset="0.68" stop-color="#66744c"/><stop offset="1" stop-color="#52603c"/>
   </linearGradient>
-  <linearGradient id="kd1g2" gradientUnits="userSpaceOnUse" x1="64" y1="22" x2="64" y2="103">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".32" stop-color="#fff" stop-opacity=".05"/><stop offset=".58" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#6b7a4e"/><stop offset="0.45" stop-color="#5a6942"/>
+    <stop offset="1" stop-color="#455233"/>
   </linearGradient>
-  <linearGradient id="kd1g3" gradientUnits="userSpaceOnUse" x1="53.6" y1="43" x2="74.4" y2="43">
-    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".24" stop-color="#fff" stop-opacity=".18"/><stop offset=".55" stop-color="#fff" stop-opacity=".08"/><stop offset=".85" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#485636"/><stop offset="0.6" stop-color="#374327"/>
+    <stop offset="1" stop-color="#2a331e"/>
   </linearGradient>
-  <linearGradient id="kd1g4" gradientUnits="userSpaceOnUse" x1="64" y1="40" x2="64" y2="46.8">
-    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".8"/><stop offset=".4" stop-color="#9cc4dc" stop-opacity=".4"/><stop offset=".8" stop-color="#28495e" stop-opacity=".6"/><stop offset="1" stop-color="#14293a" stop-opacity=".75"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#a6b28a"/><stop offset="0.5" stop-color="#717d5a"/>
+    <stop offset="1" stop-color="#464f35"/>
   </linearGradient>
-  <radialGradient id="kd1g5" cx=".4" cy=".34" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-tyre" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#3a3a30"/><stop offset="0.5" stop-color="#26261f"/>
+    <stop offset="1" stop-color="#171712"/>
+  </linearGradient>
+</defs>
+<path d="M64 152 L154 126 L180 147 L84 176 Z" fill="#080a06" opacity="0.30"/>
 
-  <!-- sombra de contacto grande y suava -->
-  <ellipse cx="63" cy="62" rx="24" ry="47" fill="url(#kd1gs)"/>
+<!-- popa -->
+<path d="M47.2 116.9 L70.7 139.9 L70.7 157.9 L47.2 134.9 Z" fill="url(#g-rear)"/>
+<path d="M50 123 L61 133.8 L61 148 L50 137.2 Z" fill="#4c5a35" stroke="#1f2716" stroke-width="0.9"/>
+<circle cx="49" cy="120" r="2.2" fill="#8f5b30"/>
+<circle cx="68.5" cy="139" r="2.2" fill="#8f5b30"/>
 
-  <!-- ===== ruedas 4x4 ===== -->
-  <ellipse class="dark" cx="48" cy="36" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="80" cy="36" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="48" cy="88" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="80" cy="88" rx="6.4" ry="7" opacity=".3"/>
-  <circle class="rubber" cx="48" cy="36" r="5.8"/><circle class="rubber" cx="80" cy="36" r="5.8"/>
-  <circle class="rubber" cx="48" cy="88" r="5.8"/><circle class="rubber" cx="80" cy="88" r="5.8"/>
-  <circle cx="48" cy="36" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="80" cy="36" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="48" cy="88" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="80" cy="88" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle class="metal" cx="48" cy="36" r="2.1"/><circle class="metal" cx="80" cy="36" r="2.1"/>
-  <circle class="metal" cx="48" cy="88" r="2.1"/><circle class="metal" cx="80" cy="88" r="2.1"/>
-  <circle class="metalL" cx="48" cy="36" r=".7"/><circle class="metalL" cx="80" cy="36" r=".7"/>
-  <circle class="metalL" cx="48" cy="88" r=".7"/><circle class="metalL" cx="80" cy="88" r=".7"/>
-  <!-- brillo y sombra de los neumaticos -->
-  <g fill="#fff" opacity=".22">
-    <circle cx="46.4" cy="34.2" r="1.7"/><circle cx="78.4" cy="34.2" r="1.4"/>
-    <circle cx="46.4" cy="86.2" r="1.7"/><circle cx="78.4" cy="86.2" r="1.4"/>
-  </g>
-  <g fill="#000" opacity=".2">
-    <circle cx="49.8" cy="38.2" r="1.9"/><circle cx="81.8" cy="38.2" r="1.7"/>
-    <circle cx="49.8" cy="90.2" r="1.9"/><circle cx="81.8" cy="90.2" r="1.7"/>
-  </g>
+<!-- cubierta trasera, techo de cabina y capo -->
+<path d="M47.2 116.9 L64.9 112.0 L88.4 135.0 L70.7 139.9 Z" fill="url(#g-deck)"/>
+<path d="M64.9 104.0 L110.8 91.3 L134.3 114.3 L88.4 127.0 Z" fill="url(#g-deck)"/>
+<path d="M110.8 103.3 L146.1 97.6 L169.6 120.6 L134.3 126.3 Z" fill="url(#g-deck)"/>
+<path d="M110.8 103.3 L146.1 97.6 L169.6 120.6 L134.3 126.3 Z" fill="#ffffff" fill-opacity="0.07"/>
+<path d="M64.9 104.0 L110.8 91.3" fill="none" stroke="#ffffff" stroke-opacity="0.34" stroke-width="1.4"/>
+<!-- rejilla del radiador y faros -->
+<g fill="#3b4728">
+  <path d="M150 103 L155 108 L152.4 109.2 L147.4 104.2 Z"/>
+  <path d="M162 115 L167 120 L164.4 121.2 L159.4 116.2 Z"/>
+</g>
 
-  <!-- ===== carroceria ===== -->
-  <path class="base" d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" stroke="#3d4232" stroke-width="1.3"/>
-  <path d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" fill="url(#kd1g1)"/>
-  <path d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" fill="url(#kd1g2)"/>
-  <!-- rim light en el flanco de babor + sombra profunda a estribor -->
-  <path d="M51 26 L50.4 57 L50.4 90 L51.8 97.6" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M77 26 L77.6 57 L77.6 90 L76.2 97.6" stroke="#000" stroke-width="1.5" opacity=".24" fill="none" filter="url(#kd1f1)"/>
-  <!-- parachoques y cabestrante -->
-  <path class="dark" d="M52.6 21.5 L75.4 21.5 L75.4 25.5 L52.6 25.5 Z"/>
-  <path class="metalS" d="M57.5 22.2 L70.5 22.2 L70.5 24.8 L57.5 24.8 Z" opacity=".9"/>
-  <path d="M61 22.4 L61 24.6 M64 22.4 L64 24.6 M67 22.4 L67 24.6" stroke="#4a5057" stroke-width=".6" fill="none"/>
-  <circle class="dark" cx="54.4" cy="23.5" r=".8"/><circle class="dark" cx="73.6" cy="23.5" r=".8"/>
-  <!-- guardabarros delanteros -->
-  <path class="shade" d="M50.9 30.2 C54.6 28.9 55.6 31.4 55.4 34 L55.6 42.4 L51 42.4 L50.5 34 Z" opacity=".85"/>
-  <path class="shade" d="M77.1 30.2 C73.4 28.9 72.4 31.4 72.6 34 L72.4 42.4 L77 42.4 L77.5 34 Z" opacity=".85"/>
-  <!-- capo con cresteria -->
-  <path class="base" d="M54.8 27.5 L73.2 27.5 L74 39 L54 39 Z" stroke="#00000022" stroke-width=".6"/>
-  <path d="M54.8 27.5 L73.2 27.5 L74 39 L54 39 Z" fill="url(#kd1g3)" opacity=".6"/>
-  <path d="M64 27.9 L64 38.7" stroke="#b8bfa2" stroke-width=".8" opacity=".55" fill="none"/>
-  <path d="M55.4 33 L60.4 33 M67.6 33 L72.6 33" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
-  <!-- rejillas de ventilacion del capo -->
-  <path class="dark" d="M58.4 35.4 L62 35.4 L62 37.6 L58.4 37.6 Z M66 35.4 L69.6 35.4 L69.6 37.6 L66 37.6 Z" opacity=".85"/>
-  <!-- parabrisas -->
-  <path class="glass" d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z"/>
-  <path d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z" fill="url(#kd1g4)"/>
-  <path d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z" fill="none" stroke="#243b4d" stroke-width=".7"/>
-  <path d="M57.8 40.8 L57 46 M70.2 40.8 L71 46" stroke="#243b4d" stroke-width=".5" opacity=".8" fill="none"/>
-  <path d="M59.2 41 L58.6 45.6" stroke="#e8f4fb" stroke-width=".8" opacity=".55" fill="none"/>
-  <!-- espejos -->
-  <path class="dark" d="M49.4 43 L51.2 43 L51.2 46.2 L49.4 46.2 Z M78.6 43 L76.8 43 L76.8 46.2 L78.6 46.2 Z"/>
+<!-- flanco: cubierta trasera, cabina alta y capo bajo -->
+<path d="M70.7 157.9 L70.7 139.9 L88.4 135.0 L88.4 127.0 L134.3 114.3
+         L134.3 126.3 L169.6 120.6 L175.8 124.9 L175.8 128.9 Z" fill="url(#g-flank)"/>
+<!-- ventanillas blindadas -->
+<g fill="#2b3320">
+  <path d="M94 129.5 L110 125.1 L110 117.1 L94 121.5 Z"/>
+  <path d="M114 124 L129 119.9 L129 111.9 L114 116 Z"/>
+</g>
+<path d="M94 121.5 L110 117.1 L110 118.6 L94 123 Z" fill="#8fb4c4" fill-opacity="0.45"/>
+<path d="M114 116 L129 111.9 L129 113.4 L114 117.5 Z" fill="#8fb4c4" fill-opacity="0.45"/>
+<!-- estribo -->
+<path d="M92 138 L134 126.4 L134 129.4 L92 141 Z" fill="#3f4c2e"/>
 
-  <!-- ===== techo de cabina con escotillas ===== -->
-  <path d="M53.9 46.8 L74.1 46.8 L74.1 60.5 L53.9 60.5 Z" fill="url(#kd1g2)" opacity=".5"/>
-  <rect class="dark" x="55.2" y="49.4" width="6.4" height="6.8" rx="1.1"/>
-  <rect class="dark" x="66.4" y="49.4" width="6.4" height="6.8" rx="1.1"/>
-  <path d="M55.6 49.8 L61.2 49.8 L61.2 55.8 L55.6 55.8 Z M66.8 49.8 L72.4 49.8 L72.4 55.8 L66.8 55.8 Z" fill="none" stroke="#8a929b" stroke-width=".6" opacity=".8"/>
-  <path d="M58.4 49.8 L58.4 55.8 M69.6 49.8 L69.6 55.8" stroke="#4a5057" stroke-width=".45" opacity=".7" fill="none"/>
-  <!-- bisagras y lineas de puertas -->
-  <path d="M53.6 52 L53.6 60 M74.4 52 L74.4 60 M52.9 62 L52.9 79 M75.1 62 L75.1 79" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
-  <rect class="light" x="51.9" y="63.4" width="1.7" height="1" rx=".4"/>
-  <rect class="light" x="74.4" y="63.4" width="1.7" height="1" rx=".4"/>
+<!-- 4 ruedas -->
+<g fill="url(#g-tyre)" stroke="#141710" stroke-width="1.2">
+  <ellipse cx="91.5"  cy="158.8" rx="9" ry="10.5"/>
+  <ellipse cx="153.4" cy="141.8" rx="9" ry="10.5"/>
+</g>
+<g fill="#5a6247" stroke="#232a1a" stroke-width="1">
+  <ellipse cx="91.5"  cy="158.8" rx="4" ry="4.8"/>
+  <ellipse cx="153.4" cy="141.8" rx="4" ry="4.8"/>
+</g>
+<g fill="none" stroke="#4a5040" stroke-opacity="0.8" stroke-width="1.1">
+  <ellipse cx="91.5"  cy="158.8" rx="6.6" ry="7.8"/>
+  <ellipse cx="153.4" cy="141.8" rx="6.6" ry="7.8"/>
+</g>
 
-  <!-- ===== dos baterias cuadruples Kornet ===== -->
-  <path d="M52.4 72.5 L75.6 72.5 L74.6 77 L53.4 77 Z" fill="#000" opacity=".24" filter="url(#kd1f1)"/>
-  <!-- bateria babor (4 bocas) -->
-  <rect class="metal" x="53.2" y="58" width="8" height="14" rx="1.4"/>
-  <rect x="53.6" y="58.4" width="7.2" height="1.4" rx=".6" fill="#fff" opacity=".22"/>
-  <g class="metalS">
-    <circle cx="55.4" cy="59.6" r="1.5"/><circle cx="59" cy="59.9" r="1.5"/>
-    <circle cx="55.4" cy="64.2" r="1.5"/><circle cx="59" cy="64.5" r="1.5"/>
-    <circle cx="55.4" cy="68.8" r="1.5"/><circle cx="59" cy="69.1" r="1.5"/>
-  </g>
-  <g class="dark">
-    <circle cx="55.4" cy="59.6" r=".6"/><circle cx="59" cy="59.9" r=".6"/>
-    <circle cx="55.4" cy="64.2" r=".6"/><circle cx="59" cy="64.5" r=".6"/>
-    <circle cx="55.4" cy="68.8" r=".6"/><circle cx="59" cy="69.1" r=".6"/>
-  </g>
-  <!-- bateria estribor (4 bocas) -->
-  <rect class="metal" x="66.8" y="58" width="8" height="14" rx="1.4"/>
-  <rect x="67.2" y="58.4" width="7.2" height="1.4" rx=".6" fill="#fff" opacity=".22"/>
-  <g class="metalS">
-    <circle cx="69" cy="59.9" r="1.5"/><circle cx="72.6" cy="59.6" r="1.5"/>
-    <circle cx="69" cy="64.5" r="1.5"/><circle cx="72.6" cy="64.2" r="1.5"/>
-    <circle cx="69" cy="69.1" r="1.5"/><circle cx="72.6" cy="68.8" r="1.5"/>
-  </g>
-  <g class="dark">
-    <circle cx="69" cy="59.9" r=".6"/><circle cx="72.6" cy="59.6" r=".6"/>
-    <circle cx="69" cy="64.5" r=".6"/><circle cx="72.6" cy="64.2" r=".6"/>
-    <circle cx="69" cy="69.1" r=".6"/><circle cx="72.6" cy="68.8" r=".6"/>
-  </g>
-  <!-- mastil de sensor retráctil al centro -->
-  <circle class="dark" cx="64" cy="60" r="2.2"/>
-  <circle class="glass" cx="64" cy="60" r="1.2"/>
-  <circle cx="63.7" cy="59.7" r=".4" fill="#fff" opacity=".8"/>
-  <path d="M64 62.2 L64 66.5" stroke="#3d4232" stroke-width="1.1" fill="none"/>
+<!-- montaje giratorio -->
+<path d="M91 112 L91 103 L104 99.5 L104 108.5 Z" fill="#4e5c38" stroke="#222a17" stroke-width="1"/>
+<path d="M91 103 L104 99.5 L110 102 L97 105.5 Z" fill="#66744c"/>
 
-  <!-- ===== caja de tropa trasera ===== -->
-  <path d="M53 79.1 L75 79.1 L75 96.4 L53 96.4 Z" fill="#000" opacity=".22" filter="url(#kd1f1)"/>
-  <path class="shade" d="M53.4 79.5 L74.6 79.5 L74.6 96 L53.4 96 Z"/>
-  <path d="M53.4 79.5 L74.6 79.5 L74.6 96 L53.4 96 Z" fill="url(#kd1g2)" opacity=".55"/>
-  <path d="M53.8 79.9 L74.2 79.9" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
-  <rect class="rubber" x="54.8" y="81" width="18.4" height="13.4" opacity=".5"/>
-  <path d="M55.5 84.2 L72.5 84.2 M55.5 88 L72.5 88 M55.5 91.8 L72.5 91.8" stroke="#b8bfa2" stroke-width=".6" opacity=".3" fill="none"/>
-  <!-- asientos plegables a banda -->
-  <rect class="shade" x="50.6" y="81.5" width="2.1" height="12" rx=".7"/>
-  <rect class="shade" x="75.3" y="81.5" width="2.1" height="12" rx=".7"/>
-  <!-- porton trasero y rueda de repuesto -->
-  <path class="dark" d="M52.4 96.5 L75.6 96.5 L75.6 100.5 L52.4 100.5 Z"/>
-  <path d="M58 97 L58 100 M70 97 L70 100" stroke="#8a929b" stroke-width=".5" opacity=".6" fill="none"/>
-  <!-- antena de comunicaciones -->
-  <path d="M75.6 62 L79.3 55.5" stroke="#3d4232" stroke-width="1" fill="none"/>
-  <circle class="dark" cx="75.4" cy="62.6" r="1"/>
-  <!-- escapes a popa -->
-  <rect class="rubber" x="71" y="97.6" width="3" height="2" rx=".6"/>
+<!-- bancada A de cuatro tubos Kornet -->
+<path d="M82.8 95.8 L89.3 102.2 L89.3 94.2 L82.8 87.8 Z" fill="url(#g-rear)"/>
+<path d="M89.3 102.2 L114.0 95.4 L114.0 87.4 L89.3 94.2 Z" fill="url(#g-flank)"/>
+<path d="M82.8 87.8 L107.5 81.0 L114.0 87.4 L89.3 94.2 Z" fill="url(#g-deck)"/>
+<g fill="#12150e">
+  <ellipse cx="110" cy="86.6" rx="1.1" ry="1.7"/><ellipse cx="110" cy="90.6" rx="1.1" ry="1.7"/>
+  <ellipse cx="113" cy="88.6" rx="1.1" ry="1.7"/><ellipse cx="113" cy="92.6" rx="1.1" ry="1.7"/>
+</g>
+<!-- bancada B -->
+<path d="M92.1 105.0 L98.7 111.4 L98.7 103.4 L92.1 97.0 Z" fill="url(#g-rear)"/>
+<path d="M98.7 111.4 L123.4 104.6 L123.4 96.6 L98.7 103.4 Z" fill="url(#g-flank)"/>
+<path d="M92.1 97.0 L116.8 90.2 L123.4 96.6 L98.7 103.4 Z" fill="url(#g-deck)"/>
+<g fill="#12150e">
+  <ellipse cx="119.4" cy="95.8" rx="1.1" ry="1.7"/><ellipse cx="119.4" cy="99.8" rx="1.1" ry="1.7"/>
+  <ellipse cx="122.4" cy="97.8" rx="1.1" ry="1.7"/><ellipse cx="122.4" cy="101.8" rx="1.1" ry="1.7"/>
+</g>
+<path d="M82.8 87.8 L107.5 81.0" fill="none" stroke="#ffffff" stroke-opacity="0.34" stroke-width="1.3"/>
+<path d="M92.1 97.0 L116.8 90.2" fill="none" stroke="#ffffff" stroke-opacity="0.34" stroke-width="1.3"/>
+<!-- optica de puntería entre bancadas -->
+<path d="M104 97 L112 94.8 L112 90 L104 92.2 Z" fill="#3a4229" stroke="#222a17" stroke-width="0.8"/>
+<ellipse cx="112" cy="92.4" rx="1.5" ry="2.3" fill="#8fb4c4"/>
 </svg>

@@ -4,6 +4,11 @@ Los iconos esquemáticos OTAN se reemplazan por **sprites SVG ilustrados** dibuj
 (en código, sin binarios): miniaturas semi-realistas del equipo real, como en Conflict of
 Nations. Si la unidad es un F-16, el sprite debe verse como un F-16.
 
+> **Alcance de esta sección**: las convenciones de abajo (viewBox 128, vista superior, tinte
+> por clases CSS) describen los **21 sprites de categoría, edificios y proyectiles**. Los 96
+> sprites por variante (`v-*.svg`) siguen una convención distinta desde v1.4 — ver
+> [Convención de los sprites por variante](#convención-de-los-sprites-por-variante-v14).
+
 ## Convenciones generales
 
 - **Formato**: SVG de código, sin `<text>` ni fuentes. Fondo transparente.
@@ -87,3 +92,61 @@ variante aún no existe (reintento cada 5 s: los nuevos aparecen solos). Los 10 
 legacy usan directamente el sprite de categoría. Guía de fidelidad para el artista:
 lee el campo `nombre` de units-data.js/naval-data.js — es el vehículo real a
 representar, con su silueta distintiva (cañón, alas, radares, propulsión).
+
+## Convención de los sprites por variante (v1.4)
+
+Los 96 `v-*.svg` están completos y ya **no** siguen la convención de arriba. Reglas vigentes:
+
+- **viewBox `0 0 256 256`** para todos.
+- **Sombreado por gradientes**, no por clases CSS. Cada archivo declara sus propios
+  `linearGradient` en `<defs>`; no hay `.base` / `.shade` / `.light` / `.hi`.
+- **Tres cámaras**, una por familia:
+
+| Familia | Cámara | Escala | Por qué |
+|---|---|---|---|
+| Aire (24: caza, bombardero, helicóptero, drone) | Cenital, morro al norte | Silueta ajustada al lienzo | Un avión se identifica por su planta; además es la única familia que el motor puede rotar sin romperse |
+| Tierra (36: MBT, motorizada, cazatanques, artillería, antiaéreo, infantería) | 3/4 de **cámara baja**: acimut 28°, elevación 31° | **20,9 px/m común** a todos | Se ve el flanco con las ruedas de rodadura y la popa; es lo que identifica a un blindado |
+| Mar (36) | 3/4 de **cámara alta**: acimut 28°, elevación 45° | Por buque, para llenar el lienzo | En un buque la identidad está en la cubierta, no en el costado |
+
+  Proyección de tierra: `sx = Ox + 0.883x + 0.469y`, `sy = Oy − 0.244x + 0.459y − z`.
+  Proyección de mar: `sx = Ox + 0.883x + 0.469y`, `sy = Oy − 0.332x + 0.624y − 0.707z`.
+  Ejes del vehículo: `x` popa→proa, `y` babor→estribor, `z` suelo/flotación→arriba.
+
+- **Escala común en tierra**: los 36 terrestres comparten 20,9 px/m, así que los tamaños
+  relativos son reales — el Abrams (7,93 m) es visiblemente mayor que el T-62 (6,63 m).
+  Dos excepciones deliberadas: la **infantería** va a escala aumentada (a escala real un
+  soldado ocuparía 37 px y no se leería) y los **buques** llevan la **manga exagerada un 40 %**
+  para que la cubierta sea legible.
+
+- **Paleta por doctrina** (sustituye al tinte por país en estos 96):
+
+| Familia | Occidental | Oriental |
+|---|---|---|
+| Tierra | Arena CARC `#e2d6b2 / #c8b78d / #ad9c75 / #91815f` | Verde ruso `#9aa878 / #7c8b5d / #66744c / #52603c` |
+| Mar (superficie) | Gris OTAN `#c3ccd4 / #a3adb6 / #8a949d / #565f68` | Gris ruso `#9fadb5 / #83919a / #6c7a83 / #404b53` |
+| Mar (submarinos) | Casco negro `#79828a / #5c656d / #454d54 / #262b30` | Casco negro `#6d777e / #525b62 / #3d454b / #212629` |
+
+  Orugas y neumáticos siempre `#403d34 / #2c2a22 / #1b1a15` (occ) o `#3a3a30 / #26261f /
+  #171712` (ori). Cristal `#8fb4c4`. Pilotos de posición `#8f5b30`.
+
+- **Cabecera obligatoria**: cada `v-*.svg` abre con un comentario que nombra el vehículo real
+  y **enumera los rasgos que lo separan de sus vecinos de categoría** (nº de ruedas de
+  rodadura, presencia de rodillos de retorno, forma de la torreta, freno de boca, etc.). Ese
+  comentario es la especificación del sprite: si se rehace, tiene que seguir cumpliéndose.
+
+- **Generador naval**: los 36 buques se producen con `ship.awk` (proyección, casco, cubierta,
+  estela y un vocabulario de piezas: `block`, `dark`, `funnel`, `mast`, `turret`, `vls`,
+  `tubes`, `heli`, `ciws`, `radar`, `plate`, `angled`, `skijump`, `sail`, `planes`, `spine`).
+  Es un script de scratchpad, no vive en el repo; si hay que regenerar un buque, lo más rápido
+  es reescribirlo desde el comentario de cabecera.
+
+### Pendiente sin resolver
+
+1. **Rotación al rumbo.** ROADMAP v1.3 dice que las unidades en marcha rotan al rumbo. Un
+   sprite de 3/4 no se puede rotar en 2D sin quedar boca abajo. Solo la familia de aire tolera
+   rotación. Decisión pendiente: quitar la rotación a tierra y mar (marcando el rumbo con una
+   flecha o una estela) y dejarla solo en aire.
+2. **Tinte por país.** Al no usar clases CSS, estos 96 no responden al mecanismo de tinte
+   descrito arriba. Hoy la doctrina se lee por paleta (arena vs verde), no el país. Si se
+   quiere tinte por país habría que adaptar el sprite-cache para reescribir los `stop-color`
+   de los gradientes, o aplicar un filtro suave por país.

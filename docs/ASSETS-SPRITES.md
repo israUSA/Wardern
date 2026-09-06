@@ -1,16 +1,30 @@
 # Inventario de sprites — Wardern
 
-## Formato (importante si se rehacen fuera)
+## Formato de los 21 sprites de categoría, edificios y proyectiles
 - **Formato: SVG** (vector), `viewBox="0 0 128 128"`, vista superior con **morro/proa hacia ARRIBA (norte)**.
 - Deben declarar clases CSS internas para el tinte por país:
   - Tintibles (cubren fuselaje/casco/chasis): `.base{fill:#7c8464}` `.shade{fill:#5b6349}` `.light{fill:#9aa378}` `.hi{fill:#b8bfa2}`
   - Fijas: `.dark{fill:#3d4232}`, aceros `.metal`/`.metalS`/`.metalL`, cristal `.glass{fill:#7fa8c9}`, caucho `.rubber{fill:#2b2e28}`
 - Las capas de luz/sombra solo blanco/negro con opacity (nunca fill de color): el tinte por país sobreescribe las clases tintables.
 - Sin `<text>`, sin fuentes, sin scripts, sin referencias externas. Ids de gradientes/filtros únicos por archivo.
+
+## Formato de los 96 sprites por variante (v1.4 — distinto del anterior)
+- `viewBox="0 0 256 256"`. Sombreado por **gradientes propios de cada archivo**, sin clases CSS
+  tintables: estos 96 **no** responden al tinte por país. La doctrina se lee por paleta.
+- Tres cámaras: **aire** cenital con el morro al norte; **tierra** 3/4 de cámara baja
+  (acimut 28°, elevación 31°, escala común 20,9 px/m); **mar** 3/4 de cámara alta
+  (acimut 28°, elevación 45°, escala por buque y manga exagerada un 40 %).
+- Paletas: tierra arena CARC (occ) / verde ruso (ori); mar gris OTAN (occ) / gris ruso (ori);
+  submarinos casco negro en ambas doctrinas.
+- La cabecera de cada archivo nombra el vehículo real y enumera los rasgos que lo separan de
+  sus vecinos de categoría. Ese comentario es la especificación del sprite.
+- Detalle completo de proyecciones, paletas y pendientes: **docs/ARTE.md**, sección
+  "Convención de los sprites por variante (v1.4)".
 - Si se rehacen en otro formato (p. ej. PNG 512×512 con fondo transparente), avísame y adapto el cargador en un momento.
 
 ## Unidades — 96 sprites por variante
-Archivo = `assets/sprites/v-{id}.svg`. Si falta, el juego usa el sprite de la categoría (fallback automático).
+**Estado: los 96 existen.** Archivo = `assets/sprites/v-{id}.svg`. Si faltara alguno, el juego
+usa el sprite de la categoría (fallback automático, reintento cada 5 s).
 
 | Archivo | Categoría | Tier | Vehículo real | Doctrina |
 |---|---|---|---|---|

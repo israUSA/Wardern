@@ -1,152 +1,116 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- M2A4 Bradley (ultra-moderno) - vista superior, morro al norte. Como el M2 pero
-       con bloques de blindaje aplique en los faldones, visor independiente CITV,
-       bustle de estiba trasero y antenas Duke contrartifuerzos (bobina + latigo).
-       Tinte por pais: .base/.shade/.light/.hi (casco, torreta, faldones).
-       Fijos: .metal/.metalS/.metalL (canon, escotillas, TOW), .dark, .rubber (orugas). -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="m3f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="m3f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="m3gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="m3g1" gradientUnits="userSpaceOnUse" x1="36" y1="58" x2="92" y2="58">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".22"/><stop offset=".64" stop-color="#fff" stop-opacity=".04"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- M2A4 Bradley (T3 occidental, motorizada). Arena. Camara y escala del set.
+     Mismo casco que el M2 (6.55 m, 6 ruedas, motriz delantera, 3 rodillos).
+     Identidad frente al M2 base: troneras de tiro SOLDADAS y tapadas, tejas de
+     blindaje reactivo BRAT en los faldones, visor independiente del jefe (CIV)
+     sobre el techo de torreta y proteccion adicional en el frontal de torreta. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#e2d6b2"/><stop offset="0.34" stop-color="#c8b78d"/>
+    <stop offset="0.68" stop-color="#ad9c75"/><stop offset="1" stop-color="#91815f"/>
   </linearGradient>
-  <linearGradient id="m3g2" gradientUnits="userSpaceOnUse" x1="64" y1="20" x2="64" y2="108">
-    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#aea172"/><stop offset="0.45" stop-color="#978861"/>
+    <stop offset="1" stop-color="#78694a"/>
   </linearGradient>
-  <linearGradient id="m3g3" gradientUnits="userSpaceOnUse" x1="52" y1="62" x2="76" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".18" stop-color="#fff" stop-opacity=".18"/><stop offset=".45" stop-color="#fff" stop-opacity=".24"/><stop offset=".7" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#6f6247"/><stop offset="0.6" stop-color="#584d38"/>
+    <stop offset="1" stop-color="#453c2c"/>
   </linearGradient>
-  <radialGradient id="m3g5" cx=".38" cy=".32" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#d4c9a8"/><stop offset="0.5" stop-color="#9e9376"/>
+    <stop offset="1" stop-color="#675e47"/>
+  </linearGradient>
+  <linearGradient id="g-trk" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#403d34"/><stop offset="0.5" stop-color="#2c2a22"/>
+    <stop offset="1" stop-color="#1b1a15"/>
+  </linearGradient>
+</defs>
+<path d="M30 150 L156 114 L196 150 L66 186 Z" fill="#0d0b06" opacity="0.30"/>
 
-  <ellipse cx="64" cy="64" rx="44" ry="54" fill="url(#m3gs)"/>
+<path d="M33.3 106.4 L68.5 140.8 L68.5 180.8 L33.3 146.4 Z" fill="url(#g-rear)"/>
+<path d="M37 116 L65 143.4 L65 174 L37 146.6 Z" fill="#5c5340" stroke="#2f2a1e" stroke-width="1"/>
+<ellipse cx="51" cy="147" rx="3.4" ry="2.6" fill="#8d7f5e"/>
+<circle cx="35" cy="113" r="2.4" fill="#8f5b30"/>
+<circle cx="66.5" cy="144" r="2.4" fill="#8f5b30"/>
 
-  <!-- ===== orugas ===== -->
-  <path class="rubber" d="M34.5 24 C34.5 18.5 37.5 16 41 16 C44.5 16 47.5 18.5 47.5 24 L47.5 106 C47.5 111.5 44.5 114 41 114 C37.5 114 34.5 111.5 34.5 106 Z"/>
-  <path class="rubber" d="M80.5 24 C80.5 18.5 83.5 16 87 16 C90.5 16 93.5 18.5 93.5 24 L93.5 106 C93.5 111.5 90.5 114 87 114 C83.5 114 80.5 111.5 80.5 106 Z"/>
-  <path d="M35 24 C35 19 37.6 16.6 41 16.6 C44.4 16.6 47 19 47 24 L47 106 C47 111 44.4 113.4 41 113.4 C37.6 113.4 35 111 35 106 Z" fill="url(#m3g1)" opacity=".45"/>
-  <path d="M81 24 C81 19 83.6 16.6 87 16.6 C90.4 16.6 93 19 93 24 L93 106 C93 111 90.4 113.4 87 113.4 C83.6 113.4 81 111 81 106 Z" fill="url(#m3g1)" opacity=".45"/>
-  <path d="M35.2 22 L35.2 108 M81.2 22 L81.2 108" stroke="#fff" stroke-width=".8" opacity=".16" fill="none"/>
-  <path d="M36 14 L36 116 M39.4 12.4 L39.4 117.6 M42.6 12.4 L42.6 117.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M82 14 L82 116 M85.4 12.4 L85.4 117.6 M88.6 12.4 L88.6 117.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M41 13.5 L41 118.5 M87 13.5 L87 118.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".5" fill="none"/>
-  <circle class="metalL" cx="41" cy="19" r="4.8"/><circle class="metal" cx="41" cy="19" r="2.7"/>
-  <circle cx="39.8" cy="17.8" r="1.3" fill="#fff" opacity=".26"/>
-  <circle class="metalL" cx="87" cy="19" r="4.8"/><circle class="metal" cx="87" cy="19" r="2.7"/>
-  <circle cx="85.8" cy="17.8" r="1.3" fill="#fff" opacity=".26"/>
-  <circle class="metalL" cx="41" cy="111" r="4.8"/><circle class="metal" cx="41" cy="111" r="2.7"/>
-  <circle class="metalL" cx="87" cy="111" r="4.8"/><circle class="metal" cx="87" cy="111" r="2.7"/>
+<path d="M33.3 106.4 L117.2 83.2 L152.4 117.6 L68.5 140.8 Z" fill="url(#g-deck)"/>
+<path d="M117.2 83.2 L154.3 96.0 L189.5 130.4 L152.4 117.6 Z" fill="url(#g-deck)"/>
+<path d="M117.2 83.2 L152.4 117.6" fill="none" stroke="#6d6046" stroke-opacity="0.55" stroke-width="1.2"/>
+<path d="M117.2 83.2 L154.3 96.0 L189.5 130.4 L152.4 117.6 Z" fill="#ffffff" fill-opacity="0.07"/>
+<ellipse cx="140" cy="105" rx="6.5" ry="4.3" fill="#a2946d" stroke="#5a5039" stroke-width="1"/>
+<g fill="#5c5340">
+  <path d="M158 99 L163.5 104.4 L160.5 105.7 L155 100.3 Z"/>
+  <path d="M172 112 L177.5 117.4 L174.5 118.7 L169 113.3 Z"/>
+</g>
 
-  <!-- ===== casco ancho con faldones sobre la oruga ===== -->
-  <path class="base" d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" stroke="#3d4232" stroke-width="1.3"/>
-  <path d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" fill="url(#m3g1)"/>
-  <path d="M50 18 L78 18 L82 26.5 L82 100 L78 107 L50 107 L46 100 L46 26.5 Z" fill="url(#m3g2)"/>
-  <path d="M50.6 18.6 L77.4 18.6 L80.6 26 L47.4 26 Z" fill="#fff" opacity=".14"/>
-  <path d="M46.8 28 L46.4 99" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M81.2 28 L81.6 99" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#m3f1)"/>
-  <path d="M47.2 26 L49.8 25 L49.8 103 L47.2 101 Z" fill="#000" opacity=".3" filter="url(#m3f1)"/>
-  <path d="M80.8 26 L78.2 25 L78.2 103 L80.8 101 Z" fill="#000" opacity=".3" filter="url(#m3f1)"/>
-  <!-- faldones de oruga (skirt) -->
-  <path class="shade" d="M45 30 L48.6 29 L48.6 101 L45 99 Z"/>
-  <path class="shade" d="M83 30 L79.4 29 L79.4 101 L83 99 Z"/>
-  <path d="M45.3 31 L48 30.2 M45.3 40 L48 40 M45.3 50 L48 50 M45.3 60 L48 60 M45.3 70 L48 70 M45.3 80 L48 80 M45.3 90 L48 90" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
-  <path d="M82.7 31 L80 30.2 M82.7 40 L80 40 M82.7 50 L80 50 M82.7 60 L80 60 M82.7 70 L80 70 M82.7 80 L80 80 M82.7 90 L80 90" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
-  <!-- bloques de aplique ERA en faldones -->
-  <g class="shade" stroke="#00000044" stroke-width=".5">
-    <rect x="45.6" y="34" width="3.6" height="7"/><rect x="45.6" y="43" width="3.6" height="7"/>
-    <rect x="45.6" y="52" width="3.6" height="7"/><rect x="45.6" y="61" width="3.6" height="7"/>
-    <rect x="45.6" y="70" width="3.6" height="7"/><rect x="45.6" y="79" width="3.6" height="7"/>
-    <rect x="45.6" y="88" width="3.6" height="7"/>
-    <rect x="78.8" y="34" width="3.6" height="7"/><rect x="78.8" y="43" width="3.6" height="7"/>
-    <rect x="78.8" y="52" width="3.6" height="7"/><rect x="78.8" y="61" width="3.6" height="7"/>
-    <rect x="78.8" y="70" width="3.6" height="7"/><rect x="78.8" y="79" width="3.6" height="7"/>
-    <rect x="78.8" y="88" width="3.6" height="7"/>
-  </g>
+<path d="M68.5 140.8 L152.4 117.6 L189.5 130.4 L68.5 163.8 Z" fill="url(#g-flank)"/>
 
-  <!-- ===== glacis con lanzagranadas ===== -->
-  <path d="M51.5 22.5 L76.5 22.5 L79.5 28 L48.5 28 Z" fill="#fff" opacity=".12"/>
-  <path d="M52.8 27.5 L58.4 27.5 L58.4 30.3 L52.8 30.3 Z" fill="none" stroke="#000" stroke-width=".5" opacity=".3"/>
-  <circle class="dark" cx="54.1" cy="28.9" r="1"/><circle class="dark" cx="57.1" cy="28.9" r="1"/>
-  <circle class="dark" cx="54.1" cy="31.4" r="0"/><circle cx="54.1" cy="30.6" r=".3" fill="#fff" opacity=".35"/>
-  <path d="M69.6 27.5 L75.2 27.5 L75.2 30.3 L69.6 30.3 Z" fill="none" stroke="#000" stroke-width=".5" opacity=".3"/>
-  <circle class="dark" cx="70.9" cy="28.9" r="1"/><circle class="dark" cx="73.9" cy="28.9" r="1"/>
-  <!-- visores del conductor -->
-  <rect class="dark" x="60.5" y="21.8" width="7" height="2.6" rx=".6" opacity=".85"/>
-  <path d="M61 22.4 L66.5 22.4" stroke="#fff" stroke-width=".4" opacity=".3" fill="none"/>
+<path d="M67.2 182.9 L193.5 148.0 L193.5 131.0 L67.2 165.9 Z" fill="url(#g-trk)"/>
+<g fill="#46423a" stroke="#1b1a15" stroke-width="1.1">
+  <ellipse cx="80.5"  cy="171.3" rx="5.8" ry="6.8"/>
+  <ellipse cx="101.7" cy="165.4" rx="5.8" ry="6.8"/>
+  <ellipse cx="122.9" cy="159.6" rx="5.8" ry="6.8"/>
+  <ellipse cx="144.1" cy="153.7" rx="5.8" ry="6.8"/>
+  <ellipse cx="165.3" cy="147.9" rx="5.8" ry="6.8"/>
+  <ellipse cx="184.7" cy="142.5" rx="5.8" ry="6.8"/>
+</g>
+<g fill="#6d6455">
+  <ellipse cx="80.5"  cy="171.3" rx="2.1" ry="2.5"/>
+  <ellipse cx="101.7" cy="165.4" rx="2.1" ry="2.5"/>
+  <ellipse cx="122.9" cy="159.6" rx="2.1" ry="2.5"/>
+  <ellipse cx="144.1" cy="153.7" rx="2.1" ry="2.5"/>
+  <ellipse cx="165.3" cy="147.9" rx="2.1" ry="2.5"/>
+  <ellipse cx="184.7" cy="142.5" rx="2.1" ry="2.5"/>
+</g>
+<ellipse cx="189.1" cy="137.3" rx="7.4" ry="8.6" fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
+<ellipse cx="71.7"  cy="169.7" rx="6.6" ry="7.8" fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
+<g fill="#4c473d" stroke="#1b1a15" stroke-width="0.9">
+  <ellipse cx="96.4"  cy="156.9" rx="2.8" ry="3.2"/>
+  <ellipse cx="131.7" cy="147.1" rx="2.8" ry="3.2"/>
+  <ellipse cx="167.0" cy="137.4" rx="2.8" ry="3.2"/>
+</g>
+<path d="M68 183.2 L194 148.4" fill="none" stroke="#0d0b06" stroke-opacity="0.55" stroke-width="3"/>
 
-  <!-- sombra de la torreta sobre el casco -->
-  <path d="M50.5 52 L77.5 52 L78 76 L50 76 Z" fill="#000" opacity=".18" filter="url(#m3f2)"/>
+<!-- faldones con tejas de blindaje reactivo BRAT -->
+<path d="M67.6 168.2 L186.8 135.2 L186.8 109.2 L67.6 142.2 Z" fill="url(#g-flank)"/>
+<g fill="#8d7f5e" stroke="#5a5039" stroke-width="0.9">
+  <path d="M71.2 149.2 L87.1 144.8 L87.1 154.8 L71.2 159.2 Z"/>
+  <path d="M89.7 144.1 L105.6 139.7 L105.6 149.7 L89.7 154.1 Z"/>
+  <path d="M108.2 139.0 L124.1 134.6 L124.1 144.6 L108.2 149.0 Z"/>
+  <path d="M126.8 133.8 L142.7 129.5 L142.7 139.5 L126.8 143.8 Z"/>
+  <path d="M145.3 128.7 L161.2 124.3 L161.2 134.3 L145.3 138.7 Z"/>
+  <path d="M163.9 123.6 L179.8 119.2 L179.8 129.2 L163.9 133.6 Z"/>
+</g>
+<g stroke="#6d6046" stroke-opacity="0.6" stroke-width="1.1">
+  <path d="M87.1 136.8 L87.1 162.8"/><path d="M108.2 131.0 L108.2 157.0"/>
+  <path d="M129.4 125.1 L129.4 151.1"/><path d="M150.6 119.3 L150.6 145.3"/>
+  <path d="M171.8 113.4 L171.8 139.4"/>
+</g>
+<path d="M67.6 142.2 L186.8 109.2" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="2"/>
 
-  <!-- ===== torreta Bradley ===== -->
-  <path class="base" d="M64 50 L73.5 54.5 L76 62 L76 72 L71.5 76.5 L56.5 76.5 L52 72 L52 62 L54.5 54.5 Z" stroke="#3d4232" stroke-width="1.2"/>
-  <path d="M64 50 L73.5 54.5 L76 62 L76 72 L71.5 76.5 L56.5 76.5 L52 72 L52 62 L54.5 54.5 Z" fill="url(#m3g3)"/>
-  <path d="M64 50.6 L72.6 54.9" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
-  <path d="M53 57 L52.6 71" stroke="#fff" stroke-width=".8" opacity=".35" fill="none"/>
-  <path d="M75 57 L75.4 71 L71.5 75.7" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#m3f1)"/>
-  <!-- canon Bushmaster 25mm al norte (offset a estribor) -->
-  <path class="shade" d="M66 50 L72 50 L71 54 L67 54 Z"/>
-  <path class="dark" d="M67.9 40 L69.9 40 L69.7 50 L68.1 50 Z"/>
-  <path class="metalS" d="M67.6 38.2 L70.2 38.2 L70.1 40.4 L67.7 40.4 Z"/>
-  <path class="hi" d="M68.3 41 L68.6 41 L68.5 49 L68.3 49 Z" opacity=".55"/>
-  <path d="M68 42.4 L69.8 42.4 M68 45.4 L69.8 45.4" stroke="#000" stroke-width=".5" opacity=".4" fill="none"/>
-  <!-- lanzador TOW doble a babor de la torreta -->
-  <rect class="metal" x="54.2" y="57.5" width="4.6" height="11" rx="1.2"/>
-  <rect x="54.5" y="57.8" width="4" height="1.2" rx=".5" fill="#fff" opacity=".25"/>
-  <path d="M55.4 58.5 L55.4 67.5 M57.6 58.5 L57.6 67.5" stroke="#2b2e28" stroke-width="1.4" fill="none"/>
-  <path class="metalL" d="M54.9 56.6 L58.1 56.6 L58.1 57.6 L54.9 57.6 Z"/>
-  <!-- escotillas de jefe (atrás-izq) y tirador (atrás-der) -->
-  <circle class="metal" cx="58.5" cy="70.5" r="4.4"/>
-  <circle cx="58.5" cy="70.5" r="4.4" fill="url(#m3g5)"/>
-  <circle cx="58.5" cy="70.5" r="4.4" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <circle class="shade" cx="58.5" cy="70.5" r="1.7"/>
-  <circle cx="57.9" cy="69.7" r=".6" fill="#fff" opacity=".5"/>
-  <circle class="metal" cx="69.5" cy="70.5" r="4.4"/>
-  <circle cx="69.5" cy="70.5" r="4.4" fill="url(#m3g5)"/>
-  <circle cx="69.5" cy="70.5" r="4.4" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <circle class="shade" cx="69.5" cy="70.5" r="1.7"/>
-  <circle cx="68.9" cy="69.7" r=".6" fill="#fff" opacity=".5"/>
-  <!-- visor del tirador -->
-  <rect class="dark" x="63.4" y="55.5" width="3" height="2.2" rx=".5"/>
-  <!-- CITV independiente -->
-  <circle class="dark" cx="72.6" cy="57.6" r="2.1"/>
-  <circle class="glass" cx="72.6" cy="57.6" r="1.1"/>
-  <circle cx="72.3" cy="57.3" r=".4" fill="#fff" opacity=".8"/>
-
-  <!-- bustle de estiba trasero de la torreta -->
-  <rect class="shade" x="56" y="77" width="16" height="3.4" rx=".8"/>
-  <path d="M56.3 77.3 L71.7 77.3" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
-  <path d="M60 77.3 L60 80.2 M64 77.3 L64 80.2 M68 77.3 L68 80.2" stroke="#000" stroke-width=".5" opacity=".35" fill="none"/>
-
-  <!-- ===== techo trasero de tropa ===== -->
-  <rect class="shade" x="50" y="80" width="28" height="18" rx="1"/>
-  <path d="M50.3 80.3 L77.7 80.3" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
-  <rect class="rubber" x="52.5" y="82.5" width="23" height="13" opacity=".45"/>
-  <path d="M53.2 85.5 L74.8 85.5 M53.2 89 L74.8 89 M53.2 92.5 L74.8 92.5" stroke="#b8bfa2" stroke-width=".6" opacity=".3" fill="none"/>
-  <!-- porton-rampa trasero -->
-  <path d="M50.5 98.4 L77.5 98.4 L77.7 100.8 L50.3 100.8 Z" fill="#000" opacity=".2" filter="url(#m3f1)"/>
-  <rect class="shade" x="50.6" y="101" width="26.8" height="4.8" rx=".6"/>
-  <path d="M50.9 101.3 L77.1 101.3" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
-  <path class="dark" d="M51.4 106 L76.6 106 L77 107.2 L51 107.2 Z"/>
-  <!-- rejillas de escape a estribor -->
-  <rect class="dark" x="76" y="84" width="4.6" height="10" rx=".7"/>
-  <path d="M77 85 L77 93 M78.5 85 L78.5 93 M80 85 L80 93" stroke="#9aa378" stroke-width=".5" opacity=".6" fill="none"/>
-  <!-- antenas -->
-  <!-- antenas Duke contrartifuerzos: caja + bobina + latigo largo -->
-  <rect class="dark" x="49.4" y="80.5" width="3" height="4.4" rx=".6"/>
-  <circle class="metalS" cx="50.9" cy="79.2" r="1.5"/>
-  <path d="M50.9 77.7 C49.4 70 51.4 62 49.8 54" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <path d="M50.2 75.5 C49.6 70.5 50.7 66.5 50 62.5 M51.6 75.5 C51 70.5 52.1 66.5 51.4 62.5" stroke="#000" stroke-width=".4" opacity=".35" fill="none"/>
-  <rect class="dark" x="75.6" y="80.5" width="3" height="4.4" rx=".6"/>
-  <circle class="metalS" cx="77.1" cy="79.2" r="1.5"/>
-  <path d="M77.1 77.7 C78.6 70 76.6 62 78.2 54" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <path d="M76.4 75.5 C77 70.5 75.9 66.5 76.6 62.5 M77.8 75.5 C77.2 70.5 78.3 66.5 77.6 62.5" stroke="#000" stroke-width=".4" opacity=".35" fill="none"/>
+<!-- torreta con proteccion adicional -->
+<path d="M75.7 114.7 L92.6 131.2 L92.6 109.2 L75.7 92.7 Z" fill="url(#g-rear)"/>
+<path d="M92.6 131.2 L132.3 120.2 L132.3 98.2 L92.6 109.2 Z" fill="url(#g-flank)"/>
+<path d="M110 125.2 L132.3 120.2 L132.3 100.2 L110 105.2 Z" fill="#a1936a" stroke="#5a5039" stroke-width="1"/>
+<path d="M75.7 92.7 L115.4 81.7 L132.3 98.2 L92.6 109.2 Z" fill="url(#g-deck)"/>
+<path d="M75.7 92.7 L115.4 81.7" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M87.9 98.6 L105.5 93.7 L110.2 98.3 L92.6 103.2 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="1"/>
+<path d="M87.9 84.6 L105.5 79.7 L110.2 84.3 L92.6 89.2 Z" fill="#b0a179" stroke="#5a5039" stroke-width="1"/>
+<path d="M87.9 98.6 L87.9 84.6 L105.5 79.7 L105.5 93.7 Z" fill="#8d7f5e" stroke="#5a5039" stroke-width="1"/>
+<g fill="#2b271c">
+  <ellipse cx="106.5" cy="83.5" rx="2" ry="2.6"/>
+  <ellipse cx="106.5" cy="90.5" rx="2" ry="2.6"/>
+</g>
+<!-- visor independiente del jefe (CIV): marca del A4 -->
+<path d="M102.3 100.2 L108.3 98.4 L114.3 100.2 L114.3 91.4 L108.3 89.6 L102.3 91.4 Z"
+      fill="#7a6d50" stroke="#4a412f" stroke-width="1"/>
+<path d="M102.3 91.4 L108.3 89.6 L114.3 91.4 L108.3 93.2 Z" fill="#a1936a"/>
+<path d="M111 96 L117 94.4 L117 90.6 L111 92.2 Z" fill="#3a3327"/>
+<ellipse cx="117" cy="92.6" rx="1.5" ry="2.3" fill="#8fb4c4"/>
+<!-- canon M242 de 25 mm -->
+<path d="M120.0 95.9 L160.6 84.7 L162.8 87.3 L122.2 98.5 Z" fill="url(#g-metal)"/>
+<path d="M117 100 L124 94.5 L128 98 L121 103.5 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="0.9"/>
+<ellipse cx="161.7" cy="86.0" rx="1.2" ry="2" fill="#181510"/>
+<path d="M120.0 95.9 L160.6 84.7 L160.9 85.7 L120.3 96.9 Z" fill="#ffffff" fill-opacity="0.35"/>
 </svg>

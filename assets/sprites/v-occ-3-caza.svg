@@ -1,108 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- F-22 Raptor - vista superior, morro al norte. Silueta stealth: morro cincelado
-       (facetas), ALA EN ROMBO con borde de salida en sierra, DOBLE deriva inclinada
-       en trapecio, DOS toberas RECTANGulares de empuje vectorial, sin pilones externos
-       (bodega interna). Tinte por pais: .base/.shade/.light/.hi.
-       Fijos: .metal/.metalS/.metalL (toberas), .glass (cabina), .dark, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="f22f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="f22f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="f22gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- F-22 Raptor — T3 occidental. Todo facetado (L no C). 2 derivas 28°, 2 toberas rectangulares, sin misiles externos, bordes paralelos. Paleta stealth oscuro. -->
+<defs>
+  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#7b838b"/><stop offset="0.34" stop-color="#565e66"/>
+    <stop offset="0.62" stop-color="#3c434a"/><stop offset="1" stop-color="#22272c"/>
+  </linearGradient>
+  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.35"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
+    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
+    <stop offset="1" stop-color="#6a4f15"/>
+  </linearGradient>
+  <linearGradient id="g-fin" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#6a727a"/><stop offset="0.42" stop-color="#484f56"/>
+    <stop offset="1" stop-color="#2a3036"/>
+  </linearGradient>
+  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
+    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
+    <stop offset="1" stop-color="#5b636b"/>
   </radialGradient>
-  <linearGradient id="f22g1" gradientUnits="userSpaceOnUse" x1="50" y1="62" x2="78" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff" stop-opacity=".28"/><stop offset=".64" stop-color="#fff" stop-opacity=".05"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".45"/>
-  </linearGradient>
-  <linearGradient id="f22g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="112">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
-  </linearGradient>
-  <linearGradient id="f22g3" gradientUnits="userSpaceOnUse" x1="18" y1="56" x2="18" y2="94">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </linearGradient>
-  <linearGradient id="f22g4" gradientUnits="userSpaceOnUse" x1="60" y1="24" x2="60" y2="40">
-    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".85"/><stop offset=".35" stop-color="#9cc4dc" stop-opacity=".35"/><stop offset=".75" stop-color="#28495e" stop-opacity=".55"/><stop offset="1" stop-color="#14293a" stop-opacity=".8"/>
-  </linearGradient>
-  <linearGradient id="f22g5" gradientUnits="userSpaceOnUse" x1="52" y1="70" x2="56" y2="70">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".5" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".2"/>
-  </linearGradient>
-  <linearGradient id="f22g6" gradientUnits="userSpaceOnUse" x1="76" y1="70" x2="72" y2="70">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".5" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".2"/>
-  </linearGradient>
-  </defs>
-
-  <ellipse cx="64" cy="66" rx="50" ry="56" fill="url(#f22gs)"/>
-
-  <!-- ===== ala en rombo (LE 42°, TE adelantado en sierra) ===== -->
-  <path class="base" d="M58.8 42 L50 50 L17 74 L13.6 82 L19.4 86.6 L47 79.6 L55.6 81.2 Z"/>
-  <path class="base" d="M69.2 42 L78 50 L111 74 L114.4 82 L108.6 86.6 L81 79.6 L72.4 81.2 Z"/>
-  <path d="M58.8 42 L50 50 L17 74 L13.6 82 L19.4 86.6 L47 79.6 L55.6 81.2 Z" fill="url(#f22g3)"/>
-  <path d="M69.2 42 L78 50 L111 74 L114.4 82 L108.6 86.6 L81 79.6 L72.4 81.2 Z" fill="url(#f22g3)"/>
-  <path class="light" d="M58.8 42 L50 50 L17 74 L14.6 80.4 L52.4 46.4 Z" opacity=".9"/>
-  <path class="light" d="M69.2 42 L78 50 L111 74 L113.4 80.4 L75.6 46.4 Z" opacity=".9"/>
-  <path d="M58.6 42.8 C48 52 30 66 17.6 75" stroke="#fff" stroke-width=".9" opacity=".45" fill="none"/>
-  <path d="M69.4 42.8 C80 52 98 66 110.4 75" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
-  <!-- borde de salida en sierra (dientes) -->
-  <path class="dark" d="M19.4 86.6 L47 79.6 L46 82.6 L20.6 89.2 Z M108.6 86.6 L81 79.6 L82 82.6 L107.4 89.2 Z" opacity=".8"/>
-  <path d="M47 79.6 L55.6 81.2 L55.6 83 L47.4 81.4 Z M81 79.6 L72.4 81.2 L72.4 83 L80.6 81.4 Z" fill="#000" opacity=".22"/>
-  <!-- superficies de control -->
-  <path d="M52 48 L24 72 M54.4 62 L32 78 M76 48 L104 72 M73.6 62 L96 78" stroke="#000" stroke-width=".6" opacity=".2" fill="none"/>
-
-  <!-- ===== derivas gemelas inclinadas en trapecio ===== -->
-  <path class="shade" d="M56.6 60 L51.4 86 L54.2 92.6 L59 64 Z"/>
-  <path d="M56.6 60 L51.4 86 L54.2 92.6 L59 64 Z" fill="url(#f22g5)"/>
-  <path class="light" d="M56.6 60 L51.4 86 L52.2 86.4 L57.4 60.4 Z" opacity=".7"/>
-  <path class="dark" d="M51.4 86 L54.2 92.6 L55 90 L52.4 85.4 Z" opacity=".7"/>
-  <path class="shade" d="M71.4 60 L76.6 86 L73.8 92.6 L69 64 Z"/>
-  <path d="M71.4 60 L76.6 86 L73.8 92.6 L69 64 Z" fill="url(#f22g6)"/>
-  <path class="dark" d="M76.6 86 L73.8 92.6 L73 90 L75.6 85.4 Z" opacity=".7"/>
-  <!-- bandas de cola -->
-  <path class="dark" d="M55.4 68 L58.6 68 L58.2 71.4 L55.2 71.4 Z" opacity=".5"/>
-  <path class="dark" d="M72.6 68 L69.4 68 L69.8 71.4 L72.8 71.4 Z" opacity=".5"/>
-
-  <!-- ===== fuselaje cincelado con LERX ===== -->
-  <path class="base" d="M64 9 C61 11.5 59 15 58.4 19 L57.6 24 L56 31 C54.8 35 53.8 39 53.2 43 L52.4 47 C51.6 55 51.6 63 52.4 71 L53.6 80 C54.6 88 56 96 58.2 102 L60.6 110 L62.2 113.5 L64 116 L65.8 113.5 L67.4 110 L69.8 102 C72 96 73.4 88 74.4 80 L75.6 71 C76.4 63 76.4 55 75.6 47 L74.8 43 C74.2 39 73.2 35 72 31 L70.4 24 L69.6 19 C69 15 67 11.5 64 9 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 9 C61 11.5 59 15 58.4 19 L57.6 24 L56 31 C54.8 35 53.8 39 53.2 43 L52.4 47 C51.6 55 51.6 63 52.4 71 L53.6 80 C54.6 88 56 96 58.2 102 L60.6 110 L62.2 113.5 L64 116 L65.8 113.5 L67.4 110 L69.8 102 C72 96 73.4 88 74.4 80 L75.6 71 C76.4 63 76.4 55 75.6 47 L74.8 43 C74.2 39 73.2 35 72 31 L70.4 24 L69.6 19 C69 15 67 11.5 64 9 Z" fill="url(#f22g1)"/>
-  <path d="M64 9 C61 11.5 59 15 58.4 19 L57.6 24 L56 31 C54.8 35 53.8 39 53.2 43 L52.4 47 C51.6 55 51.6 63 52.4 71 L53.6 80 C54.6 88 56 96 58.2 102 L60.6 110 L62.2 113.5 L64 116 L65.8 113.5 L67.4 110 L69.8 102 C72 96 73.4 88 74.4 80 L75.6 71 C76.4 63 76.4 55 75.6 47 L74.8 43 C74.2 39 73.2 35 72 31 L70.4 24 L69.6 19 C69 15 67 11.5 64 9 Z" fill="url(#f22g2)"/>
-  <!-- quilla central: faceta que atrapa luz -->
-  <path d="M64 10 L64 115" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
-  <path d="M58.6 22 L57.4 30 M69.4 22 L70.6 30" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
-  <path d="M59.7 24 C58.2 36 57.4 50 57.2 62 C57 74 57.8 86 59.2 96" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M68.3 24 C69.8 36 70.6 50 70.8 62 C71 74 70.2 86 68.8 96" stroke="#000" stroke-width="1.6" opacity=".24" fill="none" filter="url(#f22f1)"/>
-  <!-- sombras proyectadas del fuselaje sobre las alas -->
-  <path d="M53 50 L57.4 50 L55.4 80 L50.4 79.6 Z" fill="#000" opacity=".2" filter="url(#f22f2)"/>
-  <path d="M75 50 L70.6 50 L72.6 80 L77.6 79.6 Z" fill="#000" opacity=".2" filter="url(#f22f2)"/>
-  <path d="M53.6 56 C56 53 61 52 63 51.6 M74.4 56 C72 53 67 52 65 51.6" stroke="#000" stroke-width="2.4" opacity=".3" fill="none" filter="url(#f22f1)"/>
-  <path d="M59.4 92 L68.6 92 L68.2 95.6 L59.8 95.6 Z" fill="#000" opacity=".24" filter="url(#f22f1)"/>
-  <!-- entradas de aire CARET en los hombros -->
-  <path class="dark" d="M53 42 C52.4 46 52.2 50 52.6 54 L57.4 53 C57 49 56.8 45 57.4 41 C55.8 41.6 54.2 41.8 53 42 Z" opacity=".55"/>
-  <path class="dark" d="M75 42 C75.6 46 75.8 50 75.4 54 L70.6 53 C71 49 71.2 45 70.6 41 C72.2 41.6 73.8 41.8 75 42 Z" opacity=".55"/>
-  <!-- lineas de panel facetadas -->
-  <path d="M59.2 20.5 L68.8 20.5 M56.6 38 L71.4 38 M55.8 56 L72.2 56 M56.2 74 L71.8 74 M57.4 90 L70.6 90" stroke="#000" stroke-width=".55" opacity=".2" fill="none"/>
-  <!-- bodega interna (sin pilones): lineas sutiles en el ala -->
-  <path d="M54.6 55 L50 58.6 M73.4 55 L78 58.6" stroke="#000" stroke-width=".5" opacity=".25" fill="none"/>
-
-  <!-- ===== cabina facetada ===== -->
-  <ellipse cx="64" cy="32" rx="5.2" ry="8.6" class="dark" opacity=".55"/>
-  <path class="glass" d="M64 23.4 C61.4 25 59.6 28 59.6 32.2 C59.6 36.8 61.8 40 64 40.6 C66.2 40 68.4 36.8 68.4 32.2 C68.4 28 66.6 25 64 23.4 Z"/>
-  <path d="M64 23.4 C61.4 25 59.6 28 59.6 32.2 C59.6 36.8 61.8 40 64 40.6 C66.2 40 68.4 36.8 68.4 32.2 C68.4 28 66.6 25 64 23.4 Z" fill="url(#f22g4)"/>
-  <path d="M64 23.4 C61.4 25 59.6 28 59.6 32.2 C59.6 36.8 61.8 40 64 40.6 C66.2 40 68.4 36.8 68.4 32.2 C68.4 28 66.6 25 64 23.4 Z" fill="none" stroke="#243b4d" stroke-width=".8"/>
-  <ellipse cx="61.6" cy="30.6" rx="1.4" ry="5" transform="rotate(-4 61.6 30.6)" fill="#fff" opacity=".85"/>
-  <ellipse cx="66.4" cy="28" rx=".8" ry="2.8" transform="rotate(6 66.4 28)" fill="#fff" opacity=".5"/>
-  <path d="M60.6 27 C62.2 26 65.8 26 67.4 27" stroke="#3d4232" stroke-width=".9" fill="none" opacity=".8"/>
-
-  <!-- ===== DOS toberas rectangulares con dientes ===== -->
-  <path class="metal" d="M54.4 106 L62.4 106 L61.4 112.5 L55.4 112.5 Z"/>
-  <path class="rubber" d="M56.2 107.2 L60.6 107.2 L60 111.3 L56.8 111.3 Z"/>
-  <path class="metalL" d="M54.9 108.6 L56 108.6 L55.6 111 L54.7 111 Z M61.9 108.6 L60.8 108.6 L61.2 111 L62.1 111 Z"/>
-  <path class="metal" d="M65.6 106 L73.6 106 L72.6 112.5 L66.6 112.5 Z"/>
-  <path class="rubber" d="M67.4 107.2 L71.8 107.2 L71.2 111.3 L68 111.3 Z"/>
-  <path class="metalL" d="M66.1 108.6 L67.2 108.6 L66.8 111 L65.9 111 Z M73.1 108.6 L72 108.6 L72.4 111 L73.3 111 Z"/>
-  <!-- sierra trasera del fuselaje -->
-  <path class="dark" d="M53 103.5 L57 105 L56.6 106.5 L52.8 105 Z M61.4 105.6 L64 106.4 L64 108 L61.4 107.2 Z M75 103.5 L71 105 L71.4 106.5 L75.2 105 Z M66.6 105.6 L64 106.4 L64 108 L66.6 107.2 Z" opacity=".8"/>
-  <!-- carenado entre toberas -->
-  <path class="shade" d="M60.8 102 C62.8 103.6 65.2 103.6 67.2 102 L66.8 106.5 L61.2 106.5 Z"/>
+  <path id="hull" d="
+    M128 16 L136 28 L138 42 L140 58 L142 72
+    L148 86 L152 94 L208 154 L208 162 L204 172
+    L156 170 L154 176 L156 196 L152 200
+    L144 198 L142 204 L140 228 L128 236
+    L116 228 L114 204 L112 198 L104 200
+    L100 196 L102 176 L100 170 L52 172
+    L48 162 L48 154 L104 94 L108 86
+    L114 72 L116 58 L118 42 L120 28 Z"/>
+</defs>
+<g id="unit">
+  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
+  <use href="#hull" fill="url(#g-hull)"/>
+  <g fill="#000" fill-opacity="0.12">
+    <path d="M152 94 L208 154 L208 162 L204 172 L158 170 Z"/>
+    <path d="M104 94 L48 154 L48 162 L52 172 L98 170 Z"/>
+    <path d="M154 176 L156 196 L152 200 L144 198 L150 180 Z"/>
+    <path d="M102 176 L100 196 L104 200 L112 198 L106 180 Z"/>
+  </g>
+  <g fill="#000" fill-opacity="0.06">
+    <path d="M142 72 L148 86 L152 94 L160 116 L140 100 Z"/>
+    <path d="M114 72 L108 86 L104 94 L96 116 L116 100 Z"/>
+  </g>
+  <path fill="url(#g-spine)" d="
+    M128 18 L134 30 L136 48 L138 94 L142 170 L140 226
+    L128 234 L116 226 L114 170 L118 94 L120 48
+    L122 30 Z"/>
+  <g fill="none" stroke="#394047" stroke-opacity="0.42" stroke-width="0.8" stroke-linecap="round">
+    <path d="M144 82 L152 100 L158 168"/>
+    <path d="M112 82 L104 100 L98 168"/>
+    <path d="M202 162 L158 160"/>
+    <path d="M54 162 L98 160"/>
+    <path d="M154 96 L202 148"/>
+    <path d="M102 96 L54 148"/>
+    <path d="M122 40 L134 40"/>
+    <path d="M120 90 L136 90"/>
+    <path d="M142 174 L114 174"/>
+  </g>
+  <g fill="#2f363d" fill-opacity="0.5">
+    <path d="M144 52 L150 58 L150 74 L144 80 Z"/>
+    <path d="M112 52 L106 58 L106 74 L112 80 Z"/>
+  </g>
+  <path fill="url(#g-glass)" d="
+    M128 40 L138 50 L138 74 L128 82 L118 74 L118 50 Z"/>
+  <path fill="#fff" fill-opacity="0.4" d="
+    M127 43 L120 50 L120 72 L123 77 L119 72 L119 50 Z"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.7" d="M119 58 L137 58"/>
+  <path fill="none" stroke="#2b3137" stroke-width="0.9" stroke-opacity="0.5" d="M119 74 L137 74"/>
+  <g>
+    <path fill="#0e1216" fill-opacity="0.25" d="M143 180 L154 200 L152 204 L144 202 Z"/>
+    <path fill="url(#g-fin)" d="M141 178 L150 198 L150 204 L137 200 Z"/>
+    <path fill="#fff" fill-opacity="0.3" d="M141 180 L143 196 L139 196 Z"/>
+  </g>
+  <g>
+    <path fill="#0e1216" fill-opacity="0.25" d="M113 180 L102 200 L104 204 L112 202 Z"/>
+    <path fill="url(#g-fin)" d="M115 178 L106 198 L106 204 L119 200 Z"/>
+    <path fill="#fff" fill-opacity="0.3" d="M115 180 L113 196 L117 196 Z"/>
+  </g>
+  <path fill="url(#g-nozzle)" d="M118 226 L116 234 L122 238 L128 236 L134 238 L140 234 L138 226 Z"/>
+  <rect x="118" y="230" width="8" height="6" rx="1" fill="#0e1116"/>
+  <rect x="130" y="230" width="8" height="6" rx="1" fill="#0e1116"/>
+  <rect x="119.5" y="231" width="5" height="4" rx="0.5" fill="#3a2a1c" fill-opacity="0.6"/>
+  <rect x="131.5" y="231" width="5" height="4" rx="0.5" fill="#3a2a1c" fill-opacity="0.6"/>
+</g>
 </svg>

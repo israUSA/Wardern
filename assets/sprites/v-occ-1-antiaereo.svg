@@ -1,118 +1,99 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- M163 Vulcan SPAAG - vista superior, morro al norte. Chasis M113 con torreta
-       giratoria: canon rotativo de 6 tubos Vulcan 20mm apuntando al norte, gran
-       radome de radar de seguimiento a estibor, tambor de municion a babor.
-       Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.metalS/.metalL, .dark, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="aa1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="aa1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="aa1gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="aa1g1" gradientUnits="userSpaceOnUse" x1="38" y1="58" x2="90" y2="58">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".22"/><stop offset=".64" stop-color="#fff" stop-opacity=".04"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- M163 VADS Vulcan (T1 occidental, antiaereo). Arena. Camara y escala del set.
+     Chasis M113 (4.86 m, 5 ruedas, motriz delantera, sin faldones).
+     Identidad: torreta cilindrica abierta con el canon rotativo M61 Vulcan de
+     20 mm, racimo de canas cortas y gruesas apuntando alto, y el radar de
+     telemetria en un brazo al costado derecho de la torreta. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#e2d6b2"/><stop offset="0.34" stop-color="#c8b78d"/>
+    <stop offset="0.68" stop-color="#ad9c75"/><stop offset="1" stop-color="#91815f"/>
   </linearGradient>
-  <linearGradient id="aa1g2" gradientUnits="userSpaceOnUse" x1="64" y1="20" x2="64" y2="108">
-    <stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity=".04"/><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#aea172"/><stop offset="0.45" stop-color="#978861"/>
+    <stop offset="1" stop-color="#78694a"/>
   </linearGradient>
-  <radialGradient id="aa1g5" cx=".38" cy=".32" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".4" stop-color="#fff" stop-opacity=".08"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
-  </radialGradient>
-  <radialGradient id="aa1g6" cx=".4" cy=".3" r=".85">
-    <stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".4" stop-color="#fff" stop-opacity=".1"/><stop offset=".75" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#6f6247"/><stop offset="0.6" stop-color="#584d38"/>
+    <stop offset="1" stop-color="#453c2c"/>
+  </linearGradient>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#d4c9a8"/><stop offset="0.5" stop-color="#9e9376"/>
+    <stop offset="1" stop-color="#675e47"/>
+  </linearGradient>
+  <linearGradient id="g-trk" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#403d34"/><stop offset="0.5" stop-color="#2c2a22"/>
+    <stop offset="1" stop-color="#1b1a15"/>
+  </linearGradient>
+</defs>
+<path d="M50 149 L146 124 L176 148 L78 176 Z" fill="#0d0b06" opacity="0.30"/>
 
-  <ellipse cx="64" cy="64" rx="42" ry="54" fill="url(#aa1gs)"/>
+<!-- popa con rampa -->
+<path d="M53.3 106.9 L79.6 132.6 L79.6 171.6 L53.3 145.9 Z" fill="url(#g-rear)"/>
+<path d="M56.5 116 L76.5 135.5 L76.5 165 L56.5 145.5 Z" fill="#5c5340" stroke="#2f2a1e" stroke-width="1"/>
+<ellipse cx="66" cy="140" rx="3.4" ry="2.6" fill="#8d7f5e"/>
+<circle cx="55.5" cy="114" r="2.4" fill="#8f5b30"/>
+<circle cx="77.5" cy="135" r="2.4" fill="#8f5b30"/>
 
-  <!-- ===== orugas ===== -->
-  <path class="rubber" d="M36.5 26 C36.5 20.5 39.5 18 43 18 C46.5 18 49.5 20.5 49.5 26 L49.5 104 C49.5 109.5 46.5 112 43 112 C39.5 112 36.5 109.5 36.5 104 Z"/>
-  <path class="rubber" d="M78.5 26 C78.5 20.5 81.5 18 85 18 C88.5 18 91.5 20.5 91.5 26 L91.5 104 C91.5 109.5 88.5 112 85 112 C81.5 112 78.5 109.5 78.5 104 Z"/>
-  <path d="M37 26 C37 21 39.6 18.6 43 18.6 C46.4 18.6 49 21 49 26 L49 104 C49 109 46.4 111.4 43 111.4 C39.6 111.4 37 109 37 104 Z" fill="url(#aa1g1)" opacity=".45"/>
-  <path d="M79 26 C79 21 81.6 18.6 85 18.6 C88.4 18.6 91 21 91 26 L91 104 C91 109 88.4 111.4 85 111.4 C81.6 111.4 79 109 79 104 Z" fill="url(#aa1g1)" opacity=".45"/>
-  <path d="M37.2 24 L37.2 106 M80.2 24 L80.2 106" stroke="#fff" stroke-width=".8" opacity=".16" fill="none"/>
-  <path d="M38 16 L38 114 M41.4 14.4 L41.4 115.6 M44.6 14.4 L44.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M80 16 L80 114 M83.4 14.4 L83.4 115.6 M86.6 14.4 L86.6 115.6" stroke="#4a4f42" stroke-width="1" stroke-dasharray="2.1 1.2" opacity=".85" fill="none"/>
-  <path d="M43 15.5 L43 116.5 M85 15.5 L85 116.5" stroke="#000" stroke-width="1.4" stroke-dasharray="2.6 1.8" opacity=".5" fill="none"/>
-  <circle class="metalL" cx="43" cy="21" r="4.8"/><circle class="metal" cx="43" cy="21" r="2.7"/>
-  <circle class="metalL" cx="85" cy="21" r="4.8"/><circle class="metal" cx="85" cy="21" r="2.7"/>
-  <circle class="metalL" cx="43" cy="109" r="4.8"/><circle class="metal" cx="43" cy="109" r="2.7"/>
-  <circle class="metalL" cx="85" cy="109" r="4.8"/><circle class="metal" cx="85" cy="109" r="2.7"/>
+<!-- cubierta y glacis -->
+<path d="M53.3 106.9 L108.0 91.8 L134.3 117.5 L79.6 132.6 Z" fill="url(#g-deck)"/>
+<path d="M108.0 91.8 L143.4 102.0 L169.7 127.7 L134.3 117.5 Z" fill="url(#g-deck)"/>
+<path d="M108.0 91.8 L134.3 117.5" fill="none" stroke="#6d6046" stroke-opacity="0.55" stroke-width="1.2"/>
+<path d="M108.0 91.8 L143.4 102.0 L169.7 127.7 L134.3 117.5 Z" fill="#ffffff" fill-opacity="0.07"/>
+<!-- pala rompeolas plegada sobre el glacis -->
+<path d="M118 100 L142 107 L162 126.5 L138 119.5 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="1"/>
+<g fill="#5c5340">
+  <path d="M146 104 L151.5 109.4 L148.5 110.7 L143 105.3 Z"/>
+  <path d="M159 116.5 L164.5 121.9 L161.5 123.2 L156 117.8 Z"/>
+</g>
+<!-- escotilla de carga -->
+<path d="M85 111 L104 105.5 L112 113.4 L93 118.9 Z" fill="#a2946d" stroke="#5a5039" stroke-width="1"/>
 
-  <!-- ===== casco en caja ===== -->
-  <path class="base" d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" stroke="#3d4232" stroke-width="1.3"/>
-  <path d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" fill="url(#aa1g1)"/>
-  <path d="M52 20 L76 20 L78.5 27 L78.5 101 L75 107 L53 107 L49.5 101 L49.5 27 Z" fill="url(#aa1g2)"/>
-  <path d="M52.4 20.6 L75.6 20.6 L77.6 26.4 L50.4 26.4 Z" fill="#fff" opacity=".14"/>
-  <path d="M50.3 28 L50 100" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M77.7 28 L78 100" stroke="#000" stroke-width="1.4" opacity=".24" fill="none" filter="url(#aa1f1)"/>
-  <path class="dark" d="M53.5 17.5 L74.5 17.5 L74.5 20 L53.5 20 Z"/>
-  <path d="M49.2 26 L52 25 L52 103 L49.2 101 Z" fill="#000" opacity=".3" filter="url(#aa1f1)"/>
-  <path d="M78.8 26 L76 25 L76 103 L78.8 101 Z" fill="#000" opacity=".3" filter="url(#aa1f1)"/>
+<!-- flanco -->
+<path d="M79.6 132.6 L134.3 117.5 L169.7 127.7 L79.6 152.6 Z" fill="url(#g-flank)"/>
+<path d="M79.6 132.6 L134.3 117.5" fill="none" stroke="#000000" stroke-opacity="0.2" stroke-width="2"/>
 
-  <!-- escotilla del conductor y visores -->
-  <ellipse class="metal" cx="56.5" cy="32" rx="4.4" ry="3.4"/>
-  <ellipse cx="56.5" cy="32" rx="4.4" ry="3.4" fill="url(#aa1g5)"/>
-  <ellipse cx="56.5" cy="32" rx="4.4" ry="3.4" fill="none" stroke="#3d4232" stroke-width=".8"/>
-  <rect class="dark" x="62" y="27" width="5" height="2.4" rx=".6" opacity=".85"/>
-  <rect class="dark" x="69" y="27" width="5" height="2.4" rx=".6" opacity=".85"/>
+<!-- tren de rodaje: 5 ruedas, motriz delantera, sin rodillos -->
+<path d="M78.4 173.7 L173.7 147.4 L173.7 128.4 L78.4 154.7 Z" fill="url(#g-trk)"/>
+<g fill="#46423a" stroke="#1b1a15" stroke-width="1.1">
+  <ellipse cx="89.8"  cy="162.6" rx="6" ry="7"/>
+  <ellipse cx="107.5" cy="157.7" rx="6" ry="7"/>
+  <ellipse cx="125.2" cy="152.8" rx="6" ry="7"/>
+  <ellipse cx="142.8" cy="147.9" rx="6" ry="7"/>
+  <ellipse cx="160.5" cy="143.0" rx="6" ry="7"/>
+</g>
+<g fill="#6d6455">
+  <ellipse cx="89.8"  cy="162.6" rx="2.2" ry="2.6"/>
+  <ellipse cx="107.5" cy="157.7" rx="2.2" ry="2.6"/>
+  <ellipse cx="125.2" cy="152.8" rx="2.2" ry="2.6"/>
+  <ellipse cx="142.8" cy="147.9" rx="2.2" ry="2.6"/>
+  <ellipse cx="160.5" cy="143.0" rx="2.2" ry="2.6"/>
+</g>
+<ellipse cx="169.6" cy="140.6" rx="7.6" ry="8.8" fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
+<ellipse cx="82.8"  cy="159.5" rx="6.8" ry="8"   fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
+<path d="M79.5 174 L174.5 147.8" fill="none" stroke="#0d0b06" stroke-opacity="0.55" stroke-width="3"/>
 
-  <!-- sombra de la torreta -->
-  <path d="M52 42 L78 42 L80 72 L48 72 Z" fill="#000" opacity=".2" filter="url(#aa1f2)"/>
-
-  <!-- ===== torreta Vulcan con canon rotativo ===== -->
-  <circle class="shade" cx="64" cy="56" r="13.5"/>
-  <circle cx="64" cy="56" r="13.5" fill="url(#aa1g5)"/>
-  <circle cx="64" cy="56" r="13.5" fill="none" stroke="#3d4232" stroke-width="1"/>
-  <path d="M52.5 51 A12.8 12.8 0 0 1 61 43.2" stroke="#fff" stroke-width="1" opacity=".5" fill="none"/>
-  <!-- radome del radar de seguimiento (estibor) -->
-  <circle class="shade" cx="73.5" cy="63.5" r="6.4"/>
-  <circle cx="73.5" cy="63.5" r="6.4" fill="url(#aa1g6)"/>
-  <circle cx="73.5" cy="63.5" r="6.4" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <path d="M69.4 60.2 A5.6 5.6 0 0 1 74.6 57.5" stroke="#fff" stroke-width=".9" opacity=".55" fill="none"/>
-  <ellipse class="light" cx="71.4" cy="60.6" rx="1.6" ry="2.4" opacity=".7"/>
-  <!-- tambor de municion (babor) -->
-  <circle class="metal" cx="54.5" cy="63.5" r="5.2"/>
-  <circle cx="54.5" cy="63.5" r="5.2" fill="url(#aa1g6)"/>
-  <circle cx="54.5" cy="63.5" r="5.2" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <circle class="dark" cx="54.5" cy="63.5" r="3.2" opacity=".85"/>
-  <circle class="metalL" cx="54.5" cy="63.5" r="1.2"/>
-  <!-- cubeta central del canon -->
-  <circle class="metal" cx="64" cy="53.5" r="4.6"/>
-  <circle cx="64" cy="53.5" r="4.6" fill="url(#aa1g5)"/>
-  <circle cx="64" cy="53.5" r="4.6" fill="none" stroke="#3d4232" stroke-width=".9"/>
-  <!-- 6 tubos Vulcan apuntando al norte -->
-  <path class="dark" d="M58.4 38.2 L59.4 38.2 L59.3 50 L58.5 50 Z"/>
-  <path class="dark" d="M61.6 37.4 L62.6 37.4 L62.5 49.6 L61.7 49.6 Z"/>
-  <path class="dark" d="M64.8 37 L65.8 37 L65.7 49.5 L64.9 49.5 Z"/>
-  <path class="dark" d="M68 37.4 L69 37.4 L68.9 49.6 L68.1 49.6 Z"/>
-  <path class="dark" d="M71.2 38.2 L72.2 38.2 L72.1 50 L71.3 50 Z"/>
-  <path class="dark" d="M55.2 39.4 L56.2 39.4 L56.1 50.4 L55.3 50.4 Z"/>
-  <!-- bocas de los tubos -->
-  <g class="metalS">
-    <circle cx="55.7" cy="39.6" r=".95"/><circle cx="58.9" cy="38.5" r=".95"/>
-    <circle cx="62.1" cy="37.7" r=".95"/><circle cx="65.3" cy="37.3" r=".95"/>
-    <circle cx="68.5" cy="37.7" r=".95"/><circle cx="71.7" cy="38.5" r=".95"/>
-  </g>
-  <circle cx="55.4" cy="39.3" r=".3" fill="#fff" opacity=".6"/>
-  <circle cx="65" cy="37" r=".3" fill="#fff" opacity=".6"/>
-  <!-- asiento del operador y visor -->
-  <rect class="dark" x="59.5" y="60.5" width="4" height="3" rx=".6"/>
-  <rect class="glass" x="60.4" y="61.2" width="1.6" height="1.4" rx=".3" opacity=".9"/>
-
-  <!-- ===== popa: rejillas ===== -->
-  <rect class="dark" x="54" y="94" width="8.5" height="7" rx="1"/>
-  <rect class="dark" x="65.5" y="94" width="8.5" height="7" rx="1"/>
-  <path d="M56 95 L56 100 M58.5 95 L58.5 100 M61 95 L61 100 M67.5 95 L67.5 100 M70 95 L70 100 M72.5 95 L72.5 100" stroke="#9aa378" stroke-width=".6" opacity=".6" fill="none"/>
-  <!-- rampa trasera -->
-  <path class="shade" d="M53.6 101.6 L74.4 101.6 L74.6 105.6 L53.4 105.6 Z"/>
-  <path d="M53.9 101.9 L74.1 101.9" stroke="#fff" stroke-width=".5" opacity=".3" fill="none"/>
-  <!-- antenas -->
-  <path d="M52.6 60 L48.5 50.5" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <path d="M76 78 L80.5 88" stroke="#3d4232" stroke-width="1" fill="none" opacity=".85"/>
-  <circle class="dark" cx="52.6" cy="60" r="1"/>
+<!-- torreta cilindrica del Vulcan -->
+<path d="M108.8 108.1 C112.9 112.1 110.0 117.1 102.2 119.3
+         C94.4 121.5 84.7 119.9 80.6 115.9
+         C76.5 111.9 79.4 106.9 87.2 104.7
+         C95.0 102.5 104.7 104.1 108.8 108.1 Z" fill="url(#g-flank)"/>
+<path d="M108.8 92.1 C112.9 96.1 110.0 101.1 102.2 103.3
+         C94.4 105.5 84.7 103.9 80.6 99.9
+         C76.5 95.9 79.4 90.9 87.2 88.7
+         C95.0 86.5 104.7 88.1 108.8 92.1 Z" fill="url(#g-deck)"/>
+<path d="M80.6 99.9 C76.5 95.9 79.4 90.9 87.2 88.7 C95.0 86.5 104.7 88.1 108.8 92.1"
+      fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<!-- radar de telemetria en brazo lateral -->
+<path d="M96 110 L100 108.5 L100 100 L96 101.5 Z" fill="#5c5340"/>
+<ellipse cx="102" cy="99" rx="7.5" ry="9" fill="#b0a179" stroke="#574d38" stroke-width="1"/>
+<ellipse cx="102" cy="99" rx="4" ry="5" fill="#8d7f5e"/>
+<!-- canon rotativo M61 Vulcan de 20 mm -->
+<path d="M105 101 L112 95 L119 99.5 L112 105.5 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="0.9"/>
+<path d="M107.6 100.5 L149.1 89.0 L151.5 95.7 L110.0 107.2 Z" fill="url(#g-metal)"/>
+<g stroke="#5a5039" stroke-opacity="0.8" stroke-width="1">
+  <path d="M109 103.3 L150.4 91.8"/><path d="M108.3 99 L149.8 87.5"/>
+</g>
+<ellipse cx="150.3" cy="92.4" rx="1.6" ry="3.4" fill="#181510"/>
+<path d="M107.6 100.5 L149.1 89.0 L149.4 90.2 L107.9 101.7 Z" fill="#ffffff" fill-opacity="0.35"/>
 </svg>

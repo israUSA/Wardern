@@ -1,137 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- BRDM-2 Konkurs (4x4 anfibio de exploracion) - vista superior, morro al norte.
-       Ruedas 4x4 con casco cerrado, TORRETA PEQUENA con canon 73mm y riel de misil
-       Konkurs, escotillas frontales del conductor, deck trasero con escotillas de tropa.
-       Tinte por pais: .base/.shade/.light/.hi. Fijos: .metal/.metalS/.metalL, .glass, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="bd1f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
-  <filter id="bd1f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
-  <radialGradient id="bd1gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".5" stop-color="#000" stop-opacity=".19"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="bd1g1" gradientUnits="userSpaceOnUse" x1="49" y1="62" x2="79" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".42" stop-color="#fff" stop-opacity=".24"/><stop offset=".62" stop-color="#fff" stop-opacity=".04"/><stop offset=".82" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- BRDM-2 con lanzador Konkurs (T1 oriental, cazatanques). Verde ruso.
+     Camara y escala del set (20.9 px/m). Casco 5.75 x 2.35 x 2.31 m.
+     Identidad: es el UNICO cazatanques oriental de RUEDAS del set - 4 ruedas
+     grandes mas las dos parejas de ruedas de vientre retractiles entre ejes,
+     casco de lancha con proa apuntada, superestructura estrecha y, en lugar de
+     torreta, el bastidor elevable con los tubos del misil Konkurs. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#9aa878"/><stop offset="0.34" stop-color="#7c8b5d"/>
+    <stop offset="0.68" stop-color="#66744c"/><stop offset="1" stop-color="#52603c"/>
   </linearGradient>
-  <linearGradient id="bd1g2" gradientUnits="userSpaceOnUse" x1="64" y1="22" x2="64" y2="103">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".32" stop-color="#fff" stop-opacity=".05"/><stop offset=".58" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#6b7a4e"/><stop offset="0.45" stop-color="#5a6942"/>
+    <stop offset="1" stop-color="#455233"/>
   </linearGradient>
-  <linearGradient id="bd1g3" gradientUnits="userSpaceOnUse" x1="53.6" y1="43" x2="74.4" y2="43">
-    <stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".24" stop-color="#fff" stop-opacity=".18"/><stop offset=".55" stop-color="#fff" stop-opacity=".08"/><stop offset=".85" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0" stop-color="#485636"/><stop offset="0.6" stop-color="#374327"/>
+    <stop offset="1" stop-color="#2a331e"/>
   </linearGradient>
-  <linearGradient id="bd1g4" gradientUnits="userSpaceOnUse" x1="64" y1="40" x2="64" y2="46.8">
-    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".8"/><stop offset=".4" stop-color="#9cc4dc" stop-opacity=".4"/><stop offset=".8" stop-color="#28495e" stop-opacity=".6"/><stop offset="1" stop-color="#14293a" stop-opacity=".75"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#a6b28a"/><stop offset="0.5" stop-color="#717d5a"/>
+    <stop offset="1" stop-color="#464f35"/>
   </linearGradient>
-  <radialGradient id="bd1g5" cx=".4" cy=".34" r=".8">
-    <stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </radialGradient>
-  </defs>
+  <linearGradient id="g-tyre" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0" stop-color="#3a3a30"/><stop offset="0.5" stop-color="#26261f"/>
+    <stop offset="1" stop-color="#171712"/>
+  </linearGradient>
+</defs>
+<path d="M64 148 L156 121 L180 143 L82 172 Z" fill="#080a06" opacity="0.30"/>
 
-  <!-- sombra de contacto grande y suava -->
-  <ellipse cx="63" cy="62" rx="24" ry="47" fill="url(#bd1gs)"/>
+<path d="M46.9 115.8 L69.9 138.3 L69.9 155.3 L46.9 132.8 Z" fill="url(#g-rear)"/>
+<path d="M50 122 L60 131.8 L60 145 L50 135.2 Z" fill="#2a331e"/>
+<g stroke="#7e8d5e" stroke-opacity="0.65" stroke-width="1"><path d="M51 126 L59 133.8"/><path d="M51 130 L59 137.8"/></g>
+<circle cx="49" cy="119" r="2.2" fill="#8f5b30"/>
 
-  <!-- ===== ruedas 4x4 ===== -->
-  <ellipse class="dark" cx="48" cy="36" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="80" cy="36" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="48" cy="88" rx="6.4" ry="7" opacity=".3"/>
-  <ellipse class="dark" cx="80" cy="88" rx="6.4" ry="7" opacity=".3"/>
-  <circle class="rubber" cx="48" cy="36" r="5.8"/><circle class="rubber" cx="80" cy="36" r="5.8"/>
-  <circle class="rubber" cx="48" cy="88" r="5.8"/><circle class="rubber" cx="80" cy="88" r="5.8"/>
-  <circle cx="48" cy="36" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="80" cy="36" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="48" cy="88" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle cx="80" cy="88" r="5.8" fill="none" stroke="#1c1f1a" stroke-width=".8"/>
-  <circle class="metal" cx="48" cy="36" r="2.1"/><circle class="metal" cx="80" cy="36" r="2.1"/>
-  <circle class="metal" cx="48" cy="88" r="2.1"/><circle class="metal" cx="80" cy="88" r="2.1"/>
-  <circle class="metalL" cx="48" cy="36" r=".7"/><circle class="metalL" cx="80" cy="36" r=".7"/>
-  <circle class="metalL" cx="48" cy="88" r=".7"/><circle class="metalL" cx="80" cy="88" r=".7"/>
-  <!-- brillo y sombra de los neumaticos -->
-  <g fill="#fff" opacity=".22">
-    <circle cx="46.4" cy="34.2" r="1.7"/><circle cx="78.4" cy="34.2" r="1.4"/>
-    <circle cx="46.4" cy="86.2" r="1.7"/><circle cx="78.4" cy="86.2" r="1.4"/>
-  </g>
-  <g fill="#000" opacity=".2">
-    <circle cx="49.8" cy="38.2" r="1.9"/><circle cx="81.8" cy="38.2" r="1.7"/>
-    <circle cx="49.8" cy="90.2" r="1.9"/><circle cx="81.8" cy="90.2" r="1.7"/>
-  </g>
+<path d="M46.9 115.8 L121.9 95.1 L144.9 117.6 L69.9 138.3 Z" fill="url(#g-deck)"/>
+<path d="M121.9 95.1 L152.9 99.5 L175.9 122.0 L144.9 117.6 Z" fill="url(#g-deck)"/>
+<path d="M121.9 95.1 L144.9 117.6" fill="none" stroke="#3b4728" stroke-opacity="0.55" stroke-width="1.2"/>
+<path d="M121.9 95.1 L152.9 99.5 L175.9 122.0 L144.9 117.6 Z" fill="#ffffff" fill-opacity="0.08"/>
+<g fill="#3b4728">
+  <path d="M154 103 L158.6 107.6 L156.2 108.7 L151.6 104.1 Z"/>
+  <path d="M164 112.5 L168.6 117.1 L166.2 118.2 L161.6 113.6 Z"/>
+</g>
 
-  <!-- ===== carroceria ===== -->
-  <path class="base" d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" stroke="#3d4232" stroke-width="1.3"/>
-  <path d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" fill="url(#bd1g1)"/>
-  <path d="M51.6 25.5 L76.4 25.5 L77.4 39 L78.1 57 L78.1 91 L76.6 98.5 L51.4 98.5 L49.9 91 L49.9 57 L50.6 39 Z" fill="url(#bd1g2)"/>
-  <!-- rim light en el flanco de babor + sombra profunda a estribor -->
-  <path d="M51 26 L50.4 57 L50.4 90 L51.8 97.6" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M77 26 L77.6 57 L77.6 90 L76.2 97.6" stroke="#000" stroke-width="1.5" opacity=".24" fill="none" filter="url(#bd1f1)"/>
-  <!-- parachoques y cabestrante -->
-  <path class="dark" d="M52.6 21.5 L75.4 21.5 L75.4 25.5 L52.6 25.5 Z"/>
-  <path class="metalS" d="M57.5 22.2 L70.5 22.2 L70.5 24.8 L57.5 24.8 Z" opacity=".9"/>
-  <path d="M61 22.4 L61 24.6 M64 22.4 L64 24.6 M67 22.4 L67 24.6" stroke="#4a5057" stroke-width=".6" fill="none"/>
-  <circle class="dark" cx="54.4" cy="23.5" r=".8"/><circle class="dark" cx="73.6" cy="23.5" r=".8"/>
-  <!-- guardabarros delanteros -->
-  <path class="shade" d="M50.9 30.2 C54.6 28.9 55.6 31.4 55.4 34 L55.6 42.4 L51 42.4 L50.5 34 Z" opacity=".85"/>
-  <path class="shade" d="M77.1 30.2 C73.4 28.9 72.4 31.4 72.6 34 L72.4 42.4 L77 42.4 L77.5 34 Z" opacity=".85"/>
-  <!-- capo con cresteria -->
-  <path class="base" d="M54.8 27.5 L73.2 27.5 L74 39 L54 39 Z" stroke="#00000022" stroke-width=".6"/>
-  <path d="M54.8 27.5 L73.2 27.5 L74 39 L54 39 Z" fill="url(#bd1g3)" opacity=".6"/>
-  <path d="M64 27.9 L64 38.7" stroke="#b8bfa2" stroke-width=".8" opacity=".55" fill="none"/>
-  <path d="M55.4 33 L60.4 33 M67.6 33 L72.6 33" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
-  <!-- rejillas de ventilacion del capo -->
-  <path class="dark" d="M58.4 35.4 L62 35.4 L62 37.6 L58.4 37.6 Z M66 35.4 L69.6 35.4 L69.6 37.6 L66 37.6 Z" opacity=".85"/>
-  <!-- parabrisas -->
-  <path class="glass" d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z"/>
-  <path d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z" fill="url(#bd1g4)"/>
-  <path d="M54.2 40 L73.8 40 L74.6 46.8 L53.4 46.8 Z" fill="none" stroke="#243b4d" stroke-width=".7"/>
-  <path d="M57.8 40.8 L57 46 M70.2 40.8 L71 46" stroke="#243b4d" stroke-width=".5" opacity=".8" fill="none"/>
-  <path d="M59.2 41 L58.6 45.6" stroke="#e8f4fb" stroke-width=".8" opacity=".55" fill="none"/>
-  <!-- espejos -->
-  <path class="dark" d="M49.4 43 L51.2 43 L51.2 46.2 L49.4 46.2 Z M78.6 43 L76.8 43 L76.8 46.2 L78.6 46.2 Z"/>
+<path d="M69.9 138.3 L144.9 117.6 L175.9 122.0 L175.9 126.0 L69.9 155.3 Z" fill="url(#g-flank)"/>
+<path d="M69.9 138.3 L144.9 117.6" fill="none" stroke="#000000" stroke-opacity="0.2" stroke-width="2"/>
 
-  <!-- ===== techo de cabina con escotillas ===== -->
-  <path d="M53.9 46.8 L74.1 46.8 L74.1 60.5 L53.9 60.5 Z" fill="url(#bd1g2)" opacity=".5"/>
-  <rect class="dark" x="55.2" y="49.4" width="6.4" height="6.8" rx="1.1"/>
-  <rect class="dark" x="66.4" y="49.4" width="6.4" height="6.8" rx="1.1"/>
-  <path d="M55.6 49.8 L61.2 49.8 L61.2 55.8 L55.6 55.8 Z M66.8 49.8 L72.4 49.8 L72.4 55.8 L66.8 55.8 Z" fill="none" stroke="#8a929b" stroke-width=".6" opacity=".8"/>
-  <path d="M58.4 49.8 L58.4 55.8 M69.6 49.8 L69.6 55.8" stroke="#4a5057" stroke-width=".45" opacity=".7" fill="none"/>
-  <!-- bisagras y lineas de puertas -->
-  <path d="M53.6 52 L53.6 60 M74.4 52 L74.4 60 M52.9 62 L52.9 79 M75.1 62 L75.1 79" stroke="#000" stroke-width=".5" opacity=".22" fill="none"/>
-  <rect class="light" x="51.9" y="63.4" width="1.7" height="1" rx=".4"/>
-  <rect class="light" x="74.4" y="63.4" width="1.7" height="1" rx=".4"/>
+<g fill="#2f342a" stroke="#141710" stroke-width="1">
+  <ellipse cx="111.0" cy="151.7" rx="4.6" ry="5.4"/>
+  <ellipse cx="131.4" cy="146.1" rx="4.6" ry="5.4"/>
+</g>
+<g fill="url(#g-tyre)" stroke="#141710" stroke-width="1.2">
+  <ellipse cx="93.4"  cy="150.6" rx="10" ry="11.5"/>
+  <ellipse cx="150.8" cy="134.7" rx="10" ry="11.5"/>
+</g>
+<g fill="#5a6247" stroke="#232a1a" stroke-width="1">
+  <ellipse cx="93.4"  cy="150.6" rx="4.4" ry="5.2"/>
+  <ellipse cx="150.8" cy="134.7" rx="4.4" ry="5.2"/>
+</g>
+<g fill="none" stroke="#4a5040" stroke-opacity="0.8" stroke-width="1.1">
+  <ellipse cx="93.4"  cy="150.6" rx="7.4" ry="8.6"/>
+  <ellipse cx="150.8" cy="134.7" rx="7.4" ry="8.6"/>
+</g>
 
-  <!-- ===== torreta BRDM-2 con 73mm + Konkurs ===== -->
-  <path d="M57.4 70.5 L70.6 70.5 L70 74.4 L58 74.4 Z" fill="#000" opacity=".24" filter="url(#bd1f1)"/>
-  <circle class="base" cx="64" cy="66.5" r="6.4"/>
-  <circle cx="64" cy="66.5" r="6.4" fill="url(#bd1g5)"/>
-  <circle cx="64" cy="66.5" r="6.4" fill="none" stroke="#3d4232" stroke-width=".8"/>
-  <path d="M59.2 63.4 A5.8 5.8 0 0 1 64 60.7" stroke="#fff" stroke-width=".8" opacity=".5" fill="none"/>
-  <path class="shade" d="M62 60.4 L66 60.4 L65.4 63 L62.6 63 Z"/>
-  <path class="dark" d="M62.9 50.5 L65.1 50.5 L65 60.6 L63 60.6 Z"/>
-  <path class="hi" d="M63.3 51.5 L63.7 51.5 L63.6 59.5 L63.3 59.5 Z" opacity=".55"/>
-  <rect class="metal" x="63.4" y="46.4" width="1.9" height="4.4" rx=".4"/>
-  <path class="metalS" d="M63.7 45.3 L65.2 45.3 L65.2 46.6 L63.7 46.6 Z"/>
-  <path d="M63.9 46.8 L63.9 50.2" stroke="#fff" stroke-width=".3" opacity=".4" fill="none"/>
-  <circle class="metal" cx="60.2" cy="70" r="1.9"/>
-  <circle class="metal" cx="67.8" cy="70" r="1.9"/>
+<path d="M67.4 113.7 L84.8 130.6 L84.8 115.6 L67.4 98.7 Z" fill="url(#g-rear)"/>
+<path d="M84.8 130.6 L137.7 116.0 L137.7 101.0 L84.8 115.6 Z" fill="url(#g-flank)"/>
+<path d="M67.4 98.7 L120.3 84.1 L137.7 101.0 L84.8 115.6 Z" fill="url(#g-deck)"/>
+<path d="M67.4 98.7 L120.3 84.1" fill="none" stroke="#ffffff" stroke-opacity="0.34" stroke-width="1.4"/>
+<g fill="#2b3320">
+  <path d="M100 116 L112 112.6 L112 106.6 L100 110 Z"/>
+  <path d="M118 111 L130 107.6 L130 101.6 L118 105 Z"/>
+</g>
 
-  <!-- ===== deck trasero con escotillas ===== -->
-  <path d="M53 79.1 L75 79.1 L75 96.4 L53 96.4 Z" fill="#000" opacity=".18" filter="url(#bd1f1)"/>
-  <path class="shade" d="M53.4 79.5 L74.6 79.5 L74.6 96 L53.4 96 Z"/>
-  <path d="M53.7 79.8 L74.3 79.8" stroke="#fff" stroke-width=".6" opacity=".3" fill="none"/>
-  <ellipse class="dark" cx="58" cy="85" rx="3.2" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="70" cy="85" rx="3.2" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="58" cy="92" rx="3.2" ry="2.6" opacity=".85"/>
-  <ellipse class="dark" cx="70" cy="92" rx="3.2" ry="2.6" opacity=".85"/>
-  <!-- porton trasero -->
-  <path class="dark" d="M52.4 96.5 L75.6 96.5 L75.6 100.5 L52.4 100.5 Z"/>
-  <path d="M58 97 L58 100 M70 97 L70 100" stroke="#8a929b" stroke-width=".5" opacity=".6" fill="none"/>
-  <path d="M75.6 62 L79.3 55.5" stroke="#3d4232" stroke-width="1" fill="none"/>
-  <circle class="dark" cx="75.4" cy="62.6" r="1"/>
-  <rect class="rubber" x="71" y="97.6" width="3" height="2" rx=".6"/>
-  <!-- antena de comunicaciones -->
-  <path d="M75.6 62 L79.3 55.5" stroke="#3d4232" stroke-width="1" fill="none"/>
-  <circle class="dark" cx="75.4" cy="62.6" r="1"/>
-  <!-- escapes a popa -->
-  <rect class="rubber" x="71" y="97.6" width="3" height="2" rx=".6"/>
+<path d="M96 108 L96 94 L104 92 L104 106 Z" fill="#4e5c38" stroke="#222a17" stroke-width="1"/>
+<path d="M88 96 L88 88.5 L112 82 L112 89.5 Z" fill="#5f6f42" stroke="#222a17" stroke-width="1"/>
+<path d="M88 88.5 L112 82 L118 84.5 L94 91 Z" fill="#7e8d5e"/>
+<g fill="#a6b28a" stroke="#333d22" stroke-width="0.7">
+  <path d="M108 88.6 L128 83.2 L128.8 85.4 L108.8 90.8 Z"/>
+  <path d="M108 92.6 L126 87.7 L126.8 89.9 L108.8 94.8 Z"/>
+  <path d="M107 84.6 L127 79.2 L127.8 81.4 L107.8 86.8 Z"/>
+</g>
+<g fill="#12150e">
+  <ellipse cx="128.4" cy="84.3" rx="1" ry="1.5"/>
+  <ellipse cx="126.4" cy="88.8" rx="1" ry="1.5"/>
+  <ellipse cx="127.4" cy="80.3" rx="1" ry="1.5"/>
+</g>
 </svg>

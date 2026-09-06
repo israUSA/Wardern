@@ -1,111 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- USS Whidbey Island (LSD-41, dock landing ship) - vista superior, proa al norte.
-       SILUETA UNICA: POZO DE FLOTACION abierto en la popa (well deck) con un LCAC
-       aerodeslizador dentro, superestructura compacta avanzada, cubierta de vehicles
-       delante, grua a babor y porton de popa. Tinte por pais: .base/.shade/.light/.hi.
-       Fijos: .metal/.metalS/.metalL (grua, cabrestantes), .glass (puente), .dark, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="tr2f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="tr2f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="tr2gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="tr2g1" gradientUnits="userSpaceOnUse" x1="44" y1="64" x2="84" y2="64">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".16" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".2"/><stop offset=".62" stop-color="#fff" stop-opacity=".03"/><stop offset=".84" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".38"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- USS Whidbey Island LSD (T2 occidental, transporte). Gris OTAN. Identidad: la mitad de POPA es un DIQUE INUNDABLE abierto, una gran superficie plana y hundida para lanchas de desembarco, con toda la superestructura y la chimenea concentradas en el tercio de proa. Sin portico ni rampa a la vista.
+     Camara naval del set: acimut 28 grados, elevacion 45 grados, mas alta que la
+     de los vehiculos terrestres porque en un buque la identidad esta en la
+     cubierta. Manga exagerada un 40 por ciento para que la cubierta sea legible. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#c3ccd4"/><stop offset="0.45" stop-color="#a3adb6"/>
+    <stop offset="1" stop-color="#8a949d"/>
   </linearGradient>
-  <linearGradient id="tr2g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="118">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".32" stop-color="#fff" stop-opacity=".05"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
+  <linearGradient id="g-side" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#8a949d"/><stop offset="0.5" stop-color="#727c85"/>
+    <stop offset="1" stop-color="#565f68"/>
   </linearGradient>
-  <linearGradient id="tr2g4" gradientUnits="userSpaceOnUse" x1="50" y1="14" x2="80" y2="112">
-    <stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#dfe5ea"/><stop offset="0.5" stop-color="#9aa4ad"/>
+    <stop offset="1" stop-color="#5d666e"/>
   </linearGradient>
-  <linearGradient id="tr2g3" gradientUnits="userSpaceOnUse" x1="56" y1="72" x2="72" y2="72">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".22" stop-color="#fff" stop-opacity=".2"/><stop offset=".55" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".34"/>
-  </linearGradient>
-  </defs>
-
-  <ellipse cx="63" cy="64" rx="43" ry="58" fill="url(#tr2gs)"/>
-
-  <!-- ===== casco ancho ===== -->
-  <path class="shade" d="M64 9.5 C57 13.5 51.2 20 48.4 28.5 L46.6 38 L45.9 104 L49.4 112.5 L53.4 117.5 L74.6 117.5 L78.6 112.5 L82.1 104 L81.4 38 L79.6 28.5 C76.8 20 71 13.5 64 9.5 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 9.5 C57 13.5 51.2 20 48.4 28.5 L46.6 38 L45.9 104 L49.4 112.5 L53.4 117.5 L74.6 117.5 L78.6 112.5 L82.1 104 L81.4 38 L79.6 28.5 C76.8 20 71 13.5 64 9.5 Z" fill="url(#tr2g1)"/>
-  <!-- cubierta -->
-  <path class="base" d="M64 12.2 C58.2 15.8 53.4 21.7 51 29.3 L49.5 38.4 L48.9 103.4 L52 111 L55.6 115 L72.4 115 L76 111 L79.1 103.4 L78.5 38.4 L77 29.3 C74.6 21.7 69.8 15.8 64 12.2 Z"/>
-  <path d="M64 12.2 C58.2 15.8 53.4 21.7 51 29.3 L49.5 38.4 L48.9 103.4 L52 111 L55.6 115 L72.4 115 L76 111 L79.1 103.4 L78.5 38.4 L77 29.3 C74.6 21.7 69.8 15.8 64 12.2 Z" fill="url(#tr2g2)"/>
-  <path d="M64 12.2 C58.2 15.8 53.4 21.7 51 29.3 L49.5 38.4 L48.9 103.4 L52 111 L55.6 115 L72.4 115 L76 111 L79.1 103.4 L78.5 38.4 L77 29.3 C74.6 21.7 69.8 15.8 64 12.2 Z" fill="url(#tr2g4)"/>
-  <path d="M50.4 38 L49.8 103 L52.6 110.6" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M77.6 38 L78.2 103 L75.4 110.6" stroke="#000" stroke-width="1.5" opacity=".24" fill="none" filter="url(#tr2f1)"/>
-  <path d="M64 13.5 L64 29" stroke="#b8bfa2" stroke-width=".8" opacity=".4" fill="none"/>
-  <path class="light" d="M64 12.2 C58.2 15.8 53.4 21.7 51 29.3 L53 29.7 C55.2 22.6 59.4 17 64.4 13.4 Z" opacity=".7"/>
-  <circle class="metalL" cx="55.2" cy="19.6" r="1.2"/><circle class="metalL" cx="72.8" cy="19.6" r="1.2"/>
-  <path d="M53.8 17.4 L56.4 21 M71.6 21 L74.2 17.4" stroke="#4a5057" stroke-width=".8" fill="none"/>
-  <!-- rompeolas -->
-  <path class="dark" d="M55.6 26.8 L72.4 26.8 L71.6 29.6 L56.4 29.6 Z" opacity=".85"/>
-  <path d="M57.6 27.2 L57.2 29.2 M64 27.2 L64 29.2 M70.4 27.2 L70.8 29.2" stroke="#8a929b" stroke-width=".5" opacity=".6" fill="none"/>
-
-  <!-- ===== cubierta de vehiculos (delante) ===== -->
-  <path d="M52.6 31 L75.4 31 L75.4 58 L52.6 58 Z" fill="#000" opacity=".1" filter="url(#tr2f2)"/>
-  <path d="M64 31.5 L64 57.5" stroke="#b8bfa2" stroke-width="1" stroke-dasharray="4 3" opacity=".45" fill="none"/>
-  <g class="dark" opacity=".8">
-    <circle cx="55" cy="34" r=".6"/><circle cx="73" cy="34" r=".6"/><circle cx="55" cy="46" r=".6"/><circle cx="73" cy="46" r=".6"/>
-    <circle cx="55" cy="56" r=".6"/><circle cx="73" cy="56" r=".6"/>
-  </g>
-  <!-- dos camiones estibados -->
-  <g transform="translate(58.5 40) rotate(90)">
-    <rect class="base" x="-2.2" y="-5" width="4.4" height="10" rx="1"/>
-    <path class="shade" d="M-1.4 -3.2 L1.4 -3.2 L1.4 -.2 L-1.4 -.2 Z"/>
-    <path class="dark" d="M-1.2 .4 L1.2 .4 L1 4.8 L-1 4.8 Z" opacity=".8"/>
-  </g>
-  <g transform="translate(69.5 48) rotate(90)">
-    <rect class="base" x="-2.2" y="-5" width="4.4" height="10" rx="1"/>
-    <path class="shade" d="M-1.4 -3.2 L1.4 -3.2 L1.4 -.2 L-1.4 -.2 Z"/>
-    <path class="dark" d="M-1.2 .4 L1.2 .4 L1 4.8 L-1 4.8 Z" opacity=".8"/>
-  </g>
-
-  <!-- ===== grua a babor ===== -->
-  <path class="dark" d="M56.4 60.5 L57.8 60.5 L57.7 68.5 L56.6 68.5 Z"/>
-  <path class="metalL" d="M56.8 60.5 L47.5 50.5" stroke="#4a5057" stroke-width="1.3" fill="none"/>
-  <circle class="metalS" cx="47.4" cy="50" r="1"/>
-  <path class="shade" d="M54.6 68.4 L59.6 68.4 L60.2 70.6 L54 70.6 Z"/>
-
-  <!-- ===== superestructura compacta ===== -->
-  <path d="M55 60.5 L73 60.5 L73 72.5 L55 72.5 Z" fill="#000" opacity=".24" filter="url(#tr2f1)"/>
-  <path class="base" d="M56.5 61 L71.5 61 L72.6 64 L72.6 69.5 L71.2 71.7 L56.8 71.7 L55.4 69.5 L55.4 64 Z" stroke="#3d4232" stroke-width="1.2"/>
-  <path d="M56.5 61 L71.5 61 L72.6 64 L72.6 69.5 L71.2 71.7 L56.8 71.7 L55.4 69.5 L55.4 64 Z" fill="url(#tr2g3)"/>
-  <path d="M56.9 61.3 L71.1 61.3" stroke="#fff" stroke-width="1" opacity=".45" fill="none"/>
-  <path d="M72.4 64.5 L72.4 69 L71.2 71.2" stroke="#000" stroke-width="1.2" opacity=".26" fill="none" filter="url(#tr2f1)"/>
-  <path class="glass" d="M58.6 62 L63.4 62 L63.1 64.6 L58.2 64.6 Z M69.4 62 L64.6 62 L64.9 64.6 L69.8 64.6 Z"/>
-  <path class="glassL" d="M59.3 62.5 L61.3 62.5 L61 63.7 L59 63.7 Z" opacity=".8"/>
-  <path class="glassL" d="M68.7 62.5 L66.7 62.5 L67 63.7 L69 63.7 Z" opacity=".8"/>
-  <rect class="shade" x="61.2" y="63.2" width="5.6" height="5.6" rx="1"/>
-  <circle class="metalS" cx="64" cy="65.4" r="1.6"/>
-  <path d="M64 65.4 L66 64.4 M64 65.4 L63.3 67.2" stroke="#3d4232" stroke-width=".6" fill="none"/>
-  <path d="M59.4 66.4 L60.6 66.4 M68.6 66.4 L67.4 66.4" stroke="#3d4232" stroke-width=".8" fill="none"/>
-  <path class="dark" d="M59.5 71.7 L68.5 71.7 L68 74 L60 74 Z"/>
-  <path d="M62.4 72.4 L62.2 73.6 M65.6 72.4 L65.8 73.6" stroke="#9aa378" stroke-width=".55" opacity=".5" fill="none"/>
-
-  <!-- ===== POZO DE FLOTACION abierto a popa ===== -->
-  <path d="M52.5 76 L75.5 76 L75.5 114 L52.5 114 Z" fill="#000" opacity=".26" filter="url(#tr2f2)"/>
-  <rect class="dark" x="53.6" y="77" width="20.8" height="35.6" rx="1.2"/>
-  <path d="M53.9 77.3 L74.1 77.3" stroke="#fff" stroke-width=".5" opacity=".2" fill="none"/>
-  <!-- agua dentro del pozo -->
-  <path d="M54.4 82 C58 83.2 62 83.2 64 82.6 C67 83.4 71 83.2 73.8 82.4 M54.6 96 C58 97.2 61 97 64 96.4 C67.4 97.2 70.6 97 73.6 96.2" stroke="#7fa8c9" stroke-width=".7" opacity=".3" fill="none"/>
-  <path d="M54.4 89 C58 90.2 62 90.2 64 89.6 C67 90.4 71 90.2 73.8 89.4" stroke="#7fa8c9" stroke-width=".6" opacity=".22" fill="none"/>
-  <!-- LCAC dentro del pozo -->
-  <g transform="translate(64 100) rotate(0)">
-    <path class="base" d="M-7.5 -8.5 C-8.6 -4 -8.6 4 -7.5 8 L7.5 8 C8.6 4 8.6 -4 7.5 -8.5 Z"/>
-    <path d="M-6.5 -7.5 C-7.4 -3.5 -7.4 3.5 -6.5 7 L6.5 7 C7.4 3.5 7.4 -3.5 6.5 -7.5 Z" fill="none" stroke="#b8bfa2" stroke-width=".7" opacity=".5"/>
-    <rect class="shade" x="-5.2" y="-6" width="10.4" height="4.6" rx="1"/>
-    <path class="dark" d="M-5 -1 L5 -1 L4.6 2.6 L-4.6 2.6 Z" opacity=".8"/>
-    <path d="M-4.6 4 L4.6 4" stroke="#4a5057" stroke-width=".5" opacity=".6" fill="none"/>
-    <circle class="metalS" cx="-4.2" cy="-6.8" r=".8"/><circle class="metalS" cx="4.2" cy="-6.8" r=".8"/>
-  </g>
-  <!-- porton de popa -->
-  <path class="rubber" d="M54.6 113.4 L73.4 113.4 L73.4 116 L54.6 116 Z"/>
-  <path d="M57 113.8 L57 115.6 M64 113.8 L64 115.6 M71 113.8 L71 115.6" stroke="#4a5057" stroke-width=".5" opacity=".7" fill="none"/>
-  <circle class="metalL" cx="50.8" cy="45" r=".8"/><circle class="metalL" cx="77.2" cy="45" r=".8"/>
+</defs>
+<path d="M36.5 152.0 L49.3 169.0 L130.3 141.2 L189.0 113.7 L219.5 94.1 L179.4 101.0 L114.4 120.0 Z" fill="#0a1a22" opacity="0.26" transform="translate(4,5)"/>
+<path d="M41.6 152.8 L51.2 165.5 L16.2 185.2 L-1.0 162.3 Z" fill="#eaf4f9" opacity="0.20"/>
+<path d="M194.1 120.5 L228.3 90.8 L174.3 94.2" fill="none" stroke="#eaf4f9" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M49.3 169.0 L130.3 141.2 L189.0 113.7 L219.5 94.1 L219.5 87.0 L189.0 106.7 L130.3 134.1 L49.3 161.9 Z" fill="url(#g-side)"/>
+<path d="M36.5 152.0 L49.3 169.0 L49.3 161.9 L36.5 144.9 Z" fill="#565f68"/>
+<path d="M36.5 144.9 L49.3 161.9 L130.3 134.1 L189.0 106.7 L219.5 87.0 L179.4 93.9 L114.4 112.9 Z" fill="url(#g-deck)"/>
+<path d="M36.5 144.9 L114.4 112.9 L179.4 93.9 L219.5 87.0" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M49.3 161.9 L130.3 134.1 L189.0 106.7 L219.5 87.0" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.6"/>
+<path d="M114.9 116.6 L126.3 131.8 L126.3 119.8 L114.9 104.5 Z" fill="#565f68"/>
+<path d="M126.3 131.8 L193.4 106.6 L193.4 94.6 L126.3 119.8 Z" fill="url(#g-side)"/>
+<path d="M114.9 104.5 L182.0 79.3 L193.4 94.6 L126.3 119.8 Z" fill="url(#g-deck)"/>
+<path d="M114.9 104.5 L182.0 79.3 L193.4 94.6" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M136.2 99.8 L143.8 110.0 L143.8 102.9 L136.2 92.7 Z" fill="#565f68"/>
+<path d="M143.8 110.0 L173.9 98.7 L173.9 91.6 L143.8 102.9 Z" fill="url(#g-side)"/>
+<path d="M136.2 92.7 L166.2 81.4 L173.9 91.6 L143.8 102.9 Z" fill="url(#g-deck)"/>
+<path d="M136.2 92.7 L166.2 81.4 L173.9 91.6" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M110.0 122.2 L117.0 131.5 L117.0 114.6 L110.0 105.2 Z" fill="#565f68"/>
+<path d="M117.0 131.5 L127.6 127.5 L127.6 110.6 L117.0 114.6 Z" fill="url(#g-side)"/>
+<path d="M110.0 105.2 L120.6 101.2 L127.6 110.6 L117.0 114.6 Z" fill="url(#g-deck)"/>
+<path d="M110.0 105.2 L120.6 101.2 L127.6 110.6" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M115.9 106.8 L119.5 105.5 L121.7 108.4 L118.2 109.8 Z" fill="#1d2429"/>
+<path d="M154.1 92.5 L154.1 84.7" fill="none" stroke="#565f68" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M151.4 84.6 L156.9 91.8" fill="none" stroke="#727c85" stroke-width="3.4" stroke-linecap="round"/>
+<ellipse cx="154.1" cy="86.3" rx="6.8" ry="3.8" fill="#a3adb6"/>
+<ellipse cx="154.1" cy="87.5" rx="7.6" ry="4.0" fill="#a3adb6" stroke="#565f68" stroke-width="1"/>
+<path d="M46.3 142.5 L104.6 120.6 L115.4 135.0 L57.1 157.0 Z" fill="#39414a" fill-opacity="0.6"/>
+<path d="M61.8 140.7 L93.9 128.7 L99.9 136.6 L67.8 148.6 Z" fill="none" stroke="#e8eef2" stroke-opacity="0.65" stroke-width="1.3"/>
+<ellipse cx="194.8" cy="94.0" rx="6.0" ry="7.2" fill="url(#g-metal)"/>
+<path d="M194.8 94.0 L200.1 91.2" fill="none" stroke="#333b42" stroke-width="2"/>
 </svg>

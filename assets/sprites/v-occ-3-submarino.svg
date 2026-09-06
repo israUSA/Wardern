@@ -1,95 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- USS Columbia (SSBN-826, balistico) - vista superior, proa al norte. MAS ANCHO y
-       voluminoso que un SSN: seccion de misiles BALISTICOS con 4 trampas SLBM grandes
-       en el lomo, vela alta y compacta, POPA EN X (4 superficies diagonales) y
-       propulsor a chorro electrico. Tinte: superficie ACERO (.metal/.metalS/.metalL).
-       Fijos: .dark (trampas, periscopios), .rubber (revestimiento de la vela). -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="sb3f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.2"/></filter>
-  <filter id="sb3f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
-  <radialGradient id="sb3gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
-  </radialGradient>
-  <linearGradient id="sb3g1" gradientUnits="userSpaceOnUse" x1="46" y1="62" x2="82" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".2" stop-color="#fff" stop-opacity=".18"/><stop offset=".4" stop-color="#fff" stop-opacity=".24"/><stop offset=".6" stop-color="#fff" stop-opacity=".04"/><stop offset=".8" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".44"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- USS Columbia (T3 occidental, submarino). Casco negro. Submarino lanzamisiles balisticos: es el mas largo y grueso del set. Identidad: la JOROBA del compartimento de tubos de misil, un lomo elevado que recorre toda la seccion central del casco detras de una vela baja y ancha. Timones de profundidad a proa.
+     Camara naval del set: acimut 28 grados, elevacion 45 grados, mas alta que la
+     de los vehiculos terrestres porque en un buque la identidad esta en la
+     cubierta. Manga exagerada un 40 por ciento para que la cubierta sea legible. -->
+<defs>
+  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#79828a"/><stop offset="0.45" stop-color="#5c656d"/>
+    <stop offset="1" stop-color="#454d54"/>
   </linearGradient>
-  <linearGradient id="sb3g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="114">
-    <stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/>
+  <linearGradient id="g-side" x1="0" y1="0" x2="0.85" y2="0.3">
+    <stop offset="0" stop-color="#454d54"/><stop offset="0.5" stop-color="#353c42"/>
+    <stop offset="1" stop-color="#262b30"/>
   </linearGradient>
-  <linearGradient id="sb3g3" gradientUnits="userSpaceOnUse" x1="58" y1="49" x2="70" y2="49">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".24" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity=".12"/><stop offset=".85" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".36"/>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0" stop-color="#dfe5ea"/><stop offset="0.5" stop-color="#9aa4ad"/>
+    <stop offset="1" stop-color="#5d666e"/>
   </linearGradient>
-  </defs>
-
-  <ellipse cx="63" cy="62" rx="24" ry="57" fill="url(#sb3gs)"/>
-
-  <!-- ===== casco mas ancho (SSBN) ===== -->
-  <path class="metal" d="M64 9.5 C57.2 13.6 52 20 49 28.6 L47 40 L46.4 60 L46.8 84 L49 95 L53.6 104.5 L58.8 110.5 L64 112.8 L69.2 110.5 L74.4 104.5 L79 95 L81.2 84 L81.6 60 L81 40 L79 28.6 C76 20 70.8 13.6 64 9.5 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 9.5 C57.2 13.6 52 20 49 28.6 L47 40 L46.4 60 L46.8 84 L49 95 L53.6 104.5 L58.8 110.5 L64 112.8 L69.2 110.5 L74.4 104.5 L79 95 L81.2 84 L81.6 60 L81 40 L79 28.6 C76 20 70.8 13.6 64 9.5 Z" fill="url(#sb3g1)"/>
-  <path d="M64 9.5 C57.2 13.6 52 20 49 28.6 L47 40 L46.4 60 L46.8 84 L49 95 L53.6 104.5 L58.8 110.5 L64 112.8 L69.2 110.5 L74.4 104.5 L79 95 L81.2 84 L81.6 60 L81 40 L79 28.6 C76 20 70.8 13.6 64 9.5 Z" fill="url(#sb3g2)"/>
-  <path d="M49.4 30 L47.8 41 L47.3 84 L49.5 94.5 L54 103.8" stroke="#fff" stroke-width="1.1" opacity=".4" fill="none"/>
-  <path d="M78.6 30 L80.2 41 L79.7 84 L77.5 94.5 L73 103.8" stroke="#000" stroke-width="1.6" opacity=".26" fill="none" filter="url(#sb3f1)"/>
-  <!-- domo de sonar de proa -->
-  <ellipse class="metalL" cx="64" cy="19.5" rx="5.6" ry="7.4" opacity=".55"/>
-  <path d="M59.2 16.5 C61.3 18.8 66.7 18.8 68.8 16.5 M58.5 20.5 C61.2 22.6 66.8 22.6 69.5 20.5" stroke="#4a5057" stroke-width=".5" opacity=".7" fill="none"/>
-  <!-- muettes de amarre -->
-  <path d="M51.4 35.6 L52.8 34.9 M51.4 36.2 L52.8 36.9 M52.2 34.9 L52.2 36.9 M76.6 35.6 L75.2 34.9 M76.6 36.2 L75.2 36.9 M75.8 34.9 L75.8 36.9" stroke="#4a5057" stroke-width=".6" fill="none"/>
-  <!-- anillos estructurales -->
-  <path d="M48.3 31.5 C56.5 33.4 71.5 33.4 79.7 31.5 M47.4 44 C57 46 71 46 80.6 44 M47.2 88 C56.8 90 71.2 90 80.8 88" stroke="#000" stroke-width=".55" opacity=".18" fill="none"/>
-  <path d="M64 11.5 L64 38 M64 64 L64 106" stroke="#b8bfa2" stroke-width=".7" opacity=".28" fill="none"/>
-  <!-- imbornales -->
-  <circle class="dark" cx="49.8" cy="52" r=".55"/><circle class="dark" cx="48.9" cy="64" r=".55"/><circle class="dark" cx="49.8" cy="76" r=".55"/>
-  <circle class="dark" cx="78.2" cy="52" r=".55"/><circle class="dark" cx="79.1" cy="64" r=".55"/><circle class="dark" cx="78.2" cy="76" r=".55"/>
-
-  <!-- ===== 4 trampas SLBM grandes en el lomo ===== -->
-  <path d="M52.5 60 L75.5 60 L75.5 92 L52.5 92 Z" fill="#000" opacity=".18" filter="url(#sb3f2)"/>
-  <rect class="dark" x="54" y="61.5" width="9.4" height="13" rx="1.6"/>
-  <rect class="dark" x="64.6" y="61.5" width="9.4" height="13" rx="1.6"/>
-  <rect class="dark" x="54" y="77" width="9.4" height="13" rx="1.6"/>
-  <rect class="dark" x="64.6" y="77" width="9.4" height="13" rx="1.6"/>
-  <path d="M55 63.5 L62.4 63.5 M55 72.5 L62.4 72.5 M65.6 63.5 L73 63.5 M65.6 72.5 L73 72.5" stroke="#8a929b" stroke-width=".55" opacity=".7" fill="none"/>
-  <path d="M55 79 L62.4 79 M55 88 L62.4 88 M65.6 79 L73 79 M65.6 88 L73 88" stroke="#8a929b" stroke-width=".55" opacity=".7" fill="none"/>
-  <path d="M58.7 61.8 L58.7 74.2 M69.3 61.8 L69.3 74.2 M58.7 77.3 L58.7 89.7 M69.3 77.3 L69.3 89.7" stroke="#4a5057" stroke-width=".5" opacity=".6" fill="none"/>
-  <path d="M54.2 63.7 L54.2 72.3 M63.8 63.7 L63.8 72.3 M64.4 63.7 L64.4 72.3 M74.2 63.7 L74.2 72.3" stroke="#000" stroke-width=".6" opacity=".35" fill="none"/>
-
-  <!-- planes de proa -->
-  <path class="metalS" d="M49.6 31.4 L41.4 33.6 L41 36.4 L49.3 37.4 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M78.4 31.4 L86.6 33.6 L87 36.4 L78.7 37.4 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path d="M43 34.4 L48.4 34.8 M85 34.4 L79.6 34.8" stroke="#b8bfa2" stroke-width=".6" opacity=".5" fill="none"/>
-
-  <!-- ===== vela compacta ===== -->
-  <path d="M57 37.4 L71 37.4 L70.6 63 L57.4 63 Z" fill="#000" opacity=".24" filter="url(#sb3f1)"/>
-  <path class="metalS" d="M64 36.2 C60.2 37.3 58.5 39.6 58.1 42.6 L57.7 55.4 C58.1 59.3 59.9 61.6 64 62.4 C68.1 61.6 69.9 59.3 70.3 55.4 L69.9 42.6 C69.5 39.6 67.8 37.3 64 36.2 Z" stroke="#3d4232" stroke-width="1.1"/>
-  <path d="M64 36.2 C60.2 37.3 58.5 39.6 58.1 42.6 L57.7 55.4 C58.1 59.3 59.9 61.6 64 62.4 C68.1 61.6 69.9 59.3 70.3 55.4 L69.9 42.6 C69.5 39.6 67.8 37.3 64 36.2 Z" fill="url(#sb3g3)"/>
-  <path d="M59 40 C59.7 38.1 61.4 37 63.8 36.6" stroke="#fff" stroke-width=".9" opacity=".5" fill="none"/>
-  <path d="M69.3 42 L69.5 55 C69.3 57.8 67.8 60.1 65.7 61.2" stroke="#000" stroke-width="1" opacity=".26" fill="none" filter="url(#sb3f1)"/>
-  <ellipse class="metalL" cx="64" cy="40.6" rx="2.7" ry="2.1" opacity=".7"/>
-  <ellipse class="dark" cx="64" cy="46" rx="2.8" ry="3.5"/>
-  <ellipse cx="64" cy="45" rx="1.7" ry="2.1" fill="#0d1116" opacity=".6"/>
-  <circle class="metalL" cx="61.3" cy="39.4" r=".95"/><circle cx="61.3" cy="39.4" r=".4" fill="#2b2e28"/>
-  <circle class="metal" cx="66.7" cy="39.4" r=".95"/><circle cx="66.7" cy="39.4" r=".4" fill="#2b2e28"/>
-  <path class="rubber" d="M58.4 46.6 L58.7 55.2 C59 58 60.3 60 62.2 61.1 L62.4 59.4 C61 58.5 60 56.7 59.7 54.4 L59.5 46.6 Z" opacity=".55"/>
-  <path class="rubber" d="M69.6 46.6 L69.3 55.2 C69 58 67.7 60 65.8 61.1 L65.6 59.4 C67 58.5 68 56.7 68.3 54.4 L68.5 46.6 Z" opacity=".55"/>
-
-  <!-- ===== POPA EN X: 4 superficies diagonales ===== -->
-  <path class="metalS" d="M55.5 97 L44.5 90.5 L42.5 93 L52.5 100.5 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M72.5 97 L83.5 90.5 L85.5 93 L75.5 100.5 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M55.5 104.5 L46.5 108.5 L48 111 L57.5 107 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path class="metalS" d="M72.5 104.5 L81.5 108.5 L80 111 L70.5 107 Z" stroke="#3d4232" stroke-width=".8"/>
-  <path d="M46 92.4 L52 96.8 M82 92.4 L76 96.8 M48.5 109.3 L56 106 M79.5 109.3 L72 106" stroke="#b8bfa2" stroke-width=".6" opacity=".5" fill="none"/>
-  <!-- cuchilla central -->
-  <path class="dark" d="M63.1 98.5 L64.9 98.5 L65.2 106.5 L62.8 106.5 Z"/>
-
-  <!-- ===== propulsor a chorro ===== -->
-  <circle class="dark" cx="64" cy="108.8" r="4.4"/>
-  <circle cx="64" cy="108.8" r="4.4" fill="none" stroke="#3d4232" stroke-width=".7"/>
-  <circle cx="64" cy="108.8" r="3.1" fill="none" stroke="#8a929b" stroke-width="1.3" opacity=".85"/>
-  <path d="M61.6 106.7 L66.4 110.9 M66.4 106.7 L61.6 110.9" stroke="#4a5057" stroke-width=".6" opacity=".8" fill="none"/>
-  <circle class="metalL" cx="64" cy="108.8" r="1.1"/>
-  <!-- bulge de remolque -->
-  <path class="metalL" d="M63.2 105 L64.8 105 L65.4 111.5 L62.6 111.5 Z" opacity="0"/>
+</defs>
+<path d="M34.7 159.4 L37.9 163.7 L101.2 150.8 L192.9 110.8 L226.1 90.2 L183.4 98.1 L113.7 118.8 Z" fill="#0a1a22" opacity="0.26" transform="translate(4,5)"/>
+<path d="M35.3 153.8 L44.8 166.5 L6.9 187.3 L-10.3 164.4 Z" fill="#eaf4f9" opacity="0.20"/>
+<path d="M198.0 117.6 L235.6 86.6 L178.3 91.3" fill="none" stroke="#eaf4f9" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M37.9 163.7 L101.2 150.8 L192.9 110.8 L226.1 90.2 L226.1 85.9 L192.9 106.6 L101.2 146.5 L37.9 159.4 Z" fill="url(#g-side)"/>
+<path d="M34.7 159.4 L37.9 163.7 L37.9 159.4 L34.7 155.2 Z" fill="#262b30"/>
+<path d="M34.7 155.2 L37.9 159.4 L101.2 146.5 L192.9 106.6 L226.1 85.9 L183.4 93.9 L113.7 114.6 Z" fill="url(#g-deck)"/>
+<path d="M34.7 155.2 L113.7 114.6 L183.4 93.9 L226.1 85.9" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M37.9 159.4 L101.2 146.5 L192.9 106.6 L226.1 85.9" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.6"/>
+<path d="M45.8 153.5 L216.6 89.2" fill="none" stroke="#79828a" stroke-opacity="0.85" stroke-width="4" stroke-linecap="round"/>
+<path d="M147.9 111.5 L152.4 117.5 L152.4 107.6 L147.9 101.6 Z" fill="#262b30"/>
+<path d="M152.4 117.5 L171.4 110.3 L171.4 100.4 L152.4 107.6 Z" fill="url(#g-side)"/>
+<path d="M147.9 101.6 L166.9 94.5 L171.4 100.4 L152.4 107.6 Z" fill="url(#g-deck)"/>
+<path d="M147.9 101.6 L166.9 94.5 L171.4 100.4" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M152.6 92.7 L166.7 111.4" fill="none" stroke="#353c42" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M159.7 101.0 L159.7 96.8" fill="none" stroke="#262b30" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M179.8 82.7 L187.4 79.8 L211.7 112.1 L204.1 114.9 Z" fill="#353c42"/>
+<path d="M179.8 81.7 L187.4 78.8 L211.7 111.1 L204.1 113.9 Z" fill="#5c656d"/>
+<path d="M85.9 132.7 L92.9 142.0 L92.9 139.9 L85.9 130.5 Z" fill="#262b30"/>
+<path d="M92.9 142.0 L149.9 120.6 L149.9 118.5 L92.9 139.9 Z" fill="url(#g-side)"/>
+<path d="M85.9 130.5 L142.9 109.1 L149.9 118.5 L92.9 139.9 Z" fill="url(#g-deck)"/>
+<path d="M85.9 130.5 L142.9 109.1 L149.9 118.5" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
+<path d="M89.4 137.0 L146.4 115.6" fill="none" stroke="#79828a" stroke-opacity="0.85" stroke-width="5" stroke-linecap="round"/>
+<path d="M38.5 153.8 L41.7 158.0 L41.7 153.8 L38.5 149.5 Z" fill="#262b30"/>
+<path d="M41.7 158.0 L54.9 153.0 L54.9 148.8 L41.7 153.8 Z" fill="url(#g-side)"/>
+<path d="M38.5 149.5 L51.8 144.5 L54.9 148.8 L41.7 153.8 Z" fill="url(#g-deck)"/>
+<path d="M38.5 149.5 L51.8 144.5 L54.9 148.8" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
 </svg>

@@ -1,137 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- F/A-18E Super Hornet - vista superior, morro al norte. Silueta DISTINTA del F-16:
-       morro redondeado y ancho, LEX largos que se funden con ala trapezoidal poco
-       en flecha, DOS toberas (dos motores), DOBLE deriva inclinada hacia fuera,
-       tomas de aire en los hombros. Tinte por pais: .base/.shade/.light/.hi.
-       Fijos: .metal/.metalS/.metalL (misiles, toberas), .glass (cabina), .dark, .rubber. -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6a7077}.metalS{fill:#8a929b}.metalL{fill:#4a5057}
-    .glass{fill:#7fa8c9}.glassL{fill:#a9cbdf}.rubber{fill:#2b2e28}
-  </style>
-  <filter id="f18f1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
-  <filter id="f18f2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
-  <radialGradient id="f18gs" cx=".5" cy=".5" r=".5">
-    <stop offset="0" stop-color="#000" stop-opacity=".36"/><stop offset=".5" stop-color="#000" stop-opacity=".18"/><stop offset=".8" stop-color="#000" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<!-- F/A-18E Super Hornet — T2 occidental. 2 derivas inclinadas, 2 toberas juntas, LEX enormes, morro ancho y corto. -->
+<defs>
+  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
+    <stop offset="0" stop-color="#c6ced6"/><stop offset="0.34" stop-color="#99a2ab"/>
+    <stop offset="0.62" stop-color="#79828b"/><stop offset="1" stop-color="#4f575f"/>
+  </linearGradient>
+  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.45"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
+    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
+    <stop offset="1" stop-color="#6a4f15"/>
+  </linearGradient>
+  <linearGradient id="g-fin" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d2d9e0"/><stop offset="0.42" stop-color="#8c959e"/>
+    <stop offset="1" stop-color="#3f474e"/>
+  </linearGradient>
+  <linearGradient id="g-metal" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e3e8ec"/><stop offset="0.55" stop-color="#a8b0b7"/>
+    <stop offset="1" stop-color="#666e75"/>
+  </linearGradient>
+  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
+    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
+    <stop offset="1" stop-color="#5b636b"/>
   </radialGradient>
-  <linearGradient id="f18g1" gradientUnits="userSpaceOnUse" x1="50" y1="62" x2="78" y2="62">
-    <stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff" stop-opacity=".28"/><stop offset=".64" stop-color="#fff" stop-opacity=".05"/><stop offset=".84" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".45"/>
-  </linearGradient>
-  <linearGradient id="f18g2" gradientUnits="userSpaceOnUse" x1="64" y1="10" x2="64" y2="114">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/>
-  </linearGradient>
-  <linearGradient id="f18g3" gradientUnits="userSpaceOnUse" x1="20" y1="52" x2="20" y2="94">
-    <stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/>
-  </linearGradient>
-  <linearGradient id="f18g4" gradientUnits="userSpaceOnUse" x1="60" y1="24" x2="60" y2="42">
-    <stop offset="0" stop-color="#e8f4fb" stop-opacity=".85"/><stop offset=".35" stop-color="#9cc4dc" stop-opacity=".35"/><stop offset=".75" stop-color="#28495e" stop-opacity=".55"/><stop offset="1" stop-color="#14293a" stop-opacity=".8"/>
-  </linearGradient>
-  <linearGradient id="f18g5" gradientUnits="userSpaceOnUse" x1="52" y1="66" x2="56" y2="66">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".5" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".2"/>
-  </linearGradient>
-  <linearGradient id="f18g6" gradientUnits="userSpaceOnUse" x1="76" y1="66" x2="72" y2="66">
-    <stop offset="0" stop-color="#000" stop-opacity=".34"/><stop offset=".5" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".2"/>
-  </linearGradient>
-  </defs>
-
-  <ellipse cx="64" cy="68" rx="50" ry="58" fill="url(#f18gs)"/>
-
-  <!-- ===== AIM-9 en punta de ala (izq/der) ===== -->
-  <rect class="dark" x="15.6" y="66" width="2.6" height="24" rx="1"/>
-  <path class="metalS" d="M16.9 61.5 L18.6 65 L18.6 84 L20.2 88 L16.9 86.2 L13.6 88 L15.2 84 L15.2 65 Z"/>
-  <path class="dark" d="M15.5 61.9 L18.3 61.9 L18.6 65 L15.2 65 Z" opacity=".85"/>
-  <path class="metalL" d="M13.6 87 L15.5 84.6 L15.5 88.6 Z M20.2 87 L18.3 84.6 L18.3 88.6 Z"/>
-  <path class="hi" d="M15.9 66 L16.6 66 L16.6 83 L15.9 83 Z" opacity=".7"/>
-  <rect class="dark" x="109.8" y="66" width="2.6" height="24" rx="1"/>
-  <path class="metalS" d="M111.1 61.5 L112.8 65 L112.8 84 L114.4 88 L111.1 86.2 L107.8 88 L109.4 84 L109.4 65 Z"/>
-  <path class="dark" d="M109.7 61.9 L112.5 61.9 L112.8 65 L109.4 65 Z" opacity=".85"/>
-  <path class="metalL" d="M107.8 87 L109.7 84.6 L109.7 88.6 Z M114.4 87 L112.5 84.6 L112.5 88.6 Z"/>
-  <path class="hi" d="M110.1 66 L110.8 66 L110.8 83 L110.1 83 Z" opacity=".7"/>
-
-  <!-- ===== estabilizadores horizontales ===== -->
-  <path class="shade" d="M58 90 L34 101 L30 110 L57 107.6 Z"/>
-  <path class="shade" d="M70 90 L94 101 L98 110 L71 107.6 Z"/>
-  <path d="M58 90 L34 101 L30 110 L57 107.6 Z" fill="url(#f18g3)"/>
-  <path d="M70 90 L94 101 L98 110 L71 107.6 Z" fill="url(#f18g3)"/>
-  <path class="light" d="M58 90 L34 101 L32.8 102.5 L59.4 92.2 Z" opacity=".85"/>
-  <path class="light" d="M70 90 L94 101 L95.2 102.5 L68.6 92.2 Z" opacity=".85"/>
-  <path class="dark" d="M30 110 L34 101 L36.4 104.5 L32 111.4 Z" opacity=".8"/>
-  <path class="dark" d="M98 110 L94 101 L91.6 104.5 L96 111.4 Z" opacity=".8"/>
-
-  <!-- ===== ala trapezoidal + LEX ===== -->
-  <path class="base" d="M55.6 36 C50 42 38 50 24 56.5 L17 62 L16.4 68 L30 74.5 L52 77.5 L56.6 78 Z"/>
-  <path class="base" d="M72.4 36 C78 42 90 50 104 56.5 L111 62 L111.6 68 L98 74.5 L76 77.5 L71.4 78 Z"/>
-  <path d="M55.6 36 C50 42 38 50 24 56.5 L17 62 L16.4 68 L30 74.5 L52 77.5 L56.6 78 Z" fill="url(#f18g3)"/>
-  <path d="M72.4 36 C78 42 90 50 104 56.5 L111 62 L111.6 68 L98 74.5 L76 77.5 L71.4 78 Z" fill="url(#f18g3)"/>
-  <path class="light" d="M55.6 36 C50 42 38 50 24 56.5 L17.6 61.4 L52 41 Z" opacity=".9"/>
-  <path class="light" d="M72.4 36 C78 42 90 50 104 56.5 L110.4 61.4 L76 41 Z" opacity=".9"/>
-  <path d="M55.4 37 C49.8 43 38 51 24.4 57" stroke="#fff" stroke-width=".9" opacity=".45" fill="none"/>
-  <path d="M72.6 37 C78.2 43 90 51 103.6 57" stroke="#fff" stroke-width=".7" opacity=".3" fill="none"/>
-  <path d="M52 76.6 L27 71.4 M76 76.6 L101 71.4" stroke="#000" stroke-width="1.4" opacity=".18" fill="none" filter="url(#f18f1)"/>
-  <!-- flaperones y lines de panel -->
-  <path d="M54 44 L30 62 M52 58 L34 72 M74 44 L98 62 M76 58 L94 72" stroke="#000" stroke-width=".7" opacity=".22" fill="none"/>
-  <path d="M54 44 L52.6 76 M74 44 L75.4 76" stroke="#000" stroke-width=".6" opacity=".2" fill="none"/>
-  <!-- pilones con depósitos bajo ala -->
-  <path class="dark" d="M38 68 L40.6 68 L40.6 73 L38 73 Z M87.4 68 L90 68 L90 73 L87.4 73 Z" opacity=".85"/>
-  <path class="metalS" d="M39.3 60 L41.3 63 L41.3 82 L43 85.5 L39.3 83.5 L35.6 85.5 L37.3 82 L37.3 63 Z"/>
-  <path class="metalS" d="M88.7 60 L90.7 63 L90.7 82 L92.4 85.5 L88.7 83.5 L85 85.5 L86.7 82 L86.7 63 Z"/>
-  <path class="hi" d="M38.6 63 L39.4 63 L39.4 81 L38.6 81 Z" opacity=".6"/>
-  <path class="hi" d="M88 63 L88.8 63 L88.8 81 L88 81 Z" opacity=".6"/>
-
-  <!-- ===== derivas gemelas inclinadas ===== -->
-  <path class="shade" d="M55 64 L50.4 88 L54.6 94 L58.6 70 Z"/>
-  <path d="M55 64 L50.4 88 L54.6 94 L58.6 70 Z" fill="url(#f18g5)"/>
-  <path class="light" d="M55 64 L50.4 88 L51.2 88.4 L55.9 64.4 Z" opacity=".7"/>
-  <path d="M52.6 76 L53.6 84" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
-  <path class="shade" d="M73 64 L77.6 88 L73.4 94 L69.4 70 Z"/>
-  <path d="M73 64 L77.6 88 L73.4 94 L69.4 70 Z" fill="url(#f18g6)"/>
-  <path class="dark" d="M77.6 88 L73.4 94 L74.4 92.4 L76.8 87.6 Z" opacity=".7"/>
-  <path d="M75.4 76 L74.4 84" stroke="#000" stroke-width=".7" opacity=".3" fill="none"/>
-  <!-- bandas de cola -->
-  <path class="dark" d="M55.4 72 L58.2 72 L57.9 75.6 L55.2 75.6 Z" opacity=".55"/>
-  <path class="dark" d="M72.6 72 L69.8 72 L70.1 75.6 L72.8 75.6 Z" opacity=".55"/>
-
-  <!-- ===== fuselaje ancho con LEX ===== -->
-  <path class="base" d="M64 9.5 C60 12 57.6 17 57 22.5 C56.4 28 56.6 32 57.2 36 C55.4 40.5 54 45 53.6 50 C53 58 53.6 66 54.8 74 C55.6 80 56.6 88 58.2 96 L60.4 108 L62 113 L64 116 L66 113 L67.6 108 L69.8 96 C71.4 88 72.4 80 73.2 74 C74.4 66 75 58 74.4 50 C74 45 72.6 40.5 70.8 36 C71.4 32 71.6 28 71 22.5 C70.4 17 68 12 64 9.5 Z" stroke="#3d4232" stroke-width="1.4"/>
-  <path d="M64 9.5 C60 12 57.6 17 57 22.5 C56.4 28 56.6 32 57.2 36 C55.4 40.5 54 45 53.6 50 C53 58 53.6 66 54.8 74 C55.6 80 56.6 88 58.2 96 L60.4 108 L62 113 L64 116 L66 113 L67.6 108 L69.8 96 C71.4 88 72.4 80 73.2 74 C74.4 66 75 58 74.4 50 C74 45 72.6 40.5 70.8 36 C71.4 32 71.6 28 71 22.5 C70.4 17 68 12 64 9.5 Z" fill="url(#f18g1)"/>
-  <path d="M64 9.5 C60 12 57.6 17 57 22.5 C56.4 28 56.6 32 57.2 36 C55.4 40.5 54 45 53.6 50 C53 58 53.6 66 54.8 74 C55.6 80 56.6 88 58.2 96 L60.4 108 L62 113 L64 116 L66 113 L67.6 108 L69.8 96 C71.4 88 72.4 80 73.2 74 C74.4 66 75 58 74.4 50 C74 45 72.6 40.5 70.8 36 C71.4 32 71.6 28 71 22.5 C70.4 17 68 12 64 9.5 Z" fill="url(#f18g2)"/>
-  <path d="M59.9 24 C58.4 34 57.6 48 57.4 60 C57.2 72 58 84 59.4 94" stroke="#fff" stroke-width="1" opacity=".4" fill="none"/>
-  <path d="M68.1 24 C69.6 34 70.4 48 70.6 60 C70.8 72 70 84 68.6 94" stroke="#000" stroke-width="1.6" opacity=".24" fill="none" filter="url(#f18f1)"/>
-  <!-- sombra proyectada del fuselaje sobre las alas -->
-  <path d="M54.8 48 L58.4 48 L56.4 78 L51.8 77.6 Z" fill="#000" opacity=".2" filter="url(#f18f2)"/>
-  <path d="M73.2 48 L69.6 48 L71.6 78 L76.2 77.6 Z" fill="#000" opacity=".2" filter="url(#f18f2)"/>
-  <path d="M57.2 52.4 C59 50 61.6 49 63.4 48.8 M70.8 52.4 C69 50 66.4 49 64.6 48.8" stroke="#000" stroke-width="2.4" opacity=".3" fill="none" filter="url(#f18f1)"/>
-  <path d="M59.2 92.4 L68.8 92.4 L68.4 96 L59.6 96 Z" fill="#000" opacity=".24" filter="url(#f18f1)"/>
-  <!-- tomas de aire en los hombros (rincones oscuros) -->
-  <path class="dark" d="M53.8 40 C53.2 44 53 48 53.4 51 L57.4 51 C57 47 56.8 43 57.2 39.6 C56 40 54.6 40 53.8 40 Z" opacity=".55"/>
-  <path class="dark" d="M74.2 40 C74.8 44 75 48 74.6 51 L70.6 51 C71 47 71.2 43 70.8 39.6 C72 40 73.4 40 74.2 40 Z" opacity=".55"/>
-  <!-- lineas de panel -->
-  <path d="M59.4 24.5 C61.8 26.4 66.2 26.4 68.6 24.5 M56.8 43 C61.5 44.8 68.5 44.8 73.2 43 M57.2 60 C61.5 61 68.5 61 70.8 60 M57.8 78 C61.5 79 66.5 79 70.2 78" stroke="#000" stroke-width=".6" opacity=".22" fill="none"/>
-  <!-- luces de formacion -->
-  <path class="hi" d="M58.7 31 L60.1 31 L60.1 34 L58.7 34 Z" opacity=".8"/>
-  <path class="hi" d="M69.3 31 L67.9 31 L67.9 34 L69.3 34 Z" opacity=".8"/>
-  <!-- loma dorsal ancha -->
-  <path class="shade" d="M59.6 46 C59.2 58 59.4 68 60.4 80 L67.6 80 C68.6 68 68.8 58 68.4 46 C66.4 48.4 61.6 48.4 59.6 46 Z"/>
-  <path d="M60 53 C61.4 54 66.6 54 68 53 M60.2 63 C61.5 64 66.5 64 67.8 63 M60.6 73 C61.6 74 66.4 74 67.4 73" stroke="#000" stroke-width=".6" opacity=".25" fill="none"/>
-
-  <!-- ===== cabina de burbuja redondeada ===== -->
-  <ellipse cx="64" cy="33" rx="5.6" ry="9.6" class="dark" opacity=".55"/>
-  <path class="glass" d="M64 23 C61.2 25 59.2 28.8 59.2 33.2 C59.2 38 61.6 41.4 64 42 C66.4 41.4 68.8 38 68.8 33.2 C68.8 28.8 66.8 25 64 23 Z"/>
-  <path d="M64 23 C61.2 25 59.2 28.8 59.2 33.2 C59.2 38 61.6 41.4 64 42 C66.4 41.4 68.8 38 68.8 33.2 C68.8 28.8 66.8 25 64 23 Z" fill="url(#f18g4)"/>
-  <path d="M64 23 C61.2 25 59.2 28.8 59.2 33.2 C59.2 38 61.6 41.4 64 42 C66.4 41.4 68.8 38 68.8 33.2 C68.8 28.8 66.8 25 64 23 Z" fill="none" stroke="#243b4d" stroke-width=".8"/>
-  <ellipse cx="61.6" cy="31.5" rx="1.5" ry="5.6" transform="rotate(-3 61.6 31.5)" fill="#fff" opacity=".85"/>
-  <ellipse cx="66.3" cy="28.5" rx=".9" ry="3" transform="rotate(5 66.3 28.5)" fill="#fff" opacity=".5"/>
-  <ellipse cx="63" cy="39.4" rx="2.2" ry=".9" fill="#fff" opacity=".35"/>
-  <path d="M60.4 27.4 C62.2 26.2 65.8 26.2 67.6 27.4" stroke="#3d4232" stroke-width=".9" fill="none" opacity=".8"/>
-
-  <!-- ===== DOS toberas ===== -->
-  <ellipse class="metal" cx="58.4" cy="111.5" rx="3.9" ry="4.6"/>
-  <ellipse class="rubber" cx="58.4" cy="112.2" rx="2.2" ry="2.8"/>
-  <path class="metalL" d="M58.4 114.2 L57.2 112.2 L58.4 110.6 L59.6 112.2 Z" opacity=".9"/>
-  <ellipse class="metal" cx="69.6" cy="111.5" rx="3.9" ry="4.6"/>
-  <ellipse class="rubber" cx="69.6" cy="112.2" rx="2.2" ry="2.8"/>
-  <path class="metalL" d="M69.6 114.2 L68.4 112.2 L69.6 110.6 L70.8 112.2 Z" opacity=".9"/>
-  <path d="M56.4 105.5 L60.4 105.5 M67.6 105.5 L71.6 105.5" stroke="#000" stroke-width=".7" opacity=".4" fill="none"/>
-  <!-- carenado de la cola entre toberas -->
-  <path class="shade" d="M61 104 C62.8 105.6 65.2 105.6 67 104 L66.6 109 L61.4 109 Z"/>
+  <path id="hull" d="
+    M128 20 C134 24 138 32 139 42 L140 54
+    C142 60 146 66 152 72 L158 76 L160 84 L162 96
+    C164 106 168 116 174 124 L210 164 L210 170 L206 180
+    L160 178 L158 184 L160 206 L158 210 L148 208 L146 214
+    L142 234 C140 238 135 240 128 240
+    C121 240 116 238 114 234 L110 214 L108 208 L98 210
+    L96 206 L98 184 L96 178 L50 180 L46 170 L46 164
+    L82 124 C88 116 92 106 94 96 L96 84 L98 76
+    L104 72 C110 66 114 60 116 54 L117 42
+    C118 32 122 24 128 20 Z"/>
+</defs>
+<g id="unit">
+  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
+  <g fill="url(#g-metal)">
+    <rect x="208" y="140" width="3.5" height="30" rx="1.7"/>
+    <rect x="44.5" y="140" width="3.5" height="30" rx="1.7"/>
+    <rect x="186" y="148" width="3.5" height="26" rx="1.7"/>
+    <rect x="66" y="148" width="3.5" height="26" rx="1.7"/>
+  </g>
+  <g fill="#596168">
+    <path d="M206.5 148 l-3 4 v4 h3 z M211.5 148 l3 4 v4 h-3 z"/>
+    <path d="M43 148 l-3 4 v4 h3 z M48 148 l3 4 v4 h-3 z"/>
+  </g>
+  <use href="#hull" fill="url(#g-hull)"/>
+  <g fill="#000" fill-opacity="0.10">
+    <path d="M174 124 L210 164 L210 170 L206 180 L162 178 Z"/>
+    <path d="M82 124 L46 164 L46 170 L50 180 L94 178 Z"/>
+    <path d="M152 72 L160 84 L162 96 L164 120 L144 96 Z"/>
+    <path d="M104 72 L96 84 L94 96 L92 120 L112 96 Z"/>
+  </g>
+  <path fill="url(#g-spine)" d="
+    M128 22 C132 30 134 40 135 50 L136 96 L140 178 L138 230
+    C135 236 121 236 118 230 L116 178 L120 96 L121 50
+    C122 40 124 30 128 22 Z"/>
+  <g fill="none" stroke="#394047" stroke-opacity="0.50" stroke-width="0.9" stroke-linecap="round">
+    <path d="M144 84 L152 102 L160 176"/>
+    <path d="M112 84 L104 102 L96 176"/>
+    <path d="M204 168 L160 166"/>
+    <path d="M52 168 L96 166"/>
+    <path d="M156 118 L204 156"/>
+    <path d="M100 118 L52 156"/>
+    <path d="M122 40 L134 40"/>
+    <path d="M120 100 L136 100"/>
+    <path d="M142 182 L114 182"/>
+  </g>
+  <g fill="#2f363d" fill-opacity="0.55">
+    <path d="M146 56 C146 52 156 50 158 54 L160 70 C160 74 148 74 148 70 Z"/>
+    <path d="M110 56 C110 52 100 50 98 54 L96 70 C96 74 108 74 108 70 Z"/>
+  </g>
+  <path fill="url(#g-glass)" d="
+    M128 44 C135 48 140 58 140 70 C140 82 136 90 128 90
+    C120 90 116 82 116 70 C116 58 121 48 128 44 Z"/>
+  <path fill="#fff" fill-opacity="0.45" d="
+    M127 47 C123 52 120 60 120 70 C120 78 121 84 123 87
+    C120 84 118 78 118 70 C118 60 122 51 127 47 Z"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1.1" stroke-opacity="0.78" d="M117 60 C123 56 133 56 139 60"/>
+  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.55" d="M117 86 C123 89 133 89 139 86"/>
+  <g>
+    <path fill="#0e1216" fill-opacity="0.3" d="M142 186 L155 210 L153 216 L143 214 Z"/>
+    <path fill="url(#g-fin)" d="M140 184 L150 208 L150 214 L136 212 Z"/>
+    <path fill="#fff" fill-opacity="0.35" d="M140 186 L142 206 L138 206 Z"/>
+  </g>
+  <g>
+    <path fill="#0e1216" fill-opacity="0.3" d="M114 186 L101 210 L103 216 L113 214 Z"/>
+    <path fill="url(#g-fin)" d="M116 184 L106 208 L106 214 L120 212 Z"/>
+    <path fill="#fff" fill-opacity="0.35" d="M116 186 L114 206 L118 206 Z"/>
+  </g>
+  <path fill="url(#g-nozzle)" d="M118 230 C118 226 138 226 138 230 L136.5 238 C135 240 121 240 119.5 238 Z"/>
+  <ellipse cx="124" cy="236" rx="4" ry="2.8" fill="#0e1116"/>
+  <ellipse cx="132" cy="236" rx="4" ry="2.8" fill="#0e1116"/>
+  <ellipse cx="124" cy="235" rx="2.5" ry="1.8" fill="#3a2a1c" fill-opacity="0.7"/>
+  <ellipse cx="132" cy="235" rx="2.5" ry="1.8" fill="#3a2a1c" fill-opacity="0.7"/>
+  <path d="M128 20 L129 12 L127 12 Z" fill="#464e55"/>
+  <circle cx="128" cy="24" r="3.5" fill="#2f363d" fill-opacity="0.4"/>
+</g>
 </svg>
