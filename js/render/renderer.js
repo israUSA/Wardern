@@ -5,6 +5,8 @@ import { strikeWeaponsFor } from "../engine/missiles.js";
 import { radarRangeKm } from "../engine/air-combat.js";
 import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
+import { buildingReady } from "./sprite-cache.js";
+import { BUILDINGS } from "../data/constants.js";
 
 export class MapRenderer {
   constructor(canvas) {
@@ -217,6 +219,37 @@ export class MapRenderer {
     if (state) {
       // Niebla de guerra: solo se ven unidades propias y las de provincias visibles
       const vis = visibleProvinces(state);
+
+      // Edificios construidos: fila compacta bajo el centro de la provincia. Se
+      // dibujan antes que las unidades para que la pila quede por encima, y solo
+      // con el mapa acercado (igual que las gotas de combustible): a zoom de
+      // continente serían mil iconos ilegibles.
+      // Umbral alto a propósito: a escala 8 caben pocas provincias en pantalla, y
+      // este bloque cuesta ~9 ms/frame si se deja dibujar medio continente.
+      if (v.scale > 8) {
+        // Tipografía y tamaño se fijan UNA vez por frame, no por provincia:
+        // asignar ctx.font invalida el estado del contexto y es de lo más caro
+        // que se puede hacer en un bucle de 200+ iteraciones.
+        const bSize = Math.max(16, Math.min(34, unitSize * 0.78));
+        ctx.font = `bold ${Math.max(8, bSize * 0.42)}px monospace`;
+        ctx.textAlign = "center";
+        for (const p of this.paintList || S.provinceList) {
+          const psB = state.provinces[p.id];
+          if (!psB || !vis.has(p.id)) continue;
+          const b = psB.buildings;
+          if (!b) continue;
+          // Salidas baratas ANTES de asignar nada: este bucle recorre las ~1.300
+          // provincias en cada frame, y un filter() por provincia serían 1.300
+          // arrays nuevos 60 veces por segundo.
+          let any = false;
+          for (const k of BUILDING_KEYS) if (b[k] > 0) { any = true; break; }
+          if (!any) continue;
+          const [bx, by] = this.w2s(p.pcx, p.pcy);
+          if (bx < -80 || bx > this.w + 80 || by < -80 || by > this.h + 80) continue; // fuera de pantalla
+          const keys = BUILDING_KEYS.filter((k) => b[k] > 0);
+          this.drawBuildings(ctx, keys, psB, bx, by + 40, this.countryColor(psB.occupier || psB.owner), bSize);
+        }
+      }
 
       // Círculos de visión de drones propios y anillo de alcance del misil seleccionado
       for (const u of state.units) {
@@ -476,6 +509,38 @@ export class MapRenderer {
     this.view.cy = p.pcy;
   }
 
+  // Fila de iconos de edificio con su nivel. El tamaño acompaña al zoom como el
+  // de las unidades, pero más pequeño: son decorado informativo, no fichas.
+  drawBuildings(ctx, keys, ps, cx, cy, color, size) {
+    const gap = size + 3;
+    let x = cx - ((keys.length - 1) * gap) / 2;
+    const w = keys.length * gap + 4;
+    rrect(ctx, cx - w / 2, cy - size / 2 - 3, w, size + 6, 4);
+    ctx.fillStyle = "rgba(10,14,18,0.45)";
+    ctx.fill();
+    for (const k of keys) {
+      const img = buildingReady(k, color);
+      if (img) {
+        ctx.drawImage(img, x - size / 2, cy - size / 2, size, size);
+      } else {
+        // Aún cargando: cuadro sobrio para que no "parpadee" el hueco
+        rrect(ctx, x - size / 2, cy - size / 2, size, size, 3);
+        ctx.fillStyle = "rgba(12,16,20,0.55)";
+        ctx.fill();
+      }
+      const lvl = ps.buildings[k] || 0;
+      if (lvl > 1) {
+        // font/textAlign ya vienen fijados por el frame (ver draw)
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "rgba(8,12,16,0.85)";
+        ctx.strokeText(lvl, x + size * 0.34, cy + size * 0.52);
+        ctx.fillStyle = "#ffe9a0";
+        ctx.fillText(lvl, x + size * 0.34, cy + size * 0.52);
+      }
+      x += gap;
+    }
+  }
+
   // ---- Ayudas de dibujo de unidades (estilo CoN) ----
 
   // Unidad estacionaria: sprite con sombra suave, SIN panel oscuro; barra de HP
@@ -550,6 +615,9 @@ export class MapRenderer {
     ctx.fillText(text, x, y);
   }
 }
+
+// Orden fijo de los iconos de edificio, para que no bailen de sitio entre frames
+const BUILDING_KEYS = Object.keys(BUILDINGS);
 
 // Radio clicable de una ficha: la mitad del sprite, con un mínimo cómodo para
 // que las fichas sigan siendo fáciles de acertar con el mapa alejado del todo.

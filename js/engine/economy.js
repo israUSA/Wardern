@@ -203,7 +203,9 @@ export function tickQueues(state, dt) {
       log(state, `${unitDef(q.type)?.name ?? q.type} movilizado en ${p.name}`, "info");
     } else if (q.kind === "naval") {
       spawnUnit(state, ps.owner, q.type, q.seaCell, 50);
-      log(state, `${unitDef(q.type)?.name ?? q.type} botado en ${p.name}`, "info");
+      // Decir que sale AL MAR: el barco no aparece dentro de la provincia y sin
+      // esta pista el jugador lo busca en el puerto y cree que no se ha construido.
+      log(state, `${unitDef(q.type)?.name ?? q.type} botado en ${p.name} — fondeado en el mar adyacente`, "good");
     } else if (q.kind === "building") {
       ps.buildings[q.type] = (ps.buildings[q.type] || 0) + 1;
       log(state, `Construcción finalizada: ${C.BUILDINGS[q.type].name} (nivel ${ps.buildings[q.type]}) en ${p.name}`, "good");

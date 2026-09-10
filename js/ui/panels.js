@@ -15,6 +15,7 @@ import {
   isCarrier, carrierCapacity, aircraftAboard, landingOptions,
 } from "../engine/air-combat.js";
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
+import { buildingCost, canAfford } from "../engine/economy.js";
 import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
 
@@ -265,9 +266,14 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       }
       const level = (ps.buildings[key] || 0);
       const maxed = level >= b.max;
-      const cost = key === "fortaleza" ? { ...b.cost, money: b.cost.money * (level + 1) } : b.cost;
+      // El coste del SIGUIENTE nivel, con su `costGrowth`. Antes se pintaba el
+      // coste base de nivel 0 para todo salvo la fortaleza (y a esa se le aplicaba
+      // una fórmula lineal que tampoco era la del motor): el panel ofrecía un
+      // puerto de nivel 3 por 30.000 $ cuando el motor cobraba 240.000, así que el
+      // botón salía habilitado, el cobro fallaba y parecía que no se construía nada.
+      const cost = buildingCost(key, level);
       const r = state.countries[state.player].resources;
-      const afford = r.money >= cost.money && r.supplies >= cost.supplies;
+      const afford = canAfford(state, state.player, cost);
       let why = "";
       if (maxed) why = "Nivel máximo alcanzado";
       else if (!afford) {
@@ -371,6 +377,39 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     </div>`;
   }
   html += `</div>`;
+
+  // Flota en las celdas de mar adyacentes. Los barcos se botan AL MAR, no dentro
+  // de la provincia, así que sin esto construías un portaviones, mirabas el puerto
+  // y no veías nada: el barco estaba en el océano de al lado, sin que nada lo dijera.
+  const seaEdges = (S.edges.get(selId) || []).map((e) => e.to).filter((id) => S.provinces.get(id)?.isSea);
+  if (seaEdges.length) {
+    const fleet = [];
+    for (const seaId of seaEdges) {
+      for (const u of unitsIn(state, seaId)) {
+        if (u.embarked) continue;
+        if (u.owner !== state.player && !vis.has(seaId)) continue;
+        fleet.push(u);
+      }
+    }
+    if (fleet.length) {
+      html += `<div class="pp-section"><h4>Mar adyacente (${fleet.length})</h4>`;
+      for (const u of fleet) {
+        const un = unitDef(u.type);
+        if (!un) continue;
+        const color = S.countries[u.owner].color;
+        const mine2 = u.owner === state.player;
+        html += `<div class="unit-row" data-unit="${u.id}">
+          <canvas width="56" height="45" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
+          <div>${un.name}${mine2 ? "" : ` <span style="color:${color}">(${S.countries[u.owner].name})</span>`}
+            <div class="cost">⚓ ${S.provinces.get(u.pos)?.isSea ? "fondeado en alta mar" : ""}</div>
+            <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
+          </div>
+          <span class="uhp">${Math.round(u.hp)} HP</span>
+        </div>`;
+      }
+      html += `</div>`;
+    }
+  }
 
   // Diplomacia con el controlador extranjero
   if (ctrl !== state.player) {

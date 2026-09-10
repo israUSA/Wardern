@@ -56,6 +56,19 @@ export function spriteReady(icon, color, variant) {
   return null;
 }
 
+// Sprite de EDIFICIO teñido por país (SPRITES.edificios). El arte existía desde
+// v1.3 pero nada lo consumía: los edificios no se dibujaban en el mapa.
+export function buildingReady(key, color) {
+  const ck = "b:" + key + "|" + (color || "");
+  const img = cache.get(ck);
+  if (img && img.complete && img.naturalWidth > 0) return img;
+  if (!img && !cache.has(ck)) {
+    const path = SPRITES.edificios?.[key];
+    if (path) buildFromPath(path, ck, color);
+  }
+  return null;
+}
+
 async function loadSprite(icon, color, key, variant) {
   cache.set(key, undefined);
   // Prioridad: sprite POR VARIANTE (el vehículo real, p. ej. v-occ-1-caza = F-16A);
@@ -67,6 +80,21 @@ async function loadSprite(icon, color, key, variant) {
     cache.delete(key); // todo falló: se reintenta después
     return;
   }
+  buildImage(txt, key, color);
+}
+
+// Tiñe el SVG, le fija tamaño intrínseco y lo rasteriza en una Image cacheada.
+async function buildFromPath(path, key, color) {
+  cache.set(key, undefined);
+  const txt = await svgText(path);
+  if (!txt) {
+    cache.delete(key); // 404 o red: se reintenta pasado RETRY_MS
+    return;
+  }
+  buildImage(txt, key, color);
+}
+
+function buildImage(txt, key, color) {
   const tint = tintStyle(color);
   let svg = txt.replace("</svg>", tint + "</svg>");
   // tamaño intrínseco explícito: drawImage lo necesita en todos los navegadores.
