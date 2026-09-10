@@ -2,7 +2,14 @@
 // Todas las magnitudes de tiempo están en MINUTOS DE JUEGO salvo que se indique.
 
 export const TICK_MS = 250;               // duración real de un tick
-export const MINUTES_PER_TICK_BASE = 15;  // minutos de juego por tick a velocidad 1×
+// Minutos de juego por tick a 1×. A 4 ticks/s, con 15 el reloj corría a UNA HORA
+// de juego por segundo real: no es que las unidades fueran rápidas, es que el
+// tiempo volaba, y por eso un avión cruzaba una provincia antes de que te diera
+// tiempo a mirarlo. Con 6 el ritmo baja a 24 min de juego por segundo (2,5× más
+// lento) y TODO se ralentiza por igual —movimiento, economía, construcción,
+// investigación y combate— sin tocar una sola cifra de balance. Quien quiera el
+// ritmo anterior lo tiene en el botón 2×/4×.
+export const MINUTES_PER_TICK_BASE = 6;
 export const SPEEDS = [0, 1, 2, 4];
 
 // ---- Simulación en segundo plano ----

@@ -1,7 +1,7 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
@@ -208,7 +208,20 @@ const hooks = {
   },
   onStop(unitId) {
     const u = state?.units.find((x) => x.id === unitId && !x.dead);
-    if (u && orderStop(state, u)) UI.toast("Orden cancelada: se detendrá al final del tramo actual");
+    if (!u) return;
+    // Aeronaves: detenerse en el aire no existe. Vuelven a la base propia más cercana.
+    if (unitDef(u.type)?.air && !u.embarked) {
+      const dest = orderReturnToBase(state, u);
+      if (dest === u.pos) UI.toast("Ya está en su base: ruta cancelada");
+      else if (dest) UI.toast(`Regresando a base: ${S.provinces.get(dest)?.name}`);
+      else {
+        orderStop(state, u);
+        UI.toast("Sin base aérea propia alcanzable: se detiene donde pueda");
+      }
+      updateUI();
+      return;
+    }
+    if (orderStop(state, u)) UI.toast("Orden cancelada: se detendrá al final del tramo actual");
     updateUI();
   },
   onCenter(pid) {
@@ -462,6 +475,53 @@ function checkEnd() {
   }
 }
 
+// Emite la orden a todas las unidades de la selección y resume el resultado
+function issueMove(ids, pid) {
+  let ok = 0;
+  for (const id of ids) {
+    const u = state.units.find((x) => x.id === id && !x.dead);
+    if (u && pid !== u.pos && orderMove(state, u, pid)) ok++;
+  }
+  UI.toast(
+    ok === 0
+      ? "Sin ruta hasta esa provincia"
+      : ids.length > 1
+        ? `Orden emitida a ${ok} de ${ids.length} unidades`
+        : "Orden de movimiento emitida"
+  );
+  updateUI();
+}
+
+// Movimiento con aviso diplomático. Entrar en un país neutral —por tierra o por
+// aire— exige declararle la guerra, así que en vez de fallar con un "sin ruta"
+// que no explica nada, se ofrece declararla ahí mismo.
+function tryOrderMove(ids, pid) {
+  if (!pid || !state) return;
+  const iso = neutralBlocker(state, state.player, pid);
+  if (!iso) {
+    issueMove(ids, pid);
+    return;
+  }
+  const nombre = S.countries[iso].name;
+  const aereo = ids.some((id) => unitDef(state.units.find((x) => x.id === id)?.type)?.air);
+  UI.showModal(
+    "Territorio neutral",
+    `No estás en guerra con <b>${nombre}</b>: ${aereo ? "su espacio aéreo y sus fronteras están cerrados" : "sus fronteras están cerradas"}.
+     Para entrar tienes que declararle la guerra.`,
+    [
+      { label: "Cancelar" },
+      {
+        label: `Declarar guerra a ${nombre}`,
+        cls: "danger",
+        cb: () => {
+          declareWar(state, state.player, iso);
+          issueMove(ids, pid);
+        },
+      },
+    ]
+  );
+}
+
 // Tooltip de una ficha del mapa: nombre, país y HP (o el contacto sin identificar)
 function unitTooltip(hit) {
   if (hit.unknown) {
@@ -548,20 +608,7 @@ function bindInput() {
       ui.moveUnitId = null;
       ui.moveIds = null;
       ui.disembarkUnit = null;
-      if (pid) {
-        let ok = 0;
-        for (const id of ids) {
-          const u = state.units.find((x) => x.id === id && !x.dead);
-          if (u && pid !== u.pos && orderMove(state, u, pid)) ok++;
-        }
-        UI.toast(
-          ok === 0
-            ? "Sin ruta hasta esa provincia"
-            : ids.length > 1
-              ? `Orden emitida a ${ok} de ${ids.length} unidades`
-              : "Orden de movimiento emitida"
-        );
-      }
+      if (pid) tryOrderMove(ids, pid);
       updateUI();
       return;
     }
@@ -638,8 +685,7 @@ function bindInput() {
     const w = renderer.s2w(e.clientX, e.clientY);
     const pid = hitProvince(w[0], inverseMercY(w[1]));
     if (!pid || pid === u.pos) return;
-    UI.toast(orderMove(state, u, pid) ? "Orden de movimiento emitida" : "Sin ruta hasta esa provincia");
-    updateUI();
+    tryOrderMove([u.id], pid);
   });
 
   window.addEventListener("keydown", (e) => {

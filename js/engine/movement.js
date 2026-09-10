@@ -31,10 +31,23 @@ function edgeInfo(fromId, toId) {
 function canEnter(state, unit, pid) {
   const cell = S.provinces.get(pid);
   if (isNaval(unit.type)) return !!cell?.isSea;              // barcos: solo mar
-  if (cell?.isSea) return !!unitDef(unit.type)?.air;         // el mar solo lo cruzan aéreos
-  if (unitDef(unit.type)?.air) return true;                  // sobrevuelo libre
+  if (cell?.isSea) return !!unitDef(unit.type)?.air;         // el mar no tiene dueño
+  // Territorio de otro país: hay que ser su dueño o estar en guerra. Antes los
+  // aéreos tenían sobrevuelo LIBRE y podías pasear un caza por un país neutral
+  // sin consecuencia diplomática ninguna; ahora el espacio aéreo también se
+  // respeta y entrar exige declarar la guerra (la UI lo ofrece al intentarlo).
   const ctrl = controller(state.provinces[pid]);
   return ctrl === unit.owner || atWar(state, unit.owner, ctrl);
+}
+
+// País neutral que impide entrar en `pid`, o null si se puede. Lo usa la interfaz
+// para ofrecer la declaración de guerra en vez de un "sin ruta" seco.
+export function neutralBlocker(state, iso, pid) {
+  const cell = S.provinces.get(pid);
+  if (!cell || cell.isSea) return null;
+  const ctrl = controller(state.provinces[pid]);
+  if (!ctrl || ctrl === iso || atWar(state, iso, ctrl)) return null;
+  return ctrl;
 }
 
 export function findPath(state, unit, targetId) {
@@ -102,6 +115,41 @@ export function orderStop(state, unit) {
   unit.path = unit.edgeLeft ? [unit.edgeLeft.to] : [];
   unit.task = null;
   return true;
+}
+
+// Regreso a base. Un avión no se queda flotando en el aire: "Detener" en vuelo
+// lo manda al aeródromo propio más cercano con pista (aerobase ≥ 1). Devuelve la
+// provincia de destino, o null si no hay ninguna alcanzable.
+// Se prueban las candidatas por cercanía en línea recta y se acepta la primera con
+// ruta real, en vez de calcular Dijkstra contra todas las bases del país.
+export function orderReturnToBase(state, unit) {
+  const from = S.provinces.get(unit.pos);
+  if (!from) return null;
+  const bases = [];
+  for (const p of S.provinceList) {
+    if (p.isSea) continue;
+    const ps = state.provinces[p.id];
+    if (!ps || controller(ps) !== unit.owner) continue;
+    if ((ps.buildings.aerobase || 0) < 1) continue;
+    bases.push({ id: p.id, km: distKm([from.cx, from.cy], [p.cx, p.cy]) });
+  }
+  if (!bases.length) return null;
+  bases.sort((a, b) => a.km - b.km);
+  if (bases[0].id === unit.pos) {
+    // Ya está sobre su propia base: aterriza aquí mismo. Se cancela también el
+    // tramo en curso —a diferencia de orderStop, que dejaría al avión terminando
+    // el salto y posándose en la provincia siguiente, no en su base—. Es la misma
+    // semántica que ya tiene orderMove, que al reordenar reinicia el tramo desde
+    // la provincia de origen.
+    unit.path = [];
+    unit.edgeLeft = null;
+    unit.task = null;
+    return unit.pos;
+  }
+  for (const b of bases.slice(0, 8)) {
+    if (orderMove(state, unit, b.id)) return b.id;
+  }
+  return null;
 }
 
 export function tickMovement(state, dt) {

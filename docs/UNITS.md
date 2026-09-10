@@ -104,6 +104,13 @@ mismo ganador: la doctrina no invierte contadores. Stack mixto (4 inf + 2 MBT + 
 > mirarlo. Se dividen por ~3 conservando el orden y dejando a todos por encima de la
 > motorizada (60), que sigue siendo la unidad terrestre más rápida. Las variantes
 > especiales acompañan: F-35A 120, RQ-190 85.
+>
+> **El reloj también.** `MINUTES_PER_TICK_BASE` baja de 15 a 6: a 4 ticks/s el juego
+> corría a una hora de partida por segundo real, así que no es que las unidades
+> fueran rápidas, es que el tiempo volaba. Con 6 el ritmo es de 24 min de juego por
+> segundo (2,5× más lento) y afecta por igual a movimiento, economía, construcción,
+> investigación y combate, sin tocar una sola cifra de balance. El ritmo anterior
+> sigue disponible en los botones 2×/4×.
 
 Costes por tier: t1 = 0.7× y t3 = 1.5× de esta tabla (cada componente se redondea:
 dinero a 500, sumin/fuel a 100, MO a 50). Ej.: infantería t1 14k/1.3k/1.1k/0, t3

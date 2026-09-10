@@ -610,7 +610,8 @@ export function updateUnitPanel(state, ui) {
     const transport = (T.capacity || 0) > 0;
     html += `<div class="up-actions">
       <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
-      <button class="btn small" data-up-stop="${u.id}" ${moving ? "" : "disabled"}>Detener</button>
+      <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}
+        title="${airLoadout(u.type) ? "Cancela la misión y vuelve al aeródromo propio más cercano" : "Termina el tramo actual y se detiene"}">${airLoadout(u.type) ? "🛬 Volver a base" : "Detener"}</button>
       <button class="btn small" data-up-center="${u.pos}">Centrar</button>
       ${transport ? `<button class="btn small" data-up-embark="${u.id}">Embarcar</button>
       <button class="btn small" data-up-disembark="${u.id}" ${u.cargo?.length ? "" : "disabled"}>Desembarcar</button>` : ""}
