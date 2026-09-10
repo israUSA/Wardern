@@ -598,8 +598,15 @@ export function updateUnitPanel(state, ui) {
       : "sin experiencia"
   }</div>`;
 
+  // Aeronaves: se muestra la velocidad REAL del aparato (F-16A a 2.120 km/h), no
+  // la cifra con la que el motor lo mueve. El mapa no está a escala de vuelo —lo
+  // mismo que pasa con los alcances de misil, ver docs/AIR-COMBAT.md— así que el
+  // ritmo de tablero se enseña aparte y etiquetado, sin fingir que son lo mismo.
+  const L = airLoadout(u.type);
+  const velReal = L?.velocidadKmH;
   html += `<div class="up-stats">
-      <div><span>Velocidad</span><b>${T.speed} km/h</b></div>
+      <div><span>Velocidad</span><b>${velReal ? velReal.toLocaleString("es-ES") + " km/h" : T.speed + " km/h"}</b></div>
+      ${velReal ? `<div title="El mapa no está a escala de vuelo: este es el ritmo con el que cruza provincias"><span>Ritmo en mapa</span><b>${T.speed}</b></div>` : ""}
       <div><span>Captura provincias</span><b>${T.captures ? "sí" : "no"}</b></div>
       <div><span>Defensa media</span><b>${avgDefense(T)}</b></div>
       ${T.capacity ? `<div><span>Bodega</span><b>${u.cargo?.length || 0} / ${T.capacity}</b></div>` : ""}

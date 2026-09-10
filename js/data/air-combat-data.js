@@ -168,6 +168,14 @@ export const AIR_WEAPONS = {
 };
 
 // ---- Cargas y sensores por variante ----
+// velocidadKmH: velocidad máxima REAL del aparato, la que se muestra en su ficha.
+//   NO es la que usa el motor para mover: el ritmo en el mapa lo fija `speed` en
+//   js/data/units-data.js, a mano por categoría. No se puede derivar una de otra
+//   con un divisor único porque el abanico real es demasiado ancho —un Apache
+//   vuela a 293 km/h y un Su-27 a 2.500, 8,5 veces más—: al dividir ambos por la
+//   misma constante el helicóptero acabaría más lento que un camión en un mapa
+//   cuyas unidades de tierra van a 12-60. Misma idea que AIR_RANGE_SCALE: dato
+//   real a la vista, escala de teatro por debajo.
 // radarKm: alcance de DETECCIÓN de aeronaves (siempre > que sus misiles: ves
 //   antes de poder disparar, que es la tensión del combate BVR).
 // rcs: firma radar inversa, 0 = avión normal, 1 = invisible. RECORTA el alcance
@@ -179,15 +187,15 @@ export const AIR_WEAPONS = {
 export const AIR_LOADOUTS = {
   // ---------- Cazas ----------
   "occ-1-caza": { // F-16A Block 15 — radar APG-66
-    radarKm: 75, rcs: 0, evasion: 0.1,
+    velocidadKmH: 2120, radarKm: 75, rcs: 0, evasion: 0.1,
     armas: { aim9: 4, agm65: 2 },
   },
   "occ-2-caza": { // F/A-18E Super Hornet — radar APG-73, firma algo reducida
-    radarKm: 150, rcs: 0.15, evasion: 0.2,
+    velocidadKmH: 1915, radarKm: 150, rcs: 0.15, evasion: 0.2,
     armas: { aim120: 4, aim9x: 2, agm65: 4, agm88: 2 },
   },
   "occ-3-caza": { // F-22 Raptor — APG-77 AESA, carga interna
-    radarKm: 250, rcs: 0.8, evasion: 0.65,
+    velocidadKmH: 2410, radarKm: 250, rcs: 0.8, evasion: 0.65,
     armas: { aim120: 6, aim9x: 2, gbu: 2 },
   },
   "occ-3-caza-f35": { // F-35A Lightning II — APG-81 AESA, configuración furtiva
@@ -195,68 +203,68 @@ export const AIR_LOADOUTS = {
     // 10), pero es el único caza furtivo occidental que entra a por blindados y
     // baterías sin colgar nada por fuera. El "modo bestia" con pilones externos
     // no se modela: rompe la furtividad, que es justo lo que se compra aquí.
-    radarKm: 200, rcs: 0.78, evasion: 0.6,
+    velocidadKmH: 1930, radarKm: 200, rcs: 0.78, evasion: 0.6,
     armas: { aim120: 4, gbu: 2 },
   },
   "ori-1-caza": { // MiG-23ML — radar Sapfir-23
-    radarKm: 55, rcs: 0, evasion: 0.05,
+    velocidadKmH: 2500, radarKm: 55, rcs: 0, evasion: 0.05,
     armas: { r23: 2, r60: 4 },
   },
   "ori-2-caza": { // Su-27 — radar N001 (el Su-33 es su hermano embarcado)
-    radarKm: 110, rcs: 0, evasion: 0.15,
+    velocidadKmH: 2500, radarKm: 110, rcs: 0, evasion: 0.15,
     armas: { r27: 6, r73: 4, kh25: 2 },
   },
   "ori-3-caza": { // Su-57 — N036 Belka, carga interna
-    radarKm: 240, rcs: 0.62, evasion: 0.42,
+    velocidadKmH: 2600, radarKm: 240, rcs: 0.62, evasion: 0.42,
     armas: { r77: 4, r73: 2, kh31p: 2 },
   },
 
   // ---------- Bombarderos ----------
-  "occ-1-bombardero": { radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } }, // B-52G
-  "occ-2-bombardero": { radarKm: 80, rcs: 0.82, evasion: 0.62, armas: { gbu: 16, agm88: 2 } }, // B-2 Spirit
-  "occ-3-bombardero": { radarKm: 120, rcs: 0.88, evasion: 0.68, armas: { gbu: 16, agm88: 4, agm65: 4 } }, // B-21 Raider
-  "ori-1-bombardero": { radarKm: 60, rcs: 0, evasion: 0.05, armas: { kab: 12, kh25: 4 } }, // Tu-22M2
-  "ori-2-bombardero": { radarKm: 90, rcs: 0, evasion: 0.1, armas: { kab: 16, kh31p: 2 } }, // Tu-22M3
-  "ori-3-bombardero": { radarKm: 130, rcs: 0.15, evasion: 0.22, armas: { kab: 16, kh31p: 4, kh25: 4 } }, // Tu-160M
+  "occ-1-bombardero": { velocidadKmH: 1000, radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } }, // B-52G
+  "occ-2-bombardero": { velocidadKmH: 1010, radarKm: 80, rcs: 0.82, evasion: 0.62, armas: { gbu: 16, agm88: 2 } }, // B-2 Spirit
+  "occ-3-bombardero": { velocidadKmH: 1000, radarKm: 120, rcs: 0.88, evasion: 0.68, armas: { gbu: 16, agm88: 4, agm65: 4 } }, // B-21 Raider
+  "ori-1-bombardero": { velocidadKmH: 1997, radarKm: 60, rcs: 0, evasion: 0.05, armas: { kab: 12, kh25: 4 } }, // Tu-22M2
+  "ori-2-bombardero": { velocidadKmH: 2300, radarKm: 90, rcs: 0, evasion: 0.1, armas: { kab: 16, kh31p: 2 } }, // Tu-22M3
+  "ori-3-bombardero": { velocidadKmH: 2220, radarKm: 130, rcs: 0.15, evasion: 0.22, armas: { kab: 16, kh31p: 4, kh25: 4 } }, // Tu-160M
 
   // ---------- Helicópteros de ataque ----------
   // Radar cortísimo: el mástil del Longbow ve blindados a ~8 km, no hace BVR.
-  "occ-1-helicoptero": { radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
-  "occ-2-helicoptero": { radarKm: 12, rcs: 0, evasion: 0.15, armas: { hellfireL: 16 } },
-  "occ-3-helicoptero": { radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { hellfireL: 16, stinger: 2 } },
-  "ori-1-helicoptero": { radarKm: 8, rcs: 0, evasion: 0.1, armas: { shturm: 4 } },
-  "ori-2-helicoptero": { radarKm: 12, rcs: 0, evasion: 0.15, armas: { ataka: 16 } },
-  "ori-3-helicoptero": { radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { ataka: 16, igla: 2 } },
+  "occ-1-helicoptero": { velocidadKmH: 277, radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
+  "occ-2-helicoptero": { velocidadKmH: 293, radarKm: 12, rcs: 0, evasion: 0.15, armas: { hellfireL: 16 } },
+  "occ-3-helicoptero": { velocidadKmH: 300, radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { hellfireL: 16, stinger: 2 } },
+  "ori-1-helicoptero": { velocidadKmH: 335, radarKm: 8, rcs: 0, evasion: 0.1, armas: { shturm: 4 } },
+  "ori-2-helicoptero": { velocidadKmH: 300, radarKm: 12, rcs: 0, evasion: 0.15, armas: { ataka: 16 } },
+  "ori-3-helicoptero": { velocidadKmH: 300, radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { ataka: 16, igla: 2 } },
 
   // ---------- Drones ----------
   // Los t1/t2 son recon puro (ver docs/MISSILES.md §4). Los t3 sí van armados
   // —MQ-9 Reaper y Orion lo están— y eso los hace también BLANCO válido: no
   // combaten en provincia, pero un caza enemigo puede derribarlos con misiles.
-  "occ-1-drone": { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
-  "occ-2-drone": { radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
-  "occ-3-drone": { radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { hellfireL: 4 } },
+  "occ-1-drone": { velocidadKmH: 200, radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
+  "occ-2-drone": { velocidadKmH: 217, radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
+  "occ-3-drone": { velocidadKmH: 482, radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { hellfireL: 4 } },
   "occ-3-drone-rq190": { // RQ-190 — UAV furtivo de penetración profunda
     // rcs 0.96: para un radar de caza es sencillamente invisible (el APG-77 del
     // Raptor lo cogería a 40 km, o sea encima). Solo las redes antiaéreas de
     // última generación con banda métrica lo ven, y aun así muy tarde: un S-400
     // lo detecta a ~260 km de los 1.400 km a los que ve un avión normal.
     // Sin armas: es un ojo, no un cazador.
-    radarKm: 420, rcs: 0.96, evasion: 0.7,
+    velocidadKmH: 900, radarKm: 420, rcs: 0.96, evasion: 0.7,
     armas: {},
   },
-  "ori-1-drone": { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
-  "ori-2-drone": { radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
-  "ori-3-drone": { radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { ataka: 4 } },
+  "ori-1-drone": { velocidadKmH: 180, radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
+  "ori-2-drone": { velocidadKmH: 150, radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
+  "ori-3-drone": { velocidadKmH: 200, radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { ataka: 4 } },
 
   // ---------- Alias legacy ----------
   // Ids planas de las partidas guardadas antes del roster de variantes
   // (docs/UNITS.md). Sin esto, un caza cargado de un guardado viejo se quedaría
   // sin radar ni armamento y el jugador no entendería por qué. Se les da la
   // dotación t1 occidental, coherente con su tier efectivo 1.
-  caza: { radarKm: 75, rcs: 0, evasion: 0.1, armas: { aim9: 4, agm65: 2 } },
-  bombardero: { radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } },
-  helicoptero: { radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
-  drone: { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
+  caza: { velocidadKmH: 2120, radarKm: 75, rcs: 0, evasion: 0.1, armas: { aim9: 4, agm65: 2 } },
+  bombardero: { velocidadKmH: 1000, radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } },
+  helicoptero: { velocidadKmH: 293, radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
+  drone: { velocidadKmH: 217, radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
 };
 
 // Evasión de las unidades de SUPERFICIE frente a un misil aire-suelo. La

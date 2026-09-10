@@ -40,6 +40,21 @@ El resultado coloca cada arma en su papel doctrinal real:
 
 Es el único parámetro a tocar si el combate aéreo se siente corto o largo.
 
+### La velocidad de los aparatos va aparte
+
+Mismo principio, distinta solución. `velocidadKmH` en `AIR_LOADOUTS` es la
+velocidad máxima **real** del aparato y es la que se enseña en su ficha (F-16A a
+2.120 km/h, Apache a 293). El ritmo con el que el motor lo mueve por el mapa es
+`speed` en `js/data/units-data.js`, ajustado a mano por categoría, y la ficha lo
+muestra debajo etiquetado como **"Ritmo en mapa"** — sin fingir que son lo mismo.
+
+Aquí **no** vale un divisor único como en los alcances: el abanico real es
+demasiado ancho. Un Su-27 vuela 8,5 veces más rápido que un Apache; dividiendo
+ambos por la misma constante para que el caza quedara en su ritmo actual, el
+helicóptero caería a ~18 km/h, más lento que la infantería a pie de este mapa
+(12-60 km/h para las unidades de tierra). Por eso el ritmo de tablero se mantiene
+comprimido a mano y el dato real vive solo en la ficha.
+
 ## 2. Radar — ver no es poder disparar
 
 Cada variante tiene su `radarKm` (alcance de detección de **aeronaves**, no de
