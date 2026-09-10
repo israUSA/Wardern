@@ -1,5 +1,6 @@
 // UI DOM: pantallas, barra superior, panel de provincia, registro y modales.
 import { ICONS } from "./icons.js";
+import { flagCss } from "../data/flags-data.js";
 import * as C from "../data/constants.js";
 import { UNIT_CATEGORIES } from "../data/units-data.js";
 import { NAVAL_CATEGORIES } from "../data/naval-data.js";
@@ -24,6 +25,10 @@ let lastLogLen = 0;
 let toastTimer = null;
 
 const $ = (id) => document.getElementById(id);
+
+// Banderita en línea para acompañar al nombre de un país (docs: flags-data.js)
+const flagSpan = (iso, color) =>
+  `<span class="cc-flag sm" style="background:${flagCss(iso, color)}"></span>`;
 
 export function initUI(h) {
   hooks = h;
@@ -69,7 +74,7 @@ export function updateCountryCard(iso) {
   const vp = own.reduce((s, p) => s + (p.vp || 0), 0);
   const totalVP = S.provinceList.reduce((s, p) => s + (p.vp || 0), 0) || 1;
   const capital = own.find((p) => p.capital);
-  $("cc-flag").style.background = c.color;
+  $("cc-flag").style.background = flagCss(iso, c.color);
   $("cc-name").textContent = c.name;
   $("cc-stats").innerHTML = `
     <div>Provincias: <b>${own.length}</b></div>
@@ -93,7 +98,7 @@ export function showGame() {
 
 export function updateTopBar(state) {
   const c = S.countries[state.player];
-  $("tb-flag").style.background = c.color;
+  $("tb-flag").style.background = flagCss(state.player, c.color);
   $("tb-name").textContent = c.name;
   $("tb-date").textContent = C.fmtGameDate(state.time);
 
@@ -226,7 +231,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   let html = `
     <div class="pp-head">
       <span class="pp-name">${p.name}</span>
-      <span class="pp-owner" style="color:${ownerC.color}">${ownerC.name}</span>
+      <span class="pp-owner" style="color:${ownerC.color}">${flagSpan(ps.owner, ownerC.color)}${ownerC.name}</span>
     </div>
     <div class="pp-sub">
       ${C.TERRAIN_NAMES[p.terrain] || p.terrain}${p.capital ? " · ★ Capital" : ""} ·
@@ -581,7 +586,7 @@ export function updateUnitPanel(state, ui) {
       <canvas width="60" height="52" data-symbol="${T.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
       <div class="up-title">
         <span class="up-name">${T.name}${T.air ? " ✈" : ""}${isNaval(u.type) ? " ⚓" : ""}</span>
-        <span class="up-sub" style="color:${color}">${S.countries[u.owner].name}</span>
+        <span class="up-sub" style="color:${color}">${flagSpan(u.owner, color)}${S.countries[u.owner].name}</span>
         <span class="up-sub">${meta}</span>
       </div>
       <button class="up-close" id="up-close" title="Cerrar (Esc)">✕</button>

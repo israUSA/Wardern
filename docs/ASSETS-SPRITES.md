@@ -1,5 +1,30 @@
 # Inventario de sprites — Wardern
 
+## Cómo se lee el nombre de un archivo
+
+```
+v-occ-3-caza.svg
+│  │   │  └── categoría (una de las 16)
+│  │   └───── tier: 1 = años 80 · 2 = años 2000 · 3 = ultra-moderno
+│  └───────── doctrina: occ = Occidental (OTAN) · ori = Oriental (soviético/ruso)
+└──────────── prefijo
+```
+
+| Prefijo | Qué es | Ejemplo |
+|---|---|---|
+| `v-` | Sprite **por variante**: el vehículo real concreto | `v-ori-2-mbt.svg` → T-72 |
+| `b-` | **Edificio** | `b-aerobase.svg` → base aérea |
+| *(ninguno)* | Sprite **genérico de categoría**, usado como respaldo si falta la variante | `caza.svg` |
+
+Así, **`v-ori-2-portaviones.svg`** se lee «variante · oriental · tier 2 ·
+portaviones» = el **Kuznetsov (Proyecto 11435)**, que es el portaaviones ruso de
+época intermedia. Su equivalente occidental del mismo tier, `v-occ-2-portaviones`,
+es el **USS Nimitz**.
+
+Las categorías válidas son las 16 del final de este documento. Las variantes
+especiales fuera de la rejilla llevan un sufijo extra (`v-occ-3-caza-f35`), ver
+`docs/UNITS.md` → `EXTRA_VARIANTS`.
+
 ## Formato de los 21 sprites de categoría, edificios y proyectiles
 - **Formato: SVG** (vector), `viewBox="0 0 128 128"`, vista superior con **morro/proa hacia ARRIBA (norte)**.
 - Deben declarar clases CSS internas para el tinte por país:
@@ -67,6 +92,7 @@ usa el sprite de la categoría (fallback automático, reintento cada 5 s).
 | v-occ-1-caza.svg | Caza | T1 | F-16A | Occ |
 | v-occ-2-caza.svg | Caza | T2 | F/A-18E | Occ |
 | v-occ-3-caza.svg | Caza | T3 | F-22 Raptor | Occ |
+| v-occ-3-caza-f35.svg | Caza | T3 | F-35A Lightning II | Occ | *PENDIENTE — usa el arte del F-22* |
 | v-ori-1-caza.svg | Caza | T1 | MiG-23 | Ori |
 | v-ori-2-caza.svg | Caza | T2 | Su-27 | Ori |
 | v-ori-3-caza.svg | Caza | T3 | Su-57 | Ori |
@@ -85,6 +111,7 @@ usa el sprite de la categoría (fallback automático, reintento cada 5 s).
 | v-occ-1-drone.svg | Dron | T1 | RQ-2 Pioneer | Occ |
 | v-occ-2-drone.svg | Dron | T2 | RQ-1 Predator | Occ |
 | v-occ-3-drone.svg | Dron | T3 | MQ-9 Reaper | Occ |
+| v-occ-3-drone-rq190.svg | Dron | T3 | RQ-190 | Occ | *PENDIENTE — usa el arte del MQ-9* |
 | v-ori-1-drone.svg | Dron | T1 | Pchela-1T | Ori |
 | v-ori-2-drone.svg | Dron | T2 | Orlan-10 | Ori |
 | v-ori-3-drone.svg | Dron | T3 | Orion | Ori |
