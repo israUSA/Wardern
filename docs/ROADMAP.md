@@ -122,3 +122,52 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       sprite-cache, o aplicar un filtro suave por país
 - [ ] Misiones de aire (patrulla con radio, apoyo aéreo cercano), formaciones al
       mover, ciudades con red vial bajo las unidades (como la referencia)
+
+## v1.4 — Combate aéreo y aviación embarcada (2026-09-10)
+
+Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho y verificado.
+
+- [x] **Tiempo real de verdad** (`1eccf1f`): la partida avanza con la pestaña oculta.
+      `requestAnimationFrame` se para del todo en segundo plano, así que la simulación
+      pasa a ir por RELOJ DE PARED (`pump()` en main.js + `setInterval` de respaldo) y el
+      bucle de frames solo dibuja. La recuperación al volver está acotada por presupuesto
+      (`CATCHUP_BUDGET_MS`) para no colgar la pestaña tras horas fuera
+- [x] **Ficha de unidad** (`db4d241`): clic en una tropa del mapa abre su hoja (HP, nivel,
+      estado, armas) y sus órdenes. Hit-test contra lo REALMENTE dibujado (`unitHits`),
+      incluidas órbitas aéreas y unidades interpoladas en marcha
+- [x] **Combate aéreo** (`d0e7853`): 22 armas guiadas con cifras reales, cargas por avión
+      (`AIR_LOADOUTS`, 26 aparatos), radar con alcance mayor que el misil, disparo contra
+      UNIDAD concreta, probabilidad de derribo (Pk por curva de alcance, evasión y
+      veteranía), reacción antiaérea, rearme en base y IA simétrica.
+      `AIR_RANGE_SCALE = 4` lleva las cifras reales a la geografía del teatro (la distancia
+      mediana entre provincias adyacentes son 324 km); misma provincia = distancia 0
+- [x] **Furtividad de dos ejes** (`c45b738`, `1d16619`): `rcs` (que no te VEAN, recorta el
+      alcance de detección) y `evasion` (que no te ACIERTEN, recorta la Pk). F-35A y dron
+      RQ-190 añadidos. Contrapeso: radares de vigilancia terrestres con `antiStealth` que
+      reparten contactos a todo el bando por datalink
+- [x] **Aviación embarcada** (`1d16619`, `52019a3`, `bbaf727`): capacidad por portaviones
+      (Kitty Hawk 3 · Nimitz 4 · Ford 6 · Kiev 2 · Kuznetsov 3 · Shtorm 5), solo aparatos
+      de cubierta (`CARRIER_CAPABLE`), rearme a bordo y el ala viaja con el buque.
+      El apontaje era INALCANZABLE: `orderMove` rechazaba todo destino marítimo para una
+      unidad no naval, así que el avión nunca podía llegar al buque. Ahora `carrierBerths`
+      (movement.js) autoriza el destino si allí hay portaviones propio parado con plaza, y
+      al llegar aponta solo. Chapa de cubierta en el mapa con plazas ocupadas ("2/4")
+- [x] **Ritmo global** (`175907b`, `455e709`): `MINUTES_PER_TICK_BASE` 15 → 6. La palanca
+      real de "todo va rápido" era el RELOJ, no las velocidades: a 4 ticks/s, 15 daba una
+      hora de juego por segundo real. Con 6 todo se ralentiza por igual sin tocar balance.
+      Las fichas muestran la velocidad REAL del aparato (`velocidadKmH`) y aparte el ritmo
+      en el mapa: no se pueden derivar una de otra con un divisor único (un Apache vuela a
+      293 km/h y un Su-27 a 2.500)
+- [x] **Espacio aéreo neutral cerrado** (`175907b`): los aéreos ya no tienen sobrevuelo
+      libre. Entrar en país neutral exige declararle la guerra y la UI lo ofrece en el
+      momento en vez de fallar con un "sin ruta" seco
+- [x] **Regreso a base** (`175907b`, `161081f`): "Detener" en vuelo manda al aeródromo
+      propio más cercano, y al llegar el avión se posa en pista en vez de orbitar eternamente
+- [x] **Banderas reales de los 29 países** (`9704197`): gradientes CSS, no emoji (Windows
+      pinta los indicadores regionales como las dos letras) ni 29 SVG. Leyenda de la
+      nomenclatura de sprites añadida a docs/ASSETS-SPRITES.md
+- [x] Bugs corregidos por el camino (`5df4bc2`, `6c3cd68`): coste de edificio en el panel
+      (mostraba siempre el de nivel 1), edificios sin dibujar en el mapa, barrido del radar
+      que se reiniciaba a las 2 en punto (el `innerHTML` completo cada 250 ms recreaba el
+      elemento y reiniciaba la animación CSS → armazón estable), aviones demasiado rápidos
+      y girando sobre su propio eje
