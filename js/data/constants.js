@@ -5,6 +5,20 @@ export const TICK_MS = 250;               // duración real de un tick
 export const MINUTES_PER_TICK_BASE = 15;  // minutos de juego por tick a velocidad 1×
 export const SPEEDS = [0, 1, 2, 4];
 
+// ---- Simulación en segundo plano ----
+// El navegador PARA requestAnimationFrame en pestañas ocultas, así que el motor
+// no puede colgar de los frames: avanza por reloj de pared (ver pump() en
+// js/main.js). Como tick() es determinista y no lee el reloj real, recuperar N
+// ticks de golpe deja el estado EXACTAMENTE igual que haberlos ejecutado uno a uno.
+export const SIM_INTERVAL_MS = 250;          // temporizador de respaldo (sigue vivo sin frames)
+export const MAX_CATCHUP_MS = 30 * 60 * 1000; // retraso real recuperable: 30 min
+export const CATCHUP_BUDGET_MS = 12;          // ms de simulación por llamada con la pestaña visible
+// Oculta no hay frames que proteger, pero SÍ hay que cubrir el tiempo transcurrido:
+// el navegador estrangula el temporizador a 1 disparo/s en segundo plano y hasta
+// 1 disparo/min tras unos minutos, así que ese disparo tiene que poder simular el
+// minuto entero (~240 ticks) o el motor se quedaría atrás para siempre.
+export const CATCHUP_BUDGET_HIDDEN_MAX_MS = 3000;
+
 export const START_DATE_MS = Date.UTC(2026, 0, 1);
 
 // Economía

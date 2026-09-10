@@ -44,10 +44,21 @@ function stackFor(id) {
     .map((x) => x.id);
 }
 
-let acc = 0;
-let lastT = 0;
+let acc = 0;          // ms REALES pendientes de convertir en ticks
+let lastSimT = 0;     // reloj de pared del último avance de simulación
 let lastUi = 0;
 let lastAutosave = 0;
+let simTimer = null;  // temporizador de respaldo: mantiene vivo el motor sin frames
+let frozenMs = 0;     // tiempo real que hubo que descartar (pestaña congelada / equipo suspendido)
+
+// Reinicia el reloj real al empezar o cargar una partida: sin esto el primer
+// pump() vería como "transcurrido" todo el tiempo desde la partida anterior.
+function resetClock() {
+  acc = 0;
+  frozenMs = 0;
+  lastSimT = Date.now();
+  lastAutosave = Date.now();
+}
 
 const hooks = {
   selCountry: null,
@@ -66,6 +77,7 @@ const hooks = {
     ui.moveUnitId = null;
     ui.disembarkUnit = null;
     clearUnitSel();
+    resetClock();
     UI.hideStart();
     UI.showGame();
     updateUI();
@@ -94,6 +106,7 @@ const hooks = {
     ui.moveUnitId = null;
     ui.disembarkUnit = null;
     clearUnitSel();
+    resetClock();
     UI.hideStart();
     UI.showGame();
     updateUI();
@@ -118,6 +131,7 @@ const hooks = {
       ui.moveUnitId = null;
       ui.disembarkUnit = null;
       clearUnitSel();
+      resetClock();
       UI.hideStart();
       UI.showGame();
       updateUI();
@@ -261,34 +275,101 @@ async function bootInner() {
   UI.initUI(hooks);
   UI.showStart(Save.hasSave());
   bindInput();
+  bindClock();
   requestAnimationFrame(loop);
 }
 
+// Fuentes de tiempo del motor, aparte del bucle de dibujo.
+function bindClock() {
+  // Respaldo que sobrevive a la pestaña oculta. El navegador lo estrangula a
+  // 1 vez/s en segundo plano (y a ~1 vez/min tras unos minutos), pero da igual:
+  // cada disparo recupera TODO el tiempo real transcurrido de una vez.
+  clearInterval(simTimer);
+  simTimer = setInterval(() => pump(), C.SIM_INTERVAL_MS);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      pump(); // cerrar la cuenta con el tiempo visible antes de irse
+      return;
+    }
+    pump();
+    if (state) updateUI();
+    if (frozenMs > 60000) {
+      UI.toast(`La pestaña estuvo congelada: se descartaron ${Math.round(frozenMs / 60000)} min de partida`);
+    }
+    frozenMs = 0;
+  });
+}
+
+// Avance de la simulación. Se mide el tiempo REAL transcurrido desde la última
+// llamada y se convierte en ticks, en vez de contar frames: así la partida sigue
+// corriendo con la pestaña en segundo plano, donde no hay frames que contar.
+//
+// Lo llaman dos fuentes a la vez —el bucle de dibujo (mientras se ve) y un
+// setInterval de respaldo (siempre)—; es seguro porque el que llega primero
+// consume el tiempo transcurrido y el otro se encuentra con ~0.
+function pump(now = Date.now()) {
+  if (!state) {
+    lastSimT = now;
+    return;
+  }
+  const hidden = document.hidden;
+  let elapsed = now - lastSimT;
+  lastSimT = now;
+  if (elapsed < 0) elapsed = 0; // el reloj del sistema puede ir hacia atrás
+
+  // En pausa el reloj de juego no corre: se tira el tiempo real para que
+  // reanudar no dispare de golpe la ráfaga de ticks acumulados.
+  if (!state.speed || state.gameOver) {
+    acc = 0;
+  } else {
+    acc += elapsed;
+  }
+
+  // Hueco descomunal: el equipo se suspendió o el navegador congeló la pestaña
+  // del todo. Se recupera hasta el tope y el resto se da por perdido; sin este
+  // corte, volver tras una noche bloquearía la pestaña recuperando horas.
+  if (acc > C.MAX_CATCHUP_MS) {
+    frozenMs += acc - C.MAX_CATCHUP_MS;
+    acc = C.MAX_CATCHUP_MS;
+  }
+
+  // Presupuesto de trabajo por llamada: evita la "spiral of death". Lo que no
+  // quepa se queda en `acc` y se sigue recuperando en las llamadas siguientes.
+  // Visible se protege el frame; oculta se escala con el tiempo transcurrido,
+  // porque un temporizador estrangulado a 1 disparo/min tiene que cubrir en esa
+  // única llamada el minuto entero de simulación.
+  const budget = hidden
+    ? Math.min(C.CATCHUP_BUDGET_HIDDEN_MAX_MS, Math.max(250, elapsed * 0.35))
+    : C.CATCHUP_BUDGET_MS;
+  const t0 = performance.now();
+  while (acc >= C.TICK_MS) {
+    tick(state);
+    acc -= C.TICK_MS;
+    if (performance.now() - t0 > budget) break;
+  }
+
+  // Oculta no se toca el DOM: no hay nadie mirando y los eventos con modal deben
+  // esperar a que el jugador vuelva para que no se pisen entre ellos.
+  if (!hidden && now - lastUi > 250) {
+    lastUi = now;
+    updateUI();
+    pollEvents();
+  }
+  checkEnd();
+
+  // El autoguardado también pasa a reloj real: sigue funcionando en segundo plano
+  if (now - lastAutosave > 120000 && !state.gameOver) {
+    lastAutosave = now;
+    Save.saveGame(state);
+  }
+}
+
+// El bucle de animación ya SOLO dibuja: que el navegador lo pare con la pestaña
+// oculta es lo correcto, no hay nada que mirar. La simulación va por su cuenta.
 function loop(t) {
   requestAnimationFrame(loop);
-  const dt = Math.min(100, t - lastT);
-  lastT = t;
-  if (state) {
-    acc += dt;
-    let steps = 0;
-    while (acc >= C.TICK_MS && steps < 8) {
-      tick(state);
-      acc -= C.TICK_MS;
-      steps++;
-    }
-    if (acc > C.TICK_MS) acc = 0;
-
-    if (t - lastUi > 250) {
-      lastUi = t;
-      updateUI();
-      pollEvents();
-      checkEnd();
-    }
-    if (t - lastAutosave > 120000 && !state.gameOver) {
-      lastAutosave = t;
-      Save.saveGame(state);
-    }
-  }
+  pump();
   renderer?.draw(state, ui, t);
 }
 
