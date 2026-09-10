@@ -484,27 +484,32 @@ export function countryVP(state, iso) {
 // - débil: solo adyacente a lo fuerte → las unidades enemigas se ven como
 //   "desconocidas" (sin identificar).
 // visibleProvinces() conserva su firma: unión de ambos niveles.
-const intelCache = new WeakMap(); // state → { time, strong, weak, union }
+const intelCache = new WeakMap(); // state → Map(iso → { time, strong, weak, union })
 
-export function intel(state) {
-  const cached = intelCache.get(state);
+// Inteligencia de CUALQUIER país, no solo la del jugador: los bots miran por
+// esta misma ventana (js/engine/ai.js), así que la niebla de guerra es simétrica
+// y nadie puede contar un ejército que no ha visto.
+export function intelFor(state, iso) {
+  let porPais = intelCache.get(state);
+  if (!porPais) intelCache.set(state, (porPais = new Map()));
+  const cached = porPais.get(iso);
   if (cached && cached.time === state.time) return cached;
   const strong = new Set();
   const weak = new Set();
   for (const p of S.provinceList) {
-    if (controller(state.provinces[p.id]) === state.player) {
+    if (controller(state.provinces[p.id]) === iso) {
       strong.add(p.id);
       for (const e of S.edges.get(p.id) || []) weak.add(e.to);
     }
   }
   // Unidad propia presente → inteligencia fuerte de esa provincia
   for (const u of state.units) {
-    if (u.dead || u.owner !== state.player || u.embarked) continue;
+    if (u.dead || u.owner !== iso || u.embarked) continue;
     strong.add(u.pos);
   }
   // Drones de reconocimiento (docs/MISSILES.md §4): círculo = inteligencia fuerte
   for (const u of state.units) {
-    if (u.dead || u.owner !== state.player || u.embarked) continue;
+    if (u.dead || u.owner !== iso || u.embarked) continue;
     const T = unitDef(u.type);
     if (T?.category !== "drone") continue;
     const from = S.provinces.get(u.pos);
@@ -520,8 +525,12 @@ export function intel(state) {
   }
   for (const id of weak) union.add(id);
   const out = { time: state.time, strong, weak, union };
-  intelCache.set(state, out);
+  porPais.set(iso, out);
   return out;
+}
+
+export function intel(state) {
+  return intelFor(state, state.player);
 }
 
 export function visibleProvinces(state) {

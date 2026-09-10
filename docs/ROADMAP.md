@@ -58,6 +58,13 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       Personalidades IA diferenciadas → pendiente
 - [x] "Mover todas (N)" en la guarnición e indicador ⚔ de guerras abiertas en la barra
       superior (clic en la bandera = ir a la capital enemiga)
+- [x] **Niebla de guerra para los bots** (2026-09-10): `intelFor(state, iso)` generaliza la
+      inteligencia del jugador a cualquier país, y la IA mira por esa ventana. Ya no puede
+      contar un ejército que no ha visto: la composición enemiga que usa para reclutar sale
+      solo de inteligencia FUERTE, los misiles no apuntan fuera de lo observado y el poder
+      del rival se ESTIMA (visto + provincias × AI_GUESS_PER_PROVINCE, con sesgo fijo por
+      pareja) en vez de leerse exacto. Los edificios quedan fuera de la niebla —obra
+      pública— y disparan contramedidas con un dado (AI_COUNTER_CHANCE)
 - [ ] Etiquetas de países en el mapa y agrupación visual de stacks
 - [ ] Puerto Rico como provincia (falta en el mapa; agregar en build-map.mjs)
 
@@ -106,10 +113,9 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       cámara baja a escala común 20,9 px/m con paleta arena (occ) / verde ruso (ori); los
       36 navales en 3/4 de cámara alta con gris OTAN / gris ruso y casco negro para
       submarinos. Convención completa en docs/ARTE.md
-- [ ] **Rotación al rumbo vs. sprites 3/4** — bloquea al punto de arriba. Los sprites de
-      tierra y mar son 3/4: rotarlos al rumbo los deja boca abajo. Solo la familia de aire
-      tolera rotación. Decidir: quitar la rotación a tierra y mar (marcando el rumbo con
-      flecha o estela) y dejarla solo en aire
+- [x] **Rotación al rumbo: solo aire** (2026-09-10). Tierra y mar están dibujados en 3/4 y
+      rotarlos los dejaba tumbados; ahora llevan una punta de flecha por delante que marca
+      el rumbo y el sprite se queda derecho. El giro interpolado sigue solo en los aéreos
 - [ ] **Tinte por país en los sprites por variante** — los 96 usan gradientes propios en vez
       de las clases CSS `.base/.shade/.light/.hi`, así que hoy no responden al tinte. La
       doctrina se lee por paleta, el país no. Opciones: reescribir los `stop-color` en el

@@ -140,6 +140,12 @@ export const AI_CHECK_HOURS = 6;
 // Reclutamientos que un bot puede iniciar por chequeo (antes era 1 para todo el
 // país: EEUU con 30 provincias reclutaba igual que Belice con 1).
 export const AI_RECRUITS_PER_CHECK = (provinces) => Math.max(1, Math.min(4, Math.ceil(provinces / 6)));
+// Niebla de guerra de los bots. Ven lo mismo que tú: provincias propias, donde
+// tienen tropas y el círculo de sus drones (fuerte), más las adyacentes (débil,
+// solo bulto). Los EDIFICIOS son la excepción: son obra pública, se ven siempre.
+export const AI_COUNTER_CHANCE = 0.5;      // probabilidad de reaccionar a la obra enemiga vista
+export const AI_GUESS_PER_PROVINCE = 2;    // unidades que un bot SUPONE por provincia enemiga
+export const AI_GUESS_BIAS = [0.7, 1.45];  // sesgo fijo por pareja: unos sobrestiman, otros no
 export const AI_WAR_COOLDOWN_DAYS = 3;
 export const AI_MIN_WAR_DAY = 2;           // día mínimo de partida para declarar guerra
 export const AI_WAR_RATIO = 1.4;           // ratio de poder para declarar guerra

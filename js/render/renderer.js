@@ -431,13 +431,16 @@ export class MapRenderer {
           ctx.ellipse(sx + 5, sy + 9, 11, 5, 0, 0, Math.PI * 2);
           ctx.fill();
         }
+        // ROTAR SOLO LOS AÉREOS. Los sprites de aire son cenitales y miran al
+        // norte, así que +90° les alinea el morro con el rumbo y el giro
+        // interpolado los hace VIRAR al encadenar tramos. Los de tierra y mar
+        // están dibujados en 3/4 de cámara: rotarlos los dejaba tumbados o boca
+        // abajo. A esos el rumbo se les marca con una flecha por delante.
+        if (!air) this.drawHeadingArrow(ctx, sx, sy, ang, unitSize);
         drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), unitSize, this.countryColor(u.owner), {
           hp: Math.max(0, Math.min(1, u.hp / 100)),
           level: vetLevel(u),
-          // Los sprites miran al norte: +90° alinea el morro con el rumbo. El giro
-          // se interpola para que al encadenar tramos el avión VIRE en vez de
-          // saltar de golpe a la nueva orientación.
-          angle: this.smoothHeading(u.id, ang + Math.PI / 2, dtMs),
+          angle: air ? this.smoothHeading(u.id, ang + Math.PI / 2, dtMs) : undefined,
           variant: u.type,
         });
         this.unitHits.push({ x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), ids: [u.id], pid: u.pos });
@@ -659,6 +662,27 @@ export class MapRenderer {
     ctx.font = "bold 9px monospace";
     ctx.textAlign = "center";
     ctx.fillText(`${aboard}/${cap}`, 5.5, 3.5);
+    ctx.restore();
+  }
+
+  // Rumbo de una unidad de tierra o mar: punta de flecha por delante de la ficha.
+  // Sustituye a la rotación del sprite, que con las cámaras en 3/4 no vale.
+  drawHeadingArrow(ctx, x, y, ang, size) {
+    const d = size * 0.52;
+    ctx.save();
+    ctx.translate(x + Math.cos(ang) * d, y + Math.sin(ang) * d);
+    ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.moveTo(7, 0);
+    ctx.lineTo(-3, -5);
+    ctx.lineTo(-0.5, 0);
+    ctx.lineTo(-3, 5);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(233,239,245,0.9)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(8,12,16,0.8)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
     ctx.restore();
   }
 

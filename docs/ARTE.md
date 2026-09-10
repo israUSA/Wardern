@@ -140,13 +140,17 @@ Los 96 `v-*.svg` están completos y ya **no** siguen la convención de arriba. R
   Es un script de scratchpad, no vive en el repo; si hay que regenerar un buque, lo más rápido
   es reescribirlo desde el comentario de cabecera.
 
+### Decidido
+
+1. **Rotación al rumbo: solo la familia de aire.** Un sprite de 3/4 no se puede rotar en 2D
+   sin quedar tumbado o boca abajo, y solo los aéreos son cenitales. Tierra y mar ya no
+   rotan: su rumbo se marca con una punta de flecha por delante de la ficha
+   (`drawHeadingArrow` en renderer.js). El giro interpolado (`smoothHeading`) queda solo
+   para los aéreos, que es donde virar se ve bien.
+
 ### Pendiente sin resolver
 
-1. **Rotación al rumbo.** ROADMAP v1.3 dice que las unidades en marcha rotan al rumbo. Un
-   sprite de 3/4 no se puede rotar en 2D sin quedar boca abajo. Solo la familia de aire tolera
-   rotación. Decisión pendiente: quitar la rotación a tierra y mar (marcando el rumbo con una
-   flecha o una estela) y dejarla solo en aire.
-2. **Tinte por país.** Al no usar clases CSS, estos 96 no responden al mecanismo de tinte
+1. **Tinte por país.** Al no usar clases CSS, estos 96 no responden al mecanismo de tinte
    descrito arriba. Hoy la doctrina se lee por paleta (arena vs verde), no el país. Si se
    quiere tinte por país habría que adaptar el sprite-cache para reescribir los `stop-color`
    de los gradientes, o aplicar un filtro suave por país.

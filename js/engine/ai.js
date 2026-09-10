@@ -1,7 +1,7 @@
 // IA de países bot: economía, operaciones militares y diplomacia.
 import * as C from "../data/constants.js";
 import { UNITS } from "../data/units-data.js";
-import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty } from "./state.js";
+import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor } from "./state.js";
 import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford } from "./economy.js";
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
@@ -14,12 +14,13 @@ export function aiTickAll(state) {
     const c = state.countries[iso];
     if (iso === state.player || c.eliminated) continue;
     try {
-      aiEconomy(state, iso);
+      const vis = intelFor(state, iso); // su niebla de guerra, la misma que la tuya
+      aiEconomy(state, iso, vis);
       aiResearch(state, iso);
       aiMilitary(state, iso, battles);
-      aiMissiles(state, iso);
+      aiMissiles(state, iso, vis);
       aiAirCombat(state, iso); // docs/AIR-COMBAT.md: mismas reglas que el jugador
-      aiDiplomacy(state, iso);
+      aiDiplomacy(state, iso, vis);
     } catch (e) {
       console.error("IA error:", iso, e);
     }
@@ -28,7 +29,7 @@ export function aiTickAll(state) {
 
 // ---------- Economía ----------
 
-function aiEconomy(state, iso) {
+function aiEconomy(state, iso, vis) {
   const c = state.countries[iso];
   const r = c.resources;
   // (las celdas de mar están en provinceList pero no tienen entrada en
@@ -102,7 +103,7 @@ function aiEconomy(state, iso) {
       );
     for (const p of cands) {
       if (slots <= 0) break;
-      if (startRecruitCategory(state, p.id, chooseUnitType(state, iso))) slots--;
+      if (startRecruitCategory(state, p.id, chooseUnitType(state, iso, vis))) slots--;
       else break; // sin recursos para más esta vez
     }
   }
@@ -119,7 +120,7 @@ function aiResearch(state, iso) {
 
 const AIR_TYPES = ["caza", "bombardero", "helicoptero", "drone"];
 
-function chooseUnitType(state, iso) {
+function chooseUnitType(state, iso, vis) {
   const c = state.countries[iso];
   // (?. por las celdas de mar: no tienen entrada en state.provinces)
   const hasAir = S.provinceList.some(
@@ -128,14 +129,33 @@ function chooseUnitType(state, iso) {
   // Sin base aérea no puede reclutar aéreos
   const ok = (pairs) => pairs.filter(([t]) => hasAir || !AIR_TYPES.includes(t));
 
-  // Composición enemiga (compartida por todas las ramas)
+  // Contramedidas por la OBRA vista. Los edificios no se ocultan —son obra
+  // pública, visible por satélite y por prensa— así que es lo único del enemigo
+  // que un bot conoce sin haberlo pisado. Reacciona con un dado, no siempre: si
+  // respondiera al 100 % sería un espejo de lo que construyes y te bastaría con
+  // fintar una base aérea para vaciarle la fábrica de tanques.
+  if (c.wars.length && Math.random() < C.AI_COUNTER_CHANCE) {
+    const obra = enemyBuildings(state, iso);
+    if (obra.aerobase >= 2) {
+      return weighted(ok([["antiaereo", 0.45], ["caza", 0.2], ["infanteria", 0.25], ["mbt", 0.1]]));
+    }
+    if (obra.fortaleza >= 3) {
+      return weighted(ok([["artilleria", 0.45], ["mbt", 0.2], ["infanteria", 0.25], ["bombardero", 0.1]]));
+    }
+  }
+
+  // Composición enemiga, SOLO con lo que ha detectado. Antes se recorría
+  // state.units entero: un bot sabía cuántos cazas tenías aunque no hubiera
+  // pisado tu país en la vida. Ahora hace falta inteligencia FUERTE de la
+  // provincia (propia, con tropa suya encima o dentro del círculo de un dron
+  // suyo) para identificar el tipo de una unidad; la adyacencia solo da bulto.
   let mbt = 0, air = 0, total = 0;
   for (const u of state.units) {
-    if (atWar(state, iso, u.owner)) {
-      total++;
-      if (unitDef(u.type)?.category === "mbt") mbt++; // por categoría: cuenta variantes doctrina×tier
-      if (unitDef(u.type)?.air) air++;
-    }
+    if (u.dead || u.embarked || !atWar(state, iso, u.owner)) continue;
+    if (!vis.strong.has(u.pos)) continue;
+    total++;
+    if (unitDef(u.type)?.category === "mbt") mbt++; // por categoría: cuenta variantes doctrina×tier
+    if (unitDef(u.type)?.air) air++;
   }
 
   // Enemigo con muchos aéreos → antiaéreos y cazas
@@ -163,6 +183,19 @@ function chooseUnitType(state, iso) {
     ["infanteria", 0.33], ["mbt", 0.19], ["motorizada", 0.11], ["artilleria", 0.1], ["cazatanques", 0.06],
     ["antiaereo", 0.04], ["caza", 0.06], ["bombardero", 0.05], ["drone", 0.04], ["helicoptero", 0.02],
   ]));
+}
+
+// Niveles de edificio de los países con los que está en guerra. Es información
+// pública: no pasa por la niebla, a diferencia de las unidades.
+function enemyBuildings(state, iso) {
+  const out = { aerobase: 0, puerto: 0, fortaleza: 0, industria: 0 };
+  for (const p of S.provinceList) {
+    if (p.isSea) continue;
+    const ps = state.provinces[p.id];
+    if (!ps || !atWar(state, iso, controller(ps))) continue;
+    for (const k in out) out[k] += ps.buildings[k] || 0;
+  }
+  return out;
 }
 
 function weighted(pairs) {
@@ -272,9 +305,12 @@ function nearestIdle(state, iso, idle, targetPid) {
 
 // ---------- Misiles (docs/MISSILES.md §6) ----------
 
-function aiMissiles(state, iso) {
-  // Golpes: plataforma anclada con arma lista → mejor blanco enemigo a rango.
-  // La IA no sufre niebla: elige por ΣHP (o edificio niv ≥ 2) dentro del rango.
+function aiMissiles(state, iso, vis) {
+  // Golpes: plataforma anclada con arma lista → mejor blanco enemigo a rango,
+  // DENTRO de lo que ve. Antes la IA no sufría niebla y barría el mapa entero
+  // buscando el mayor ΣHP: te caían Tomahawks encima de una concentración que
+  // ella no tenía forma de conocer. Un edificio de nivel ≥ 2 sigue siendo blanco
+  // válido aunque no vea tropas: la obra es pública.
   for (const u of state.units) {
     if (u.dead || u.owner !== iso || u.edgeLeft) continue;
     const from = S.provinces.get(u.pos);
@@ -286,15 +322,19 @@ function aiMissiles(state, iso) {
       let bestHp = 0;
       for (const p of S.provinceList) {
         if (p.isSea !== (sw.weapon.objetivos === "celda-mar")) continue;
+        if (!vis.union.has(p.id)) continue; // sin contacto no hay blanco
         if (!p.isSea) {
           const ctrl = controller(state.provinces[p.id]);
           if (!ctrl || !atWar(state, iso, ctrl)) continue;
         }
         const d = distKm([from.cx, from.cy], [p.cx, p.cy]);
         if (d > sw.rangoKm) continue;
+        // Con inteligencia débil (solo adyacencia) ve bulto, no fichas: cuenta
+        // los HP a la mitad para que priorice lo que sí tiene identificado.
+        const fiable = vis.strong.has(p.id) ? 1 : 0.5;
         const hp = state.units
           .filter((x) => x.pos === p.id && !x.embarked && !x.dead && x.owner !== iso && atWar(state, iso, x.owner))
-          .reduce((s, x) => s + x.hp, 0);
+          .reduce((s, x) => s + x.hp, 0) * fiable;
         const bld = p.isSea ? 0 : Math.max(0, ...Object.values(state.provinces[p.id]?.buildings || {}));
         if ((hp >= 150 || bld >= 2) && hp > bestHp) {
           bestHp = hp;
@@ -340,7 +380,7 @@ function aiMissiles(state, iso) {
 
 // ---------- Diplomacia ----------
 
-function aiDiplomacy(state, iso) {
+function aiDiplomacy(state, iso, vis) {
   const c = state.countries[iso];
   const day = gameDay(state);
 
@@ -348,8 +388,8 @@ function aiDiplomacy(state, iso) {
   for (const enemy of [...c.wars]) {
     const ec = state.countries[enemy];
     if (!ec || ec.eliminated) continue;
-    const myPower = armyPower(state, iso);
-    const enemyPower = armyPower(state, enemy);
+    const myPower = armyPower(state, iso); // el suyo sí lo conoce exacto
+    const enemyPower = guessPower(state, iso, enemy, vis);
     const startControlled = c.warControlStart?.[enemy] ?? controlledCount(state, iso);
     const losing =
       myPower < enemyPower * 0.5 || controlledCount(state, iso) < startControlled * 0.6;
@@ -382,7 +422,7 @@ function aiDiplomacy(state, iso) {
         const nbc = state.countries[nb];
         if (!nbc || nbc.eliminated) continue;
         if ((nbc.peaceUntil?.[iso] ?? 0) > day) continue;
-        const ratio = armyPower(state, iso) / Math.max(1, armyPower(state, nb));
+        const ratio = armyPower(state, iso) / Math.max(1, guessPower(state, iso, nb, vis));
         if (ratio >= C.AI_WAR_RATIO && ratio > bestRatio) { best = nb; bestRatio = ratio; }
       }
       if (best) {
@@ -395,6 +435,37 @@ function aiDiplomacy(state, iso) {
       c.nextWarDay = day + 0.5;
     }
   }
+}
+
+// Poder que ESTE país le SUPONE a otro. Nadie puede contar un ejército que no
+// ha visto: se suma lo detectado y el resto se extrapola de datos públicos —las
+// provincias que controla, a razón de AI_GUESS_PER_PROVINCE unidades— con un
+// sesgo fijo por pareja para que unos sobrestimen al vecino y otros lo
+// subestimen, y esa opinión no cambie de un chequeo al siguiente.
+// Consecuencia buscada: la IA puede equivocarse. Puede declararte la guerra
+// creyéndote débil y encontrarse un ejército escondido, o no atreverse contra un
+// país vacío. Eso es la niebla haciendo su trabajo.
+function guessPower(state, iso, enemy, vis) {
+  let visto = 0;
+  for (const u of state.units) {
+    if (u.dead || u.embarked || u.owner !== enemy) continue;
+    if (!vis.union.has(u.pos)) continue;
+    visto += (u.hp / 100) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
+  }
+  const publico = controlledCount(state, enemy) * C.AI_GUESS_PER_PROVINCE;
+  return Math.max(visto, publico) * guessBias(state, iso, enemy);
+}
+
+// Sesgo de inteligencia de iso sobre enemy: se sortea una vez y se guarda, para
+// que la opinión sea estable (y viaje en el guardado como cualquier otro dato).
+function guessBias(state, iso, enemy) {
+  const c = state.countries[iso];
+  c.intelBias = c.intelBias || {};
+  if (c.intelBias[enemy] == null) {
+    const [lo, hi] = C.AI_GUESS_BIAS;
+    c.intelBias[enemy] = lo + Math.random() * (hi - lo);
+  }
+  return c.intelBias[enemy];
 }
 
 // Países con frontera terrestre (o estrechos si includeStraits) conmigo
@@ -414,7 +485,9 @@ function neighborCountries(state, iso, includeStraits = true) {
 // Respuesta de la IA a una oferta de paz del jugador
 export function aiRespondPeace(state, aiIso) {
   const myPower = armyPower(state, aiIso);
-  const playerPower = armyPower(state, state.player);
+  // También aquí decide con lo que CREE, no con lo que hay: si has escondido el
+  // ejército, la IA puede aceptar una paz que no le hacía falta (o rechazarla).
+  const playerPower = guessPower(state, aiIso, state.player, intelFor(state, aiIso));
   const c = state.countries[aiIso];
   const day = gameDay(state);
   const startControlled = c.warControlStart?.[state.player] ?? controlledCount(state, aiIso);
