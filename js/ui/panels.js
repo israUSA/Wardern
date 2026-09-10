@@ -562,6 +562,13 @@ export function updateUnitPanel(state, ui) {
   } else if (inBattle(state, u)) {
     estado = "⚔ En combate";
     estadoCls = "up-st-fight";
+  } else if (airLoadout(u.type)) {
+    // Para una aeronave, estar quieta no es un estado único: o está en pista o
+    // está gastando horas de vuelo dando vueltas sobre la posición.
+    const psU = state.provinces[u.pos];
+    const enBase = psU && controller(psU) === u.owner && (psU.buildings?.aerobase || 0) >= 1;
+    estado = enBase ? "🛬 En base · lista para despegar" : "✈ En patrulla sobre la posición";
+    estadoCls = enBase ? "up-st-idle" : "up-st-move";
   } else {
     estado = "Lista · sin órdenes";
     estadoCls = "up-st-idle";

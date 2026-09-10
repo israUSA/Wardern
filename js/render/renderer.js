@@ -1,5 +1,5 @@
 // Render del mapa en canvas: proyección Mercator, provincias, unidades, órdenes y batallas.
-import { S, atWar, visibleProvinces, intel, unitDef } from "../engine/state.js";
+import { S, atWar, visibleProvinces, intel, unitDef, controller } from "../engine/state.js";
 import { DRONE_VISION_KM } from "../data/missiles-data.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import { radarRangeKm } from "../engine/air-combat.js";
@@ -361,18 +361,25 @@ export class MapRenderer {
           this.drawOverflowChip(ctx, cx + 24, cy + 12, ground.length - 5);
         }
 
-        // Aéreos: órbita de patrulla permanente (cada grupo con su propia fase)
+        // Aéreos: patrullan en órbita salvo cuando están EN SU BASE, donde se
+        // quedan aparcados en pista. Un caza dando vueltas eternamente sobre su
+        // propio aeródromo no tenía sentido y era lo que se veía raro al aterrizar.
+        const psProv = state.provinces[pid];
         air.slice(0, 4).forEach((g, i) => {
+          const enBase =
+            psProv && controller(psProv) === g.owner && (psProv.buildings?.aerobase || 0) >= 1;
           const phase = hashStr(g.owner + "|" + g.type) % 628 / 100;
-          const ang = timeMs / 2400 + phase + (i * Math.PI) / 2;
+          // En base la posición es FIJA (sin el término del reloj): no se mueve.
+          const ang = enBase ? -Math.PI / 2 + (i * Math.PI) / 2 : timeMs / 2400 + phase + (i * Math.PI) / 2;
+          const lift = enBase ? 3 : 12; // aparcado se posa; en vuelo va elevado
           const bx = cx + Math.cos(ang) * 27;
-          const by = cy + Math.sin(ang) * 16 - 12; // elipse elevada sobre la pila
+          const by = cy + Math.sin(ang) * 16 - lift;
           // Morro en la TANGENTE de la órbita: derivando la elipse (27, 16) sale
           // (−sin·27, cos·16). Sin esto el avión daba vueltas mirando siempre al
           // norte, como arrastrado de lado, que es lo que se veía robótico.
-          const tang = Math.atan2(Math.cos(ang) * 16, -Math.sin(ang) * 27) + Math.PI / 2;
-          this.drawUnitGroup(ctx, g, bx, by, { airborne: true, angle: tang });
-          this.unitHits.push({ x: bx, y: by - 7, r: hitRadius(unitSize), ids: g.ids, pid });
+          const tang = enBase ? undefined : Math.atan2(Math.cos(ang) * 16, -Math.sin(ang) * 27) + Math.PI / 2;
+          this.drawUnitGroup(ctx, g, bx, by, { airborne: !enBase, angle: tang });
+          this.unitHits.push({ x: bx, y: by - (enBase ? 0 : 7), r: hitRadius(unitSize), ids: g.ids, pid });
         });
         if (air.length > 4) {
           this.drawOverflowChip(ctx, cx + 30, cy - 20, air.length - 4);
