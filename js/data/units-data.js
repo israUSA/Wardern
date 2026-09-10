@@ -85,7 +85,7 @@ const LEGACY_BASE = {
   },
   caza: {
     cost: { money: 45000, supplies: 4000, manpower: 300, fuel: 3000 },
-    buildHours: 30, speed: 400, captures: false, air: true,
+    buildHours: 30, speed: 135, captures: false, air: true,
     attack: { infanteria: 4, motorizada: 4, mbt: 3, cazatanques: 3, artilleria: 8, antiaereo: 6, caza: 12, bombardero: 25, helicoptero: 20, drone: 22 },
     defense: { infanteria: 8, motorizada: 8, mbt: 8, cazatanques: 8, artilleria: 8, antiaereo: 6, caza: 10, bombardero: 10, helicoptero: 10, drone: 10 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
@@ -94,7 +94,7 @@ const LEGACY_BASE = {
   },
   bombardero: {
     cost: { money: 90000, supplies: 8000, manpower: 500, fuel: 6000 },
-    buildHours: 40, speed: 300, captures: false, air: true,
+    buildHours: 40, speed: 105, captures: false, air: true,
     attack: { infanteria: 24, motorizada: 24, mbt: 14, cazatanques: 12, artilleria: 16, antiaereo: 8, caza: 6, bombardero: 8, helicoptero: 10, drone: 10 },
     defense: { infanteria: 9, motorizada: 9, mbt: 8, cazatanques: 8, artilleria: 7, antiaereo: 5, caza: 5, bombardero: 8, helicoptero: 8, drone: 8 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
@@ -103,7 +103,7 @@ const LEGACY_BASE = {
   },
   helicoptero: {
     cost: { money: 55000, supplies: 5000, manpower: 400, fuel: 2500 },
-    buildHours: 30, speed: 120, captures: false, air: true,
+    buildHours: 30, speed: 80, captures: false, air: true,
     attack: { infanteria: 12, motorizada: 12, mbt: 20, cazatanques: 14, artilleria: 12, antiaereo: 4, caza: 4, bombardero: 8, helicoptero: 10, drone: 10 },
     defense: { infanteria: 7, motorizada: 7, mbt: 8, cazatanques: 8, artilleria: 7, antiaereo: 5, caza: 5, bombardero: 8, helicoptero: 8, drone: 8 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
@@ -112,7 +112,7 @@ const LEGACY_BASE = {
   },
   drone: {
     cost: { money: 12000, supplies: 1000, manpower: 100, fuel: 500 },
-    buildHours: 12, speed: 150, captures: false, air: true,
+    buildHours: 12, speed: 90, captures: false, air: true,
     attack: { infanteria: 5, motorizada: 5, mbt: 3, cazatanques: 3, artilleria: 5, antiaereo: 2, caza: 2, bombardero: 4, helicoptero: 4, drone: 4 },
     defense: { infanteria: 6, motorizada: 6, mbt: 6, cazatanques: 6, artilleria: 6, antiaereo: 4, caza: 4, bombardero: 6, helicoptero: 6, drone: 6 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
@@ -287,7 +287,7 @@ export const EXTRA_VARIANTS = {
     id: "occ-3-caza-f35", doctrine: "occidental", tier: 3, category: "caza",
     name: "F-35A Lightning II", icon: "caza",
     cost: { money: 55000, supplies: 5000, manpower: 400, fuel: 3800 },
-    buildHours: 32, hp: 100, speed: 360, captures: false, air: true,
+    buildHours: 32, hp: 100, speed: 120, captures: false, air: true,
     attack: { infanteria: 8, motorizada: 8, mbt: 6, cazatanques: 6, artilleria: 12, antiaereo: 11, caza: 13, bombardero: 27, helicoptero: 22, drone: 25 },
     defense: { infanteria: 10, motorizada: 10, mbt: 10, cazatanques: 10, artilleria: 10, antiaereo: 9, caza: 13, bombardero: 13, helicoptero: 13, drone: 13 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
@@ -302,7 +302,7 @@ export const EXTRA_VARIANTS = {
     id: "occ-3-drone-rq190", doctrine: "occidental", tier: 3, category: "drone",
     name: "RQ-190", icon: "drone",
     cost: { money: 45000, supplies: 3800, manpower: 150, fuel: 2200 },
-    buildHours: 26, hp: 100, speed: 140, captures: false, air: true,
+    buildHours: 26, hp: 100, speed: 85, captures: false, air: true,
     attack: { infanteria: 0, motorizada: 0, mbt: 0, cazatanques: 0, artilleria: 0, antiaereo: 0, caza: 0, bombardero: 0, helicoptero: 0, drone: 0 },
     defense: { infanteria: 8, motorizada: 8, mbt: 8, cazatanques: 8, artilleria: 8, antiaereo: 6, caza: 6, bombardero: 8, helicoptero: 8, drone: 8 },
     terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },

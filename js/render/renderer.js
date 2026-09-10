@@ -16,6 +16,9 @@ export class MapRenderer {
     this.paths = new Map();
     this.patterns = new Map();
     this.mapBounds = null;
+    // Rumbo dibujado de cada unidad, para que virar sea un giro y no un salto
+    this.headings = new Map();
+    this.lastDrawT = 0;
     this.resize();
     window.addEventListener("resize", () => {
       this.resize();
@@ -134,6 +137,8 @@ export class MapRenderer {
     const dpr = this.dpr;
     const v = this.view;
     const unitSize = this.unitIconSize();
+    const dtMs = Math.min(120, Math.max(0, timeMs - (this.lastDrawT || timeMs)));
+    this.lastDrawT = timeMs;
     // Registro de zonas clicables de unidad de ESTE frame (lo consume pickUnit):
     // el hit-test va contra lo que realmente se ve, incluidas las órbitas aéreas
     // y las unidades interpoladas en marcha, que no están en el centro de su provincia.
@@ -362,7 +367,11 @@ export class MapRenderer {
           const ang = timeMs / 2400 + phase + (i * Math.PI) / 2;
           const bx = cx + Math.cos(ang) * 27;
           const by = cy + Math.sin(ang) * 16 - 12; // elipse elevada sobre la pila
-          this.drawUnitGroup(ctx, g, bx, by, { airborne: true });
+          // Morro en la TANGENTE de la órbita: derivando la elipse (27, 16) sale
+          // (−sin·27, cos·16). Sin esto el avión daba vueltas mirando siempre al
+          // norte, como arrastrado de lado, que es lo que se veía robótico.
+          const tang = Math.atan2(Math.cos(ang) * 16, -Math.sin(ang) * 27) + Math.PI / 2;
+          this.drawUnitGroup(ctx, g, bx, by, { airborne: true, angle: tang });
           this.unitHits.push({ x: bx, y: by - 7, r: hitRadius(unitSize), ids: g.ids, pid });
         });
         if (air.length > 4) {
@@ -402,7 +411,10 @@ export class MapRenderer {
         drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), unitSize, this.countryColor(u.owner), {
           hp: Math.max(0, Math.min(1, u.hp / 100)),
           level: vetLevel(u),
-          angle: ang + Math.PI / 2, // los sprites miran al norte: +90° alinea el morro con el rumbo
+          // Los sprites miran al norte: +90° alinea el morro con el rumbo. El giro
+          // se interpola para que al encadenar tramos el avión VIRE en vez de
+          // saltar de golpe a la nueva orientación.
+          angle: this.smoothHeading(u.id, ang + Math.PI / 2, dtMs),
           variant: u.type,
         });
         this.unitHits.push({ x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), ids: [u.id], pid: u.pos });
@@ -489,6 +501,22 @@ export class MapRenderer {
     }
   }
 
+  // Rumbo interpolado hacia `target` por el camino corto. Suavizado exponencial
+  // con constante de tiempo ~220 ms: rápido de seguir, sin tirones.
+  smoothHeading(id, target, dtMs) {
+    const cur = this.headings.get(id);
+    if (cur === undefined || !dtMs) {
+      this.headings.set(id, target);
+      return target;
+    }
+    let diff = target - cur;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    const next = cur + diff * (1 - Math.exp(-dtMs / 220));
+    this.headings.set(id, next);
+    return next;
+  }
+
   // Ficha de unidad bajo el cursor (px de pantalla), o null. Recorre el registro
   // del último frame en orden INVERSO: gana la última dibujada, que es la que se
   // ve encima cuando dos fichas se solapan.
@@ -547,6 +575,7 @@ export class MapRenderer {
   // y chevrons las pinta drawUnitSymbol. Los aéreos van elevados con sombra en el suelo.
   drawUnitGroup(ctx, g, x, y, opts = {}) {
     const lift = opts.airborne ? 7 : 0;
+    const angle = opts.angle;
     if (opts.airborne) {
       ctx.fillStyle = "rgba(0,0,0,0.25)";
       ctx.beginPath();
@@ -556,6 +585,7 @@ export class MapRenderer {
     drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, this.unitIconSize(), this.countryColor(g.owner), {
       hp: Math.max(0, Math.min(1, g.hp / (g.n * 100))),
       level: g.level,
+      angle,
       variant: g.type, // sprite del vehículo real (F-16A, Abrams, Arleigh Burke...)
     });
     if (g.n > 1) this.drawFlagBadge(ctx, x + 13, y - lift + 9, this.countryColor(g.owner), "×" + g.n);

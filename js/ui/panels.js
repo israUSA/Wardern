@@ -758,12 +758,20 @@ function carrierSection(state, u, mine) {
 
 // Panel de radar: barrido con los contactos, selector de arma y disparo.
 // Se refresca con el resto de la UI, así que los contactos se mueven en vivo.
+// El armazón del panel (cabecera, barrido, contenedores) se construye UNA vez por
+// aparato; después solo se refrescan las partes que cambian. Reconstruir todo el
+// innerHTML cada 250 ms creaba un `.rp-sweep` nuevo en cada refresco y la
+// animación CSS volvía a empezar: la aguja del radar llegaba a las 2 en punto y
+// saltaba de vuelta a las 12 en vez de dar la vuelta completa.
+let radarShellUnit = null;
+
 export function updateRadarPanel(state, ui) {
   const panel = $("radar-panel");
   const u = state?.units.find((x) => x.id === ui.radarUnit && !x.dead);
   if (!u || !airLoadout(u.type) || u.owner !== state.player) {
     panel.classList.add("hidden");
     $("game-ui").classList.remove("radar-open");
+    radarShellUnit = null;
     return;
   }
   panel.classList.remove("hidden");
@@ -774,48 +782,53 @@ export function updateRadarPanel(state, ui) {
   const radar = radarRangeKm(u);
   const modo = ui.radarMode === "as" ? "as" : "aa";
 
+  if (radarShellUnit !== u.id) {
+    radarShellUnit = u.id;
+    panel.innerHTML = `<div class="rp-head">
+        <span class="rp-title">📡 ${T?.name || u.type}<span class="cost"> · radar ${radar} km</span></span>
+        <button class="up-close" id="rp-close" title="Cerrar">✕</button>
+      </div>
+      <div class="rp-modes" id="rp-modes"></div>
+      <div class="rp-scope"><canvas id="rp-canvas" width="208" height="208"></canvas><div class="rp-sweep"></div></div>
+      <div class="rp-weapons" id="rp-weapons"></div>
+      <div id="rp-note"></div>
+      <div class="rp-contacts" id="rp-contacts"></div>`;
+    panel.querySelector("#rp-close").addEventListener("click", () => hooks.onCloseRadar());
+  }
+
   // Arma activa: la elegida si sigue siendo válida, si no la primera del modo con munición
   const delModo = armas.filter((a) => a.weapon.tipo === modo);
-  let sel = delModo.find((a) => a.weapon.id === ui.radarWeapon) || delModo.find((a) => a.left > 0) || delModo[0];
+  const sel = delModo.find((a) => a.weapon.id === ui.radarWeapon) || delModo.find((a) => a.left > 0) || delModo[0];
 
-  const contactos = modo === "aa" ? radarContacts(state, u) : groundContacts(state, u);
+  const contactosAA = radarContacts(state, u);
+  const contactosAS = armas.some((a) => a.weapon.tipo === "as") ? groundContacts(state, u) : [];
+  const contactos = modo === "aa" ? contactosAA : contactosAS;
   const enTransito = !!u.edgeLeft;
 
-  let html = `<div class="rp-head">
-      <span class="rp-title">📡 ${T?.name || u.type}<span class="cost"> · radar ${radar} km</span></span>
-      <button class="up-close" id="rp-close" title="Cerrar">✕</button>
-    </div>`;
+  $("rp-modes").innerHTML =
+    `<button class="rp-mode${modo === "aa" ? " active" : ""}" data-rmode="aa">Aire-aire <b>${contactosAA.length}</b></button>
+     <button class="rp-mode${modo === "as" ? " active" : ""}" data-rmode="as">Aire-suelo <b>${contactosAS.length}</b></button>`;
 
-  const nAA = radarContacts(state, u).length;
-  const nAS = airWeapons(u).some((a) => a.weapon.tipo === "as") ? groundContacts(state, u).length : 0;
-  html += `<div class="rp-modes">
-      <button class="rp-mode${modo === "aa" ? " active" : ""}" data-rmode="aa">Aire-aire <b>${nAA}</b></button>
-      <button class="rp-mode${modo === "as" ? " active" : ""}" data-rmode="as">Aire-suelo <b>${nAS}</b></button>
-    </div>`;
-
-  html += `<div class="rp-scope"><canvas id="rp-canvas" width="208" height="208"></canvas><div class="rp-sweep"></div></div>`;
-
-  // Selector de arma
-  html += `<div class="rp-weapons">`;
+  let wHtml = "";
   if (!delModo.length) {
-    html += `<div class="garrison-note">Este aparato no lleva armas ${modo === "aa" ? "aire-aire" : "aire-suelo"}.</div>`;
+    wHtml = `<div class="garrison-note">Este aparato no lleva armas ${modo === "aa" ? "aire-aire" : "aire-suelo"}.</div>`;
   }
   for (const a of delModo) {
     const act = sel && a.weapon.id === sel.weapon.id;
-    html += `<button class="rp-wchip${act ? " active" : ""}${a.left <= 0 ? " vacio" : ""}" data-rweapon="${a.weapon.id}"
+    wHtml += `<button class="rp-wchip${act ? " active" : ""}${a.left <= 0 ? " vacio" : ""}" data-rweapon="${a.weapon.id}"
       title="${a.weapon.nombre} · guía ${a.weapon.guia} · ${effRange(a.weapon)} km · ${Math.round(a.weapon.pk * 100)}% base">
       ${a.weapon.nombre.split(" ")[0]} <b>${a.left}</b></button>`;
   }
-  html += `</div>`;
+  $("rp-weapons").innerHTML = wHtml;
 
-  if (enTransito) {
-    html += `<div class="up-rearm warn">En tránsito: el avión debe estar en su sector para disparar.</div>`;
-  }
+  $("rp-note").innerHTML = enTransito
+    ? `<div class="up-rearm warn">En tránsito: el avión debe estar en su sector para disparar.</div>`
+    : "";
 
   // Lista de contactos
-  html += `<div class="rp-contacts">`;
+  let cHtml = "";
   if (!contactos.length) {
-    html += `<div class="garrison-note">Sin contactos${modo === "as" ? " de superficie reconocidos" : " en el radar"}.</div>`;
+    cHtml = `<div class="garrison-note">${emptyRadarReason(state, u, modo)}</div>`;
   }
   for (const c of contactos.slice(0, 12)) {
     const e = c.unit;
@@ -832,7 +845,7 @@ export function updateRadarPanel(state, ui) {
     else if (!enAlcance) motivo = `Fuera de alcance (${Math.round(c.km)} > ${effRange(sel.weapon)} km)`;
     else if (enTransito) motivo = "El avión está en tránsito";
 
-    html += `<div class="rp-contact${activo ? " sel" : ""}${enAlcance && !veto ? " tiro" : ""}" data-rtarget="${e.id}">
+    cHtml += `<div class="rp-contact${activo ? " sel" : ""}${enAlcance && !veto ? " tiro" : ""}" data-rtarget="${e.id}">
       <span class="rp-blip${c.datalink ? " dl" : ""}" style="background:${c.datalink ? "transparent" : color};border-color:${color}"></span>
       <div class="rp-cinfo">
         <b>${eT?.name || e.type}</b> <span class="cost">${S.countries[e.owner].name}</span>${c.datalink ? ` <span class="rp-dl" title="Fuera del alcance de tu radar: lo marca una batería antiaérea propia">ENLACE</span>` : ""}
@@ -841,12 +854,11 @@ export function updateRadarPanel(state, ui) {
       <button class="btn small" data-rfire="${e.id}" ${motivo ? `disabled title="${motivo}"` : ""}>Disparar</button>
     </div>`;
   }
-  html += `</div>`;
+  $("rp-contacts").innerHTML = cHtml;
 
-  panel.innerHTML = html;
   drawRadarScope(panel, state, ui, u, contactos, sel, radar);
 
-  panel.querySelector("#rp-close").addEventListener("click", () => hooks.onCloseRadar());
+  // Los listeners viven en los bloques que se reescriben, así que se reenganchan
   panel.querySelectorAll("[data-rmode]").forEach((b) =>
     b.addEventListener("click", () => hooks.onRadarMode(b.dataset.rmode))
   );
@@ -862,6 +874,26 @@ export function updateRadarPanel(state, ui) {
   panel.querySelectorAll("[data-rfire]").forEach((b) =>
     b.addEventListener("click", () => hooks.onFireAir(sel.weapon.id, parseInt(b.dataset.rfire, 10)))
   );
+}
+
+// Por qué el radar no marca nada. "Sin contactos" a secas es engañoso cuando hay
+// un blindado enemigo debajo del avión y lo único que falta es declarar la guerra.
+function emptyRadarReason(state, u, modo) {
+  const paises = new Set();
+  for (const e of state.units) {
+    if (e.dead || e.embarked || e.owner === u.owner) continue;
+    if (e.pos !== u.pos) continue;
+    if (atWar(state, u.owner, e.owner)) continue;
+    const esAire = !!airLoadout(e.type);
+    if ((modo === "aa") !== esAire) continue;
+    paises.add(S.countries[e.owner].name);
+  }
+  if (paises.size) {
+    return `Hay fuerzas de ${[...paises].join(", ")} en este sector, pero NO estás en guerra con ${paises.size > 1 ? "esos países" : "ese país"}: el radar solo marca objetivos hostiles.`;
+  }
+  return modo === "aa"
+    ? "Sin aeronaves hostiles en el radar."
+    : "Sin blancos de superficie hostiles reconocidos. El aire-suelo exige además tener la provincia reconocida (dron o tropas propias cerca).";
 }
 
 // Indicador panorámico (PPI): norte arriba, anillos de distancia, burbuja del

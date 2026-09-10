@@ -93,10 +93,17 @@ mismo ganador: la doctrina no invierte contadores. Stack mixto (4 inf + 2 MBT + 
 | Cazatanques | 50k/4.5k/0.7k/2.5k | 2.5 | 24 | 40 | No | Embosca y destruye blindados |
 | Artillería | 60k/5.4k/0.9k/2k | 3 | 24 | 35 | No | Castiga stacks; ×1.5 primeros 12 ticks |
 | Antiaéreo | 30k/2.5k/0.4k/1k | 1.5 | 18 | 30 | No | Negación aérea; casi inútil en tierra |
-| Caza | 45k/4k/0.3k/3k | 2.25 | 30 | 400 | No | Superioridad aérea |
-| Bombardero | 90k/8k/0.5k/6k | 4.5 | 40 | 300 | No | Castigo masivo a tierra sin AA |
-| Helicóptero | 55k/5k/0.4k/2.5k | 2.75 | 30 | 120 | No | Cazatanques volador |
-| Drone (UAV) | 12k/1k/0.1k/0.5k | 0.6 | 12 | 150 | No | Reconocimiento y hostigamiento barato |
+| Caza | 45k/4k/0.3k/3k | 2.25 | 30 | 135 | No | Superioridad aérea |
+| Bombardero | 90k/8k/0.5k/6k | 4.5 | 40 | 105 | No | Castigo masivo a tierra sin AA |
+| Helicóptero | 55k/5k/0.4k/2.5k | 2.75 | 30 | 80 | No | Cazatanques volador |
+| Drone (UAV) | 12k/1k/0.1k/0.5k | 0.6 | 12 | 90 | No | Reconocimiento y hostigamiento barato |
+
+> **Velocidad aérea (ajuste jugado).** Los aéreos iban a 400/300/120/150 y cruzaban
+> la provincia mediana (324 km) en menos de una hora de juego, o sea **menos de un
+> segundo real a 1×**: el avión desaparecía del sitio antes de que te diera tiempo a
+> mirarlo. Se dividen por ~3 conservando el orden y dejando a todos por encima de la
+> motorizada (60), que sigue siendo la unidad terrestre más rápida. Las variantes
+> especiales acompañan: F-35A 120, RQ-190 85.
 
 Costes por tier: t1 = 0.7× y t3 = 1.5× de esta tabla (cada componente se redondea:
 dinero a 500, sumin/fuel a 100, MO a 50). Ej.: infantería t1 14k/1.3k/1.1k/0, t3
