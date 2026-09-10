@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["serve.py"],
       "port": 8099
+    },
+    {
+      "name": "wardern-alt",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["serve.py", "--port", "8098"],
+      "port": 8098
     }
   ]
 }

@@ -2,7 +2,7 @@
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
 import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths } from "./engine/movement.js";
-import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
+import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
 import { fireAirWeapon, landOnCarrier, launchFromCarrier, isCarrierCapable } from "./engine/air-combat.js";
@@ -75,13 +75,17 @@ function resetClock() {
 
 const hooks = {
   selCountry: null,
+  difficulty: C.DEFAULT_DIFFICULTY,
   selectCountry(iso) {
     hooks.selCountry = iso;
     ui.selCountry = iso;
     UI.updateCountryCard(iso);
   },
+  setDifficulty(id) {
+    if (C.DIFFICULTIES[id]) hooks.difficulty = id;
+  },
   onPlayCountry(iso) {
-    state = newGame(iso);
+    state = newGame(iso, hooks.difficulty);
     window.__wardern = state; // hook de QA/pruebas automatizadas
     window.__wardernUI = { ui, renderer }; // hook de QA: vista y selecciones
     endShown = false;
@@ -289,6 +293,41 @@ const hooks = {
   },
   openResearch() {
     UI.showResearchPanel(state, hooks.onResearch);
+  },
+  openMarket() {
+    if (state) UI.showMarketPanel(state, hooks.onTrade);
+  },
+  onTrade(res, qty, dir) {
+    const r = trade(state, state.player, res, qty, dir);
+    UI.toast(r.msg);
+    updateUI();
+  },
+  onDisband(unitId) {
+    const u = state?.units.find((x) => x.id === unitId && !x.dead);
+    if (!u) return;
+    UI.showModal(
+      "Desbandar unidad",
+      `Vas a licenciar <b>${unitDef(u.type)?.name ?? u.type}</b>. Deja de consumir suministros y combustible, pero no hay reembolso. ¿Continuar?`,
+      [
+        { label: "Cancelar" },
+        {
+          label: "Desbandar",
+          cls: "danger",
+          cb: () => {
+            const r = disbandUnit(state, state.player, unitId);
+            UI.toast(r.msg);
+            if (r.ok) clearUnitSel();
+            updateUI();
+          },
+        },
+      ]
+    );
+  },
+  onCenterCountry(iso) {
+    const cap = S.countries[iso]?.capital;
+    // La capital puede estar en manos de otro: se va a cualquier provincia que aún controle
+    const pid = cap && S.provinces.has(cap) ? cap : S.provinceList.find((p) => !p.isSea && (state.provinces[p.id]?.occupier || state.provinces[p.id]?.owner) === iso)?.id;
+    if (pid) renderer?.centerOn(pid);
   },
   onResearch(tierId) {
     if (!startResearch(state, state.player, tierId)) UI.toast("No se puede iniciar esa investigación");

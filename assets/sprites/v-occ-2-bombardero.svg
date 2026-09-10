@@ -1,64 +1,143 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<!-- B-2 Spirit — T2 occidental. Ala volante pura L:S 0.40. Sin cola ni fuselaje visible. Borde de salida en W (dientes de sierra). Paleta stealth oscuro. -->
-<defs>
-  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#7b838b"/><stop offset="0.34" stop-color="#565e66"/>
-    <stop offset="0.62" stop-color="#3c434a"/><stop offset="1" stop-color="#22272c"/>
-  </linearGradient>
-  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.30"/>
-    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
-    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
-    <stop offset="1" stop-color="#6a4f15"/>
-  </linearGradient>
-  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
-    <stop offset="1" stop-color="#5b636b"/>
-  </radialGradient>
-  <path id="hull" d="
-    M128 42 L134 48 L140 56 L148 66
-    L230 110 L232 116
-    L216 136 L194 128 L178 140 L164 134 L152 146
-    L140 140 L134 150 L128 156
-    L122 150 L116 140 L104 146 L92 134
-    L78 140 L62 128 L40 136 L24 116
-    L26 110 L108 66 L116 56 L122 48 Z"/>
-</defs>
-<g id="unit">
-  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
-  <use href="#hull" fill="url(#g-hull)"/>
-  <g fill="#000" fill-opacity="0.10">
-    <path d="M148 66 L230 110 L232 116 L216 136 L194 128 L178 140 L164 134 L152 146 L140 140 L146 110 Z"/>
-    <path d="M108 66 L26 110 L24 116 L40 136 L62 128 L78 140 L92 134 L104 146 L116 140 L110 110 Z"/>
+  <!-- Northrop Grumman B-2 Spirit — Stealth Bomber (Versión Final Limpia)
+       - Eliminadas las figuras inferiores de los costados de la ventana.
+       - Cabina facetada oscura hiper-realista (sin dorado).
+       - Dientes de sierra centrales compactos y unidos.
+       - Silueta alar limpia y centrada. -->
+  <defs>
+    <!-- Gradiente RAM Gris Carbón Mate FS 36118 -->
+    <linearGradient id="b2-ram-hull" x1="0.1" y1="0" x2="0.9" y2="0.3">
+      <stop offset="0%" stop-color="#4a5058"/>
+      <stop offset="35%" stop-color="#363c43"/>
+      <stop offset="68%" stop-color="#282d33"/>
+      <stop offset="100%" stop-color="#1b1f24"/>
+    </linearGradient>
+
+    <!-- Gradiente ala izquierda (iluminación suave) -->
+    <linearGradient id="b2-wing-l" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#555c65"/>
+      <stop offset="50%" stop-color="#3f454d"/>
+      <stop offset="100%" stop-color="#2a2f36"/>
+    </linearGradient>
+
+    <!-- Gradiente ala derecha (sombra) -->
+    <linearGradient id="b2-wing-r" x1="0" y1="0.8" x2="1" y2="0">
+      <stop offset="0%" stop-color="#32373e"/>
+      <stop offset="50%" stop-color="#22262b"/>
+      <stop offset="100%" stop-color="#17191d"/>
+    </linearGradient>
+
+    <!-- Espina dorsal central suavemente fundida -->
+    <linearGradient id="b2-dorsal-blend" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="70%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Cristal de cabina real (Dark Charcoal / Humo polarizado antirreflejo, no dorado) -->
+    <linearGradient id="b2-glass" x1="0.15" y1="0.1" x2="0.85" y2="0.9">
+      <stop offset="0%" stop-color="#38424d"/>
+      <stop offset="30%" stop-color="#20262e"/>
+      <stop offset="100%" stop-color="#0a0d10"/>
+    </linearGradient>
+
+    <!-- Silueta maestra con los 3 dientes centrales unidos y compactos -->
+    <path id="b2-airframe" d="
+      M 128 48
+      L 238 124
+      L 238 132
+      L 212 118
+      L 186 135
+      L 164 122
+      L 148 138
+      L 137 130
+      L 128 143
+      L 119 130
+      L 108 138
+      L 92 122
+      L 70 135
+      L 44 118
+      L 18 132
+      L 18 124
+      Z
+    "/>
+  </defs>
+
+  <!-- Contenedor centrado verticalmente -->
+  <g id="b2-unit" transform="translate(0, 32)">
+    <!-- Sombra proyectada -->
+    <use href="#b2-airframe" fill="#080a0d" opacity="0.28" transform="translate(6, 9)"/>
+
+    <!-- Planta del ala volante -->
+    <use href="#b2-airframe" fill="url(#b2-ram-hull)"/>
+
+    <!-- Tinte alar izquierda / derecha para volumen -->
+    <path d="M 128 48 L 128 143 L 119 130 L 108 138 L 92 122 L 70 135 L 44 118 L 18 132 L 18 124 Z" fill="url(#b2-wing-l)" opacity="0.35"/>
+    <path d="M 128 48 L 128 143 L 137 130 L 148 138 L 164 122 L 186 135 L 212 118 L 238 132 L 238 124 Z" fill="url(#b2-wing-r)" opacity="0.45"/>
+
+    <!-- Bisel de iluminación del borde de ataque izquierdo -->
+    <line x1="128" y1="48" x2="18" y2="124" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.4"/>
+    <line x1="128" y1="48" x2="238" y2="124" stroke="#16181b" stroke-width="0.8" stroke-opacity="0.6"/>
+
+    <!-- Elevación central suavemente fundida -->
+    <path d="
+      M 128 50
+      C 134 54, 142 66, 143 82
+      C 144 98, 141 116, 137 130
+      L 128 141
+      L 119 130
+      C 115 116, 112 98, 113 82
+      C 114 66, 122 54, 128 50 Z
+    " fill="url(#b2-dorsal-blend)"/>
+
+    <!-- Escapes de toberas enrasados sobre el ala -->
+    <!-- Escape Izquierdo -->
+    <polygon points="109,114 122,114 120,123 111,123" fill="#181a1d" stroke="#101214" stroke-width="0.6"/>
+    <line x1="113" y1="123" x2="114" y2="116" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="118" y1="123" x2="119" y2="116" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="110" y1="117" x2="121" y2="117" stroke="#383e44" stroke-width="0.5"/>
+
+    <!-- Escape Derecho -->
+    <polygon points="134,114 147,114 145,123 136,123" fill="#131416" stroke="#0e0f11" stroke-width="0.6"/>
+    <line x1="138" y1="123" x2="137" y2="116" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="143" y1="123" x2="142" y2="116" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="135" y1="117" x2="146" y2="117" stroke="#262a2e" stroke-width="0.5"/>
+
+    <!-- Cabina Real (4 Paneles Facetados de Cristal Oscuro) -->
+    <g stroke="#131619" stroke-width="0.8" stroke-linejoin="round">
+      <polygon points="128,62 123,67 123.5,74 128,71.5" fill="url(#b2-glass)"/>
+      <polygon points="128,62 133,67 132.5,74 128,71.5" fill="url(#b2-glass)"/>
+      <polygon points="122.5,67.5 117.5,72 118.5,75.5 123,73.5" fill="url(#b2-glass)"/>
+      <polygon points="133.5,67.5 138.5,72 137.5,75.5 133,73.5" fill="url(#b2-glass)"/>
+    </g>
+    <!-- Reflejos especulares en la cabina -->
+    <path d="M 124 68 L 127.5 63.5 L 127.5 70" stroke="#ffffff" stroke-width="0.6" fill="none" stroke-linecap="round" stroke-opacity="0.55"/>
+    <line x1="119" y1="72.5" x2="122" y2="69" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.35"/>
+
+    <!-- Líneas de paneles stealth y bisagras de superficies de control -->
+    <g fill="none" stroke="#22262b" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.8">
+      <!-- Receptáculo de reabastecimiento en vuelo -->
+      <polygon points="128,77 125.5,81 130.5,81" stroke="#ffffff" stroke-width="0.6" stroke-opacity="0.45"/>
+      <line x1="128" y1="81" x2="128" y2="86" stroke="#ffffff" stroke-width="0.6" stroke-opacity="0.45"/>
+
+      <!-- Elevones alares exteriores babor -->
+      <line x1="22" y1="122" x2="42" y2="114"/>
+      <line x1="48" y1="116" x2="68" y2="128"/>
+      <line x1="74" y1="124" x2="90" y2="118"/>
+
+      <!-- Elevones alares exteriores estribor -->
+      <line x1="234" y1="122" x2="214" y2="114"/>
+      <line x1="208" y1="116" x2="188" y2="128"/>
+      <line x1="182" y1="124" x2="166" y2="118"/>
+
+      <!-- Bisagras de los 3 dientes centrales unidos y compactos -->
+      <line x1="108" y1="133" x2="119" y2="126"/>
+      <line x1="120" y1="127" x2="128" y2="136"/>
+      <line x1="128" y1="136" x2="136" y2="127"/>
+      <line x1="137" y1="126" x2="148" y2="133"/>
+      <line x1="128" y1="136" x2="128" y2="142.5" stroke-width="0.5"/>
+    </g>
   </g>
-  <path fill="url(#g-spine)" d="
-    M128 44 L136 54 L140 68 L142 100 L140 138
-    L134 148 L128 154 L122 148 L116 138 L114 100
-    L116 68 L120 54 Z"/>
-  <g fill="none" stroke="#394047" stroke-opacity="0.40" stroke-width="0.8" stroke-linecap="round">
-    <path d="M144 68 L220 108"/>
-    <path d="M112 68 L36 108"/>
-    <path d="M148 80 L152 130"/>
-    <path d="M108 80 L104 130"/>
-    <path d="M160 92 L170 128"/>
-    <path d="M96 92 L86 128"/>
-    <path d="M124 54 L132 54"/>
-  </g>
-  <g fill="#2f363d" fill-opacity="0.4">
-    <path d="M138 68 L148 72 L148 88 L140 92 Z"/>
-    <path d="M118 68 L108 72 L108 88 L116 92 Z"/>
-  </g>
-  <path fill="url(#g-glass)" d="
-    M128 56 L134 62 L134 80 L128 84 L122 80 L122 62 Z"/>
-  <path fill="#fff" fill-opacity="0.35" d="
-    M127 58 L124 62 L124 78 L126 82 L123 78 L123 62 Z"/>
-  <g fill="url(#g-nozzle)">
-    <path d="M136 138 L140 138 L139 146 L137 146 Z"/>
-    <path d="M131 142 L135 140 L134 148 L132 148 Z"/>
-    <path d="M120 138 L116 138 L117 146 L119 146 Z"/>
-    <path d="M125 142 L121 140 L122 148 L124 148 Z"/>
-  </g>
-</g>
 </svg>

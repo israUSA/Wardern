@@ -161,7 +161,7 @@ section("[1] Schema completo: 60 variantes + 10 alias legacy (assert d/e)");
 {
   check("GROUND_VARIANTS tiene exactamente 60 variantes", Object.keys(GROUND_VARIANTS).length === 60, `${Object.keys(GROUND_VARIANTS).length}`);
   check("LEGACY_UNITS tiene exactamente 10 alias", Object.keys(LEGACY_UNITS).length === 10);
-  check("UNITS = 70 definiciones", Object.keys(UNITS).length === 70);
+  check("UNITS = 72 definiciones (60 variantes + 2 EXTRA_VARIANTS + 10 legacy)", Object.keys(UNITS).length === 72, `${Object.keys(UNITS).length}`);
   check("UNIT_CATEGORIES conserva las 10 categorías del contrato de UI", UNIT_CATEGORIES.length === 10 && UNIT_CATEGORIES.map((c) => c.id).join(",") === KEYS.join(","));
 
   let bad = [];

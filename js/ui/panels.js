@@ -46,9 +46,34 @@ export function initUI(h) {
   });
   $("btn-continue").addEventListener("click", () => hooks.onContinue());
   $("btn-research").addEventListener("click", () => hooks.openResearch());
+  $("btn-market").addEventListener("click", () => hooks.openMarket());
   $("cc-play").addEventListener("click", () => {
     if (hooks.selCountry) hooks.onPlayCountry(hooks.selCountry);
   });
+  renderDifficulty();
+}
+
+// Selector de dificultad de la ficha de país (pantalla de inicio)
+function renderDifficulty() {
+  const box = $("cc-difficulty");
+  if (!box) return;
+  const cur = hooks.difficulty || C.DEFAULT_DIFFICULTY;
+  box.innerHTML = Object.entries(C.DIFFICULTIES)
+    .map(([id, d]) => `<button data-diff="${id}" class="${id === cur ? "active" : ""}" title="${d.desc}">${d.name}</button>`)
+    .join("");
+  let desc = box.nextElementSibling;
+  if (!desc || !desc.classList.contains("cc-diff-desc")) {
+    desc = document.createElement("div");
+    desc.className = "cc-diff-desc";
+    box.after(desc);
+  }
+  desc.textContent = C.DIFFICULTIES[cur]?.desc || "";
+  box.querySelectorAll("[data-diff]").forEach((b) =>
+    b.addEventListener("click", () => {
+      hooks.setDifficulty(b.dataset.diff);
+      renderDifficulty();
+    })
+  );
 }
 
 // ---------- Pantalla de inicio ----------
@@ -114,6 +139,45 @@ export function updateTopBar(state) {
   document.querySelectorAll(".tb-speeds button").forEach((b) => {
     b.classList.toggle("active", parseInt(b.dataset.speed, 10) === state.speed);
   });
+
+  // Guerras abiertas: antes no había ningún sitio que dijera contra quién luchas
+  const wars = state.countries[state.player].wars.filter((iso) => !state.countries[iso]?.eliminated);
+  const box = $("tb-wars");
+  const key = wars.join(",");
+  if (box.dataset.key !== key) {
+    box.dataset.key = key;
+    box.innerHTML = wars.length
+      ? `⚔ ${wars.map((iso) => `<span class="cc-flag" data-war-iso="${iso}" title="En guerra con ${S.countries[iso].name} · clic: ir a su capital" style="background:${flagCss(iso, S.countries[iso].color)}"></span>`).join("")}`
+      : "";
+    box.querySelectorAll("[data-war-iso]").forEach((el) =>
+      el.addEventListener("click", () => hooks.onCenterCountry(el.dataset.warIso))
+    );
+  }
+}
+
+// ---------- Mercado de recursos ----------
+
+export function showMarketPanel(state, onTrade) {
+  const r = state.countries[state.player].resources;
+  let body = `<p>Precio fijo en dinero. Comprar sale caro: el mercado sirve para salir de un apuro o colocar el excedente, no para sustituir a la industria.</p>
+    <div class="mk-stock">Tesorería: <b>${C.fmtInt(r.money)}$</b></div>`;
+  for (const [res, price] of Object.entries(C.MARKET)) {
+    const info = C.RES_INFO.find((x) => x.key === res);
+    body += `<div class="mk-row">${ICONS[res] || ""}<div class="mk-name">${info?.name ?? res}
+        <span class="cost">Tienes ${C.fmtInt(r[res])} · compra ${price.buy}$ · venta ${price.sell}$ por unidad</span></div>
+      <div class="mk-btns">
+        ${C.MARKET_LOTS.map((q) => `<button class="btn small" data-mk="buy:${res}:${q}" ${r.money >= q * price.buy ? "" : "disabled"} title="Cuesta ${C.fmtInt(q * price.buy)}$">+${C.fmtInt(q)}</button>`).join("")}
+        ${C.MARKET_LOTS.map((q) => `<button class="btn small" data-mk="sell:${res}:${q}" ${r[res] >= q ? "" : "disabled"} title="Ingresa ${C.fmtInt(q * price.sell)}$">−${C.fmtInt(q)}</button>`).join("")}
+      </div></div>`;
+  }
+  showModal("💱 Mercado de recursos", body, [{ label: "Cerrar" }]);
+  document.querySelectorAll("[data-mk]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const [dir, res, q] = b.dataset.mk.split(":");
+      onTrade(res, parseInt(q, 10), dir);
+      showMarketPanel(state, onTrade); // se queda abierto con las cifras al día
+    })
+  );
 }
 
 // ---------- Panel de provincia ----------
@@ -360,6 +424,11 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   const shownUnits = strongIntel ? units : units.filter((u) => u.owner === state.player);
   const desconocidos = units.length - shownUnits.length;
   html += `<div class="pp-section"><h4>Guarnición (${units.length})</h4>`;
+  // Mover toda la guarnición propia de golpe (las paradas; las que viajan siguen su ruta)
+  const movable = units.filter((u) => u.owner === state.player && !u.edgeLeft);
+  if (movable.length > 1) {
+    html += `<button class="btn small" id="pp-move-all" style="margin-bottom:6px" title="Elige el destino para las ${movable.length} unidades paradas">Mover todas (${movable.length})</button>`;
+  }
   if (!anyIntel) html += `<div class="garrison-note">Sin inteligencia: provincia fuera de tu zona de visión.</div>`;
   else if (desconocidos > 0) {
     html += `<div class="garrison-note">❓ Contactos sin identificar: ${desconocidos} unidad(es). Envía un dron o entra con tus tropas para identificarlas.</div>`;
@@ -453,6 +522,9 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   );
   const annex = panel.querySelector("#pp-annex");
   if (annex) annex.addEventListener("click", () => hooks.onAnnex(selId));
+  panel.querySelector("#pp-move-all")?.addEventListener("click", () =>
+    hooks.onMove(movable[0].id, movable.map((u) => u.id))
+  );
   const war = panel.querySelector("#pp-war");
   if (war) war.addEventListener("click", () => hooks.onWarDecl(ctrl));
   const peace = panel.querySelector("#pp-peace");
@@ -635,6 +707,7 @@ export function updateUnitPanel(state, ui) {
       ${transport ? `<button class="btn small" data-up-embark="${u.id}">Embarcar</button>
       <button class="btn small" data-up-disembark="${u.id}" ${u.cargo?.length ? "" : "disabled"}>Desembarcar</button>` : ""}
       ${u.edgeLeft ? "" : strikeButtonsFor(state, u)}
+      <button class="btn small danger" data-up-disband="${u.id}" title="Licencia la unidad: deja de pagar su mantenimiento. Sin reembolso.">Desbandar</button>
     </div>
     <div class="up-hint">Con la unidad seleccionada, <b>clic derecho</b> en una provincia la envía allí.</div>`;
   }
@@ -678,6 +751,9 @@ export function updateUnitPanel(state, ui) {
   );
   panel.querySelectorAll("[data-up-pick]").forEach((b) =>
     b.addEventListener("click", () => hooks.onSelectUnit(parseInt(b.dataset.upPick, 10)))
+  );
+  panel.querySelectorAll("[data-up-disband]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onDisband(parseInt(b.dataset.upDisband, 10)))
   );
   panel.querySelectorAll("[data-up-radar]").forEach((b) =>
     b.addEventListener("click", () => hooks.onRadar(parseInt(b.dataset.upRadar, 10)))

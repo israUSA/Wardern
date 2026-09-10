@@ -43,9 +43,21 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       inerte desde la capa naval (TypeError por tick tragado por try/catch). Bots verificados
       vivos: 141→391 unidades en 16 días, 19 construcciones activas
 - [x] save.js: importGame aceptaba solo versión 1 (importar siempre fallaba); alineado
-- [ ] Mercado de recursos
-- [ ] Desbandar unidades / gestión de excedente de ejército
-- [ ] Personalidades IA diferenciadas + dificultad seleccionable
+- [x] Jugabilidad (2026-09-10): **la IA no declaraba guerras nunca** (leía `aggression`
+      del estado dinámico → NaN); ahora lee la de countries-data y declara. Reclutamiento
+      de bots en varias provincias por chequeo (antes 1 por país: EEUU reclutaba como
+      Belice), anexión de lo conquistado por la IA, inicio de guerra registrado para
+      ambos bandos y mínimo de 3 días antes de que el débil pida la paz (antes se
+      firmaba a las 6 h). Medido en 50 días Normal: guerras de 3–4 días, 38 provincias
+      anexionadas, 5 países pequeños eliminados
+- [x] Mercado de recursos (botón 💱 en la barra): suministros 8$/3$ y combustible 6$/2$
+      por unidad, lotes de 1k y 5k — válvula para el dinero sobrante, no sustituto de industria
+- [x] Desbandar unidades (ficha de unidad, con confirmación; sin reembolso; no en combate)
+- [x] Dificultad seleccionable (Fácil / Normal / Difícil) en la ficha de país: escala la
+      producción bruta y la agresividad de los bots (`DIFFICULTIES` en constants.js).
+      Personalidades IA diferenciadas → pendiente
+- [x] "Mover todas (N)" en la guarnición e indicador ⚔ de guerras abiertas en la barra
+      superior (clic en la bandera = ir a la capital enemiga)
 - [ ] Etiquetas de países en el mapa y agrupación visual de stacks
 - [ ] Puerto Rico como provincia (falta en el mapa; agregar en build-map.mjs)
 

@@ -1,88 +1,183 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<!-- F-22 Raptor — T3 occidental. Todo facetado (L no C). 2 derivas 28°, 2 toberas rectangulares, sin misiles externos, bordes paralelos. Paleta stealth oscuro. -->
-<defs>
-  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#7b838b"/><stop offset="0.34" stop-color="#565e66"/>
-    <stop offset="0.62" stop-color="#3c434a"/><stop offset="1" stop-color="#22272c"/>
-  </linearGradient>
-  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.35"/>
-    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
-    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
-    <stop offset="1" stop-color="#6a4f15"/>
-  </linearGradient>
-  <linearGradient id="g-fin" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#6a727a"/><stop offset="0.42" stop-color="#484f56"/>
-    <stop offset="1" stop-color="#2a3036"/>
-  </linearGradient>
-  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
-    <stop offset="1" stop-color="#5b636b"/>
-  </radialGradient>
-  <path id="hull" d="
-    M128 16 L136 28 L138 42 L140 58 L142 72
-    L148 86 L152 94 L208 154 L208 162 L204 172
-    L156 170 L154 176 L156 196 L152 200
-    L144 198 L142 204 L140 228 L128 236
-    L116 228 L114 204 L112 198 L104 200
-    L100 196 L102 176 L100 170 L52 172
-    L48 162 L48 154 L104 94 L108 86
-    L114 72 L116 58 L118 42 L120 28 Z"/>
-</defs>
-<g id="unit">
-  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
-  <use href="#hull" fill="url(#g-hull)"/>
-  <g fill="#000" fill-opacity="0.12">
-    <path d="M152 94 L208 154 L208 162 L204 172 L158 170 Z"/>
-    <path d="M104 94 L48 154 L48 162 L52 172 L98 170 Z"/>
-    <path d="M154 176 L156 196 L152 200 L144 198 L150 180 Z"/>
-    <path d="M102 176 L100 196 L104 200 L112 198 L106 180 Z"/>
+  <!-- Lockheed Martin F-22A Raptor — Silueta Vectorial Limpia Definitiva
+       - Eliminadas las dos figuras oscuras debajo de la cabina.
+       - Proporciones oficiales 3-View USAF (Envergadura 13.56m / Longitud 18.90m).
+       - Cúpula dorada en una sola pieza (Gold ITO).
+       - Alas en diamante amplio y cola completa con tailerons dobles. -->
+  <defs>
+    <!-- Gradiente base del fuselaje (Gris superioridad aérea FS 36375) -->
+    <linearGradient id="f22-base" x1="0.15" y1="0" x2="0.85" y2="0.25">
+      <stop offset="0%" stop-color="#939ba5"/>
+      <stop offset="35%" stop-color="#7a838d"/>
+      <stop offset="70%" stop-color="#626b75"/>
+      <stop offset="100%" stop-color="#4a525a"/>
+    </linearGradient>
+
+    <!-- Camuflaje táctico oscuro de baja reflectividad (FS 36118) -->
+    <linearGradient id="f22-camo" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#555d67"/>
+      <stop offset="50%" stop-color="#444b53"/>
+      <stop offset="100%" stop-color="#343940"/>
+    </linearGradient>
+
+    <!-- Resplandor central en la cresta del lomo -->
+    <linearGradient id="f22-spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Cúpula de cabina en ORO auténtico (Gold Indium-Tin Oxide) -->
+    <linearGradient id="f22-gold" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
+      <stop offset="0%" stop-color="#fff5b2"/>
+      <stop offset="25%" stop-color="#edc54a"/>
+      <stop offset="65%" stop-color="#b8841e"/>
+      <stop offset="100%" stop-color="#543706"/>
+    </linearGradient>
+
+    <!-- Derivas verticales inclinadas (28°) -->
+    <linearGradient id="f22-fin-l" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#9fa8b3"/>
+      <stop offset="60%" stop-color="#6f7984"/>
+      <stop offset="100%" stop-color="#4e5660"/>
+    </linearGradient>
+    <linearGradient id="f22-fin-r" x1="0" y1="0.8" x2="1" y2="0">
+      <stop offset="0%" stop-color="#646d77"/>
+      <stop offset="60%" stop-color="#495159"/>
+      <stop offset="100%" stop-color="#31373e"/>
+    </linearGradient>
+
+    <!-- Toberas vectoriales 2D Pratt & Whitney F119 -->
+    <linearGradient id="f22-nozzle-2d" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#23272c"/>
+      <stop offset="60%" stop-color="#14171a"/>
+      <stop offset="100%" stop-color="#0a0c0e"/>
+    </linearGradient>
+
+    <!-- Silueta maestra exacta del F-22A Raptor -->
+    <path id="f22-airframe" d="
+      M 128 24
+      L 141 46
+      L 144 68
+      L 142 82
+      L 156 88
+      L 202 130
+      L 202 142
+      L 146 158
+      L 144 164
+      L 177 194
+      L 176 204
+      L 139 216
+      L 138 230
+      L 128 232
+      L 118 230
+      L 117 216
+      L 80 204
+      L 79 194
+      L 112 164
+      L 110 158
+      L 54 142
+      L 54 130
+      L 100 88
+      L 114 82
+      L 112 68
+      L 115 46
+      Z
+    "/>
+  </defs>
+
+  <!-- ==================== SOMBRA PROYECTADA ==================== -->
+  <use href="#f22-airframe" fill="#080a0d" opacity="0.28" transform="translate(6, 9)"/>
+
+  <!-- ==================== FUSELAJE BASE Y ALAS ==================== -->
+  <use href="#f22-airframe" fill="url(#f22-base)"/>
+
+  <!-- Sombreado de volumen alar (luz y sombra cenital) -->
+  <path d="M 128 24 L 128 232 L 118 230 L 117 216 L 80 204 L 79 194 L 112 164 L 110 158 L 54 142 L 54 130 L 100 88 L 114 82 L 112 68 L 115 46 Z" fill="#ffffff" fill-opacity="0.09"/>
+  <path d="M 128 24 L 128 232 L 138 230 L 139 216 L 176 204 L 177 194 L 144 164 L 146 158 L 202 142 L 202 130 L 156 88 L 142 82 L 144 68 L 141 46 Z" fill="#000000" fill-opacity="0.2"/>
+
+  <!-- ==================== MANCHAS DE CAMUFLAJE RAPTOR ==================== -->
+  <path d="
+    M 128 32 L 138 52 L 136 78 L 128 84 L 120 78 L 118 52 Z
+    M 128 92 L 140 102 L 146 128 L 138 148 L 128 154 L 118 148 L 110 128 L 116 102 Z
+    M 156 100 L 188 130 L 176 136 L 146 130 Z
+    M 100 100 L 68 130 L 80 136 L 110 130 Z
+    M 144 172 L 170 196 L 164 202 L 138 196 Z
+    M 112 172 L 86 196 L 92 202 L 118 196 Z
+  " fill="url(#f22-camo)" opacity="0.75"/>
+
+  <!-- Bordes de dispersión RAM claros en el morro y alas -->
+  <polyline points="128,24 115,46 112,68 114,82 100,88 54,130 54,132 100,90 114,84 113,69 116,47 128,24" fill="#d3dce6" opacity="0.8"/>
+  <polyline points="128,24 141,46 144,68 142,82 156,88 202,130 202,132 156,90 142,84 143,69 140,47 128,24" fill="#32383f" opacity="0.6"/>
+
+  <!-- ==================== ESTABILIZADORES HORIZONTALES (Tailerons) ==================== -->
+  <polygon points="112,166 79,195 80,203 117,194" fill="url(#f22-fin-l)" stroke="#262c32" stroke-width="0.8"/>
+  <polygon points="144,166 177,195 176,203 139,194" fill="url(#f22-fin-r)" stroke="#191d21" stroke-width="0.8"/>
+
+  <!-- ==================== DERIVAS VERTICALES DOBLES (28° Canted) ==================== -->
+  <!-- Deriva Izquierda -->
+  <polygon points="113,130 117,178 106,181 99,154" fill="#111518" opacity="0.38"/>
+  <polygon points="112,128 102,172 99,177 108,174 115,128" fill="url(#f22-fin-l)" stroke="#22272d" stroke-width="0.9"/>
+  <polygon points="109,148 102,172 99,177 105,175 110,150" fill="#7f8893" stroke="#22272d" stroke-width="0.6"/>
+  <line x1="112" y1="128" x2="102" y2="172" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.65"/>
+
+  <!-- Deriva Derecha -->
+  <polygon points="143,130 139,178 150,181 157,154" fill="#0c0e10" opacity="0.45"/>
+  <polygon points="144,128 154,172 157,177 148,174 141,128" fill="url(#f22-fin-r)" stroke="#181c20" stroke-width="0.9"/>
+  <polygon points="147,148 154,172 157,177 151,175 146,150" fill="#444b53" stroke="#181c20" stroke-width="0.6"/>
+
+  <!-- ==================== ESPINA DORSAL Y LÍNEAS DE PANELES STEALTH ==================== -->
+  <path d="M 128 24 Q 128 85 128 160 Q 128 198 128 226" stroke="url(#f22-spine)" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0.75"/>
+
+  <g fill="none" stroke="#24292f" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.75">
+    <!-- Radomo en cincel -->
+    <polygon points="128,24 122,42 128,45 134,42"/>
+    
+    <!-- Compuertas de bahía de armas ventral principal -->
+    <polygon points="121,114 121,154 128,158 135,154 135,114 128,110"/>
+    <line x1="128" y1="110" x2="128" y2="158"/>
+
+    <!-- Bahías laterales de misiles AIM-9X -->
+    <line x1="102" y1="100" x2="102" y2="122"/>
+    <line x1="154" y1="100" x2="154" y2="122"/>
+
+    <!-- Flaperones alares (paralelos al borde de salida) -->
+    <line x1="106,145 58,138" stroke-width="0.6"/>
+    <line x1="108,152 64,143" stroke-width="0.6"/>
+    <line x1="150,145 198,138" stroke-width="0.6"/>
+    <line x1="148,152 192,143" stroke-width="0.6"/>
+
+    <!-- Puerto del cañón Vulcan M61A2 -->
+    <line x1="135" y1="68" x2="137" y2="80" stroke="#16191c" stroke-width="1.2"/>
   </g>
-  <g fill="#000" fill-opacity="0.06">
-    <path d="M142 72 L148 86 L152 94 L160 116 L140 100 Z"/>
-    <path d="M114 72 L108 86 L104 94 L96 116 L116 100 Z"/>
-  </g>
-  <path fill="url(#g-spine)" d="
-    M128 18 L134 30 L136 48 L138 94 L142 170 L140 226
-    L128 234 L116 226 L114 170 L118 94 L120 48
-    L122 30 Z"/>
-  <g fill="none" stroke="#394047" stroke-opacity="0.42" stroke-width="0.8" stroke-linecap="round">
-    <path d="M144 82 L152 100 L158 168"/>
-    <path d="M112 82 L104 100 L98 168"/>
-    <path d="M202 162 L158 160"/>
-    <path d="M54 162 L98 160"/>
-    <path d="M154 96 L202 148"/>
-    <path d="M102 96 L54 148"/>
-    <path d="M122 40 L134 40"/>
-    <path d="M120 90 L136 90"/>
-    <path d="M142 174 L114 174"/>
-  </g>
-  <g fill="#2f363d" fill-opacity="0.5">
-    <path d="M144 52 L150 58 L150 74 L144 80 Z"/>
-    <path d="M112 52 L106 58 L106 74 L112 80 Z"/>
-  </g>
-  <path fill="url(#g-glass)" d="
-    M128 40 L138 50 L138 74 L128 82 L118 74 L118 50 Z"/>
-  <path fill="#fff" fill-opacity="0.4" d="
-    M127 43 L120 50 L120 72 L123 77 L119 72 L119 50 Z"/>
-  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.7" d="M119 58 L137 58"/>
-  <path fill="none" stroke="#2b3137" stroke-width="0.9" stroke-opacity="0.5" d="M119 74 L137 74"/>
-  <g>
-    <path fill="#0e1216" fill-opacity="0.25" d="M143 180 L154 200 L152 204 L144 202 Z"/>
-    <path fill="url(#g-fin)" d="M141 178 L150 198 L150 204 L137 200 Z"/>
-    <path fill="#fff" fill-opacity="0.3" d="M141 180 L143 196 L139 196 Z"/>
-  </g>
-  <g>
-    <path fill="#0e1216" fill-opacity="0.25" d="M113 180 L102 200 L104 204 L112 202 Z"/>
-    <path fill="url(#g-fin)" d="M115 178 L106 198 L106 204 L119 200 Z"/>
-    <path fill="#fff" fill-opacity="0.3" d="M115 180 L113 196 L117 196 Z"/>
-  </g>
-  <path fill="url(#g-nozzle)" d="M118 226 L116 234 L122 238 L128 236 L134 238 L140 234 L138 226 Z"/>
-  <rect x="118" y="230" width="8" height="6" rx="1" fill="#0e1116"/>
-  <rect x="130" y="230" width="8" height="6" rx="1" fill="#0e1116"/>
-  <rect x="119.5" y="231" width="5" height="4" rx="0.5" fill="#3a2a1c" fill-opacity="0.6"/>
-  <rect x="131.5" y="231" width="5" height="4" rx="0.5" fill="#3a2a1c" fill-opacity="0.6"/>
-</g>
+
+  <!-- ==================== CÚPULA DE CABINA EN ORO (Gold Canopy) ==================== -->
+  <!-- Base de cabina facetada y ancha -->
+  <polygon points="128,44 120,54 119,76 128,84 137,76 136,54" fill="#14171a"/>
+  <!-- Cristal en ORO puro de una sola pieza -->
+  <polygon points="128,46 121,55 120,75 128,82 136,75 135,55" fill="url(#f22-gold)"/>
+
+  <!-- Consola HUD verde y asiento eyector ACES II -->
+  <rect x="126.5" y="49" width="3" height="2.5" rx="0.5" fill="#4ade80" opacity="0.85"/>
+  <rect x="126" y="59" width="4" height="6.5" rx="1" fill="#181c20"/>
+  <circle cx="128" cy="58" r="1.3" fill="#cbd5e1"/>
+
+  <!-- Destello de luz curvo sobre la cúpula dorada -->
+  <path d="M 123.5 49 C 122.5 56, 122.2 66, 123 74" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.85"/>
+
+  <!-- ==================== TOBERAS VECTORIALES 2D RECTANGULARES (P&W F119) ==================== -->
+  <polygon points="116,218 140,218 138,228 128,230 118,228" fill="#272b30" stroke="#15181a" stroke-width="0.8"/>
+
+  <!-- Tobera Izquierda -->
+  <polygon points="117,220 125,220 125,228 117,228" fill="url(#f22-nozzle-2d)" stroke="#0e1012" stroke-width="0.7"/>
+  <polygon points="118,221 124,221 124,226 118,226" fill="#000000"/>
+  <polygon points="119,223 123,223 121,226" fill="#ff7a00" opacity="0.35"/>
+
+  <!-- Tobera Derecha -->
+  <polygon points="131,220 139,220 139,228 131,228" fill="url(#f22-nozzle-2d)" stroke="#0e1012" stroke-width="0.7"/>
+  <polygon points="132,221 138,221 138,226 132,226" fill="#000000"/>
+  <polygon points="133,223 137,223 135,226" fill="#ff7a00" opacity="0.35"/>
+
+  <!-- Chevron central entre toberas -->
+  <polygon points="128,232 126.5,228 129.5,228" fill="#111416"/>
 </svg>

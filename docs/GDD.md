@@ -104,12 +104,16 @@ Identidad: piedra-papel-tijera legible. Costes relativos (Infantería = 1):
 
 1. **Economía**: 1 edificio a la vez por provincia; prioridad: reclutamiento si
    le falta mano de obra, industria si sus suministros < 48h de consumo, fortaleza
-   en provincias fronterizas en guerra.
-2. **Ejército**: objetivo de tamaño = `3 × provincias + amenaza`; elige tipo según
+   en provincias fronterizas en guerra. Anexiona lo ocupado cuando tiene el doble
+   del coste en caja.
+2. **Ejército**: objetivo de tamaño = `2 × provincias (+6 en guerra)`; recluta en
+   hasta `⌈provincias/6⌉` (máx. 4) provincias por chequeo; elige tipo según
    composición enemiga (anti-tanque si el enemigo tiene MBTs, etc.).
 3. **Guerra**: declara al vecino más débil si `poder propio > 1.4 × suyo` con
-   probabilidad `agresión` (0.2–0.7 por personalidad), máx. 1 guerra activa y
-   cooldown de 3 días. No declara al jugador en los primeros 2 días de partida.
+   probabilidad `agresión` (0.2–0.7 por personalidad, de `countries-data.js`, escalada
+   por la dificultad), máx. 1 guerra activa y cooldown de 3 días. No declara al jugador
+   en los primeros 2 días de partida. Una guerra dura al menos 3 días antes de que el
+   bando que pierde pida la paz.
 4. **Operaciones**: defiende provincias fronterizas en guerra (1–2 unidades);
    concentra en el punto más débil del enemigo y ataca con superioridad local ≥ 1.3.
 5. **Paz**: si perdió > 40% de sus provincias o su poder < 40% del enemigo,

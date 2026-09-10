@@ -116,8 +116,30 @@ export const VET_BONUS_PER_LEVEL = 0.08;   // +8% ataque y defensa por nivel
 // Movimiento
 export const STRAIT_COST_MULT = 2;
 
+// Dificultad (se elige en la pantalla de inicio y viaja en state.difficulty).
+// Solo toca a los bots: producción bruta de sus provincias y ganas de declarar
+// guerras. El balance de unidades no cambia con la dificultad.
+export const DIFFICULTIES = {
+  facil: { name: "Fácil", desc: "Los bots producen un 30 % menos y declaran menos guerras", aiIncome: 0.7, aiAggression: 0.6 },
+  normal: { name: "Normal", desc: "Economía y agresividad estándar", aiIncome: 1.0, aiAggression: 1.0 },
+  dificil: { name: "Difícil", desc: "Los bots producen un 35 % más y son mucho más belicosos", aiIncome: 1.35, aiAggression: 1.7 },
+};
+export const DEFAULT_DIFFICULTY = "normal";
+
+// Mercado de recursos: $ por unidad. Comprar sale caro a propósito (la infantería
+// t2 pasa de 20k$ a ~34k$ si compras todos sus suministros): el mercado es una
+// válvula para el dinero que sobra, no un sustituto de la industria.
+export const MARKET = {
+  supplies: { buy: 8, sell: 3 },
+  fuel: { buy: 6, sell: 2 },
+};
+export const MARKET_LOTS = [1000, 5000];
+
 // IA
 export const AI_CHECK_HOURS = 6;
+// Reclutamientos que un bot puede iniciar por chequeo (antes era 1 para todo el
+// país: EEUU con 30 provincias reclutaba igual que Belice con 1).
+export const AI_RECRUITS_PER_CHECK = (provinces) => Math.max(1, Math.min(4, Math.ceil(provinces / 6)));
 export const AI_WAR_COOLDOWN_DAYS = 3;
 export const AI_MIN_WAR_DAY = 2;           // día mínimo de partida para declarar guerra
 export const AI_WAR_RATIO = 1.4;           // ratio de poder para declarar guerra

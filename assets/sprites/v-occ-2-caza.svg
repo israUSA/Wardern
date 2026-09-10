@@ -1,104 +1,187 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<!-- F/A-18E Super Hornet — T2 occidental. 2 derivas inclinadas, 2 toberas juntas, LEX enormes, morro ancho y corto. -->
-<defs>
-  <linearGradient id="g-hull" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#c6ced6"/><stop offset="0.34" stop-color="#99a2ab"/>
-    <stop offset="0.62" stop-color="#79828b"/><stop offset="1" stop-color="#4f575f"/>
-  </linearGradient>
-  <linearGradient id="g-spine" x1="0.3" y1="0" x2="0.75" y2="0">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.45" stop-color="#fff" stop-opacity="0.45"/>
-    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <linearGradient id="g-glass" x1="0.15" y1="0" x2="0.85" y2="0.4">
-    <stop offset="0" stop-color="#f5dc90"/><stop offset="0.35" stop-color="#d0a53f"/>
-    <stop offset="1" stop-color="#6a4f15"/>
-  </linearGradient>
-  <linearGradient id="g-fin" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#d2d9e0"/><stop offset="0.42" stop-color="#8c959e"/>
-    <stop offset="1" stop-color="#3f474e"/>
-  </linearGradient>
-  <linearGradient id="g-metal" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#e3e8ec"/><stop offset="0.55" stop-color="#a8b0b7"/>
-    <stop offset="1" stop-color="#666e75"/>
-  </linearGradient>
-  <radialGradient id="g-nozzle" cx="0.5" cy="0.4" r="0.6">
-    <stop offset="0" stop-color="#12151a"/><stop offset="0.6" stop-color="#2c3138"/>
-    <stop offset="1" stop-color="#5b636b"/>
-  </radialGradient>
-  <path id="hull" d="
-    M128 20 C134 24 138 32 139 42 L140 54
-    C142 60 146 66 152 72 L158 76 L160 84 L162 96
-    C164 106 168 116 174 124 L210 164 L210 170 L206 180
-    L160 178 L158 184 L160 206 L158 210 L148 208 L146 214
-    L142 234 C140 238 135 240 128 240
-    C121 240 116 238 114 234 L110 214 L108 208 L98 210
-    L96 206 L98 184 L96 178 L50 180 L46 170 L46 164
-    L82 124 C88 116 92 106 94 96 L96 84 L98 76
-    L104 72 C110 66 114 60 116 54 L117 42
-    C118 32 122 24 128 20 Z"/>
-</defs>
-<g id="unit">
-  <use href="#hull" fill="#0a0d11" opacity="0.28" transform="translate(6,8)"/>
-  <g fill="url(#g-metal)">
-    <rect x="208" y="140" width="3.5" height="30" rx="1.7"/>
-    <rect x="44.5" y="140" width="3.5" height="30" rx="1.7"/>
-    <rect x="186" y="148" width="3.5" height="26" rx="1.7"/>
-    <rect x="66" y="148" width="3.5" height="26" rx="1.7"/>
+  <!-- F/A-18E Super Hornet — Planta alar corregida con precisión -->
+  <defs>
+    <!-- Gradiente del fuselaje -->
+    <linearGradient id="g-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b8c2cc"/>
+      <stop offset="28%" stop-color="#9da7b2"/>
+      <stop offset="50%" stop-color="#838d99"/>
+      <stop offset="78%" stop-color="#69737f"/>
+      <stop offset="100%" stop-color="#545d68"/>
+    </linearGradient>
+
+    <!-- Reflejo espina dorsal superior -->
+    <linearGradient id="g-spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Superficie alar izquierda (luz) -->
+    <linearGradient id="g-wing-l" x1="0" y1="0" x2="1" y2="0.6">
+      <stop offset="0%" stop-color="#abb5bf"/>
+      <stop offset="100%" stop-color="#808a95"/>
+    </linearGradient>
+
+    <!-- Superficie alar derecha (sombra) -->
+    <linearGradient id="g-wing-r" x1="0" y1="0.6" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7a8490"/>
+      <stop offset="100%" stop-color="#58616c"/>
+    </linearGradient>
+
+    <!-- Derivas verticales -->
+    <linearGradient id="g-fin-l" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#cbd3dc"/>
+      <stop offset="60%" stop-color="#919ba6"/>
+      <stop offset="100%" stop-color="#5d6671"/>
+    </linearGradient>
+    <linearGradient id="g-fin-r" x1="0" y1="0.8" x2="1" y2="0">
+      <stop offset="0%" stop-color="#737d88"/>
+      <stop offset="60%" stop-color="#525b65"/>
+      <stop offset="100%" stop-color="#3d444d"/>
+    </linearGradient>
+
+    <!-- Cristal de cabina tintado dorado -->
+    <linearGradient id="g-canopy" x1="0.15" y1="0.1" x2="0.85" y2="0.9">
+      <stop offset="0%" stop-color="#ffea9f"/>
+      <stop offset="25%" stop-color="#e2b747"/>
+      <stop offset="65%" stop-color="#9a711b"/>
+      <stop offset="100%" stop-color="#463106"/>
+    </linearGradient>
+
+    <!-- Tomas de aire Caret -->
+    <linearGradient id="g-intake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#181d22"/>
+      <stop offset="100%" stop-color="#2d343c"/>
+    </linearGradient>
+
+    <!-- Toberas de escape -->
+    <radialGradient id="g-exhaust" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#0d0f12"/>
+      <stop offset="55%" stop-color="#22262c"/>
+      <stop offset="85%" stop-color="#474f58"/>
+      <stop offset="100%" stop-color="#69737d"/>
+    </radialGradient>
+
+    <!-- Silueta maestra -->
+    <path id="super-hornet-silhouette" d="
+      M 128 14
+      C 129.5 22, 133 34, 134 42
+      C 134.5 48, 137 58, 143 74
+      C 149 90, 156 104, 159 116
+      L 216 138
+      L 216 157
+      L 161 161
+      L 155 186
+      L 194 213
+      L 192 225
+      L 142 208
+      L 138 234
+      C 136 237, 132 238, 128 238
+      C 124 238, 120 237, 118 234
+      L 114 208
+      L 64 225
+      L 62 213
+      L 101 186
+      L 95 161
+      L 40 157
+      L 40 138
+      L 97 116
+      C 100 104, 107 90, 113 74
+      C 119 58, 121.5 48, 122 42
+      C 123 34, 126.5 22, 128 14 Z
+    "/>
+  </defs>
+
+  <!-- Sombra proyectada -->
+  <use href="#super-hornet-silhouette" fill="#090c10" opacity="0.25" transform="translate(7, 10)"/>
+
+  <!-- Fuselaje base -->
+  <use href="#super-hornet-silhouette" fill="url(#g-body)"/>
+
+  <!-- Sombras alares -->
+  <path d="M 128 14 L 128 238 L 40 157 L 40 138 L 97 116 C 100 104, 107 90, 113 74 C 119 58, 121.5 48, 122 42 Z" fill="url(#g-wing-l)" opacity="0.35"/>
+  <path d="M 128 14 L 128 238 L 216 157 L 216 138 L 159 116 C 149 90, 143 74, 134 42 Z" fill="url(#g-wing-r)" opacity="0.45"/>
+
+  <!-- Tomas de aire Caret -->
+  <path d="M 104 98 L 115 94 L 115 116 L 102 114 Z" fill="url(#g-intake)" stroke="#23282e" stroke-width="0.7"/>
+  <line x1="104" y1="98" x2="102" y2="114" stroke="#48525c" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M 152 98 L 141 94 L 141 116 L 154 114 Z" fill="url(#g-intake)" stroke="#1a1e23" stroke-width="0.7"/>
+  <line x1="152" y1="98" x2="154" y2="114" stroke="#333a42" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Contornos LEX curvos -->
+  <path d="M 122 46 C 122 56, 119 66, 113 78 C 107 92, 99 106, 97 116" fill="none" stroke="#454c54" stroke-width="1"/>
+  <path d="M 134 46 C 134 56, 137 66, 143 78 C 149 92, 157 106, 159 116" fill="none" stroke="#2e3339" stroke-width="1"/>
+  <path d="M 122 47 C 121.5 57, 118.5 66, 112.5 78 C 106.5 92, 98.5 106, 96.5 116" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="0.8"/>
+
+  <!-- Líneas de panel y alerones -->
+  <g fill="none" stroke="#32383f" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    <path d="M 123 37 C 126 39, 130 39, 133 37"/>
+    <line x1="128" y1="26" x2="128" y2="33" stroke-width="1.2" stroke="#1c2024"/>
+    <line x1="102" y1="118" x2="212" y2="140"/>
+    <line x1="154" y1="118" x2="44" y2="140"/>
+    <path d="M 100 156 L 44 152"/>
+    <path d="M 100 148 L 46 145"/>
+    <path d="M 72 147 L 72 154"/>
+    <path d="M 156 156 L 212 152"/>
+    <path d="M 156 148 L 210 145"/>
+    <path d="M 184 147 L 184 154"/>
+    <rect x="123" y="128" width="10" height="24" rx="2" stroke-width="0.6"/>
+    <line x1="128" y1="128" x2="128" y2="152" stroke-width="0.6"/>
+    <line x1="120" y1="168" x2="136" y2="168"/>
+    <line x1="122" y1="184" x2="134" y2="184"/>
   </g>
-  <g fill="#596168">
-    <path d="M206.5 148 l-3 4 v4 h3 z M211.5 148 l3 4 v4 h-3 z"/>
-    <path d="M43 148 l-3 4 v4 h3 z M48 148 l3 4 v4 h-3 z"/>
-  </g>
-  <use href="#hull" fill="url(#g-hull)"/>
-  <g fill="#000" fill-opacity="0.10">
-    <path d="M174 124 L210 164 L210 170 L206 180 L162 178 Z"/>
-    <path d="M82 124 L46 164 L46 170 L50 180 L94 178 Z"/>
-    <path d="M152 72 L160 84 L162 96 L164 120 L144 96 Z"/>
-    <path d="M104 72 L96 84 L94 96 L92 120 L112 96 Z"/>
-  </g>
-  <path fill="url(#g-spine)" d="
-    M128 22 C132 30 134 40 135 50 L136 96 L140 178 L138 230
-    C135 236 121 236 118 230 L116 178 L120 96 L121 50
-    C122 40 124 30 128 22 Z"/>
-  <g fill="none" stroke="#394047" stroke-opacity="0.50" stroke-width="0.9" stroke-linecap="round">
-    <path d="M144 84 L152 102 L160 176"/>
-    <path d="M112 84 L104 102 L96 176"/>
-    <path d="M204 168 L160 166"/>
-    <path d="M52 168 L96 166"/>
-    <path d="M156 118 L204 156"/>
-    <path d="M100 118 L52 156"/>
-    <path d="M122 40 L134 40"/>
-    <path d="M120 100 L136 100"/>
-    <path d="M142 182 L114 182"/>
-  </g>
-  <g fill="#2f363d" fill-opacity="0.55">
-    <path d="M146 56 C146 52 156 50 158 54 L160 70 C160 74 148 74 148 70 Z"/>
-    <path d="M110 56 C110 52 100 50 98 54 L96 70 C96 74 108 74 108 70 Z"/>
-  </g>
-  <path fill="url(#g-glass)" d="
-    M128 44 C135 48 140 58 140 70 C140 82 136 90 128 90
-    C120 90 116 82 116 70 C116 58 121 48 128 44 Z"/>
-  <path fill="#fff" fill-opacity="0.45" d="
-    M127 47 C123 52 120 60 120 70 C120 78 121 84 123 87
-    C120 84 118 78 118 70 C118 60 122 51 127 47 Z"/>
-  <path fill="none" stroke="#2b3137" stroke-width="1.1" stroke-opacity="0.78" d="M117 60 C123 56 133 56 139 60"/>
-  <path fill="none" stroke="#2b3137" stroke-width="1" stroke-opacity="0.55" d="M117 86 C123 89 133 89 139 86"/>
-  <g>
-    <path fill="#0e1216" fill-opacity="0.3" d="M142 186 L155 210 L153 216 L143 214 Z"/>
-    <path fill="url(#g-fin)" d="M140 184 L150 208 L150 214 L136 212 Z"/>
-    <path fill="#fff" fill-opacity="0.35" d="M140 186 L142 206 L138 206 Z"/>
-  </g>
-  <g>
-    <path fill="#0e1216" fill-opacity="0.3" d="M114 186 L101 210 L103 216 L113 214 Z"/>
-    <path fill="url(#g-fin)" d="M116 184 L106 208 L106 214 L120 212 Z"/>
-    <path fill="#fff" fill-opacity="0.35" d="M116 186 L114 206 L118 206 Z"/>
-  </g>
-  <path fill="url(#g-nozzle)" d="M118 230 C118 226 138 226 138 230 L136.5 238 C135 240 121 240 119.5 238 Z"/>
-  <ellipse cx="124" cy="236" rx="4" ry="2.8" fill="#0e1116"/>
-  <ellipse cx="132" cy="236" rx="4" ry="2.8" fill="#0e1116"/>
-  <ellipse cx="124" cy="235" rx="2.5" ry="1.8" fill="#3a2a1c" fill-opacity="0.7"/>
-  <ellipse cx="132" cy="235" rx="2.5" ry="1.8" fill="#3a2a1c" fill-opacity="0.7"/>
-  <path d="M128 20 L129 12 L127 12 Z" fill="#464e55"/>
-  <circle cx="128" cy="24" r="3.5" fill="#2f363d" fill-opacity="0.4"/>
-</g>
+
+  <!-- Estabilizadores Horizontales (Tailerons) -->
+  <polygon points="116,192 63,214 65,224 114,206" fill="url(#g-fin-l)" stroke="#2b3137" stroke-width="0.8"/>
+  <polygon points="140,192 193,214 191,224 142,206" fill="url(#g-fin-r)" stroke="#22262a" stroke-width="0.8"/>
+
+  <!-- Derivas Verticales Inclinadas -->
+  <polygon points="112,148 116,192 106,195 98,168" fill="#181d22" opacity="0.35"/>
+  <polygon points="111,146 101,186 98,190 108,187 114,148" fill="url(#g-fin-l)" stroke="#252b31" stroke-width="0.9"/>
+  <polygon points="108,162 101,186 98,190 104,188 110,165" fill="#88939e" stroke="#252b31" stroke-width="0.6"/>
+  <line x1="111" y1="147" x2="101" y2="186" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.6"/>
+
+  <polygon points="144,148 140,192 150,195 158,168" fill="#101317" opacity="0.45"/>
+  <polygon points="145,146 155,186 158,190 148,187 142,148" fill="url(#g-fin-r)" stroke="#1a1e22" stroke-width="0.9"/>
+  <polygon points="148,162 155,186 158,190 152,188 146,165" fill="#4d555d" stroke="#1a1e22" stroke-width="0.6"/>
+
+  <!-- Misiles en punta alar -->
+  <rect x="38.5" y="132" width="2.5" height="28" rx="1.2" fill="#c4ccd5" stroke="#333940" stroke-width="0.6"/>
+  <polygon points="38.5,133 39.7,128 41,133" fill="#24282c"/>
+  <polygon points="38.5,152 35.5,155 38.5,157" fill="#4b535b"/>
+  <polygon points="41,152 44,155 41,157" fill="#4b535b"/>
+  <line x1="37" y1="135" x2="42.5" y2="135" stroke="#333940" stroke-width="0.8"/>
+
+  <rect x="215" y="132" width="2.5" height="28" rx="1.2" fill="#757f89" stroke="#202428" stroke-width="0.6"/>
+  <polygon points="215,133 216.2,128 217.5,133" fill="#16191c"/>
+  <polygon points="215,152 212,155 215,157" fill="#333940"/>
+  <polygon points="217.5,152 220.5,155 217.5,157" fill="#333940"/>
+  <line x1="213.5" y1="135" x2="219" y2="135" stroke="#202428" stroke-width="0.8"/>
+
+  <!-- Espina dorsal 3D -->
+  <path d="M 128 20 Q 128 80 128 170 Q 128 200 128 230" stroke="url(#g-spine)" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Cabina y HUD -->
+  <path d="M 128 42 C 134 46, 136 56, 136 71 C 136 84, 133 92, 128 93 C 123 92, 120 84, 120 71 C 120 56, 122 46, 128 42 Z" fill="#1b2025"/>
+  <path d="M 128 44 C 133 47, 135 56, 135 70 C 135 82, 132 90, 128 91 C 124 90, 121 82, 121 70 C 121 56, 123 47, 128 44 Z" fill="url(#g-canopy)"/>
+  <path d="M 121.5 56 C 125 54, 131 54, 134.5 56" fill="none" stroke="#282f37" stroke-width="1.3"/>
+  <rect x="126.5" y="47" width="3" height="3" rx="0.5" fill="#58d68d" opacity="0.75"/>
+  <rect x="126" y="62" width="4" height="6.5" rx="1" fill="#15181c"/>
+  <circle cx="128" cy="61" r="1.5" fill="#d0d7de"/>
+  <path d="M 124 48 C 122.5 54, 122.5 64, 123 74" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.75"/>
+
+  <!-- Toberas gemelas GE F414 -->
+  <path d="M 118 226 L 138 226 L 137 234 C 135 237, 121 237, 119 234 Z" fill="#31373e" stroke="#1f2327" stroke-width="0.8"/>
+  <ellipse cx="123.5" cy="233.5" rx="4.2" ry="4" fill="url(#g-exhaust)" stroke="#111316" stroke-width="0.8"/>
+  <ellipse cx="123.5" cy="233.5" rx="2.5" ry="2.4" fill="#07080a"/>
+  <ellipse cx="123.5" cy="233.5" rx="1.2" ry="1.1" fill="#ff7700" opacity="0.3"/>
+
+  <ellipse cx="132.5" cy="233.5" rx="4.2" ry="4" fill="url(#g-exhaust)" stroke="#111316" stroke-width="0.8"/>
+  <ellipse cx="132.5" cy="233.5" rx="2.5" ry="2.4" fill="#07080a"/>
+  <ellipse cx="132.5" cy="233.5" rx="1.2" ry="1.1" fill="#ff7700" opacity="0.3"/>
+
+  <!-- Tubo Pitot frontal -->
+  <line x1="128" y1="6" x2="128" y2="14" stroke="#4b535c" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="128" cy="14" r="0.9" fill="#181c20"/>
 </svg>

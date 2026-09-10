@@ -1,99 +1,241 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<!-- M163 VADS Vulcan (T1 occidental, antiaereo). Arena. Camara y escala del set.
-     Chasis M113 (4.86 m, 5 ruedas, motriz delantera, sin faldones).
-     Identidad: torreta cilindrica abierta con el canon rotativo M61 Vulcan de
-     20 mm, racimo de canas cortas y gruesas apuntando alto, y el radar de
-     telemetria en un brazo al costado derecho de la torreta. -->
-<defs>
-  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#e2d6b2"/><stop offset="0.34" stop-color="#c8b78d"/>
-    <stop offset="0.68" stop-color="#ad9c75"/><stop offset="1" stop-color="#91815f"/>
-  </linearGradient>
-  <linearGradient id="g-flank" x1="0" y1="0" x2="0.85" y2="0.3">
-    <stop offset="0" stop-color="#aea172"/><stop offset="0.45" stop-color="#978861"/>
-    <stop offset="1" stop-color="#78694a"/>
-  </linearGradient>
-  <linearGradient id="g-rear" x1="0" y1="0" x2="1" y2="0.6">
-    <stop offset="0" stop-color="#6f6247"/><stop offset="0.6" stop-color="#584d38"/>
-    <stop offset="1" stop-color="#453c2c"/>
-  </linearGradient>
-  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
-    <stop offset="0" stop-color="#d4c9a8"/><stop offset="0.5" stop-color="#9e9376"/>
-    <stop offset="1" stop-color="#675e47"/>
-  </linearGradient>
-  <linearGradient id="g-trk" x1="0" y1="0" x2="0.2" y2="1">
-    <stop offset="0" stop-color="#403d34"/><stop offset="0.5" stop-color="#2c2a22"/>
-    <stop offset="1" stop-color="#1b1a15"/>
-  </linearGradient>
-</defs>
-<path d="M50 149 L146 124 L176 148 L78 176 Z" fill="#0d0b06" opacity="0.30"/>
+  <!-- M163 VADS "ATTAGOM" — Réplica fiel a la maqueta de referencia
+       Detalles específicos del modelo:
+       1. Emblema táctico de combate en el flanco: arco con cheurón y 2 puntos, texto "ATTAGOM" y escudo con águila/cresta.
+       2. Torrecilla M741 con el cañón Gatling M61A1 Vulcan de 6 tubos y su arco de protección tubular superior.
+       3. Radar de telemetría AN/VPS-2 oscuro/negro con brazos de soporte metálicos.
+       4. Glacis frontal con rompeolas/flotador grueso abatido (con hendiduras rectangulares) y faros enrejados.
+       5. Ruedas detalladas con cubos concéntricos de tuercas, tensora trasera e impulsora delantera calada.
+       6. Cúpula del conductor elevada, rejillas de ventilación y escotilla circular trasera. -->
+  <defs>
+    <linearGradient id="m-tan-deck" x1="0.1" y1="0" x2="0.9" y2="0.15">
+      <stop offset="0%" stop-color="#dfd1b2"/>
+      <stop offset="35%" stop-color="#c8b792"/>
+      <stop offset="70%" stop-color="#ab9972"/>
+      <stop offset="100%" stop-color="#8e7d58"/>
+    </linearGradient>
 
-<!-- popa con rampa -->
-<path d="M53.3 106.9 L79.6 132.6 L79.6 171.6 L53.3 145.9 Z" fill="url(#g-rear)"/>
-<path d="M56.5 116 L76.5 135.5 L76.5 165 L56.5 145.5 Z" fill="#5c5340" stroke="#2f2a1e" stroke-width="1"/>
-<ellipse cx="66" cy="140" rx="3.4" ry="2.6" fill="#8d7f5e"/>
-<circle cx="55.5" cy="114" r="2.4" fill="#8f5b30"/>
-<circle cx="77.5" cy="135" r="2.4" fill="#8f5b30"/>
+    <linearGradient id="m-tan-flank" x1="0" y1="0" x2="0.85" y2="0.3">
+      <stop offset="0%" stop-color="#b6a67f"/>
+      <stop offset="45%" stop-color="#a09069"/>
+      <stop offset="100%" stop-color="#7d6d4a"/>
+    </linearGradient>
 
-<!-- cubierta y glacis -->
-<path d="M53.3 106.9 L108.0 91.8 L134.3 117.5 L79.6 132.6 Z" fill="url(#g-deck)"/>
-<path d="M108.0 91.8 L143.4 102.0 L169.7 127.7 L134.3 117.5 Z" fill="url(#g-deck)"/>
-<path d="M108.0 91.8 L134.3 117.5" fill="none" stroke="#6d6046" stroke-opacity="0.55" stroke-width="1.2"/>
-<path d="M108.0 91.8 L143.4 102.0 L169.7 127.7 L134.3 117.5 Z" fill="#ffffff" fill-opacity="0.07"/>
-<!-- pala rompeolas plegada sobre el glacis -->
-<path d="M118 100 L142 107 L162 126.5 L138 119.5 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="1"/>
-<g fill="#5c5340">
-  <path d="M146 104 L151.5 109.4 L148.5 110.7 L143 105.3 Z"/>
-  <path d="M159 116.5 L164.5 121.9 L161.5 123.2 L156 117.8 Z"/>
-</g>
-<!-- escotilla de carga -->
-<path d="M85 111 L104 105.5 L112 113.4 L93 118.9 Z" fill="#a2946d" stroke="#5a5039" stroke-width="1"/>
+    <linearGradient id="m-tan-rear" x1="0" y1="0" x2="1" y2="0.6">
+      <stop offset="0%" stop-color="#756749"/>
+      <stop offset="60%" stop-color="#5c4f36"/>
+      <stop offset="100%" stop-color="#443925"/>
+    </linearGradient>
 
-<!-- flanco -->
-<path d="M79.6 132.6 L134.3 117.5 L169.7 127.7 L79.6 152.6 Z" fill="url(#g-flank)"/>
-<path d="M79.6 132.6 L134.3 117.5" fill="none" stroke="#000000" stroke-opacity="0.2" stroke-width="2"/>
+    <linearGradient id="m-gun-metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60666d"/>
+      <stop offset="50%" stop-color="#3b4046"/>
+      <stop offset="100%" stop-color="#1d2023"/>
+    </linearGradient>
 
-<!-- tren de rodaje: 5 ruedas, motriz delantera, sin rodillos -->
-<path d="M78.4 173.7 L173.7 147.4 L173.7 128.4 L78.4 154.7 Z" fill="url(#g-trk)"/>
-<g fill="#46423a" stroke="#1b1a15" stroke-width="1.1">
-  <ellipse cx="89.8"  cy="162.6" rx="6" ry="7"/>
-  <ellipse cx="107.5" cy="157.7" rx="6" ry="7"/>
-  <ellipse cx="125.2" cy="152.8" rx="6" ry="7"/>
-  <ellipse cx="142.8" cy="147.9" rx="6" ry="7"/>
-  <ellipse cx="160.5" cy="143.0" rx="6" ry="7"/>
-</g>
-<g fill="#6d6455">
-  <ellipse cx="89.8"  cy="162.6" rx="2.2" ry="2.6"/>
-  <ellipse cx="107.5" cy="157.7" rx="2.2" ry="2.6"/>
-  <ellipse cx="125.2" cy="152.8" rx="2.2" ry="2.6"/>
-  <ellipse cx="142.8" cy="147.9" rx="2.2" ry="2.6"/>
-  <ellipse cx="160.5" cy="143.0" rx="2.2" ry="2.6"/>
-</g>
-<ellipse cx="169.6" cy="140.6" rx="7.6" ry="8.8" fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
-<ellipse cx="82.8"  cy="159.5" rx="6.8" ry="8"   fill="#4c473d" stroke="#1b1a15" stroke-width="1.2"/>
-<path d="M79.5 174 L174.5 147.8" fill="none" stroke="#0d0b06" stroke-opacity="0.55" stroke-width="3"/>
+    <linearGradient id="m-radar-dark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a3e42"/>
+      <stop offset="50%" stop-color="#232629"/>
+      <stop offset="100%" stop-color="#111315"/>
+    </linearGradient>
 
-<!-- torreta cilindrica del Vulcan -->
-<path d="M108.8 108.1 C112.9 112.1 110.0 117.1 102.2 119.3
-         C94.4 121.5 84.7 119.9 80.6 115.9
-         C76.5 111.9 79.4 106.9 87.2 104.7
-         C95.0 102.5 104.7 104.1 108.8 108.1 Z" fill="url(#g-flank)"/>
-<path d="M108.8 92.1 C112.9 96.1 110.0 101.1 102.2 103.3
-         C94.4 105.5 84.7 103.9 80.6 99.9
-         C76.5 95.9 79.4 90.9 87.2 88.7
-         C95.0 86.5 104.7 88.1 108.8 92.1 Z" fill="url(#g-deck)"/>
-<path d="M80.6 99.9 C76.5 95.9 79.4 90.9 87.2 88.7 C95.0 86.5 104.7 88.1 108.8 92.1"
-      fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
-<!-- radar de telemetria en brazo lateral -->
-<path d="M96 110 L100 108.5 L100 100 L96 101.5 Z" fill="#5c5340"/>
-<ellipse cx="102" cy="99" rx="7.5" ry="9" fill="#b0a179" stroke="#574d38" stroke-width="1"/>
-<ellipse cx="102" cy="99" rx="4" ry="5" fill="#8d7f5e"/>
-<!-- canon rotativo M61 Vulcan de 20 mm -->
-<path d="M105 101 L112 95 L119 99.5 L112 105.5 Z" fill="#9c8d68" stroke="#5a5039" stroke-width="0.9"/>
-<path d="M107.6 100.5 L149.1 89.0 L151.5 95.7 L110.0 107.2 Z" fill="url(#g-metal)"/>
-<g stroke="#5a5039" stroke-opacity="0.8" stroke-width="1">
-  <path d="M109 103.3 L150.4 91.8"/><path d="M108.3 99 L149.8 87.5"/>
-</g>
-<ellipse cx="150.3" cy="92.4" rx="1.6" ry="3.4" fill="#181510"/>
-<path d="M107.6 100.5 L149.1 89.0 L149.4 90.2 L107.9 101.7 Z" fill="#ffffff" fill-opacity="0.35"/>
+    <linearGradient id="m-trk" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0%" stop-color="#463f35"/>
+      <stop offset="50%" stop-color="#2c2720"/>
+      <stop offset="100%" stop-color="#181511"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== SOMBRA PROYECTADA ==================== -->
+  <path d="M 46 152 L 146 124 L 180 148 L 76 180 Z" fill="#0d0b06" opacity="0.32"/>
+
+  <!-- ==================== POPA CON RAMPA (M113) ==================== -->
+  <path d="M 53.3 106.9 L 79.6 132.6 L 79.6 171.6 L 53.3 145.9 Z" fill="url(#m-tan-rear)"/>
+  <path d="M 56.5 116 L 76.5 135.5 L 76.5 165 L 56.5 145.5 Z" fill="#584c37" stroke="#2c2519" stroke-width="0.9"/>
+  <!-- Puerta de acceso peatonal en rampa -->
+  <polygon points="62,130 69,137 69,157 62,150" fill="#463c2b" stroke="#252016" stroke-width="0.7"/>
+  <ellipse cx="66" cy="140" rx="3" ry="2.2" fill="#847453"/>
+  <circle cx="55.5" cy="114" r="2.2" fill="#8a562d"/>
+  <circle cx="77.5" cy="135" r="2.2" fill="#8a562d"/>
+
+  <!-- ==================== CUBIERTA Y TECHO ==================== -->
+  <path d="M 53.3 106.9 L 108.0 91.8 L 134.3 117.5 L 79.6 132.6 Z" fill="url(#m-tan-deck)"/>
+  <path d="M 108.0 91.8 L 143.4 102.0 L 169.7 127.7 L 134.3 117.5 Z" fill="url(#m-tan-deck)"/>
+  <line x1="108.0" y1="91.8" x2="134.3" y2="117.5" stroke="#685b41" stroke-opacity="0.6" stroke-width="1.2"/>
+
+  <!-- Escotilla trasera redonda de carga en el techo -->
+  <ellipse cx="80" cy="115" rx="7" ry="4.8" fill="#ab9b76" stroke="#52462e" stroke-width="0.8"/>
+  <ellipse cx="80" cy="114.5" rx="5.2" ry="3.5" fill="#c4b48d" stroke="#52462e" stroke-width="0.6"/>
+
+  <!-- Cúpula cilíndrica elevada del conductor (con periscopios) -->
+  <path d="M 120 106 L 132 109 L 132 104 L 120 101 Z" fill="#8d7e5b"/>
+  <ellipse cx="126" cy="103" rx="6" ry="4" fill="#cbbba0" stroke="#52462e" stroke-width="0.8"/>
+  <ellipse cx="126.5" cy="102.5" rx="3.5" ry="2.2" fill="#a4936d"/>
+  <!-- Visores de periscopio -->
+  <circle cx="123" cy="104" r="0.9" fill="#1b242e"/>
+  <circle cx="127" cy="105.5" r="0.9" fill="#1b242e"/>
+  <circle cx="130.5" cy="104" r="0.9" fill="#1b242e"/>
+
+  <!-- Rejilla del motor / escape en proa derecha -->
+  <polygon points="135,116 148,112 154,118 141,122" fill="#584c36" stroke="#2e271a" stroke-width="0.7"/>
+  <line x1="138" y1="116" x2="144" y2="122" stroke="#231e15" stroke-width="0.7"/>
+  <line x1="141" y1="115" x2="147" y2="121" stroke="#231e15" stroke-width="0.7"/>
+  <line x1="144" y1="114" x2="150" y2="120" stroke="#231e15" stroke-width="0.7"/>
+
+  <!-- ==================== GLACIS Y ROMPEOLAS ==================== -->
+  <polygon points="120,100 144,107 165,127.5 141,120.5" fill="#968661" stroke="#4f432a" stroke-width="1"/>
+  <!-- Hendiduras rectangulares en la pala -->
+  <polygon points="127,104 133,106 137,110 131,108" fill="#52472e"/>
+  <polygon points="147,112 153,114 157,118 151,116" fill="#52472e"/>
+
+  <!-- Faros enrejados -->
+  <!-- Faro derecho -->
+  <polygon points="163,121 168,126 167,130 162,125" fill="#75684a" stroke="#3b331f" stroke-width="0.7"/>
+  <circle cx="165" cy="126" r="1.3" fill="#ffffff" stroke="#333" stroke-width="0.4"/>
+  <!-- Faro izquierdo -->
+  <polygon points="144,102 149,107 148,111 143,106" fill="#75684a" stroke="#3b331f" stroke-width="0.7"/>
+  <circle cx="146" cy="107" r="1.3" fill="#ffffff" stroke="#333" stroke-width="0.4"/>
+
+  <!-- ==================== FLANCO DERECHO Y MARCAS "ATTAGOM" ==================== -->
+  <path d="M 79.6 132.6 L 134.3 117.5 L 169.7 127.7 L 79.6 152.6 Z" fill="url(#m-tan-flank)"/>
+
+  <!-- Borde superior biselado claro -->
+  <line x1="79.6" y1="133.2" x2="134.3" y2="118.1" stroke="#f0e2c8" stroke-width="0.9" opacity="0.8"/>
+  <line x1="134.3" y1="118.1" x2="169.7" y2="128.3" stroke="#f0e2c8" stroke-width="0.9" opacity="0.8"/>
+
+  <!-- 1. Emblema central: Semicírculo negro con cheurón y 2 puntos -->
+  <g transform="translate(108, 137) scale(0.68)">
+    <path d="M -12 0 A 12 11 0 0 1 12 0" fill="none" stroke="#181714" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="-14" y1="0" x2="14" y2="0" stroke="#181714" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M -7 0 L 0 -8 L 7 0" fill="none" stroke="#181714" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="-4" cy="4" r="1.2" fill="#181714"/>
+    <circle cx="4" cy="4" r="1.2" fill="#181714"/>
+  </g>
+
+  <!-- 2. Texto "ATTAGOM" -->
+  <g transform="translate(133, 126.5) scale(0.48)">
+    <text x="0" y="0" font-family="'Georgia', 'Times New Roman', serif" font-weight="900" font-size="6.5" fill="#181714" letter-spacing="1">ATTAGOM</text>
+  </g>
+
+  <!-- 3. Escudo con águila heráldica -->
+  <g transform="translate(142, 133.5) scale(0.45)">
+    <path d="M 0 -4 L 3 -2 L 5 -5 L 4 0 L 6 3 L 3 4 L 0 6 L -3 4 L -6 3 L -4 0 L -5 -5 L -3 -2 Z" fill="#181714"/>
+    <polygon points="-2,1 2,1 0,4" fill="#a09069"/>
+  </g>
+
+  <path d="M 79.6 132.6 L 134.3 117.5" fill="none" stroke="#000000" stroke-opacity="0.25" stroke-width="2"/>
+
+  <!-- ==================== TREN DE RODAJE Y ORUGAS ENVOLVENTES ==================== -->
+  <path d="
+    M 78 153.5
+    L 165 129.5
+    Q 174 133 176 139
+    Q 175 146 168 148
+    L 82 172
+    Q 74 171 73 165
+    Q 73 157 78 153.5 Z
+  " fill="url(#m-trk)" stroke="#161410" stroke-width="0.8"/>
+
+  <!-- Ruedas de rodaje -->
+  <g stroke="#1d1913" stroke-width="1.1">
+    <ellipse cx="89.8" cy="162.6" rx="6.2" ry="7.2" fill="#ab9a74"/>
+    <ellipse cx="107.5" cy="157.7" rx="6.2" ry="7.2" fill="#ab9a74"/>
+    <ellipse cx="125.2" cy="152.8" rx="6.2" ry="7.2" fill="#ab9a74"/>
+    <ellipse cx="142.8" cy="147.9" rx="6.2" ry="7.2" fill="#ab9a74"/>
+    <ellipse cx="160.5" cy="143.0" rx="6.2" ry="7.2" fill="#ab9a74"/>
+  </g>
+  <!-- Cubos con tuercas -->
+  <g stroke="#50432c" stroke-width="0.7" fill="#d2c39d">
+    <ellipse cx="89.8" cy="162.6" rx="4.0" ry="4.8"/>
+    <ellipse cx="107.5" cy="157.7" rx="4.0" ry="4.8"/>
+    <ellipse cx="125.2" cy="152.8" rx="4.0" ry="4.8"/>
+    <ellipse cx="142.8" cy="147.9" rx="4.0" ry="4.8"/>
+    <ellipse cx="160.5" cy="143.0" rx="4.0" ry="4.8"/>
+  </g>
+  <g fill="#756441">
+    <circle cx="89.8" cy="162.6" r="1.6"/>
+    <circle cx="107.5" cy="157.7" r="1.6"/>
+    <circle cx="125.2" cy="152.8" r="1.6"/>
+    <circle cx="142.8" cy="147.9" r="1.6"/>
+    <circle cx="160.5" cy="143.0" r="1.6"/>
+  </g>
+
+  <!-- Rueda motriz delantera calada -->
+  <ellipse cx="169.6" cy="140.6" rx="7.4" ry="8.6" fill="#584c34" stroke="#1d1913" stroke-width="1.2"/>
+  <circle cx="169.6" cy="140.6" r="4.2" fill="#998762"/>
+  <circle cx="169.6" cy="140.6" r="2.0" fill="#352e1f"/>
+  <circle cx="167" cy="138" r="0.7" fill="#1b160f"/>
+  <circle cx="172" cy="139" r="0.7" fill="#1b160f"/>
+  <circle cx="171" cy="143" r="0.7" fill="#1b160f"/>
+  <circle cx="167" cy="142" r="0.7" fill="#1b160f"/>
+
+  <!-- Rueda tensora trasera -->
+  <ellipse cx="82.8" cy="159.5" rx="6.5" ry="7.6" fill="#584c34" stroke="#1d1913" stroke-width="1.2"/>
+  <circle cx="82.8" cy="159.5" r="3.2" fill="#998762"/>
+
+  <!-- Contacto con suelo -->
+  <path d="M 82 172.5 L 168 148.5" fill="none" stroke="#0c0a08" stroke-opacity="0.7" stroke-width="3"/>
+
+  <!-- ==================== TORRETA M163 VADS ==================== -->
+  <ellipse cx="98" cy="107" rx="15" ry="10" fill="#756748" stroke="#3b3320" stroke-width="0.8"/>
+  <ellipse cx="98" cy="105" rx="14" ry="9" fill="url(#m-tan-deck)" stroke="#4a402a" stroke-width="0.8"/>
+
+  <!-- Torre blindada del artillero -->
+  <path d="M 86 104 L 86 86 L 102 80 L 112 85 L 110 102 Z" fill="#9a8b65" stroke="#4a402d" stroke-width="0.9"/>
+  <polygon points="86,86 102,80 112,85 96,91" fill="#c4b58e" stroke="#4a402d" stroke-width="0.7"/>
+
+  <!-- Antena / mástil del techo de la torreta -->
+  <line x1="90" y1="83" x2="90" y2="70" stroke="#1e1c18" stroke-width="1"/>
+  <circle cx="90" cy="83" r="1.1" fill="#332d20"/>
+
+  <!-- Visor óptico de tiro -->
+  <rect x="99" y="81" width="4.5" height="4.5" rx="0.8" transform="rotate(-15 99 81)" fill="#444b52" stroke="#202428" stroke-width="0.8"/>
+  <circle cx="101" cy="83" r="1.3" fill="#6bc2e8"/>
+
+  <!-- Tambor inferior de munición -->
+  <ellipse cx="104" cy="103" rx="6" ry="4" fill="#3f382a" stroke="#221e16" stroke-width="0.8"/>
+
+  <!-- ==================== RADAR AN/VPS-2 (PLATO OSCURO) ==================== -->
+  <!-- Soporte tubular triangular -->
+  <line x1="98" y1="94" x2="94" y2="76" stroke="#4a402c" stroke-width="1.4"/>
+  <line x1="93" y1="88" x2="88" y2="82" stroke="#4a402c" stroke-width="1.4"/>
+  <line x1="102" y1="90" x2="94" y2="76" stroke="#332b1d" stroke-width="1.2"/>
+
+  <!-- Plato parabólico oscuro -->
+  <ellipse cx="93" cy="74" rx="6.2" ry="9.5" transform="rotate(-18 93 74)" fill="url(#m-radar-dark)" stroke="#0d0e10" stroke-width="0.9"/>
+  <ellipse cx="94.5" cy="73.5" rx="5.0" ry="8.2" transform="rotate(-18 94.5 73.5)" fill="#2a2e32" stroke="#16181b" stroke-width="0.7"/>
+  <circle cx="94.5" cy="73.5" r="1.8" fill="#141618"/>
+  <line x1="94.5" y1="73.5" x2="99" y2="72" stroke="#000000" stroke-width="1.3" stroke-linecap="round"/>
+
+  <!-- ==================== CAÑÓN M61A1 VULCAN DE 20 MM ==================== -->
+  <polygon points="106,93 118,85 125,90 113,98" fill="#4d4533" stroke="#252016" stroke-width="0.8"/>
+
+  <!-- Arco tubular de protección superior -->
+  <path d="M 112 87 Q 124 74 136 78" fill="none" stroke="#685c41" stroke-width="1.4" stroke-linecap="round"/>
+  <line x1="120" y1="83" x2="120" y2="89" stroke="#4a402a" stroke-width="1.1"/>
+
+  <!-- Haz de los 6 tubos rotativos de 20 mm -->
+  <line x1="117" y1="89.5" x2="159" y2="72.5" stroke="#3d4247" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="119" y1="91.0" x2="161" y2="74.0" stroke="#5d656d" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="120" y1="92.5" x2="162" y2="75.5" stroke="#8c97a3" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="119" y1="94.5" x2="161" y2="77.5" stroke="#4a4f55" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="117" y1="96.0" x2="159" y2="79.0" stroke="#313539" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="115" y1="93.0" x2="157" y2="76.0" stroke="#1f2225" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Abrazaderas circulares -->
+  <ellipse cx="127" cy="89.5" rx="2.4" ry="4.4" transform="rotate(22 127 89.5)" fill="#232629" stroke="#121415" stroke-width="0.8"/>
+  <ellipse cx="142" cy="83.5" rx="2.3" ry="4.2" transform="rotate(22 142 83.5)" fill="#232629" stroke="#121415" stroke-width="0.8"/>
+  <ellipse cx="158" cy="77.0" rx="2.5" ry="4.5" transform="rotate(22 158 77.0)" fill="#16181a" stroke="#090a0b" stroke-width="0.9"/>
+
+  <!-- Bocas de fuego frontales -->
+  <circle cx="157.0" cy="74.8" r="0.65" fill="#000000"/>
+  <circle cx="158.8" cy="75.8" r="0.65" fill="#000000"/>
+  <circle cx="159.2" cy="77.5" r="0.65" fill="#000000"/>
+  <circle cx="157.8" cy="79.0" r="0.65" fill="#000000"/>
+  <circle cx="156.2" cy="78.0" r="0.65" fill="#000000"/>
+  <circle cx="155.8" cy="76.3" r="0.65" fill="#000000"/>
+
+  <!-- Antena de radio trasera -->
+  <circle cx="58" cy="112" r="1.4" fill="#2c2518"/>
+  <line x1="58" y1="112" x2="52" y2="44" stroke="#252016" stroke-width="0.8"/>
 </svg>

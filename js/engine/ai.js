@@ -1,8 +1,8 @@
 // IA de países bot: economía, operaciones militares y diplomacia.
 import * as C from "../data/constants.js";
 import { UNITS } from "../data/units-data.js";
-import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm } from "./state.js";
-import { startBuilding, startRecruitCategory, startResearch, canAfford } from "./economy.js";
+import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty } from "./state.js";
+import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford } from "./economy.js";
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
 import { strikeWeaponsFor, launchMissile } from "./missiles.js";
@@ -76,16 +76,35 @@ function aiEconomy(state, iso) {
     }
   }
 
-  // Reclutamiento: mantener un ejército objetivo (elige variantes de su doctrina)
+  // Anexión de lo conquistado: sin esto la IA se quedaba para siempre con el 25 %
+  // de producción de las provincias ocupadas. Guarda el doble del coste para no
+  // dejar la tesorería a cero cuando aún hay guerra que pagar.
+  for (const p of S.provinceList) {
+    if (p.isSea) continue;
+    const ps = state.provinces[p.id];
+    if (ps.occupier !== iso || ps.owner === iso || ps.queue) continue;
+    if (r.money > C.ANNEX_COST(p.pop) * 2) startAnnex(state, p.id, iso);
+  }
+
+  // Reclutamiento: mantener un ejército objetivo (elige variantes de su doctrina).
+  // Se reclutan varias unidades por chequeo, en varias provincias a la vez: con
+  // una sola por país, un bot de 30 provincias reclutaba igual que uno de 1 y el
+  // jugador (que sí recluta en todas) lo desbordaba sin esfuerzo.
   const target = own.length * 2 + (c.wars.length ? 6 : 0);
-  if (units.length < target) {
+  const queued = own.filter((p) => ["unit", "naval"].includes(state.provinces[p.id].queue?.kind)).length;
+  let slots = Math.min(C.AI_RECRUITS_PER_CHECK(own.length), target - units.length - queued);
+  if (slots > 0) {
     const cands = own
       .filter((p) => !state.provinces[p.id].queue)
       .sort(
         (a, b) =>
           (b.capital ? 1 : 0) - (a.capital ? 1 : 0) || (b.prod.manpower || 0) - (a.prod.manpower || 0)
       );
-    if (cands.length) startRecruitCategory(state, cands[0].id, chooseUnitType(state, iso));
+    for (const p of cands) {
+      if (slots <= 0) break;
+      if (startRecruitCategory(state, p.id, chooseUnitType(state, iso))) slots--;
+      else break; // sin recursos para más esta vez
+    }
   }
 }
 
@@ -334,7 +353,12 @@ function aiDiplomacy(state, iso) {
     const startControlled = c.warControlStart?.[enemy] ?? controlledCount(state, iso);
     const losing =
       myPower < enemyPower * 0.5 || controlledCount(state, iso) < startControlled * 0.6;
-    const longWar = day - (c.warStartDay?.[enemy] ?? 0) > 7;
+    const warDays = day - (c.warStartDay?.[enemy] ?? day);
+    const longWar = warDays > 7;
+    // Una guerra tiene que durar algo antes de que el débil pida la paz: sin este
+    // mínimo, el bot declaraba la guerra al vecino pequeño y ese vecino firmaba la
+    // paz en el chequeo siguiente (6 h), sin que nadie llegara a moverse.
+    if (warDays < 3) continue;
 
     if (enemy === state.player) {
       if (losing && Math.random() < 0.5 && !state.events.some((e) => e.type === "peace_offer" && e.from === iso)) {
@@ -345,9 +369,13 @@ function aiDiplomacy(state, iso) {
     }
   }
 
-  // Declarar guerra al vecino más débil
+  // Declarar guerra al vecino más débil. La agresión vive en los datos ESTÁTICOS
+  // del país (S.countries), no en el estado dinámico: leerla de `c` daba
+  // undefined → NaN, y `Math.random() < NaN` es siempre falso, así que ningún bot
+  // declaró jamás una guerra. La dificultad la escala.
+  const aggression = (S.countries[iso]?.aggression ?? 0.4) * difficulty(state).aiAggression;
   if (c.wars.length === 0 && day >= Math.max(C.AI_MIN_WAR_DAY, c.nextWarDay ?? 0)) {
-    if (Math.random() < c.aggression * 0.12) {
+    if (Math.random() < aggression * 0.12) {
       const neighbors = neighborCountries(state, iso, false);
       let best = null, bestRatio = 0;
       for (const nb of neighbors) {
@@ -358,10 +386,8 @@ function aiDiplomacy(state, iso) {
         if (ratio >= C.AI_WAR_RATIO && ratio > bestRatio) { best = nb; bestRatio = ratio; }
       }
       if (best) {
-        declareWar(state, iso, best);
+        declareWar(state, iso, best); // anota inicio y territorio de ambos bandos
         c.nextWarDay = day + C.AI_WAR_COOLDOWN_DAYS + 3;
-        trackWar(c, best, day);
-        trackWar(state.countries[best], iso, day);
       } else {
         c.nextWarDay = day + 1;
       }
@@ -369,13 +395,6 @@ function aiDiplomacy(state, iso) {
       c.nextWarDay = day + 0.5;
     }
   }
-}
-
-function trackWar(c, enemy, day) {
-  c.warStartDay = c.warStartDay || {};
-  c.warControlStart = c.warControlStart || {};
-  c.warStartDay[enemy] = day;
-  c.warControlStart[enemy] = null; // se llena al leerse si falta
 }
 
 // Países con frontera terrestre (o estrechos si includeStraits) conmigo

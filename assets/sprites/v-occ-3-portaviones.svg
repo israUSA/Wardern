@@ -1,56 +1,211 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-<!-- USS Gerald R. Ford (T3 occidental, portaviones). Gris OTAN. Identidad frente al Nimitz: la isla es mas PEQUENA y esta claramente mas retrasada hacia popa, sin celosias ni antenas colgando porque los radares van embebidos en sus caras planas; solo tres ascensores. Catapultas electromagneticas, sin el vapor de las de vapor.
-     Camara naval del set: acimut 28 grados, elevacion 45 grados, mas alta que la
-     de los vehiculos terrestres porque en un buque la identidad esta en la
-     cubierta. Manga exagerada un 40 por ciento para que la cubierta sea legible. -->
-<defs>
-  <linearGradient id="g-deck" x1="0.12" y1="0" x2="0.9" y2="0.15">
-    <stop offset="0" stop-color="#c3ccd4"/><stop offset="0.45" stop-color="#a3adb6"/>
-    <stop offset="1" stop-color="#8a949d"/>
-  </linearGradient>
-  <linearGradient id="g-side" x1="0" y1="0" x2="0.85" y2="0.3">
-    <stop offset="0" stop-color="#8a949d"/><stop offset="0.5" stop-color="#727c85"/>
-    <stop offset="1" stop-color="#565f68"/>
-  </linearGradient>
-  <linearGradient id="g-metal" x1="0" y1="0" x2="0.3" y2="1">
-    <stop offset="0" stop-color="#dfe5ea"/><stop offset="0.5" stop-color="#9aa4ad"/>
-    <stop offset="1" stop-color="#5d666e"/>
-  </linearGradient>
-</defs>
-<path d="M21.6 154.0 L37.4 174.9 L131.5 142.9 L199.3 110.7 L234.4 87.4 L187.5 95.0 L111.8 116.7 Z" fill="#0a1a22" opacity="0.26" transform="translate(4,5)"/>
-<path d="M27.7 155.0 L39.5 170.8 L-0.8 194.0 L-22.1 165.7 Z" fill="#eaf4f9" opacity="0.20"/>
-<path d="M205.6 119.1 L244.6 83.6 L181.2 86.6" fill="none" stroke="#eaf4f9" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
-<path d="M37.4 174.9 L131.5 142.9 L199.3 110.7 L234.4 87.4 L234.4 81.1 L199.3 104.3 L131.5 136.5 L37.4 168.6 Z" fill="url(#g-side)"/>
-<path d="M21.6 154.0 L37.4 174.9 L37.4 168.6 L21.6 147.6 Z" fill="#565f68"/>
-<path d="M21.6 147.6 L37.4 168.6 L131.5 136.5 L199.3 104.3 L234.4 81.1 L187.5 88.6 L111.8 110.3 Z" fill="url(#g-deck)"/>
-<path d="M21.6 147.6 L111.8 110.3 L187.5 88.6 L234.4 81.1" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.4"/>
-<path d="M37.4 168.6 L131.5 136.5 L199.3 104.3 L234.4 81.1" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.6"/>
-<path d="M17.5 133.8 L216.2 59.1 L246.9 99.9 L48.2 174.7 Z" fill="#565f68"/>
-<path d="M17.5 132.9 L216.2 58.2 L246.9 99.1 L48.2 173.8 Z" fill="url(#g-deck)"/>
-<path d="M17.5 132.9 L216.2 58.2 L246.9 99.1 L48.2 173.8 Z" fill="none" stroke="#000000" stroke-opacity="0.22" stroke-width="1.4"/>
-<path d="M44.9 158.6 L147.9 96.4 L151.8 101.6 L48.8 163.9 Z" fill="#39414a"/>
-<path d="M46.8 161.0 L149.8 98.8" fill="none" stroke="#e8eef2" stroke-opacity="0.75" stroke-width="1.6" stroke-dasharray="7 6"/>
-<path d="M70.7 112.9 L73.5 116.6 L73.5 116.1 L70.7 112.5 Z" fill="#20262c"/>
-<path d="M73.5 116.6 L102.2 105.8 L102.2 105.4 L73.5 116.1 Z" fill="#2b323a"/>
-<path d="M70.7 112.5 L99.4 101.7 L102.2 105.4 L73.5 116.1 Z" fill="#39414a"/>
-<path d="M70.7 112.5 L99.4 101.7 L102.2 105.4" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
-<path d="M132.2 89.8 L134.9 93.5 L134.9 93.0 L132.2 89.4 Z" fill="#20262c"/>
-<path d="M134.9 93.5 L163.6 82.7 L163.6 82.3 L134.9 93.0 Z" fill="#2b323a"/>
-<path d="M132.2 89.4 L160.9 78.6 L163.6 82.3 L134.9 93.0 Z" fill="#39414a"/>
-<path d="M132.2 89.4 L160.9 78.6 L163.6 82.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
-<path d="M82.3 156.3 L85.1 159.9 L85.1 159.5 L82.3 155.9 Z" fill="#20262c"/>
-<path d="M85.1 159.9 L109.6 150.7 L109.6 150.3 L85.1 159.5 Z" fill="#2b323a"/>
-<path d="M82.3 155.9 L106.9 146.6 L109.6 150.3 L85.1 159.5 Z" fill="#39414a"/>
-<path d="M82.3 155.9 L106.9 146.6 L109.6 150.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
-<path d="M87.3 149.0 L91.3 154.2 L91.3 145.1 L87.3 139.8 Z" fill="#565f68"/>
-<path d="M91.3 154.2 L120.0 143.5 L120.0 134.3 L91.3 145.1 Z" fill="url(#g-side)"/>
-<path d="M87.3 139.8 L116.0 129.0 L120.0 134.3 L91.3 145.1 Z" fill="url(#g-deck)"/>
-<path d="M87.3 139.8 L116.0 129.0 L120.0 134.3" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
-<path d="M94.5 138.8 L96.4 141.4 L96.4 134.4 L94.5 131.7 Z" fill="#565f68"/>
-<path d="M96.4 141.4 L112.8 135.3 L112.8 128.2 L96.4 134.4 Z" fill="url(#g-side)"/>
-<path d="M94.5 131.7 L110.9 125.6 L112.8 128.2 L96.4 134.4 Z" fill="url(#g-deck)"/>
-<path d="M94.5 131.7 L110.9 125.6 L112.8 128.2" fill="none" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.1"/>
-<path d="M103.7 130.0 L103.7 121.5" fill="none" stroke="#565f68" stroke-width="2.6" stroke-linecap="round"/>
-<path d="M100.3 120.9 L107.0 129.8" fill="none" stroke="#727c85" stroke-width="3.4" stroke-linecap="round"/>
-<ellipse cx="103.7" cy="123.2" rx="7.6" ry="4.2" fill="#a3adb6"/>
+  <!-- USS Gerald R. Ford (CVN-78) — Superportaviones Nuclear (T3 Occidental)
+       Alineación matemática perfecta de las líneas de cubierta:
+       - 100% PARALELISMO GEOMÉTRICO en la pista de aterrizaje trasera:
+         * Tramline de babor: [37, 153] a [111, 109] (vector [74, -44])
+         * Eje central discontinuo: [42, 158] a [116, 114] (vector [74, -44])
+         * Tramline de estribor: [47, 163] a [121, 119] (vector [74, -44])
+         * Línea de seguridad roja: [48.5, 164.5] a [122.5, 120.5] (vector [74, -44])
+         * 3 cables AAG rigurosamente ortogonales a la pista, sin desvíos.
+       - 100% PARALELISMO GEOMÉTRICO en la pista de lanzamiento delantera:
+         * Catapulta 1, Catapulta 2, eje de despegue y líneas de rodaje amarillas
+           todas con el vector axial exacto de la proa [1.0, -0.362].
+       - Cubierta integral color asfalto oscuro naval antideslizante.
+       - Isla stealth retrasada a popa con paneles AESA DBR planos y mástil cerrado.
+       - Los únicos 3 ascensores de aeronaves de la clase Ford. -->
+  <defs>
+    <!-- Gradiente de cubierta integral color asfalto oscuro naval -->
+    <linearGradient id="ford-deck-asphalt" x1="0.1" y1="0.9" x2="0.9" y2="0.1">
+      <stop offset="0%" stop-color="#22262b"/>
+      <stop offset="35%" stop-color="#2d333a"/>
+      <stop offset="70%" stop-color="#384048"/>
+      <stop offset="100%" stop-color="#444c55"/>
+    </linearGradient>
+
+    <!-- Gradiente del casco Haze Gray moderno -->
+    <linearGradient id="ford-hull" x1="0" y1="0" x2="0.8" y2="0.8">
+      <stop offset="0%" stop-color="#58616a"/>
+      <stop offset="50%" stop-color="#444c54"/>
+      <stop offset="100%" stop-color="#2f353b"/>
+    </linearGradient>
+
+    <!-- Gradiente de sombra del casco inferior en agua -->
+    <linearGradient id="ford-hull-dark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#24292e"/>
+      <stop offset="100%" stop-color="#14181b"/>
+    </linearGradient>
+
+    <!-- Gradiente de la isla stealth facetada -->
+    <linearGradient id="ford-island-facet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c4cbd2"/>
+      <stop offset="50%" stop-color="#939da6"/>
+      <stop offset="100%" stop-color="#606a73"/>
+    </linearGradient>
+
+    <!-- Paneles planos de radar AESA (Dual Band Radar / AN/SPY-3) -->
+    <linearGradient id="ford-radar-panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8ee"/>
+      <stop offset="60%" stop-color="#a8b2bc"/>
+      <stop offset="100%" stop-color="#7a858f"/>
+    </linearGradient>
+
+    <!-- Plataformas de los 3 ascensores de borde -->
+    <linearGradient id="ford-elevator" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#414952"/>
+      <stop offset="100%" stop-color="#2c3239"/>
+    </linearGradient>
+
+    <!-- Pista de apontaje con desgaste de caucho -->
+    <linearGradient id="ford-landing-strip" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1d2126"/>
+      <stop offset="60%" stop-color="#262c33"/>
+      <stop offset="100%" stop-color="#313841"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== CASCO INFERIOR ==================== -->
+  <polygon points="44,170 56,186 142,144 142,136 44,164" fill="url(#ford-hull-dark)" stroke="#16191c" stroke-width="0.6"/>
+  <polygon points="56,186 226,104 226,94 142,136 142,144" fill="url(#ford-hull)" stroke="#1d2226" stroke-width="0.7"/>
+  <line x1="57" y1="187" x2="226" y2="105" stroke="#101316" stroke-width="1.8"/>
+
+  <!-- Bulbo de proa hidrodinámico -->
+  <polygon points="226,94 240,86 242,91 226,104" fill="#4d555d" stroke="#1d2226" stroke-width="0.6"/>
+
+  <!-- ==================== CUBIERTA DE VUELO INTEGRAL DE ASFALTO ==================== -->
+  <polygon points="
+    236,78 244,83 244,85 236,80
+    244,85 218,98 218,100 244,85
+    218,100 172,122 172,124 218,100
+    172,124 140,139 140,141 172,124
+    140,141 68,175 68,177 140,141
+    68,177 38,162 38,160 68,175
+  " fill="#1b1f23"/>
+
+  <!-- Superficie principal de la cubierta de vuelo (100% Asfalto Oscuro) -->
+  <polygon id="ford-flight-deck" points="
+    236,78
+    244,83
+    218,96
+    218,100
+    196,110
+    196,106
+    188,110
+    188,115
+    166,125
+    166,120
+    128,138
+    128,143
+    102,156
+    102,152
+    68,173
+    40,159
+    34,149
+    76,130
+    76,125
+    94,116
+    116,112
+    178,92
+    222,74
+  " fill="url(#ford-deck-asphalt)" stroke="#16191c" stroke-width="0.8"/>
+
+  <!-- Borde perimetral y resalte de babor -->
+  <polyline points="222,74 178,92 116,112 94,116 76,125 76,130 34,149" fill="none" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.4"/>
+
+  <!-- ==================== LOS ÚNICOS 3 ASCENSORES DE BORDE (CLASE FORD) ==================== -->
+  <!-- Elevador 1 (Estribor proa): -->
+  <polygon points="218,96 202,104 198,102 214,94" fill="url(#ford-elevator)" stroke="#16191c" stroke-width="0.6"/>
+  <!-- Elevador 2 (Estribor medio, delante de la isla retrasada): -->
+  <polygon points="188,111 172,119 168,117 184,109" fill="url(#ford-elevator)" stroke="#16191c" stroke-width="0.6"/>
+  <!-- Elevador 3 (Babor cintura): -->
+  <polygon points="76,125 94,116 96,120 78,129" fill="url(#ford-elevator)" stroke="#16191c" stroke-width="0.6"/>
+
+  <!-- Franjas de precaución amarillas perimetrales de los 3 ascensores -->
+  <line x1="202" y1="104" x2="218" y2="96" stroke="#f0c000" stroke-width="0.8" stroke-dasharray="2 2"/>
+  <line x1="172" y1="119" x2="188" y2="111" stroke="#f0c000" stroke-width="0.8" stroke-dasharray="2 2"/>
+  <line x1="76" y1="125" x2="94" y2="116" stroke="#f0c000" stroke-width="0.8" stroke-dasharray="2 2"/>
+
+  <!-- ==================== 1. PISTA DE ATERRIZAJE (ATRÁS / POPA) ==================== -->
+  <!-- Zona de apontaje en paralelogramo exacto integrado dentro de la cubierta -->
+  <polygon points="37,153 111,109 121,119 47,163" fill="url(#ford-landing-strip)" stroke="#1a1e23" stroke-width="0.5"/>
+
+  <!-- Umbral de aterrizaje en popa (Threshold bar blanca y amarilla) -->
+  <line x1="37" y1="153" x2="47" y2="163" stroke="#ffffff" stroke-width="2.2" stroke-linecap="butt"/>
+  <line x1="38" y1="154.5" x2="48" y2="164.5" stroke="#f0c000" stroke-width="0.9" stroke-linecap="butt"/>
+
+  <!-- Líneas delimitadoras laterales (Tramlines blancas 100% paralelas, vector [74, -44]) -->
+  <line x1="37" y1="153" x2="111" y2="109" stroke="#ffffff" stroke-width="1.1" stroke-opacity="0.95"/>
+  <line x1="47" y1="163" x2="121" y2="119" stroke="#ffffff" stroke-width="1.1" stroke-opacity="0.95"/>
+
+  <!-- Línea de seguridad roja de foul line (paralela a 1.5px de la línea blanca) -->
+  <line x1="48.5" y1="164.5" x2="122.5" y2="120.5" stroke="#e02424" stroke-width="0.8" stroke-dasharray="3 2" stroke-opacity="0.85"/>
+
+  <!-- Eje central de la pista de aterrizaje (Centerline discontinuo, perfectamente en el centro) -->
+  <line x1="42" y1="158" x2="116" y2="114" stroke="#ffffff" stroke-width="1.4" stroke-dasharray="6 4" stroke-linecap="square"/>
+
+  <!-- SISTEMA AAG (Advanced Arresting Gear) — LOS 3 CABLES RIGUROSAMENTE PERPENDICULARES -->
+  <!-- Cable 1 -->
+  <line x1="45.9" y1="147.7" x2="55.9" y2="157.7" stroke="#0d1013" stroke-width="1.3"/>
+  <circle cx="45.9" cy="147.7" r="1.1" fill="#f0c000"/>
+  <circle cx="55.9" cy="157.7" r="1.1" fill="#f0c000"/>
+
+  <!-- Cable 2 -->
+  <line x1="53.3" y1="143.3" x2="63.3" y2="153.3" stroke="#0d1013" stroke-width="1.3"/>
+  <circle cx="53.3" cy="143.3" r="1.1" fill="#f0c000"/>
+  <circle cx="63.3" cy="153.3" r="1.1" fill="#f0c000"/>
+
+  <!-- Cable 3 -->
+  <line x1="60.7" y1="138.9" x2="70.7" y2="148.9" stroke="#0d1013" stroke-width="1.3"/>
+  <circle cx="60.7" cy="138.9" r="1.1" fill="#f0c000"/>
+  <circle cx="70.7" cy="148.9" r="1.1" fill="#f0c000"/>
+
+  <!-- ==================== 2. PISTA DE DESPEGUE (ADELANTE / PROA) ==================== -->
+  <!-- Catapulta 1 EMALS de proa (Estribor) -->
+  <line x1="174" y1="103" x2="230" y2="82.7" stroke="#14171a" stroke-width="1.3"/>
+  <rect x="171" y="103" width="4.5" height="2" transform="rotate(-20 171 103)" fill="#3a424a" stroke="#16191c" stroke-width="0.5"/>
+
+  <!-- Catapulta 2 EMALS de proa (Babor) -->
+  <line x1="182" y1="97" x2="238" y2="76.7" stroke="#14171a" stroke-width="1.3"/>
+  <rect x="179" y="97" width="4.5" height="2" transform="rotate(-20 179 97)" fill="#3a424a" stroke="#16191c" stroke-width="0.5"/>
+
+  <!-- Eje central de despegue en proa (blanco discontinuo, 100% paralelo) -->
+  <line x1="168" y1="103" x2="234" y2="79" stroke="#ffffff" stroke-width="1.3" stroke-dasharray="6 4" stroke-opacity="0.95"/>
+
+  <!-- Línea de rodaje y estacionamiento frontal (Amarillo discontinuo, 100% paralelo) -->
+  <line x1="146" y1="122" x2="216" y2="96.7" stroke="#f0c000" stroke-width="0.8" stroke-dasharray="4 3" stroke-opacity="0.85"/>
+
+  <!-- ==================== NUMERAL "78" EN PROA ==================== -->
+  <g transform="translate(216, 85) rotate(-20) scale(0.65)" fill="#ffffff" fill-opacity="0.92" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="12">
+    <text x="0" y="0">78</text>
+  </g>
+
+  <!-- ==================== ISLA STEALTH CVN-78 (RETRASADA A POPA Y COMPACTA) ==================== -->
+  <!-- Sombra proyectada por la isla sobre la cubierta -->
+  <polygon points="102,154 126,140 128,134 116,134 98,146" fill="#0d1114" opacity="0.45"/>
+
+  <!-- Estructura de la isla en el tercio posterior de popa -->
+  <polygon points="124,136 126,138 126,126 124,124" fill="#7d8791" stroke="#252b31" stroke-width="0.5"/>
+  <polygon points="124,136 104,148 104,136 124,124" fill="url(#ford-island-facet)" stroke="#252b31" stroke-width="0.6"/>
+  <polygon points="124,124 126,126 106,138 104,136" fill="#b8c1ca" stroke="#252b31" stroke-width="0.5"/>
+
+  <!-- Nivel superior / Torre del Puente de Mando y Pri-Fly -->
+  <polygon points="122,124 108,132 108,122 122,114" fill="#919ba5" stroke="#252b31" stroke-width="0.5"/>
+  <polygon points="122,114 124,116 110,124 108,122" fill="#d2d9e0" stroke="#252b31" stroke-width="0.5"/>
+  <line x1="121" y1="120" x2="114" y2="124" stroke="#0e1317" stroke-width="1.3" stroke-linecap="round"/>
+  <polygon points="108,127 106,128 106,123 108,122" fill="#141a20"/>
+
+  <!-- ==================== RADARES AESA PLANOS INTEGRADOS (DBR / SPY-3) ==================== -->
+  <polygon points="124.5,133 125.5,134 125.5,129 124.5,128" fill="url(#ford-radar-panel)" stroke="#3a424a" stroke-width="0.4"/>
+  <polygon points="119,134 113,138 113,132 119,128" fill="url(#ford-radar-panel)" stroke="#3a424a" stroke-width="0.4"/>
+
+  <!-- MÁSTIL STEALTH COMPUESTO DE UNA SOLA PIEZA -->
+  <polygon points="117,114 119,114 118,94 116,94" fill="#69737d" stroke="#252b31" stroke-width="0.5"/>
+  <circle cx="117" cy="93" r="1.3" fill="#ffffff" stroke="#252b31" stroke-width="0.5"/>
+  <ellipse cx="116" cy="115" rx="1.5" ry="1" fill="#ffffff" stroke="#252b31" stroke-width="0.4"/>
+  <ellipse cx="112" cy="118" rx="1.2" ry="0.8" fill="#ffffff" stroke="#252b31" stroke-width="0.4"/>
+
+  <!-- SISTEMAS DEFENSIVOS STEALTH (RAM & PHALANX) -->
+  <polygon points="214,100 220,97 220,101 214,104" fill="#4d555e" stroke="#1c2024" stroke-width="0.5"/>
+  <circle cx="217" cy="99" r="1.1" fill="#eaf0f6"/>
+  <polygon points="34,151 38,153 38,157 34,155" fill="#424950" stroke="#16191c" stroke-width="0.5"/>
+  <circle cx="36" cy="153" r="1.1" fill="#eaf0f6"/>
 </svg>

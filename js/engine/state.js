@@ -303,6 +303,19 @@ export function declareWar(state, a, b) {
   if (a === b || atWar(state, a, b)) return false;
   state.countries[a].wars.push(b);
   state.countries[b].wars.push(a);
+  // Día de inicio y provincias controladas al empezar, para AMBOS bandos: la IA
+  // decide la paz con ellos. Antes solo se anotaban cuando declaraba un bot, así
+  // que una guerra iniciada por el jugador nacía "larga" y la IA aceptaba la paz
+  // de inmediato; y el conteo inicial quedaba en null, con lo que "perdí el 40 %
+  // del territorio" no se cumplía jamás.
+  const day = gameDay(state);
+  for (const [x, y] of [[a, b], [b, a]]) {
+    const c = state.countries[x];
+    c.warStartDay = c.warStartDay || {};
+    c.warControlStart = c.warControlStart || {};
+    c.warStartDay[y] = day;
+    c.warControlStart[y] = controlledCount(state, x);
+  }
   log(state, `${S.countries[a].name} declara la guerra a ${S.countries[b].name}`, "war");
   return true;
 }
@@ -344,12 +357,18 @@ export function checkElimination(state, iso) {
   }
 }
 
-export function newGame(playerISO) {
+// Perfil de dificultad de la partida (los guardados anteriores no lo traen → normal)
+export function difficulty(state) {
+  return C.DIFFICULTIES[state?.difficulty] || C.DIFFICULTIES[C.DEFAULT_DIFFICULTY];
+}
+
+export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
   const state = {
     version: 2,
     time: 0,
     speed: 1,
     player: playerISO,
+    difficulty: C.DIFFICULTIES[difficultyId] ? difficultyId : C.DEFAULT_DIFFICULTY,
     nextUnitId: 1,
     gameOver: null,
     countries: {},

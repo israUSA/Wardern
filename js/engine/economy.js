@@ -1,6 +1,6 @@
 // Economía: producción horaria, mantenimiento, construcción, reclutamiento e investigación.
 import * as C from "../data/constants.js";
-import { S, unitDef, isNaval, availableVariants, log, checkElimination, controller, spawnUnit, TIERS } from "./state.js";
+import { S, unitDef, isNaval, availableVariants, log, checkElimination, controller, spawnUnit, TIERS, atWar, difficulty } from "./state.js";
 import { battleSet } from "./combat.js";
 
 export function economyHour(state) {
@@ -20,6 +20,15 @@ export function economyHour(state) {
     acc[ctrl].supplies += ((p.prod.supplies || 0) + (b.industria || 0) * C.INDUSTRY_SUPPLIES) * share;
     acc[ctrl].fuel += ((p.prod.fuel || 0) + 0.5) * share; // piso base por provincia
     acc[ctrl].manpower += ((p.prod.manpower || 0) + (b.reclutamiento || 0) * C.RECRUIT_MANPOWER) * share;
+  }
+
+  // Dificultad: la producción bruta de los bots se escala (el mantenimiento no)
+  const aiIncome = difficulty(state).aiIncome;
+  if (aiIncome !== 1) {
+    for (const iso in acc) {
+      if (iso === state.player) continue;
+      for (const k in acc[iso]) acc[iso][k] *= aiIncome;
+    }
   }
 
   // Mantenimiento de unidades (se descuenta del stock y del flujo visible en la UI)
@@ -152,14 +161,57 @@ export function startRecruitCategory(state, pid, category) {
   return startRecruit(state, pid, def.id);
 }
 
-export function startAnnex(state, pid) {
+// Anexión de una provincia ocupada. `iso` es el ocupante que la integra (el
+// jugador desde la UI; los bots desde aiEconomy, que antes no anexaban nunca y
+// se quedaban para siempre con el 25 % de producción de lo conquistado).
+export function startAnnex(state, pid, iso = state.player) {
   const ps = state.provinces[pid];
-  if (!ps || !ps.occupier || ps.occupier !== state.player || ps.owner === state.player) return false;
+  if (!ps || !ps.occupier || ps.occupier !== iso || ps.owner === iso) return false;
   if (ps.queue) return false;
   const cost = { money: C.ANNEX_COST(S.provinces.get(pid).pop) };
-  if (!pay(state, state.player, cost)) return false;
+  if (!pay(state, iso, cost)) return false;
   ps.queue = { kind: "annex", minutesLeft: C.ANNEX_DAYS, total: C.ANNEX_DAYS };
   return true;
+}
+
+// ---- Mercado de recursos (docs/GDD.md §4) ----
+// Compra o venta de un lote a precio fijo. Devuelve {ok, msg} para el toast.
+export function trade(state, iso, res, qty, dir) {
+  const price = C.MARKET[res];
+  const r = state.countries[iso]?.resources;
+  if (!price || !r || !(qty > 0)) return { ok: false, msg: "Operación no válida" };
+  const nombre = C.RES_INFO.find((x) => x.key === res)?.name?.toLowerCase() || res;
+  if (dir === "buy") {
+    const total = qty * price.buy;
+    if (r.money < total) return { ok: false, msg: `Faltan ${C.fmtInt(total - r.money)}$ para comprar ${C.fmtInt(qty)} de ${nombre}` };
+    r.money -= total;
+    r[res] += qty;
+    return { ok: true, msg: `Compradas ${C.fmtInt(qty)} de ${nombre} por ${C.fmtInt(total)}$` };
+  }
+  if (r[res] < qty) return { ok: false, msg: `Solo tienes ${C.fmtInt(r[res])} de ${nombre}` };
+  const total = qty * price.sell;
+  r[res] -= qty;
+  r.money += total;
+  return { ok: true, msg: `Vendidas ${C.fmtInt(qty)} de ${nombre} por ${C.fmtInt(total)}$` };
+}
+
+// ---- Desbandar (docs/ROADMAP.md v1.1) ----
+// Licencia una unidad propia para dejar de pagar su mantenimiento. Sin reembolso,
+// como en CoN: es una decisión de excedente, no una venta. Se rechaza en combate
+// (sería una huida gratis) y embarcada (habría que sacarla del transporte primero).
+export function disbandUnit(state, iso, unitId) {
+  const u = state.units.find((x) => x.id === unitId && !x.dead);
+  if (!u || u.owner !== iso) return { ok: false, msg: "Unidad no disponible" };
+  if (u.embarked) return { ok: false, msg: "Está embarcada: desembárcala primero" };
+  if (u.cargo?.length) return { ok: false, msg: "Lleva tropas a bordo: desembárcalas primero" };
+  const enCombate = state.units.some(
+    (e) => !e.dead && !e.embarked && !e.edgeLeft && e.pos === u.pos && e.owner !== iso && atWar(state, iso, e.owner)
+  );
+  if (enCombate && !u.edgeLeft) return { ok: false, msg: "No se puede desbandar en pleno combate" };
+  state.units = state.units.filter((x) => x.id !== u.id);
+  const name = unitDef(u.type)?.name ?? u.type;
+  log(state, `${name} desbandada en ${S.provinces.get(u.pos)?.name ?? "alta mar"}`, "info");
+  return { ok: true, msg: `${name} desbandada: deja de consumir suministros` };
 }
 
 // Investigación: un proyecto por país, tiers secuenciales

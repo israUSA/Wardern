@@ -43,6 +43,8 @@ misma partida.
 ## Cómo jugar
 
 - **Objetivo:** controlar ≥ 55 % de los puntos de victoria del continente.
+- **Dificultad:** se elige en la ficha del país (Fácil / Normal / Difícil): cambia la
+  producción y la agresividad de los bots, no el balance de unidades.
 - **Cámara:** arrastrar = mover · rueda = zoom · clic = seleccionar provincia/celda de mar.
 - **Construir** (provincia propia): Industria (+suministros), Oficina de reclutamiento
   (+mano de obra), **Base aérea** (nivel 1 = aviones T1; nivel 2 = T2; nivel 3 = T3),
@@ -50,8 +52,13 @@ misma partida.
   Los botones bloqueados dicen el motivo exacto al pasar el cursor.
 - **Reclutar:** cada fila muestra el sprite de la unidad real. Las aeronaves exigen
   Base aérea en ESA provincia; los barcos, Puerto del tier correspondiente.
-- **Mover:** botón **Mover** → clic en destino (clic derecho cancela). Las unidades
-  viajan orientadas a su rumbo y muestran "Llega en Xh Ym".
+- **Mover:** botón **Mover** → clic en destino (clic derecho cancela). **Mover todas (N)**
+  manda la guarnición entera. Las unidades viajan orientadas a su rumbo y muestran
+  "Llega en Xh Ym". **Desbandar** (ficha de unidad) licencia el excedente y deja de
+  pagar su mantenimiento (sin reembolso).
+- **Mercado (botón 💱):** compra o vende suministros y combustible con dinero a precio
+  fijo (comprar sale caro a propósito). La barra superior muestra ⚔ y la bandera de cada
+  país con el que estás en guerra; clic en la bandera te lleva a su capital.
 - **Aviones** orbitan su base en patrulla visual; los **drones** (MQ-9, Orlan…) revelan
   un círculo de visión (120/200/300 km según tier).
 - **Marina:** el transporte **Embarca** hasta 3 unidades desde costa con puerto,
