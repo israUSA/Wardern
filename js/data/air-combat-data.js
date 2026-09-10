@@ -169,22 +169,25 @@ export const AIR_WEAPONS = {
 
 // ---- Cargas y sensores por variante ----
 // radarKm: alcance de DETECCIÓN de aeronaves (siempre > que sus misiles: ves
-//   antes de poder disparar, que es justo la tensión del combate BVR).
-// evasion: 0-1, resta efectividad al Pk de los misiles que le disparan
-//   (maniobra + contramedidas + firma radar; los furtivos son los altos).
+//   antes de poder disparar, que es la tensión del combate BVR).
+// rcs: firma radar inversa, 0 = avión normal, 1 = invisible. RECORTA el alcance
+//   al que TE detectan: quien te busca con radarKm te ve a radarKm × (1 − rcs).
+//   Es la furtividad "de no ser visto", distinta de la de abajo.
+// evasion: 0-1, resta efectividad al Pk de los misiles que ya te dispararon
+//   (maniobra, contramedidas, señuelos). Es la furtividad "de no ser tocado".
 // armas: { idArma: unidades } — configuración estándar del avión.
 export const AIR_LOADOUTS = {
   // ---------- Cazas ----------
   "occ-1-caza": { // F-16A Block 15 — radar APG-66
-    radarKm: 75, evasion: 0.1,
+    radarKm: 75, rcs: 0, evasion: 0.1,
     armas: { aim9: 4, agm65: 2 },
   },
-  "occ-2-caza": { // F/A-18E Super Hornet — radar APG-73
-    radarKm: 150, evasion: 0.2,
+  "occ-2-caza": { // F/A-18E Super Hornet — radar APG-73, firma algo reducida
+    radarKm: 150, rcs: 0.15, evasion: 0.2,
     armas: { aim120: 4, aim9x: 2, agm65: 4, agm88: 2 },
   },
   "occ-3-caza": { // F-22 Raptor — APG-77 AESA, carga interna
-    radarKm: 250, evasion: 0.45,
+    radarKm: 250, rcs: 0.8, evasion: 0.65,
     armas: { aim120: 6, aim9x: 2, gbu: 2 },
   },
   "occ-3-caza-f35": { // F-35A Lightning II — APG-81 AESA, configuración furtiva
@@ -192,77 +195,68 @@ export const AIR_LOADOUTS = {
     // 10), pero es el único caza furtivo occidental que entra a por blindados y
     // baterías sin colgar nada por fuera. El "modo bestia" con pilones externos
     // no se modela: rompe la furtividad, que es justo lo que se compra aquí.
-    radarKm: 200, evasion: 0.42,
+    radarKm: 200, rcs: 0.78, evasion: 0.6,
     armas: { aim120: 4, gbu: 2 },
   },
   "ori-1-caza": { // MiG-23ML — radar Sapfir-23
-    radarKm: 55, evasion: 0.05,
+    radarKm: 55, rcs: 0, evasion: 0.05,
     armas: { r23: 2, r60: 4 },
   },
-  "ori-2-caza": { // Su-27 — radar N001
-    radarKm: 110, evasion: 0.15,
+  "ori-2-caza": { // Su-27 — radar N001 (el Su-33 es su hermano embarcado)
+    radarKm: 110, rcs: 0, evasion: 0.15,
     armas: { r27: 6, r73: 4, kh25: 2 },
   },
   "ori-3-caza": { // Su-57 — N036 Belka, carga interna
-    radarKm: 240, evasion: 0.4,
+    radarKm: 240, rcs: 0.62, evasion: 0.42,
     armas: { r77: 4, r73: 2, kh31p: 2 },
   },
 
   // ---------- Bombarderos ----------
-  "occ-1-bombardero": { // B-52G
-    radarKm: 60, evasion: 0.05,
-    armas: { gbu: 12, agm65: 4 },
-  },
-  "occ-2-bombardero": { // B-2 Spirit
-    radarKm: 80, evasion: 0.45,
-    armas: { gbu: 16, agm88: 2 },
-  },
-  "occ-3-bombardero": { // B-21 Raider
-    radarKm: 120, evasion: 0.5,
-    armas: { gbu: 16, agm88: 4, agm65: 4 },
-  },
-  "ori-1-bombardero": { // Tu-22M2
-    radarKm: 60, evasion: 0.05,
-    armas: { kab: 12, kh25: 4 },
-  },
-  "ori-2-bombardero": { // Tu-22M3
-    radarKm: 90, evasion: 0.1,
-    armas: { kab: 16, kh31p: 2 },
-  },
-  "ori-3-bombardero": { // Tu-160M
-    radarKm: 130, evasion: 0.2,
-    armas: { kab: 16, kh31p: 4, kh25: 4 },
-  },
+  "occ-1-bombardero": { radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } }, // B-52G
+  "occ-2-bombardero": { radarKm: 80, rcs: 0.82, evasion: 0.62, armas: { gbu: 16, agm88: 2 } }, // B-2 Spirit
+  "occ-3-bombardero": { radarKm: 120, rcs: 0.88, evasion: 0.68, armas: { gbu: 16, agm88: 4, agm65: 4 } }, // B-21 Raider
+  "ori-1-bombardero": { radarKm: 60, rcs: 0, evasion: 0.05, armas: { kab: 12, kh25: 4 } }, // Tu-22M2
+  "ori-2-bombardero": { radarKm: 90, rcs: 0, evasion: 0.1, armas: { kab: 16, kh31p: 2 } }, // Tu-22M3
+  "ori-3-bombardero": { radarKm: 130, rcs: 0.15, evasion: 0.22, armas: { kab: 16, kh31p: 4, kh25: 4 } }, // Tu-160M
 
   // ---------- Helicópteros de ataque ----------
   // Radar cortísimo: el mástil del Longbow ve blindados a ~8 km, no hace BVR.
-  "occ-1-helicoptero": { radarKm: 10, evasion: 0.1, armas: { tow: 8 } },
-  "occ-2-helicoptero": { radarKm: 12, evasion: 0.15, armas: { hellfireL: 16 } },
-  "occ-3-helicoptero": { radarKm: 16, evasion: 0.25, armas: { hellfireL: 16, stinger: 2 } },
-  "ori-1-helicoptero": { radarKm: 8, evasion: 0.1, armas: { shturm: 4 } },
-  "ori-2-helicoptero": { radarKm: 12, evasion: 0.15, armas: { ataka: 16 } },
-  "ori-3-helicoptero": { radarKm: 16, evasion: 0.25, armas: { ataka: 16, igla: 2 } },
+  "occ-1-helicoptero": { radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
+  "occ-2-helicoptero": { radarKm: 12, rcs: 0, evasion: 0.15, armas: { hellfireL: 16 } },
+  "occ-3-helicoptero": { radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { hellfireL: 16, stinger: 2 } },
+  "ori-1-helicoptero": { radarKm: 8, rcs: 0, evasion: 0.1, armas: { shturm: 4 } },
+  "ori-2-helicoptero": { radarKm: 12, rcs: 0, evasion: 0.15, armas: { ataka: 16 } },
+  "ori-3-helicoptero": { radarKm: 16, rcs: 0.1, evasion: 0.25, armas: { ataka: 16, igla: 2 } },
 
   // ---------- Drones ----------
-  // Los t1/t2 son recon puro (sin armas, ver docs/MISSILES.md §4). Los t3 sí van
-  // armados —MQ-9 Reaper y Orion lo están— y eso los hace también BLANCO válido:
-  // no combaten en provincia, pero un caza enemigo puede derribarlos con misiles.
-  "occ-1-drone": { radarKm: 120, evasion: 0.3, armas: {} },
-  "occ-2-drone": { radarKm: 200, evasion: 0.3, armas: {} },
-  "occ-3-drone": { radarKm: 300, evasion: 0.35, armas: { hellfireL: 4 } },
-  "ori-1-drone": { radarKm: 120, evasion: 0.3, armas: {} },
-  "ori-2-drone": { radarKm: 200, evasion: 0.3, armas: {} },
-  "ori-3-drone": { radarKm: 300, evasion: 0.35, armas: { ataka: 4 } },
+  // Los t1/t2 son recon puro (ver docs/MISSILES.md §4). Los t3 sí van armados
+  // —MQ-9 Reaper y Orion lo están— y eso los hace también BLANCO válido: no
+  // combaten en provincia, pero un caza enemigo puede derribarlos con misiles.
+  "occ-1-drone": { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
+  "occ-2-drone": { radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
+  "occ-3-drone": { radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { hellfireL: 4 } },
+  "occ-3-drone-rq190": { // RQ-190 — UAV furtivo de penetración profunda
+    // rcs 0.96: para un radar de caza es sencillamente invisible (el APG-77 del
+    // Raptor lo cogería a 40 km, o sea encima). Solo las redes antiaéreas de
+    // última generación con banda métrica lo ven, y aun así muy tarde: un S-400
+    // lo detecta a ~260 km de los 1.400 km a los que ve un avión normal.
+    // Sin armas: es un ojo, no un cazador.
+    radarKm: 420, rcs: 0.96, evasion: 0.7,
+    armas: {},
+  },
+  "ori-1-drone": { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
+  "ori-2-drone": { radarKm: 200, rcs: 0.2, evasion: 0.3, armas: {} },
+  "ori-3-drone": { radarKm: 300, rcs: 0.25, evasion: 0.35, armas: { ataka: 4 } },
 
   // ---------- Alias legacy ----------
   // Ids planas de las partidas guardadas antes del roster de variantes
   // (docs/UNITS.md). Sin esto, un caza cargado de un guardado viejo se quedaría
   // sin radar ni armamento y el jugador no entendería por qué. Se les da la
   // dotación t1 occidental, coherente con su tier efectivo 1.
-  caza: { radarKm: 75, evasion: 0.1, armas: { aim9: 4, agm65: 2 } },
-  bombardero: { radarKm: 60, evasion: 0.05, armas: { gbu: 12, agm65: 4 } },
-  helicoptero: { radarKm: 10, evasion: 0.1, armas: { tow: 8 } },
-  drone: { radarKm: 120, evasion: 0.3, armas: {} },
+  caza: { radarKm: 75, rcs: 0, evasion: 0.1, armas: { aim9: 4, agm65: 2 } },
+  bombardero: { radarKm: 60, rcs: 0, evasion: 0.05, armas: { gbu: 12, agm65: 4 } },
+  helicoptero: { radarKm: 10, rcs: 0, evasion: 0.1, armas: { tow: 8 } },
+  drone: { radarKm: 120, rcs: 0.2, evasion: 0.3, armas: {} },
 };
 
 // Evasión de las unidades de SUPERFICIE frente a un misil aire-suelo. La
@@ -313,5 +307,54 @@ export const PK_RANGE_CURVE = [
 // Bonus de Pk por nivel de veteranía del piloto (docs/UNITS.md)
 export const PK_VET_BONUS = 0.05;
 
-// Rearme: solo en provincia propia con base aérea y con el avión detenido.
+// ---- Radares de VIGILANCIA terrestres (distinto del alcance de tiro) ----
+// El antiaéreo no solo dispara: vigila, y su radar alimenta la imagen táctica de
+// todo su bando (enlace de datos). Es el contrapeso a la furtividad, porque un
+// radar terrestre grande en banda métrica ve lo que ningún radar de caza puede.
+//   km: alcance de detección contra un avión SIN furtividad.
+//   antiStealth: cuánto anula la furtividad del blanco, 0 = nada (como un caza),
+//     1 = la ignora por completo. Alcance real = km × (1 − rcs × (1 − antiStealth)).
+// Los t1 son cañones con mira óptica: ni radar de vigilancia ni nada parecido.
+export const SAM_RADAR = {
+  "occ-1-antiaereo": { km: 30, antiStealth: 0 }, // M163 Vulcan
+  "occ-2-antiaereo": { km: 150, antiStealth: 0.05 }, // MIM-104 Patriot
+  "occ-3-antiaereo": { km: 250, antiStealth: 0.14 }, // Patriot PAC-3 + red de sensores
+  "ori-1-antiaereo": { km: 30, antiStealth: 0 }, // ZSU-23-4 Shilka
+  "ori-2-antiaereo": { km: 160, antiStealth: 0.05 }, // 9K37 Buk
+  "ori-3-antiaereo": { km: 350, antiStealth: 0.15 }, // S-400 con acompañamiento métrico
+  antiaereo: { km: 30, antiStealth: 0 }, // alias legacy
+};
+
+// ---- Aviación embarcada ----
+// Plazas de aeronave por portaviones. La asimetría es real: los portaviones
+// soviéticos/rusos nunca llevaron un ala aérea comparable a la estadounidense
+// (el Kiev era un crucero portaaeronaves de despegue vertical).
+export const CARRIER_CAPACITY = {
+  "occ-1-portaviones": 3, // USS Kitty Hawk
+  "occ-2-portaviones": 4, // USS Nimitz
+  "occ-3-portaviones": 6, // USS Gerald R. Ford
+  "ori-1-portaviones": 2, // Kiev (Proy. 1143)
+  "ori-2-portaviones": 3, // Kuznetsov (Proy. 11435)
+  "ori-3-portaviones": 5, // Shtorm (Proy. 23000)
+  portaviones: 3, // alias legacy
+};
+
+// Aparatos con tren, gancho y plegado de alas para operar desde cubierta.
+// Occidente: el Super Hornet ES el caza embarcado de la US Navy y el F-35 tiene
+// su variante C de portaviones. Oriente: el Su-33 es el Su-27 navalizado que
+// voló desde el Kuznetsov, y el Orion es el UAV de la casa.
+// CONCESIÓN DE JUEGO: el Su-57 no tiene variante naval real (el caza embarcado
+// ruso es el MiG-29K); se admite para que el bando oriental tenga un furtivo
+// embarcado y la simetría del sistema se sostenga.
+export const CARRIER_CAPABLE = new Set([
+  "occ-2-caza", // F/A-18E Super Hornet
+  "occ-3-caza-f35", // F-35 (variante C)
+  "occ-3-drone-rq190", // RQ-190
+  "ori-2-caza", // Su-27 → Su-33
+  "ori-3-caza", // Su-57 (concesión, ver arriba)
+  "ori-3-drone", // Orion
+]);
+
+// Rearme: en provincia propia con base aérea, o a bordo de un portaviones propio
+// (para eso lleva pañoles). En ambos casos, con el aparato detenido.
 export const REARM_MIN_AEROBASE = 1;

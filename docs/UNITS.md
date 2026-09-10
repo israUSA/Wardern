@@ -53,6 +53,7 @@ variantes extra aparecen junto a la de la rejilla en el reclutamiento.
 | Variante | Rejilla | Papel |
 |---|---|---|
 | `occ-3-caza-f35` — F-35A Lightning II | convive con `occ-3-caza` (F-22 Raptor) | Multirol furtivo: más barato (0,82×), peor contra el aire, mejor contra el suelo, y bahía interna mixta aire-aire + aire-suelo que el Raptor no tiene (ver `docs/AIR-COMBAT.md`) |
+| `occ-3-drone-rq190` — RQ-190 | convive con `occ-3-drone` (MQ-9 Reaper) | UAV furtivo de penetración: cuesta el triple, **no lleva armas** y vuela más lento, pero con `rcs 0.96` es invisible para cualquier radar de caza. Se compra para VER |
 
 Requisitos para añadir una: `id` único, `category` existente, `doctrine`, `tier`,
 y el bloque completo de stats (`cost`, `attack`, `defense`, `terrainDefBonus`,

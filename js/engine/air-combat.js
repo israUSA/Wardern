@@ -12,6 +12,7 @@ import * as C from "../data/constants.js";
 import {
   AIR_WEAPONS, AIR_LOADOUTS, GROUND_EVASION, SAM_RANGE_KM, SAM_PK, SAM_DAMAGE,
   PK_RANGE_CURVE, PK_VET_BONUS, REARM_MIN_AEROBASE, AIR_RANGE_SCALE,
+  SAM_RADAR, CARRIER_CAPACITY, CARRIER_CAPABLE,
 } from "../data/air-combat-data.js";
 
 // ---------- Escala y distancias ----------
@@ -75,6 +76,39 @@ export function bearingDeg(a, b) {
   return (deg + 360) % 360;
 }
 
+// ---------- Furtividad y detección ----------
+
+// Firma radar del blanco: 0 = avión normal, 1 = invisible.
+export function rcsOf(u) {
+  return AIR_LOADOUTS[u?.type]?.rcs || 0;
+}
+
+// A qué distancia ve ESTE sensor a ESE blanco. La furtividad recorta el alcance
+// de detección, no el del radar: el mismo S-400 que ve un Tu-22M2 a 1.400 km
+// coge al RQ-190 a 260. `antiStealth` es cuánto anula el sensor esa ventaja
+// (0 en cualquier radar de caza; solo las redes antiaéreas modernas suben de ahí).
+function detectionKm(sensorKm, target, antiStealth = 0) {
+  const rcs = rcsOf(target);
+  if (!rcs) return sensorKm;
+  return sensorKm * Math.max(0, 1 - rcs * (1 - antiStealth));
+}
+
+// Radares de vigilancia propios: cada antiaéreo aporta cobertura a TODO su bando
+// (enlace de datos). Es el contrapeso a la furtividad — tu batería ve al furtivo
+// que tu caza no puede ver, y tu caza lo mata con ese dato.
+function groundRadars(state, iso) {
+  const out = [];
+  for (const u of state.units) {
+    if (u.dead || u.embarked || u.owner !== iso) continue;
+    if ((unitDef(u.type)?.category || u.type) !== "antiaereo") continue;
+    const R = SAM_RADAR[u.type] || SAM_RADAR.antiaereo;
+    const p = S.provinces.get(u.pos);
+    if (!p || !R) continue;
+    out.push({ prov: p, km: R.km * AIR_RANGE_SCALE, antiStealth: R.antiStealth });
+  }
+  return out;
+}
+
 // ---------- Detección ----------
 
 // Aeronaves enemigas dentro del alcance del radar. Detectar NO es poder disparar:
@@ -85,6 +119,7 @@ export function radarContacts(state, u) {
   const from = S.provinces.get(u?.pos);
   if (!L || !from) return [];
   const radar = radarRangeKm(u);
+  const radares = groundRadars(state, u.owner);
   const out = [];
   for (const e of state.units) {
     if (e.dead || e.embarked || e.id === u.id || e.owner === u.owner) continue;
@@ -93,8 +128,17 @@ export function radarContacts(state, u) {
     const p = S.provinces.get(e.pos);
     if (!p) continue;
     const km = tacticalKm(from, p);
-    if (km > radar) continue;
-    out.push({ unit: e, km, bearing: bearingDeg(from, p) });
+    // El radar propio ve al blanco a `radar × (1 − rcs)`: contra un furtivo, casi nada
+    if (km <= detectionKm(radar, e)) {
+      out.push({ unit: e, km, bearing: bearingDeg(from, p) });
+      continue;
+    }
+    // Enlace de datos: si una batería antiaérea propia lo tiene marcado, el
+    // contacto aparece igual aunque este avión no lo vea con su radar.
+    const visto = radares.some(
+      (r) => tacticalKm(r.prov, p) <= detectionKm(r.km, e, r.antiStealth)
+    );
+    if (visto) out.push({ unit: e, km, bearing: bearingDeg(from, p), datalink: true });
   }
   return out.sort((a, b) => a.km - b.km);
 }
@@ -306,6 +350,14 @@ export function resolveAirImpact(state, m) {
 // Motivo por el que un avión NO puede rearmarse, o null si sí puede.
 export function rearmBlocker(state, u) {
   if (!AIR_LOADOUTS[u.type]) return "No es una aeronave";
+  // A bordo de un portaviones propio: los pañoles del buque hacen de base aérea
+  if (u.embarked) {
+    const nave = state.units.find((x) => x.id === u.embarked && !x.dead);
+    if (nave && CARRIER_CAPACITY[nave.type]) {
+      return nave.edgeLeft ? "El portaviones está navegando: no hay ciclo de vuelo" : null;
+    }
+    return "Embarcada en un transporte, no en un portaviones";
+  }
   if (u.edgeLeft) return "En tránsito: debe aterrizar en la base";
   const ps = state.provinces[u.pos];
   if (!ps) return "Sobre el mar: no hay base donde rearmar";
@@ -338,9 +390,9 @@ export function rearmStatus(state, u) {
 // gastados son horas de pista y 27.000 $ de vuelta a la estantería.
 export function tickRearm(state, dt) {
   for (const u of state.units) {
-    if (u.dead || u.embarked) continue;
+    if (u.dead) continue;
     const L = AIR_LOADOUTS[u.type];
-    if (!L) continue;
+    if (!L) continue; // los embarcados en portaviones SÍ rearman (rearmBlocker decide)
     const ammo = ensureAmmo(u);
     const falta = Object.keys(L.armas).find((id) => (ammo[id] || 0) < L.armas[id]);
     if (!falta) {
@@ -361,6 +413,85 @@ export function tickRearm(state, dt) {
     ammo[falta] = (ammo[falta] || 0) + 1;
     u.rearmT -= w.rearmeMin;
   }
+}
+
+// ---------- Aviación embarcada ----------
+
+export function isCarrier(type) {
+  return !!CARRIER_CAPACITY[type];
+}
+
+export function carrierCapacity(u) {
+  return CARRIER_CAPACITY[u?.type] || 0;
+}
+
+export function isCarrierCapable(type) {
+  return CARRIER_CAPABLE.has(type);
+}
+
+// Aeronaves a bordo. Se resuelve recorriendo `embarked` en vez de guardar una
+// lista en el buque: una sola fuente de verdad, imposible que se desincronicen
+// (y los guardados viejos no necesitan campo nuevo).
+export function aircraftAboard(state, carrier) {
+  if (!carrier || !CARRIER_CAPACITY[carrier.type]) return [];
+  return state.units.filter((x) => !x.dead && x.embarked === carrier.id && AIR_LOADOUTS[x.type]);
+}
+
+// Portaviones propios en los que ESTE avión puede tomar cubierta ahora mismo:
+// mismo sector de mar, buque parado, plaza libre y aparato apto para cubierta.
+export function landingOptions(state, u) {
+  if (!AIR_LOADOUTS[u?.type] || u.embarked || u.edgeLeft) return [];
+  if (!CARRIER_CAPABLE.has(u.type)) return [];
+  return state.units.filter(
+    (c) =>
+      !c.dead && !c.embarked && c.owner === u.owner && CARRIER_CAPACITY[c.type] &&
+      c.pos === u.pos && !c.edgeLeft &&
+      aircraftAboard(state, c).length < CARRIER_CAPACITY[c.type]
+  );
+}
+
+// Toma de cubierta. El avión tiene que haber VOLADO hasta la celda de mar del
+// portaviones (los aéreos pueden entrar en el mar, ver canEnter en movement.js):
+// no hay teletransporte desde tierra.
+export function landOnCarrier(state, aircraftId, carrierId) {
+  const u = state.units.find((x) => x.id === aircraftId && !x.dead);
+  const c = state.units.find((x) => x.id === carrierId && !x.dead);
+  if (!u || !c) return { ok: false, msg: "Unidad no encontrada" };
+  if (!AIR_LOADOUTS[u.type]) return { ok: false, msg: "No es una aeronave" };
+  if (!CARRIER_CAPACITY[c.type]) return { ok: false, msg: "Ese buque no es un portaviones" };
+  if (c.owner !== u.owner) return { ok: false, msg: "El portaviones no es tuyo" };
+  if (!CARRIER_CAPABLE.has(u.type)) {
+    return { ok: false, msg: `${unitDef(u.type)?.name} no está preparado para cubierta (sin gancho ni alas plegables)` };
+  }
+  if (u.embarked) return { ok: false, msg: "Ya está embarcada" };
+  if (u.edgeLeft || c.edgeLeft) return { ok: false, msg: "Avión y portaviones deben estar detenidos" };
+  if (u.pos !== c.pos) return { ok: false, msg: "El avión debe volar hasta el sector del portaviones" };
+  const aboard = aircraftAboard(state, c).length;
+  const cap = CARRIER_CAPACITY[c.type];
+  if (aboard >= cap) return { ok: false, msg: `Cubierta llena (${aboard}/${cap})` };
+
+  u.embarked = c.id;
+  u.path = [];
+  u.edgeLeft = null;
+  log(state, `${unitDef(u.type)?.name} toma cubierta en ${unitDef(c.type)?.name}`, "info");
+  return { ok: true, msg: `Apontaje completado (${aboard + 1}/${cap})` };
+}
+
+// Despegue: el aparato aparece en el sector donde esté el buque AHORA, que es lo
+// que hace útil llevarlo — el portaviones mueve su aviación con él.
+export function launchFromCarrier(state, aircraftId) {
+  const u = state.units.find((x) => x.id === aircraftId && !x.dead);
+  if (!u || !u.embarked) return { ok: false, msg: "No está embarcada" };
+  const c = state.units.find((x) => x.id === u.embarked && !x.dead);
+  if (!c || !CARRIER_CAPACITY[c.type]) return { ok: false, msg: "No está en un portaviones" };
+  if (c.edgeLeft) return { ok: false, msg: "El portaviones navega: no hay ciclo de vuelo" };
+  u.embarked = null;
+  u.pos = c.pos;
+  u.path = [];
+  u.edgeLeft = null;
+  u.battleTicks = 0;
+  log(state, `${unitDef(u.type)?.name} despega de ${unitDef(c.type)?.name}`, "info");
+  return { ok: true, msg: `${unitDef(u.type)?.name} en vuelo desde cubierta` };
 }
 
 // ---------- IA ----------

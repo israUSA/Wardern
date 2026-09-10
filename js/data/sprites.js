@@ -95,6 +95,8 @@ export const SPRITES = {
     "occ-1-drone": "assets/sprites/v-occ-1-drone.svg",
     "occ-2-drone": "assets/sprites/v-occ-2-drone.svg",
     "occ-3-drone": "assets/sprites/v-occ-3-drone.svg",
+    // PENDIENTE: el RQ-190 reutiliza el arte del MQ-9 hasta tener el suyo.
+    "occ-3-drone-rq190": "assets/sprites/v-occ-3-drone.svg",
     "ori-1-drone": "assets/sprites/v-ori-1-drone.svg",
     "ori-2-drone": "assets/sprites/v-ori-2-drone.svg",
     "ori-3-drone": "assets/sprites/v-ori-3-drone.svg",

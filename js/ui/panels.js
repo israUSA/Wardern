@@ -11,7 +11,8 @@ import { vetLevel } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import {
   airLoadout, airWeapons, radarContacts, groundContacts, pkFor, weaponCanTarget,
-  rearmStatus, radarRangeKm, bearingDeg, effRange,
+  rearmStatus, radarRangeKm, bearingDeg, effRange, rcsOf,
+  isCarrier, carrierCapacity, aircraftAboard, landingOptions,
 } from "../engine/air-combat.js";
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
 import { drawUnitSymbol } from "../render/symbols.js";
@@ -561,6 +562,8 @@ export function updateUnitPanel(state, ui) {
 
   // Aeronaves: sensores y carga de misiles (docs/AIR-COMBAT.md)
   if (airLoadout(u.type)) html += airSection(state, u, mine);
+  // Portaviones: cubierta de vuelo con su ala embarcada
+  if (isCarrier(u.type)) html += carrierSection(state, u, mine);
 
   // Órdenes: solo sobre unidades propias (las enemigas son ficha informativa)
   if (mine) {
@@ -620,6 +623,14 @@ export function updateUnitPanel(state, ui) {
   panel.querySelectorAll("[data-up-radar]").forEach((b) =>
     b.addEventListener("click", () => hooks.onRadar(parseInt(b.dataset.upRadar, 10)))
   );
+  panel.querySelectorAll("[data-up-land]").forEach((b) =>
+    b.addEventListener("click", () =>
+      hooks.onLand(parseInt(b.dataset.upLand, 10), parseInt(b.dataset.upCarrier, 10))
+    )
+  );
+  panel.querySelectorAll("[data-up-launch]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onLaunchAir(parseInt(b.dataset.upLaunch, 10)))
+  );
   panel.querySelector("#up-move-all")?.addEventListener("click", () => hooks.onMove(u.id, ui.selStackIds));
 }
 
@@ -629,8 +640,15 @@ export function updateUnitPanel(state, ui) {
 function airSection(state, u, mine) {
   const armas = airWeapons(u);
   const radar = radarRangeKm(u);
+  const rcs = rcsOf(u);
   let html = `<div class="pp-section"><h4>Sensores y armamento</h4>
     <div class="up-radarline">📡 Radar de detección: <b>${radar} km</b></div>`;
+  if (rcs > 0) {
+    // Lo que de verdad importa del furtivo: a qué distancia lo cogen. Se ilustra
+    // con un radar de caza moderno (1.000 km, el del F-22) como vara de medir.
+    html += `<div class="up-radarline">🛡 Firma radar: <b>−${Math.round(rcs * 100)}%</b>
+      <span class="cost">· un radar de caza puntero (1.000 km) te vería a ${Math.round(1000 * (1 - rcs))} km</span></div>`;
+  }
 
   if (!armas.length) {
     html += `<div class="garrison-note">Aparato de reconocimiento puro: sin armamento.</div></div>`;
@@ -660,6 +678,40 @@ function airSection(state, u, mine) {
       html += `<div class="up-rearm ok">Carga completa</div>`;
     }
     html += `<button class="btn small primary" data-up-radar="${u.id}" style="margin-top:8px">📡 Abrir radar</button>`;
+    // Apontaje: solo si hay un portaviones propio con plaza en ESTE sector de mar
+    for (const c of landingOptions(state, u)) {
+      const libre = carrierCapacity(c) - aircraftAboard(state, c).length;
+      html += `<button class="btn small" data-up-land="${u.id}" data-up-carrier="${c.id}" style="margin-top:6px">
+        🛬 Aterrizar en ${unitDef(c.type)?.name} <span class="cost">(${libre} ${libre === 1 ? "libre" : "libres"})</span></button>`;
+    }
+  }
+  html += `</div>`;
+  return html;
+}
+
+// Cubierta de vuelo de un portaviones: plazas y ala embarcada. El buque mueve
+// su aviación con él, así que esta lista viaja con el grupo de combate.
+function carrierSection(state, u, mine) {
+  const cap = carrierCapacity(u);
+  const aboard = aircraftAboard(state, u);
+  let html = `<div class="pp-section"><h4>Cubierta de vuelo</h4>
+    <div class="up-radarline">🛩 Plazas ocupadas: <b>${aboard.length} / ${cap}</b></div>`;
+
+  if (!aboard.length) {
+    html += `<div class="garrison-note">Cubierta vacía. Vuela hasta este sector un aparato apto para cubierta y aterriza desde su ficha.</div>`;
+  }
+  for (const a of aboard) {
+    const T = unitDef(a.type);
+    const municion = airWeapons(a).reduce((s, x) => s + x.left, 0);
+    const st = rearmStatus(state, a);
+    const nota = st && !st.completo && !st.blocker
+      ? ` · rearmando ${st.weapon.nombre}`
+      : "";
+    html += `<div class="up-wrow">
+      <span class="up-wname">${T?.name || a.type}</span>
+      <span class="up-wtag">${Math.round(a.hp)} HP · ${municion} misiles${nota}</span>
+      ${mine ? `<button class="btn small" data-up-launch="${a.id}" ${u.edgeLeft ? 'disabled title="El portaviones navega: no hay ciclo de vuelo"' : ""}>Lanzar</button>` : ""}
+    </div>`;
   }
   html += `</div>`;
   return html;
@@ -742,9 +794,9 @@ export function updateRadarPanel(state, ui) {
     else if (enTransito) motivo = "El avión está en tránsito";
 
     html += `<div class="rp-contact${activo ? " sel" : ""}${enAlcance && !veto ? " tiro" : ""}" data-rtarget="${e.id}">
-      <span class="rp-blip" style="background:${color}"></span>
+      <span class="rp-blip${c.datalink ? " dl" : ""}" style="background:${c.datalink ? "transparent" : color};border-color:${color}"></span>
       <div class="rp-cinfo">
-        <b>${eT?.name || e.type}</b> <span class="cost">${S.countries[e.owner].name}</span>
+        <b>${eT?.name || e.type}</b> <span class="cost">${S.countries[e.owner].name}</span>${c.datalink ? ` <span class="rp-dl" title="Fuera del alcance de tu radar: lo marca una batería antiaérea propia">ENLACE</span>` : ""}
         <div class="cost">${Math.round(c.km)} km · rumbo ${Math.round(c.bearing)}° · ${Math.round(e.hp)} HP${pk !== null ? ` · <span class="rp-pk">Pk ${pk}%</span>` : ""}</div>
       </div>
       <button class="btn small" data-rfire="${e.id}" ${motivo ? `disabled title="${motivo}"` : ""}>Disparar</button>
@@ -849,8 +901,20 @@ function drawRadarScope(panel, state, ui, u, contactos, sel, radarKm) {
     } else {
       g.rect(x - 4, y - 4, 8, 8); // superficie: cuadrado
     }
-    g.fill();
-    g.stroke();
+    // Contacto por enlace de datos (lo ve un antiaéreo propio, no este radar):
+    // se dibuja hueco para distinguirlo de lo que el aparato ve por sí mismo.
+    if (ct.datalink) {
+      g.strokeStyle = color;
+      g.lineWidth = 1.6;
+      g.stroke();
+      g.setLineDash([2, 2]);
+      g.strokeStyle = "rgba(255,255,255,0.7)";
+      g.stroke();
+      g.setLineDash([]);
+    } else {
+      g.fill();
+      g.stroke();
+    }
     if (ui.radarTarget === ct.unit.id) {
       g.strokeStyle = "#ffe9a0";
       g.lineWidth = 1.6;

@@ -5,7 +5,7 @@ import { orderMove, orderStop } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
-import { fireAirWeapon } from "./engine/air-combat.js";
+import { fireAirWeapon, landOnCarrier, launchFromCarrier } from "./engine/air-combat.js";
 import { aiRespondPeace } from "./engine/ai.js";
 import { MapRenderer, hitProvince, inverseMercY } from "./render/renderer.js";
 import * as UI from "./ui/panels.js";
@@ -213,6 +213,21 @@ const hooks = {
   },
   onCenter(pid) {
     renderer?.centerOn(pid);
+  },
+  onLand(aircraftId, carrierId) {
+    const res = landOnCarrier(state, aircraftId, carrierId);
+    UI.toast(res.msg);
+    if (res.ok) clearRadar(); // el aparato pasa a cubierta: su radar deja de tener sentido
+    updateUI();
+  },
+  onLaunchAir(aircraftId) {
+    const res = launchFromCarrier(state, aircraftId);
+    UI.toast(res.msg);
+    if (res.ok) {
+      ui.selUnit = aircraftId;
+      ui.selStackIds = [aircraftId];
+    }
+    updateUI();
   },
   onRadar(unitId) {
     clearRadar();

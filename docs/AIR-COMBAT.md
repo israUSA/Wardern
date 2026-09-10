@@ -80,6 +80,7 @@ Ejemplos (la tabla completa está en `AIR_LOADOUTS`):
 | AH-64 Apache | 16× Hellfire |
 | AH-64E Guardian | 16× Hellfire + 2× Stinger |
 | MQ-9 Reaper / Orion | 4× Hellfire / 4× Ataka |
+| RQ-190 | sin armas (sensor puro, `rcs 0.96`) |
 
 El F-35 y el F-22 conviven en el tier 3 occidental (`EXTRA_VARIANTS`, ver
 `docs/UNITS.md`) y no son intercambiables: el Raptor lleva 10 misiles y domina el
@@ -163,34 +164,95 @@ combinación arma/blanco que maximiza `Pk × daño` —así no malgasta un AMRAA
 dron ni tira un Maverick contra infantería atrincherada—. Prioriza la amenaza
 aérea sobre la terrestre y dispara un misil por aparato y ciclo.
 
-## 9. Furtividad: lo que hace y lo que NO hace
+## 9. Furtividad: dos cosas distintas
 
-**Limitación conocida.** Hoy `evasion` se usa en un único punto del motor
-(`targetEvasion`, que alimenta solo a `pkFor`). Es decir: la furtividad hace al
-aparato **más difícil de derribar**, nunca **más difícil de detectar**.
+La furtividad se modela con **dos números separados**, porque en la realidad son
+dos problemas distintos y un avión puede ser bueno en uno y malo en el otro:
 
-`radarContacts` filtra exclusivamente por distancia, así que un B-2 aparece en el
-radar enemigo exactamente igual que un Tu-22M2, y el sistema de niebla (`intel`)
-tampoco distingue: un bombardero furtivo parado en una provincia se ve como se
-vería un pelotón de infantería.
-
-Aparatos con firma reducida y su evasión actual:
-
-| Aparato | Evasión | Efecto real hoy |
+| Campo | Qué hace | Dónde pega |
 |---|---|---|
-| B-21 Raider | 0,50 | −50% al Pk de quien le dispara |
-| F-22 Raptor / B-2 Spirit | 0,45 | −45% |
-| F-35A Lightning II | 0,42 | −42% |
-| Su-57 | 0,40 | −40% |
-| MQ-9 Reaper / Orion | 0,35 | −35% (célula pequeña, no furtiva) |
-| Drones t1/t2 | 0,30 | −30% |
+| `rcs` | **No ser visto.** Recorta el alcance al que te detectan: quien te busca con un radar de `R` km te ve a `R × (1 − rcs)` | `radarContacts` |
+| `evasion` | **No ser tocado.** Resta efectividad al Pk del misil que ya te dispararon | `pkFor` |
 
-**Pendiente** si se quiere furtividad de verdad: que la firma radar recorte el
-alcance de DETECCIÓN, no solo el Pk — p. ej. `alcance_efectivo = radarKm ×
-(1 − rcs)`, con contrapesos para que siga habiendo respuesta (radares de
-vigilancia terrestres, detección a corta distancia siempre garantizada, o que
-disparar un misil activo delate la posición del tirador durante unos minutos).
-Sin esos contrapesos, un F-22 invisible es imbatible y aburrido.
+| Aparato | `rcs` | Te ve un radar de caza puntero (1.000 km) a… | `evasion` |
+|---|---|---|---|
+| RQ-190 | 0,96 | **40 km** (o sea: encima) | 0,70 |
+| B-21 Raider | 0,88 | 120 km | 0,68 |
+| B-2 Spirit | 0,82 | 180 km | 0,62 |
+| F-22 Raptor | 0,80 | 200 km | 0,65 |
+| F-35A | 0,78 | 220 km | 0,60 |
+| Su-57 | 0,62 | 380 km | 0,42 |
+| MQ-9 / Orion | 0,25 | 750 km | 0,35 |
+| F/A-18E | 0,15 | 850 km | 0,20 |
+| B-52G, MiG-23, Su-27… | 0 | 1.000 km | 0,05–0,15 |
+
+Los furtivos occidentales están deliberadamente por encima del Su-57 en ambos
+ejes: es la ventaja tecnológica del bando, no un descuido de balance.
+
+### El contrapeso: radares de vigilancia terrestres
+
+Si la furtividad solo recortase la detección, un F-22 sería invencible y aburrido.
+El contrapeso es que **el antiaéreo no solo dispara: vigila**, y su radar alimenta
+la imagen táctica de todo su bando por enlace de datos (`SAM_RADAR`). Un radar
+terrestre grande en banda métrica ve lo que ningún radar de caza puede.
+
+| Batería | Vigilancia | `antiStealth` | Coge al F-22 a… | Coge al RQ-190 a… |
+|---|---|---|---|---|
+| Vulcan / Shilka (t1) | 120 km | 0 | 24 km | 5 km |
+| Patriot (t2) | 600 km | 0,05 | 144 km | 53 km |
+| Buk (t2) | 640 km | 0,05 | 154 km | 56 km |
+| PAC-3 (t3) | 1.000 km | 0,14 | 312 km | 174 km |
+| **S-400 (t3)** | 1.400 km | 0,15 | **448 km** | **258 km** |
+
+En el radar del avión, esos contactos aparecen marcados **ENLACE**: los ve tu
+batería, no tu aparato. Puedes dispararles igual si están dentro del alcance de
+tu misil, y ahí está la jugada — tu Patriot ilumina al furtivo y tu caza lo mata.
+
+Verificado en partida: un B-52 a 1.125 km lo coge el S-400 por enlace pero no el
+caza; el F-22 y el F-35 a 508 km **no los ve nadie**; y el RQ-190 solo aparece
+cuando comparte sector o cuando la geografía aprieta (detectado a 69 km entre
+Idaho y Montana, que son provincias inusualmente juntas).
+
+**Sigue sin modelarse**: la furtividad no afecta a la niebla estratégica (`intel`),
+solo al radar aéreo. Un bombardero furtivo parado en una provincia que tengas
+reconocida se ve en el mapa como cualquier otra unidad.
+
+## 10. Aviación embarcada
+
+Los portaviones llevan su ala aérea consigo. Plazas por buque —el básico lleva
+menos que el avanzado, y la asimetría entre bandos es real: los portaaeronaves
+soviéticos nunca tuvieron un ala comparable a la estadounidense—:
+
+| Occidental | Plazas | Oriental | Plazas |
+|---|---|---|---|
+| USS Kitty Hawk (t1) | 3 | Kiev, Proy. 1143 (t1) | 2 |
+| USS Nimitz (t2) | 4 | Kuznetsov (t2) | 3 |
+| USS Gerald R. Ford (t3) | 6 | Shtorm, Proy. 23000 (t3) | 5 |
+
+**Solo operan desde cubierta** los aparatos con gancho y alas plegables
+(`CARRIER_CAPABLE`): F/A-18E, F-35 y RQ-190 en occidente; Su-27 (→ Su-33),
+Su-57 y Orion en oriente. Un F-22 o un F-16 lo rechazan explicando por qué.
+*Concesión de juego*: el Su-57 no tiene variante naval real —el caza embarcado
+ruso es el MiG-29K— pero se admite para que el bando oriental tenga un furtivo
+embarcado.
+
+Flujo, sin teletransportes:
+
+1. El avión **vuela** hasta la celda de mar del portaviones (los aéreos pueden
+   entrar en el mar, ver `canEnter` en `movement.js`).
+2. Con ambos detenidos y plaza libre, su ficha ofrece **🛬 Aterrizar**.
+3. A bordo pasa a `embarked = idBuque`, así que hereda todas las exclusiones que
+   ya existían: no combate, no se dibuja, no lo detecta ningún radar.
+4. El buque navega y **el ala viaja con él**.
+5. **Lanzar** desde la ficha del portaviones lo devuelve al vuelo en el sector
+   donde el buque esté AHORA — que es justo lo que hace útil embarcarlo.
+
+**Rearme a bordo**: un portaviones tiene pañoles, así que hace de base aérea
+flotante. Solo con el buque detenido: si está navegando no hay ciclo de vuelo.
+
+La lista a bordo se resuelve recorriendo `embarked` (`aircraftAboard`) en vez de
+guardar un array en el buque: una sola fuente de verdad, imposible que se
+desincronicen, y los guardados viejos no necesitan campo nuevo.
 
 ## 10. Compatibilidad con guardados
 

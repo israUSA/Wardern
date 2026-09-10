@@ -294,6 +294,21 @@ export const EXTRA_VARIANTS = {
     terrainAtkPenalty: {},
     rangedTicks: 0,
   },
+  // Convive con el MQ-9 (occ-3-drone) igual que el F-35 con el F-22. No es un
+  // Reaper mejor: es otra cosa. Cuesta el triple, no lleva armas y vuela más
+  // lento, pero su firma radar (rcs 0.96 en air-combat-data.js) lo vuelve
+  // invisible para cualquier radar de caza. Se compra para VER, no para pegar.
+  "occ-3-drone-rq190": {
+    id: "occ-3-drone-rq190", doctrine: "occidental", tier: 3, category: "drone",
+    name: "RQ-190", icon: "drone",
+    cost: { money: 45000, supplies: 3800, manpower: 150, fuel: 2200 },
+    buildHours: 26, hp: 100, speed: 140, captures: false, air: true,
+    attack: { infanteria: 0, motorizada: 0, mbt: 0, cazatanques: 0, artilleria: 0, antiaereo: 0, caza: 0, bombardero: 0, helicoptero: 0, drone: 0 },
+    defense: { infanteria: 8, motorizada: 8, mbt: 8, cazatanques: 8, artilleria: 8, antiaereo: 6, caza: 6, bombardero: 8, helicoptero: 8, drone: 8 },
+    terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
+    terrainAtkPenalty: {},
+    rangedTicks: 0,
+  },
 };
 
 // ---- Alias legacy: ids planas de las partidas guardadas (stats intachables) ----
