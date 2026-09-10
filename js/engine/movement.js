@@ -1,7 +1,8 @@
 // Movimiento: coste de aristas, pathfinding (Dijkstra) y avance por tick.
 // Reglas por clase de unidad: terrestre solo tierra · naval solo mar · aéreo todo (vuelo).
 import * as C from "../data/constants.js";
-import { S, unitDef, isNaval, controller, atWar } from "./state.js";
+import { S, unitDef, isNaval, controller, atWar, log } from "./state.js";
+import { CARRIER_CAPACITY, CARRIER_CAPABLE } from "../data/air-combat-data.js";
 
 export function edgeMinutes(unitType, fromP, toP, strait) {
   const d = distKm([fromP.cx, fromP.cy], [toP.cx, toP.cy]);
@@ -88,10 +89,26 @@ export function findPath(state, unit, targetId) {
   return path;
 }
 
+// Portaviones propios con plaza libre en `pid` donde ESTA aeronave puede apontar.
+// Vive aquí, y no en air-combat.js, porque es una regla de DESTINO: sin ella el
+// pathfinding rechazaba cualquier sector de mar para un avión y la aviación
+// embarcada era inalcanzable (el avión nunca podía volar hasta el buque).
+export function carrierBerths(state, unit, pid) {
+  if (!unit || unit.embarked || !CARRIER_CAPABLE.has(unit.type)) return [];
+  return state.units.filter(
+    (c) =>
+      !c.dead && !c.embarked && c.owner === unit.owner && CARRIER_CAPACITY[c.type] &&
+      c.pos === pid && !c.edgeLeft &&
+      state.units.filter((x) => !x.dead && x.embarked === c.id).length < CARRIER_CAPACITY[c.type]
+  );
+}
+
 export function orderMove(state, unit, targetId) {
   const cell = S.provinces.get(targetId);
-  // Barcos terminan en el mar; terrestres/aéreos nunca terminan en el mar
-  if (cell?.isSea && !isNaval(unit.type)) return false;
+  // Barcos terminan en el mar; terrestres y aéreos no... salvo una aeronave de
+  // cubierta cuyo destino es un portaviones propio parado en ese sector: eso no
+  // es "quedarse sobre el agua", es ir a aterrizar.
+  if (cell?.isSea && !isNaval(unit.type) && !carrierBerths(state, unit, targetId).length) return false;
   if (!cell?.isSea && isNaval(unit.type)) return false;
   const path = findPath(state, unit, targetId);
   if (!path || !path.length) return false;
@@ -152,6 +169,27 @@ export function orderReturnToBase(state, unit) {
   return null;
 }
 
+// Apontaje al final de la ruta. Si una aeronave termina su viaje sobre un sector
+// de mar es porque pidió ir a un portaviones (orderMove no admite otro destino
+// marítimo), así que toma cubierta sola en cuanto llega: obligar a un segundo
+// clic sobre un avión flotando en mitad del océano no aporta nada.
+// El buque puede haber zarpado durante el vuelo; en ese caso el aparato queda
+// en el aire y el jugador decide (aterrizar a mano si vuelve, o volver a base).
+function landIfCarrier(state, unit) {
+  const c = carrierBerths(state, unit, unit.pos)[0];
+  if (!c) {
+    if (CARRIER_CAPABLE.has(unit.type)) {
+      log(state, `${unitDef(unit.type)?.name} llega al sector y no encuentra cubierta libre`, "info");
+    }
+    return;
+  }
+  unit.embarked = c.id;
+  unit.path = [];
+  unit.edgeLeft = null;
+  unit.task = null;
+  log(state, `${unitDef(unit.type)?.name} toma cubierta en ${unitDef(c.type)?.name}`, "info");
+}
+
 export function tickMovement(state, dt) {
   for (const u of state.units) {
     if (!u.edgeLeft) continue;
@@ -167,6 +205,7 @@ export function tickMovement(state, dt) {
     if (cell?.isSea) {
       // navegando: sin interacción con fronteras, pero encadena el siguiente tramo
       if (u.path.length) u.edgeLeft = startEdgeFor(state, u, u.path[0]);
+      else if (unitDef(u.type)?.air) landIfCarrier(state, u);
       continue;
     }
     const ctrl = controller(state.provinces[u.pos]);

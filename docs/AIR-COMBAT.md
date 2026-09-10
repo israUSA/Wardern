@@ -253,9 +253,16 @@ embarcado.
 
 Flujo, sin teletransportes:
 
-1. El avión **vuela** hasta la celda de mar del portaviones (los aéreos pueden
-   entrar en el mar, ver `canEnter` en `movement.js`).
-2. Con ambos detenidos y plaza libre, su ficha ofrece **🛬 Aterrizar**.
+1. El avión **vuela** hasta la celda de mar del portaviones: se le ordena el
+   movimiento como a cualquier unidad, haciendo clic en el sector donde está el
+   buque. Un destino marítimo solo se acepta si allí hay un portaviones propio,
+   parado y con plaza libre (`carrierBerths` en `movement.js`); en cualquier otro
+   caso la orden se rechaza, porque un avión no puede quedarse sobre el agua.
+2. Al llegar **aponta solo** (`landIfCarrier` en `tickMovement`): si ha podido
+   pedir ese destino es porque había cubierta, y obligar a un segundo clic sobre
+   un avión flotando en mitad del océano no aportaba nada. El botón **🛬
+   Aterrizar** de su ficha sigue estando para el caso manual: un aparato que ya
+   comparte sector con el buque —recién despegado, o de vuelta de una misión—.
 3. A bordo pasa a `embarked = idBuque`, así que hereda todas las exclusiones que
    ya existían: no combate, no se dibuja, no lo detecta ningún radar.
 4. El buque navega y **el ala viaja con él**.

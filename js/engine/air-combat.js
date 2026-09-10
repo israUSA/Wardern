@@ -8,6 +8,7 @@
 import { S, unitDef, controller, atWar, distKm, log, visibleProvinces } from "./state.js";
 import { vetLevel } from "./combat.js";
 import { canAfford, pay } from "./economy.js";
+import { carrierBerths } from "./movement.js";
 import * as C from "../data/constants.js";
 import {
   AIR_WEAPONS, AIR_LOADOUTS, GROUND_EVASION, SAM_RANGE_KM, SAM_PK, SAM_DAMAGE,
@@ -439,15 +440,12 @@ export function aircraftAboard(state, carrier) {
 
 // Portaviones propios en los que ESTE avión puede tomar cubierta ahora mismo:
 // mismo sector de mar, buque parado, plaza libre y aparato apto para cubierta.
+// La condición de plaza la define `carrierBerths` (movement.js), que es la misma
+// que autoriza el destino al ordenar el vuelo: si el pathfinding te dejó llegar,
+// aquí hay botón, sin dos listas de requisitos que se puedan desincronizar.
 export function landingOptions(state, u) {
-  if (!AIR_LOADOUTS[u?.type] || u.embarked || u.edgeLeft) return [];
-  if (!CARRIER_CAPABLE.has(u.type)) return [];
-  return state.units.filter(
-    (c) =>
-      !c.dead && !c.embarked && c.owner === u.owner && CARRIER_CAPACITY[c.type] &&
-      c.pos === u.pos && !c.edgeLeft &&
-      aircraftAboard(state, c).length < CARRIER_CAPACITY[c.type]
-  );
+  if (!AIR_LOADOUTS[u?.type] || u.edgeLeft) return [];
+  return carrierBerths(state, u, u.pos);
 }
 
 // Toma de cubierta. El avión tiene que haber VOLADO hasta la celda de mar del

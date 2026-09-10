@@ -1,11 +1,11 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop, neutralBlocker, orderReturnToBase } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
-import { fireAirWeapon, landOnCarrier, launchFromCarrier } from "./engine/air-combat.js";
+import { fireAirWeapon, landOnCarrier, launchFromCarrier, isCarrierCapable } from "./engine/air-combat.js";
 import { aiRespondPeace } from "./engine/ai.js";
 import { MapRenderer, hitProvince, inverseMercY } from "./render/renderer.js";
 import * as UI from "./ui/panels.js";
@@ -476,18 +476,37 @@ function checkEnd() {
 }
 
 // Emite la orden a todas las unidades de la selección y resume el resultado
+// Por qué no salió la orden. El caso que más despista es pedirle a un avión un
+// sector de mar: sobre el agua no hay dónde posarse salvo la cubierta de un
+// portaviones propio, parado y con plaza libre.
+function moveFailMsg(ids, pid) {
+  const u = state.units.find((x) => x.id === ids[0] && !x.dead);
+  if (!S.provinces.get(pid)?.isSea || !u || !unitDef(u.type)?.air) {
+    return "Sin ruta hasta esa provincia";
+  }
+  return isCarrierCapable(u.type)
+    ? "Ahí no tienes ningún portaviones parado con plaza libre: un avión no puede quedarse sobre el mar"
+    : `${unitDef(u.type)?.name} no opera desde portaviones: sobre el mar no tiene dónde aterrizar`;
+}
+
 function issueMove(ids, pid) {
   let ok = 0;
   for (const id of ids) {
     const u = state.units.find((x) => x.id === id && !x.dead);
     if (u && pid !== u.pos && orderMove(state, u, pid)) ok++;
   }
+  // Rumbo a un portaviones: el apontaje es automático al llegar, conviene decirlo
+  const buque = ok && S.provinces.get(pid)?.isSea
+    ? carrierBerths(state, state.units.find((x) => x.id === ids[0]), pid)[0]
+    : null;
   UI.toast(
     ok === 0
-      ? "Sin ruta hasta esa provincia"
-      : ids.length > 1
-        ? `Orden emitida a ${ok} de ${ids.length} unidades`
-        : "Orden de movimiento emitida"
+      ? moveFailMsg(ids, pid)
+      : buque
+        ? `Rumbo al ${unitDef(buque.type)?.name}: apontará al llegar`
+        : ids.length > 1
+          ? `Orden emitida a ${ok} de ${ids.length} unidades`
+          : "Orden de movimiento emitida"
   );
   updateUI();
 }
