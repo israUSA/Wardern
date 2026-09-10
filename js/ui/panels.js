@@ -9,6 +9,11 @@ import {
 } from "../engine/state.js";
 import { vetLevel } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
+import {
+  airLoadout, airWeapons, radarContacts, groundContacts, pkFor, weaponCanTarget,
+  rearmStatus, radarRangeKm, bearingDeg, effRange,
+} from "../engine/air-combat.js";
+import { AIR_WEAPONS } from "../data/air-combat-data.js";
 import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
 
@@ -554,6 +559,9 @@ export function updateUnitPanel(state, ui) {
     </div>
     <div class="up-atk"><span class="up-mlabel">Mejor ataque</span> ${topAttacks(T)}</div>`;
 
+  // Aeronaves: sensores y carga de misiles (docs/AIR-COMBAT.md)
+  if (airLoadout(u.type)) html += airSection(state, u, mine);
+
   // Órdenes: solo sobre unidades propias (las enemigas son ficha informativa)
   if (mine) {
     const moving = !!u.edgeLeft || !!u.path?.length;
@@ -609,7 +617,255 @@ export function updateUnitPanel(state, ui) {
   panel.querySelectorAll("[data-up-pick]").forEach((b) =>
     b.addEventListener("click", () => hooks.onSelectUnit(parseInt(b.dataset.upPick, 10)))
   );
+  panel.querySelectorAll("[data-up-radar]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onRadar(parseInt(b.dataset.upRadar, 10)))
+  );
   panel.querySelector("#up-move-all")?.addEventListener("click", () => hooks.onMove(u.id, ui.selStackIds));
+}
+
+// ---- Aeronaves: sensores, armamento y radar (docs/AIR-COMBAT.md) ----
+
+// Bloque de la ficha de unidad: alcance del radar, munición por arma y rearme.
+function airSection(state, u, mine) {
+  const armas = airWeapons(u);
+  const radar = radarRangeKm(u);
+  let html = `<div class="pp-section"><h4>Sensores y armamento</h4>
+    <div class="up-radarline">📡 Radar de detección: <b>${radar} km</b></div>`;
+
+  if (!armas.length) {
+    html += `<div class="garrison-note">Aparato de reconocimiento puro: sin armamento.</div></div>`;
+    return html;
+  }
+
+  for (const { weapon: w, left, total } of armas) {
+    const vacio = left <= 0;
+    html += `<div class="up-wrow${vacio ? " vacio" : ""}" title="${w.nombre} · guía ${w.guia} · ${Math.round(w.pk * 100)}% de impacto base · alcance real ${w.rangoKm} km (${effRange(w)} en escala de teatro)">
+      <span class="up-wname">${w.nombre}</span>
+      <span class="up-wtag">${w.tipo === "aa" ? "aire-aire" : "aire-suelo"} · ${effRange(w)} km</span>
+      <span class="up-wammo">${left}<span class="cost">/${total}</span></span>
+    </div>`;
+  }
+
+  if (mine) {
+    const st = rearmStatus(state, u);
+    if (st && !st.completo) {
+      if (st.blocker) {
+        html += `<div class="up-rearm warn">Rearme detenido: ${st.blocker}</div>`;
+      } else if (st.sinRecursos) {
+        html += `<div class="up-rearm warn">Sin recursos para reponer ${st.weapon.nombre}</div>`;
+      } else {
+        html += `<div class="up-rearm">Rearmando ${st.weapon.nombre} · ${Math.ceil(st.minutosRestantes)} min</div>`;
+      }
+    } else if (st?.completo) {
+      html += `<div class="up-rearm ok">Carga completa</div>`;
+    }
+    html += `<button class="btn small primary" data-up-radar="${u.id}" style="margin-top:8px">📡 Abrir radar</button>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+// Panel de radar: barrido con los contactos, selector de arma y disparo.
+// Se refresca con el resto de la UI, así que los contactos se mueven en vivo.
+export function updateRadarPanel(state, ui) {
+  const panel = $("radar-panel");
+  const u = state?.units.find((x) => x.id === ui.radarUnit && !x.dead);
+  if (!u || !airLoadout(u.type) || u.owner !== state.player) {
+    panel.classList.add("hidden");
+    $("game-ui").classList.remove("radar-open");
+    return;
+  }
+  panel.classList.remove("hidden");
+  $("game-ui").classList.add("radar-open"); // el panel de provincia le hace sitio
+
+  const T = unitDef(u.type);
+  const armas = airWeapons(u);
+  const radar = radarRangeKm(u);
+  const modo = ui.radarMode === "as" ? "as" : "aa";
+
+  // Arma activa: la elegida si sigue siendo válida, si no la primera del modo con munición
+  const delModo = armas.filter((a) => a.weapon.tipo === modo);
+  let sel = delModo.find((a) => a.weapon.id === ui.radarWeapon) || delModo.find((a) => a.left > 0) || delModo[0];
+
+  const contactos = modo === "aa" ? radarContacts(state, u) : groundContacts(state, u);
+  const enTransito = !!u.edgeLeft;
+
+  let html = `<div class="rp-head">
+      <span class="rp-title">📡 ${T?.name || u.type}<span class="cost"> · radar ${radar} km</span></span>
+      <button class="up-close" id="rp-close" title="Cerrar">✕</button>
+    </div>`;
+
+  const nAA = radarContacts(state, u).length;
+  const nAS = airWeapons(u).some((a) => a.weapon.tipo === "as") ? groundContacts(state, u).length : 0;
+  html += `<div class="rp-modes">
+      <button class="rp-mode${modo === "aa" ? " active" : ""}" data-rmode="aa">Aire-aire <b>${nAA}</b></button>
+      <button class="rp-mode${modo === "as" ? " active" : ""}" data-rmode="as">Aire-suelo <b>${nAS}</b></button>
+    </div>`;
+
+  html += `<div class="rp-scope"><canvas id="rp-canvas" width="208" height="208"></canvas><div class="rp-sweep"></div></div>`;
+
+  // Selector de arma
+  html += `<div class="rp-weapons">`;
+  if (!delModo.length) {
+    html += `<div class="garrison-note">Este aparato no lleva armas ${modo === "aa" ? "aire-aire" : "aire-suelo"}.</div>`;
+  }
+  for (const a of delModo) {
+    const act = sel && a.weapon.id === sel.weapon.id;
+    html += `<button class="rp-wchip${act ? " active" : ""}${a.left <= 0 ? " vacio" : ""}" data-rweapon="${a.weapon.id}"
+      title="${a.weapon.nombre} · guía ${a.weapon.guia} · ${effRange(a.weapon)} km · ${Math.round(a.weapon.pk * 100)}% base">
+      ${a.weapon.nombre.split(" ")[0]} <b>${a.left}</b></button>`;
+  }
+  html += `</div>`;
+
+  if (enTransito) {
+    html += `<div class="up-rearm warn">En tránsito: el avión debe estar en su sector para disparar.</div>`;
+  }
+
+  // Lista de contactos
+  html += `<div class="rp-contacts">`;
+  if (!contactos.length) {
+    html += `<div class="garrison-note">Sin contactos${modo === "as" ? " de superficie reconocidos" : " en el radar"}.</div>`;
+  }
+  for (const c of contactos.slice(0, 12)) {
+    const e = c.unit;
+    const eT = unitDef(e.type);
+    const color = S.countries[e.owner].color;
+    const enAlcance = sel && c.km <= effRange(sel.weapon) && sel.left > 0;
+    const veto = sel ? weaponCanTarget(sel.weapon, e) : "sin arma seleccionada";
+    const pk = sel && !veto ? Math.round(pkFor(sel.weapon, u, e, c.km) * 100) : null;
+    const activo = ui.radarTarget === e.id;
+    let motivo = "";
+    if (!sel) motivo = "Elige un arma";
+    else if (veto) motivo = veto;
+    else if (sel.left <= 0) motivo = `Sin ${sel.weapon.nombre}`;
+    else if (!enAlcance) motivo = `Fuera de alcance (${Math.round(c.km)} > ${effRange(sel.weapon)} km)`;
+    else if (enTransito) motivo = "El avión está en tránsito";
+
+    html += `<div class="rp-contact${activo ? " sel" : ""}${enAlcance && !veto ? " tiro" : ""}" data-rtarget="${e.id}">
+      <span class="rp-blip" style="background:${color}"></span>
+      <div class="rp-cinfo">
+        <b>${eT?.name || e.type}</b> <span class="cost">${S.countries[e.owner].name}</span>
+        <div class="cost">${Math.round(c.km)} km · rumbo ${Math.round(c.bearing)}° · ${Math.round(e.hp)} HP${pk !== null ? ` · <span class="rp-pk">Pk ${pk}%</span>` : ""}</div>
+      </div>
+      <button class="btn small" data-rfire="${e.id}" ${motivo ? `disabled title="${motivo}"` : ""}>Disparar</button>
+    </div>`;
+  }
+  html += `</div>`;
+
+  panel.innerHTML = html;
+  drawRadarScope(panel, state, ui, u, contactos, sel, radar);
+
+  panel.querySelector("#rp-close").addEventListener("click", () => hooks.onCloseRadar());
+  panel.querySelectorAll("[data-rmode]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onRadarMode(b.dataset.rmode))
+  );
+  panel.querySelectorAll("[data-rweapon]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onRadarWeapon(b.dataset.rweapon))
+  );
+  panel.querySelectorAll("[data-rtarget]").forEach((row) =>
+    row.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+      hooks.onRadarTarget(parseInt(row.dataset.rtarget, 10));
+    })
+  );
+  panel.querySelectorAll("[data-rfire]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onFireAir(sel.weapon.id, parseInt(b.dataset.rfire, 10)))
+  );
+}
+
+// Indicador panorámico (PPI): norte arriba, anillos de distancia, burbuja del
+// arma seleccionada y un blip por contacto en su rumbo real.
+function drawRadarScope(panel, state, ui, u, contactos, sel, radarKm) {
+  const cv = panel.querySelector("#rp-canvas");
+  if (!cv) return;
+  const size = 208;
+  const dpr = window.devicePixelRatio || 1;
+  cv.style.width = size + "px";
+  cv.style.height = size + "px";
+  cv.width = Math.round(size * dpr);
+  cv.height = Math.round(size * dpr);
+  const g = cv.getContext("2d");
+  g.scale(dpr, dpr);
+  const c = size / 2;
+  const R = c - 14;
+
+  g.fillStyle = "#08130d";
+  g.fillRect(0, 0, size, size);
+
+  // Anillos de distancia con su etiqueta en km
+  g.font = "9px monospace";
+  g.textAlign = "center";
+  for (let i = 1; i <= 4; i++) {
+    const r = (R * i) / 4;
+    g.strokeStyle = i === 4 ? "rgba(90,220,140,0.55)" : "rgba(90,220,140,0.22)";
+    g.lineWidth = 1;
+    g.beginPath();
+    g.arc(c, c, r, 0, Math.PI * 2);
+    g.stroke();
+    g.fillStyle = "rgba(120,220,160,0.55)";
+    g.fillText(Math.round((radarKm * i) / 4) + "", c, c - r + 10);
+  }
+  // Cruz de rumbos
+  g.strokeStyle = "rgba(90,220,140,0.18)";
+  g.beginPath();
+  g.moveTo(c - R, c); g.lineTo(c + R, c);
+  g.moveTo(c, c - R); g.lineTo(c, c + R);
+  g.stroke();
+  g.fillStyle = "rgba(120,220,160,0.7)";
+  g.fillText("N", c, 10);
+
+  // Burbuja del arma seleccionada: dentro de ella SÍ se puede disparar
+  if (sel) {
+    const rr = Math.min(R, (effRange(sel.weapon) / Math.max(1, radarKm)) * R);
+    g.fillStyle = "rgba(90,220,140,0.09)";
+    g.beginPath();
+    g.arc(c, c, rr, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = "rgba(255,233,160,0.75)";
+    g.setLineDash([4, 3]);
+    g.lineWidth = 1.4;
+    g.beginPath();
+    g.arc(c, c, rr, 0, Math.PI * 2);
+    g.stroke();
+    g.setLineDash([]);
+  }
+
+  // Contactos
+  for (const ct of contactos) {
+    const d = Math.min(1, ct.km / radarKm);
+    const ang = (ct.bearing * Math.PI) / 180;
+    const x = c + Math.sin(ang) * d * R;
+    const y = c - Math.cos(ang) * d * R;
+    const color = S.countries[ct.unit.owner]?.color || "#e05545";
+    const esAire = !!airLoadout(ct.unit.type);
+    g.fillStyle = color;
+    g.strokeStyle = "rgba(255,255,255,0.85)";
+    g.lineWidth = 1;
+    g.beginPath();
+    if (esAire) {
+      // Aeronave: rombo
+      g.moveTo(x, y - 5); g.lineTo(x + 5, y); g.lineTo(x, y + 5); g.lineTo(x - 5, y);
+      g.closePath();
+    } else {
+      g.rect(x - 4, y - 4, 8, 8); // superficie: cuadrado
+    }
+    g.fill();
+    g.stroke();
+    if (ui.radarTarget === ct.unit.id) {
+      g.strokeStyle = "#ffe9a0";
+      g.lineWidth = 1.6;
+      g.beginPath();
+      g.arc(x, y, 9, 0, Math.PI * 2);
+      g.stroke();
+    }
+  }
+
+  // Aparato propio en el centro
+  g.fillStyle = "#eaffe9";
+  g.beginPath();
+  g.moveTo(c, c - 6); g.lineTo(c + 4, c + 5); g.lineTo(c, c + 2); g.lineTo(c - 4, c + 5);
+  g.closePath();
+  g.fill();
 }
 
 // ---------- Registro de eventos ----------

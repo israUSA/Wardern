@@ -6,6 +6,7 @@ import { startBuilding, startRecruitCategory, startResearch, canAfford } from ".
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
 import { strikeWeaponsFor, launchMissile } from "./missiles.js";
+import { aiAirCombat } from "./air-combat.js";
 
 export function aiTickAll(state) {
   const battles = battleSet(state);
@@ -17,6 +18,7 @@ export function aiTickAll(state) {
       aiResearch(state, iso);
       aiMilitary(state, iso, battles);
       aiMissiles(state, iso);
+      aiAirCombat(state, iso); // docs/AIR-COMBAT.md: mismas reglas que el jugador
       aiDiplomacy(state, iso);
     } catch (e) {
       console.error("IA error:", iso, e);

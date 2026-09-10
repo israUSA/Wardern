@@ -2,6 +2,7 @@
 import { S, atWar, visibleProvinces, intel, unitDef } from "../engine/state.js";
 import { DRONE_VISION_KM } from "../data/missiles-data.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
+import { radarRangeKm } from "../engine/air-combat.js";
 import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
 
@@ -223,7 +224,11 @@ export class MapRenderer {
         let rDeg = 0;
         let color = "rgba(255,140,80,0.55)";
         const T = unitDef(u.type);
-        if (u.owner === state.player && T?.category === "drone") {
+        if (ui.radarUnit === u.id) {
+          // Burbuja del radar del avión con el panel abierto (docs/AIR-COMBAT.md)
+          rDeg = radarRangeKm(u) / 111;
+          color = "rgba(90,220,140,0.55)";
+        } else if (u.owner === state.player && T?.category === "drone") {
           rDeg = DRONE_VISION_KM[T.tier ?? 1] / 111;
           color = "rgba(140,200,255,0.4)";
         } else if (ui.strike?.unitId === u.id) {
@@ -373,6 +378,26 @@ export class MapRenderer {
           const mins = Math.max(0, u.edgeLeft.minutesLeft);
           const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${Math.round(mins % 60)} min` : `${Math.max(1, Math.round(mins))} min`;
           this.drawEtaLabel(ctx, sx, sy + 22, "Llega en " + eta);
+        }
+      }
+
+      // Línea de enganche del radar: del avión al contacto marcado
+      if (ui.radarUnit && ui.radarTarget) {
+        const shooter = state.units.find((x) => x.id === ui.radarUnit && !x.dead);
+        const target = state.units.find((x) => x.id === ui.radarTarget && !x.dead);
+        const pa = shooter && S.provinces.get(shooter.pos);
+        const pb = target && S.provinces.get(target.pos);
+        if (pa && pb) {
+          const [ax, ay] = this.w2s(pa.pcx, pa.pcy);
+          const [bx, by] = this.w2s(pb.pcx, pb.pcy);
+          ctx.strokeStyle = "rgba(255,233,160,0.8)";
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(ax, ay);
+          ctx.lineTo(bx, by);
+          ctx.stroke();
+          ctx.setLineDash([]);
         }
       }
 

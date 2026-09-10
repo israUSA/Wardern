@@ -5,6 +5,7 @@ import { orderMove, orderStop } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
+import { fireAirWeapon } from "./engine/air-combat.js";
 import { aiRespondPeace } from "./engine/ai.js";
 import { MapRenderer, hitProvince, inverseMercY } from "./render/renderer.js";
 import * as UI from "./ui/panels.js";
@@ -23,10 +24,22 @@ const ui = {
   // (mismas unidades del mismo tipo apiladas en la celda) o, si no hay
   // inteligencia para identificarla, la provincia del contacto "?" marcado.
   selUnit: null, selStackIds: null, selUnknownPid: null, selUnknownCount: 0,
+  // Radar del avión seleccionado (docs/AIR-COMBAT.md): aparato, modo aire-aire /
+  // aire-suelo, arma elegida y contacto enganchado.
+  radarUnit: null, radarMode: "aa", radarWeapon: null, radarTarget: null,
 };
+
+// Cierra el radar y suelta el enganche
+function clearRadar() {
+  ui.radarUnit = null;
+  ui.radarWeapon = null;
+  ui.radarTarget = null;
+  ui.radarMode = "aa";
+}
 
 // Deselecciona la ficha de unidad y cierra su panel
 function clearUnitSel() {
+  clearRadar(); // el radar pertenece al aparato seleccionado
   ui.selUnit = null;
   ui.selStackIds = null;
   ui.selUnknownPid = null;
@@ -200,6 +213,34 @@ const hooks = {
   },
   onCenter(pid) {
     renderer?.centerOn(pid);
+  },
+  onRadar(unitId) {
+    clearRadar();
+    ui.radarUnit = unitId;
+    updateUI();
+  },
+  onCloseRadar() {
+    clearRadar();
+    updateUI();
+  },
+  onRadarMode(mode) {
+    ui.radarMode = mode === "as" ? "as" : "aa";
+    ui.radarWeapon = null; // cada modo tiene sus armas
+    ui.radarTarget = null;
+    updateUI();
+  },
+  onRadarWeapon(weaponId) {
+    ui.radarWeapon = weaponId;
+    updateUI();
+  },
+  onRadarTarget(unitId) {
+    ui.radarTarget = ui.radarTarget === unitId ? null : unitId;
+    updateUI();
+  },
+  onFireAir(weaponId, targetId) {
+    const res = fireAirWeapon(state, ui.radarUnit, weaponId, targetId);
+    UI.toast(res.msg);
+    updateUI();
   },
   onEmbark(unitId) {
     const res = embark(state, unitId);
@@ -378,6 +419,7 @@ function updateUI() {
   UI.updateTopBar(state);
   UI.updateProvincePanel(state, ui.sel, ui.moveUnitId);
   UI.updateUnitPanel(state, ui);
+  UI.updateRadarPanel(state, ui);
   UI.updateLog(state);
 }
 

@@ -5,6 +5,7 @@ import { economyHour, tickQueues, attritionTick, regenTick, tickResearch } from 
 import { tickMovement } from "./movement.js";
 import { tickCombat } from "./combat.js";
 import { tickMissiles } from "./missiles.js";
+import { tickRearm } from "./air-combat.js";
 import { aiTickAll } from "./ai.js";
 
 export function tick(state) {
@@ -28,6 +29,7 @@ export function tick(state) {
   tickMovement(state, dt);
   tickCombat(state, dt);
   tickMissiles(state, dt);
+  tickRearm(state, dt);
   if (state.units.some((u) => u.dead)) state.units = state.units.filter((u) => !u.dead);
 
   if (Math.floor(state.time / (C.ATTRITION_EVERY_H * 60)) !== prevAttr) {

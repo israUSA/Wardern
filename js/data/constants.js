@@ -17,7 +17,10 @@ export const CATCHUP_BUDGET_MS = 12;          // ms de simulación por llamada c
 // el navegador estrangula el temporizador a 1 disparo/s en segundo plano y hasta
 // 1 disparo/min tras unos minutos, así que ese disparo tiene que poder simular el
 // minuto entero (~240 ticks) o el motor se quedaría atrás para siempre.
-export const CATCHUP_BUDGET_HIDDEN_MAX_MS = 3000;
+// 5 s (no 3): a final de partida un tick cuesta ~16 ms con 400+ unidades y varias
+// guerras abiertas, así que cubrir el minuto entero de un disparo estrangulado
+// exige 240 × 16 ≈ 3,9 s. Con 3 s el motor se iba quedando atrás en esas partidas.
+export const CATCHUP_BUDGET_HIDDEN_MAX_MS = 5000;
 
 export const START_DATE_MS = Date.UTC(2026, 0, 1);
 

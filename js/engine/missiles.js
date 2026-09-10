@@ -4,6 +4,7 @@ import { S, unitDef, controller, atWar, distKm, log, visibleProvinces } from "./
 import { MISSILES } from "../data/missiles-data.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
+import { resolveAirImpact } from "./air-combat.js";
 
 // Armas de golpe que puede disparar esta variante (con su escalado de tier:
 // plataforma.tier > tierRequerido → rango y daño ×1.25, igual que el roster)
@@ -83,6 +84,12 @@ export function tickMissiles(state, dt) {
   if (!state.missiles?.length) return;
   const alive = [];
   for (const m of state.missiles) {
+    // Los misiles aire-aire/aire-suelo persiguen a una UNIDAD: la estela se
+    // recalcula cada tick contra su posición actual (docs/AIR-COMBAT.md).
+    if (m.air && m.targetUnitId) {
+      const t = state.units.find((x) => x.id === m.targetUnitId && !x.dead);
+      if (t) m.toId = t.pos;
+    }
     m.minutesLeft -= dt;
     if (m.minutesLeft > 0) alive.push(m);
     else impact(state, m);
@@ -91,6 +98,12 @@ export function tickMissiles(state, dt) {
 }
 
 function impact(state, m) {
+  // Guiado contra unidad: lo resuelve el motor de combate aéreo (Pk, evasión,
+  // pérdida de enganche). Los golpes contra provincia siguen abajo.
+  if (m.air) {
+    resolveAirImpact(state, m);
+    return;
+  }
   const w = MISSILES[m.weaponId];
   const to = S.provinces.get(m.toId);
   if (!w || !to) return;
