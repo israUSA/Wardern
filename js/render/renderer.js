@@ -63,6 +63,16 @@ export class MapRenderer {
     this.view.scale = Math.min(this.w / dx, this.h / dy) * 0.95;
     this.view.cx = (b.minx + b.maxx) / 2;
     this.view.cy = (b.miny + b.maxy) / 2;
+    this.baseScale = this.view.scale; // referencia del "zoom 1x" (mapa completo)
+  }
+
+  // Tamaño en px de pantalla de los iconos de unidad: crece con el zoom de la
+  // cámara (antes quedaba fijo y, al acercar el mapa, se veían relativamente
+  // más chicos) pero acotado para no rebasar el detalle real de los sprites
+  // (256x256, ver sprite-cache.js) ni saturar la vista al alejar del todo.
+  unitIconSize() {
+    const ratio = this.view.scale / (this.baseScale || this.view.scale);
+    return Math.max(16, Math.min(46, 27 * Math.sqrt(ratio)));
   }
 
   w2s(x, y) {
@@ -120,6 +130,9 @@ export class MapRenderer {
     const ctx = this.ctx;
     const dpr = this.dpr;
     const v = this.view;
+    const unitSize = this.unitIconSize();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#2e5f8a"; // azul de mar más claro (estilo CoN)
@@ -337,7 +350,7 @@ export class MapRenderer {
           ctx.ellipse(sx + 5, sy + 9, 11, 5, 0, 0, Math.PI * 2);
           ctx.fill();
         }
-        drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), 27, this.countryColor(u.owner), {
+        drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), unitSize, this.countryColor(u.owner), {
           hp: Math.max(0, Math.min(1, u.hp / 100)),
           level: vetLevel(u),
           angle: ang + Math.PI / 2, // los sprites miran al norte: +90° alinea el morro con el rumbo
@@ -400,7 +413,7 @@ export class MapRenderer {
       ctx.ellipse(x + 5, y + 9, 11, 5, 0, 0, Math.PI * 2);
       ctx.fill();
     }
-    drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, 27, this.countryColor(g.owner), {
+    drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, this.unitIconSize(), this.countryColor(g.owner), {
       hp: Math.max(0, Math.min(1, g.hp / (g.n * 100))),
       level: g.level,
       variant: g.type, // sprite del vehículo real (F-16A, Abrams, Arleigh Burke...)

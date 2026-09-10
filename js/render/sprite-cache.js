@@ -69,9 +69,16 @@ async function loadSprite(icon, color, key, variant) {
   }
   const tint = tintStyle(color);
   let svg = txt.replace("</svg>", tint + "</svg>");
-  // tamaño intrínseco explícito: drawImage lo necesita en todos los navegadores
-  if (!/width=/.test(svg.match(/<svg[^>]*>/)?.[0] || "")) {
-    svg = svg.replace("<svg", '<svg width="128" height="128"');
+  // tamaño intrínseco explícito: drawImage lo necesita en todos los navegadores.
+  // Se toma del propio viewBox (256x256 en el set v1.4) en vez de un valor fijo:
+  // si se fuerza un tamaño menor al viewBox, el navegador rasteriza con menos
+  // detalle del disponible y el sprite se ve borroso/pixelado al ampliarlo.
+  const openTag = svg.match(/<svg[^>]*>/)?.[0] || "";
+  if (!/\swidth=/.test(openTag)) {
+    const vb = openTag.match(/viewBox=["']\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)/);
+    const size = vb ? vb[1] : "128";
+    const sizeH = vb ? vb[2] : "128";
+    svg = svg.replace("<svg", `<svg width="${size}" height="${sizeH}"`);
   }
   const img = new Image();
   img.onerror = () => cache.delete(key); // reintento en el siguiente frame

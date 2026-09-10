@@ -165,7 +165,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       const isMine = u.owner === state.player;
       const strike = isMine && !u.edgeLeft ? strikeButtonsFor(state, u) : "";
       html += `<div class="unit-row" data-unit="${u.id}">
-        <canvas width="40" height="32" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${S.countries[u.owner].color}"></canvas>
+        <canvas width="56" height="45" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${S.countries[u.owner].color}"></canvas>
         <div>${un.name}${isMine ? "" : ` (${S.countries[u.owner].name})`}
           ${u.cargo?.length ? `<div class="cost">Carga: ${u.cargo.length} unidades</div>` : ""}
           <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
@@ -235,7 +235,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     // miniatura del sprite de la unidad en construcción (variante real)
     const thumb =
       q.kind === "unit" || q.kind === "naval"
-        ? `<canvas width="30" height="24" data-symbol="${unitDef(q.type)?.icon}" data-variant="${q.type}" data-color="${S.countries[state.player].color}"></canvas>`
+        ? `<canvas width="42" height="34" data-symbol="${unitDef(q.type)?.icon}" data-variant="${q.type}" data-color="${S.countries[state.player].color}"></canvas>`
         : "";
     html += `<div class="queue-box" style="display:flex;align-items:center;gap:8px">${thumb}<div>${label} — ${Math.ceil(q.minutesLeft / 60)} h restantes
       <div class="progress"><div style="width:${pct}%"></div></div></div></div>`;
@@ -301,7 +301,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
           if (r.fuel < (u.cost.fuel || 0)) falta.push(`${C.fmtInt(u.cost.fuel - r.fuel)} combustible`);
           why.push("Recursos insuficientes: faltan " + falta.join(", "));
         }
-        html += `<div class="build-row"><canvas width="30" height="24" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${u.buildHours}h${req}</span></div>
+        html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${u.buildHours}h${req}</span></div>
           <button class="btn small" data-recruit="${u.id}" ${lockedTier || lockedBase || lockedPort || !afford ? "disabled" : ""} ${why.length ? `title="${why.join("&#10;")}"` : ""}>Reclutar</button></div>`;
       }
     };
@@ -350,7 +350,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     const vet = vetLevel(u);
     const cargo = u.cargo?.length ? ` <span class="cost">[carga: ${u.cargo.length}]</span>` : "";
     html += `<div class="unit-row" data-unit="${u.id}">
-      <canvas width="40" height="32" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
+      <canvas width="56" height="45" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
       <div>${un.name}${vet ? ` <span style="color:#ffe9a0">${"▲".repeat(vet)}</span>` : ""}${isMine ? "" : ` <span style="color:${color}">(${S.countries[u.owner].name})</span>`}${cargo}
         <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
       </div>
