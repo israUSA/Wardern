@@ -131,6 +131,10 @@ export class MapRenderer {
     const dpr = this.dpr;
     const v = this.view;
     const unitSize = this.unitIconSize();
+    // Registro de zonas clicables de unidad de ESTE frame (lo consume pickUnit):
+    // el hit-test va contra lo que realmente se ve, incluidas las órbitas aéreas
+    // y las unidades interpoladas en marcha, que no están en el centro de su provincia.
+    this.unitHits = [];
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
@@ -278,8 +282,9 @@ export class MapRenderer {
           const k = u.owner + "|" + u.type;
           let g = byType.get(k);
           if (!g) {
-            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, air: AIR_CATS.has(T?.category || u.type) }));
+            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type) }));
           }
+          g.ids.push(u.id);
           g.n++;
           g.hp += u.hp;
           g.level = Math.max(g.level, vetLevel(u));
@@ -291,6 +296,7 @@ export class MapRenderer {
           let total = 0;
           for (const g of all) total += g.n;
           this.drawUnknownContact(ctx, cx, cy, total);
+          this.unitHits.push({ x: cx, y: cy, r: 15, ids: [], pid, unknown: total });
           continue;
         }
 
@@ -303,7 +309,10 @@ export class MapRenderer {
           const n = shownG.length;
           const ang = n > 1 ? -Math.PI / 2 + (i * 2 * Math.PI) / n : 0;
           const rad = n > 1 ? 18 : 0;
-          this.drawUnitGroup(ctx, g, cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad);
+          const gx = cx + Math.cos(ang) * rad;
+          const gy = cy + Math.sin(ang) * rad;
+          this.drawUnitGroup(ctx, g, gx, gy);
+          this.unitHits.push({ x: gx, y: gy, r: hitRadius(unitSize), ids: g.ids, pid });
         });
         if (ground.length > 5) {
           this.drawOverflowChip(ctx, cx + 24, cy + 12, ground.length - 5);
@@ -316,6 +325,7 @@ export class MapRenderer {
           const bx = cx + Math.cos(ang) * 27;
           const by = cy + Math.sin(ang) * 16 - 12; // elipse elevada sobre la pila
           this.drawUnitGroup(ctx, g, bx, by, { airborne: true });
+          this.unitHits.push({ x: bx, y: by - 7, r: hitRadius(unitSize), ids: g.ids, pid });
         });
         if (air.length > 4) {
           this.drawOverflowChip(ctx, cx + 30, cy - 20, air.length - 4);
@@ -340,6 +350,7 @@ export class MapRenderer {
         // Enemigo en zona de inteligencia débil: solo un contacto "?"
         if (!mine && !it.strong.has(u.pos)) {
           this.drawUnknownContact(ctx, sx, sy, 1);
+          this.unitHits.push({ x: sx, y: sy, r: 15, ids: [], pid: u.pos, unknown: 1 });
           continue;
         }
 
@@ -356,11 +367,30 @@ export class MapRenderer {
           angle: ang + Math.PI / 2, // los sprites miran al norte: +90° alinea el morro con el rumbo
           variant: u.type,
         });
+        this.unitHits.push({ x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), ids: [u.id], pid: u.pos });
         this.drawFlagBadge(ctx, sx + 12, sy - (air ? 7 : 0) + 8, this.countryColor(u.owner), u.cargo?.length ? "+" + u.cargo.length : null);
         if (mine) {
           const mins = Math.max(0, u.edgeLeft.minutesLeft);
           const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${Math.round(mins % 60)} min` : `${Math.max(1, Math.round(mins))} min`;
           this.drawEtaLabel(ctx, sx, sy + 22, "Llega en " + eta);
+        }
+      }
+
+      // Anillo de la unidad/pila seleccionada (se dibuja al final: nunca lo tapa otra ficha)
+      if (ui.selUnit || ui.selUnknownPid) {
+        const h = ui.selUnit
+          ? this.unitHits.find((x) => x.ids.includes(ui.selUnit))
+          : this.unitHits.find((x) => x.unknown && x.pid === ui.selUnknownPid);
+        if (h) {
+          ctx.strokeStyle = "#ffe9a0";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 4]);
+          ctx.lineDashOffset = -((timeMs / 55) % 9); // giro lento: marca la selección viva
+          ctx.beginPath();
+          ctx.arc(h.x, h.y, h.r + 3, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.lineDashOffset = 0;
         }
       }
 
@@ -399,6 +429,26 @@ export class MapRenderer {
         }
       }
     }
+  }
+
+  // Ficha de unidad bajo el cursor (px de pantalla), o null. Recorre el registro
+  // del último frame en orden INVERSO: gana la última dibujada, que es la que se
+  // ve encima cuando dos fichas se solapan.
+  pickUnit(px, py) {
+    const hits = this.unitHits || [];
+    for (let i = hits.length - 1; i >= 0; i--) {
+      const h = hits[i];
+      if ((px - h.x) ** 2 + (py - h.y) ** 2 <= h.r * h.r) return h;
+    }
+    return null;
+  }
+
+  // Centra la cámara en una provincia (botón "Centrar" del panel de unidad)
+  centerOn(pid) {
+    const p = S.provinces.get(pid);
+    if (!p) return;
+    this.view.cx = p.pcx;
+    this.view.cy = p.pcy;
   }
 
   // ---- Ayudas de dibujo de unidades (estilo CoN) ----
@@ -474,6 +524,12 @@ export class MapRenderer {
     ctx.fillStyle = "#e8eef4";
     ctx.fillText(text, x, y);
   }
+}
+
+// Radio clicable de una ficha: la mitad del sprite, con un mínimo cómodo para
+// que las fichas sigan siendo fáciles de acertar con el mapa alejado del todo.
+function hitRadius(size) {
+  return Math.max(15, size * 0.5);
 }
 
 // Rectángulo redondeado (ruta) compatible con todos los navegadores

@@ -1,7 +1,7 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
-import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay } from "./engine/state.js";
+import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove } from "./engine/movement.js";
+import { orderMove, orderStop } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
@@ -16,7 +16,33 @@ const canvas = document.getElementById("map");
 let state = null;
 let renderer = null;
 let endShown = false;
-const ui = { sel: null, hover: null, moveUnitId: null, disembarkUnit: null, strike: null, mode: "start", selCountry: null };
+const ui = {
+  sel: null, hover: null, moveUnitId: null, moveIds: null, disembarkUnit: null,
+  strike: null, mode: "start", selCountry: null,
+  // Selección de ficha en el mapa: la unidad concreta y la pila en la que va
+  // (mismas unidades del mismo tipo apiladas en la celda) o, si no hay
+  // inteligencia para identificarla, la provincia del contacto "?" marcado.
+  selUnit: null, selStackIds: null, selUnknownPid: null, selUnknownCount: 0,
+};
+
+// Deselecciona la ficha de unidad y cierra su panel
+function clearUnitSel() {
+  ui.selUnit = null;
+  ui.selStackIds = null;
+  ui.selUnknownPid = null;
+  ui.selUnknownCount = 0;
+}
+
+// Unidades que el render dibuja en la MISMA ficha que la seleccionada: mismo
+// dueño, tipo y celda, todas quietas (las que viajan se dibujan sueltas).
+function stackFor(id) {
+  const u = state?.units.find((x) => x.id === id && !x.dead);
+  if (!u) return [];
+  if (u.edgeLeft || u.embarked) return [u.id];
+  return state.units
+    .filter((x) => !x.dead && !x.embarked && !x.edgeLeft && x.pos === u.pos && x.owner === u.owner && x.type === u.type)
+    .map((x) => x.id);
+}
 
 let acc = 0;
 let lastT = 0;
@@ -39,6 +65,7 @@ const hooks = {
     ui.sel = null;
     ui.moveUnitId = null;
     ui.disembarkUnit = null;
+    clearUnitSel();
     UI.hideStart();
     UI.showGame();
     updateUI();
@@ -66,6 +93,7 @@ const hooks = {
     ui.sel = null;
     ui.moveUnitId = null;
     ui.disembarkUnit = null;
+    clearUnitSel();
     UI.hideStart();
     UI.showGame();
     updateUI();
@@ -88,7 +116,8 @@ const hooks = {
       ui.mode = "game";
       ui.sel = null;
       ui.moveUnitId = null;
-    ui.disembarkUnit = null;
+      ui.disembarkUnit = null;
+      clearUnitSel();
       UI.hideStart();
       UI.showGame();
       updateUI();
@@ -112,7 +141,8 @@ const hooks = {
             ui.mode = "start";
             ui.sel = null;
             ui.moveUnitId = null;
-    ui.disembarkUnit = null;
+            ui.disembarkUnit = null;
+            clearUnitSel();
             UI.showGame();
             UI.showStart(Save.hasSave());
             document.querySelector(".end-screen")?.remove();
@@ -129,9 +159,33 @@ const hooks = {
     if (!startBuilding(state, pid, type)) UI.toast("No se puede construir (recursos o límite)");
     updateUI();
   },
-  onMove(unitId) {
+  onMove(unitId, ids) {
     ui.moveUnitId = unitId;
-    UI.toast("Haz clic en la provincia de destino (clic derecho para cancelar)");
+    ui.moveIds = ids?.length ? [...ids] : [unitId];
+    UI.toast(
+      ui.moveIds.length > 1
+        ? `Destino para ${ui.moveIds.length} unidades: clic en la provincia (clic derecho cancela)`
+        : "Haz clic en la provincia de destino (clic derecho para cancelar)"
+    );
+  },
+  onSelectUnit(unitId, stackIds) {
+    if (!state?.units.some((x) => x.id === unitId && !x.dead)) return;
+    clearUnitSel();
+    ui.selUnit = unitId;
+    ui.selStackIds = stackIds?.length ? [...stackIds] : stackFor(unitId);
+    updateUI();
+  },
+  onCloseUnit() {
+    clearUnitSel();
+    updateUI();
+  },
+  onStop(unitId) {
+    const u = state?.units.find((x) => x.id === unitId && !x.dead);
+    if (u && orderStop(state, u)) UI.toast("Orden cancelada: se detendrá al final del tramo actual");
+    updateUI();
+  },
+  onCenter(pid) {
+    renderer?.centerOn(pid);
   },
   onEmbark(unitId) {
     const res = embark(state, unitId);
@@ -242,6 +296,7 @@ function updateUI() {
   if (!state) return;
   UI.updateTopBar(state);
   UI.updateProvincePanel(state, ui.sel, ui.moveUnitId);
+  UI.updateUnitPanel(state, ui);
   UI.updateLog(state);
 }
 
@@ -267,6 +322,20 @@ function checkEnd() {
     state.speed = 0;
     UI.showEnd(state.gameOver.win, state, hooks.onNewGame);
   }
+}
+
+// Tooltip de una ficha del mapa: nombre, país y HP (o el contacto sin identificar)
+function unitTooltip(hit) {
+  if (hit.unknown) {
+    return `<b>Contacto sin identificar</b><div class="tt-country">${hit.unknown} unidad(es) · sin inteligencia</div>`;
+  }
+  const u = state.units.find((x) => x.id === hit.ids[0] && !x.dead);
+  if (!u) return "";
+  const T = unitDef(u.type);
+  const c = S.countries[u.owner];
+  const n = hit.ids.length;
+  return `<b>${T?.name || u.type}${n > 1 ? ` ×${n}` : ""}</b>
+    <div class="tt-country" style="color:${c?.color}">${c?.name || u.owner} · ${Math.round(u.hp)} HP</div>`;
 }
 
 // ---------- Entrada (ratón / teclado) ----------
@@ -297,6 +366,17 @@ function bindInput() {
       const w = renderer.s2w(e.clientX, e.clientY);
       const pid = hitProvince(w[0], inverseMercY(w[1]));
       if (!ui.moveUnitId) ui.hover = pid;
+
+      // Ficha de unidad bajo el cursor: manda sobre el tooltip de la provincia
+      const hit = state && !ui.moveUnitId && !ui.strike ? renderer.pickUnit(e.clientX, e.clientY) : null;
+      canvas.classList.toggle("unit-hover", !!hit);
+      if (hit) {
+        tooltip.innerHTML = unitTooltip(hit);
+        tooltip.style.left = Math.min(e.clientX + 14, window.innerWidth - 210) + "px";
+        tooltip.style.top = (e.clientY + 16) + "px";
+        tooltip.classList.remove("hidden");
+        return;
+      }
       if (pid) {
         const p = S.provinces.get(pid);
         const c = S.countries[p.country];
@@ -326,12 +406,23 @@ function bindInput() {
     if (!state) return;
 
     if (ui.moveUnitId) {
-      const u = state.units.find((x) => x.id === ui.moveUnitId);
+      const ids = ui.moveIds?.length ? ui.moveIds : [ui.moveUnitId];
       ui.moveUnitId = null;
-    ui.disembarkUnit = null;
-      if (u && pid && pid !== u.pos) {
-        const ok = orderMove(state, u, pid);
-        UI.toast(ok ? "Orden de movimiento emitida" : "Sin ruta hasta esa provincia");
+      ui.moveIds = null;
+      ui.disembarkUnit = null;
+      if (pid) {
+        let ok = 0;
+        for (const id of ids) {
+          const u = state.units.find((x) => x.id === id && !x.dead);
+          if (u && pid !== u.pos && orderMove(state, u, pid)) ok++;
+        }
+        UI.toast(
+          ok === 0
+            ? "Sin ruta hasta esa provincia"
+            : ids.length > 1
+              ? `Orden emitida a ${ok} de ${ids.length} unidades`
+              : "Orden de movimiento emitida"
+        );
       }
       updateUI();
       return;
@@ -359,6 +450,23 @@ function bindInput() {
       return;
     }
 
+    // Clic sobre una ficha de unidad: abre su hoja de datos (y de paso el panel de
+    // la provincia, para tener a la vista el terreno y el resto de la guarnición).
+    const hit = renderer.pickUnit(e.clientX, e.clientY);
+    clearUnitSel();
+    if (hit) {
+      if (hit.unknown) {
+        ui.selUnknownPid = hit.pid;
+        ui.selUnknownCount = hit.unknown;
+      } else {
+        ui.selUnit = hit.ids[0];
+        ui.selStackIds = [...hit.ids];
+      }
+      ui.sel = hit.pid;
+      updateUI();
+      return;
+    }
+
     ui.sel = pid;
     updateUI();
   });
@@ -375,16 +483,25 @@ function bindInput() {
 
   canvas.addEventListener("contextmenu", (e) => {
     e.preventDefault();
-    if (ui.moveUnitId) {
+    // Con un modo de orden abierto, el clic derecho solo lo cancela
+    if (ui.moveUnitId || ui.strike || ui.disembarkUnit) {
+      if (ui.strike) UI.toast("Lanzamiento de misil cancelado");
       ui.moveUnitId = null;
-    ui.disembarkUnit = null;
-      updateUI();
-    }
-    if (ui.strike) {
+      ui.moveIds = null;
+      ui.disembarkUnit = null;
       ui.strike = null;
-      UI.toast("Lanzamiento de misil cancelado");
       updateUI();
+      return;
     }
+    // Con una unidad propia seleccionada: orden de movimiento directa al destino
+    if (!state || !ui.selUnit) return;
+    const u = state.units.find((x) => x.id === ui.selUnit && !x.dead);
+    if (!u || u.owner !== state.player || u.embarked) return;
+    const w = renderer.s2w(e.clientX, e.clientY);
+    const pid = hitProvince(w[0], inverseMercY(w[1]));
+    if (!pid || pid === u.pos) return;
+    UI.toast(orderMove(state, u, pid) ? "Orden de movimiento emitida" : "Sin ruta hasta esa provincia");
+    updateUI();
   });
 
   window.addEventListener("keydown", (e) => {
@@ -396,7 +513,10 @@ function bindInput() {
     }
     if (e.key === "Escape") {
       ui.moveUnitId = null;
-    ui.disembarkUnit = null;
+      ui.moveIds = null;
+      ui.disembarkUnit = null;
+      ui.strike = null;
+      clearUnitSel();
       ui.sel = null;
       updateUI();
     }

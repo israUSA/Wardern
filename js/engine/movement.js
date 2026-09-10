@@ -94,6 +94,16 @@ function startEdgeFor(state, unit, toId) {
   return { to: toId, strait: !!e?.strait, minutesLeft: total, total };
 }
 
+// Cancela la ruta pendiente. La unidad NO se teletransporta: termina el tramo que
+// ya está recorriendo (media provincia a medio cruzar no existe en el motor) y se
+// queda ahí, porque tickMovement solo encadena el siguiente tramo si queda ruta.
+export function orderStop(state, unit) {
+  if (!unit.edgeLeft && !unit.path.length) return false;
+  unit.path = unit.edgeLeft ? [unit.edgeLeft.to] : [];
+  unit.task = null;
+  return true;
+}
+
 export function tickMovement(state, dt) {
   for (const u of state.units) {
     if (!u.edgeLeft) continue;

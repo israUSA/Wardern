@@ -191,6 +191,12 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     panel.querySelectorAll("[data-strike]").forEach((b) =>
       b.addEventListener("click", () => hooks.onStrike(parseInt(b.dataset.strike, 10)))
     );
+    panel.querySelectorAll(".unit-row[data-unit]").forEach((row) =>
+      row.addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+        hooks.onSelectUnit(parseInt(row.dataset.unit, 10));
+      })
+    );
     return;
   }
 
@@ -388,12 +394,222 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   panel.querySelectorAll("[data-strike]").forEach((b) =>
     b.addEventListener("click", () => hooks.onStrike(parseInt(b.dataset.strike, 10)))
   );
+  // La fila entera abre la ficha de la unidad; los botones internos conservan lo suyo.
+  panel.querySelectorAll(".unit-row[data-unit]").forEach((row) =>
+    row.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+      hooks.onSelectUnit(parseInt(row.dataset.unit, 10));
+    })
+  );
   const annex = panel.querySelector("#pp-annex");
   if (annex) annex.addEventListener("click", () => hooks.onAnnex(selId));
   const war = panel.querySelector("#pp-war");
   if (war) war.addEventListener("click", () => hooks.onWarDecl(ctrl));
   const peace = panel.querySelector("#pp-peace");
   if (peace) peace.addEventListener("click", () => hooks.onPeacePropose(ctrl));
+}
+
+// ---- Panel de unidad (clic en una ficha del mapa, estilo CoN) ----
+
+// Nombre legible de una categoría del motor ("caza" → "Caza", "destructor" → "Destructor")
+const CAT_NAMES = Object.fromEntries(
+  [...UNIT_CATEGORIES, ...NAVAL_CATEGORIES].map((c) => [c.id, c.name])
+);
+
+// Barra horizontal etiquetada (HP, moral, experiencia)
+function meter(label, pct, text, color) {
+  const w = Math.max(0, Math.min(100, pct));
+  return `<div class="up-meter"><span class="up-mlabel">${label}</span>
+    <span class="up-mbar"><i style="width:${w}%;background:${color}"></i></span>
+    <span class="up-mval">${text}</span></div>`;
+}
+
+// Color de la barra de HP: verde → ámbar → rojo. Por debajo de RETREAT_HP la
+// unidad se retira sola del combate, así que ese umbral ya se marca en rojo.
+function hpColor(hp) {
+  if (hp <= C.RETREAT_HP) return "var(--danger)";
+  if (hp < 60) return "var(--accent)";
+  return "var(--ok)";
+}
+
+function etaText(mins) {
+  const m = Math.max(0, mins);
+  return m >= 60 ? `${Math.floor(m / 60)} h ${Math.round(m % 60)} min` : `${Math.max(1, Math.round(m))} min`;
+}
+
+function provName(pid) {
+  const p = S.provinces.get(pid);
+  if (!p) return "—";
+  return p.isSea ? "Alta mar" : p.name;
+}
+
+// ¿Hay enemigos en guerra en la misma celda? Mismo criterio que el motor: las
+// unidades en tránsito no combaten (ver tickCombat en js/engine/combat.js).
+function inBattle(state, u) {
+  if (u.edgeLeft) return false;
+  return state.units.some(
+    (e) => !e.dead && !e.embarked && !e.edgeLeft && e.pos === u.pos && e.owner !== u.owner && atWar(state, e.owner, u.owner)
+  );
+}
+
+// Las 3 categorías contra las que esta unidad pega más fuerte: lectura rápida
+// de "para qué sirve", como la ficha de unidad de CoN.
+function topAttacks(T) {
+  return Object.entries(T.attack || {})
+    .filter(([, v]) => v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([k, v]) => `${CAT_NAMES[k] || k} <b>${v}</b>`)
+    .join(" · ");
+}
+
+function avgDefense(T) {
+  const vals = Object.values(T.defense || {});
+  if (!vals.length) return "—";
+  return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+}
+
+export function updateUnitPanel(state, ui) {
+  const panel = $("unit-panel");
+  if (!state || (!ui.selUnit && !ui.selUnknownPid)) {
+    panel.classList.add("hidden");
+    return;
+  }
+
+  // Contacto sin identificar: se puede seleccionar, pero no revela nada
+  if (!ui.selUnit) {
+    panel.classList.remove("hidden");
+    panel.innerHTML = `<div class="up-head">
+        <div class="up-title"><span class="up-name">Contacto sin identificar</span>
+        <span class="up-sub">${provName(ui.selUnknownPid)} · ${ui.selUnknownCount || 1} unidad(es)</span></div>
+        <button class="up-close" id="up-close" title="Cerrar">✕</button>
+      </div>
+      <div class="garrison-note">Inteligencia insuficiente: solo detectas su presencia. Envía un dron o acerca tus tropas para identificar el material.</div>`;
+    panel.querySelector("#up-close").addEventListener("click", () => hooks.onCloseUnit());
+    return;
+  }
+
+  const u = state.units.find((x) => x.id === ui.selUnit && !x.dead);
+  const T = u && unitDef(u.type);
+  if (!T) {
+    panel.classList.add("hidden");
+    return;
+  }
+
+  panel.classList.remove("hidden");
+  const mine = u.owner === state.player;
+  const color = S.countries[u.owner].color;
+  const vet = vetLevel(u);
+  const exp = Math.round(u.exp || 0);
+  const nextVet = C.VET_LEVELS[vet]; // undefined en el nivel máximo
+  const hp = Math.max(0, u.hp);
+  const morale = Math.round((u.morale ?? 1) * 100);
+
+  // Estado operativo: en marcha (con destino y llegada) > en combate > embarcada > lista
+  let estado, estadoCls;
+  if (u.embarked) {
+    estado = "Embarcada en un transporte";
+    estadoCls = "up-st-sea";
+  } else if (u.edgeLeft) {
+    const dest = u.path?.length ? u.path[u.path.length - 1] : u.edgeLeft.to;
+    estado = `En marcha → <b>${provName(dest)}</b> · llega en ${etaText(u.edgeLeft.minutesLeft)}`;
+    estadoCls = "up-st-move";
+  } else if (inBattle(state, u)) {
+    estado = "⚔ En combate";
+    estadoCls = "up-st-fight";
+  } else {
+    estado = "Lista · sin órdenes";
+    estadoCls = "up-st-idle";
+  }
+
+  const doc = T.doctrine ? DOCTRINES[T.doctrine]?.name.replace("Doctrina ", "") : null;
+  const meta = [CAT_NAMES[T.category] || T.category, T.tier ? `T${T.tier}` : null, doc].filter(Boolean).join(" · ");
+
+  let html = `<div class="up-head">
+      <canvas width="60" height="52" data-symbol="${T.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
+      <div class="up-title">
+        <span class="up-name">${T.name}${T.air ? " ✈" : ""}${isNaval(u.type) ? " ⚓" : ""}</span>
+        <span class="up-sub" style="color:${color}">${S.countries[u.owner].name}</span>
+        <span class="up-sub">${meta}</span>
+      </div>
+      <button class="up-close" id="up-close" title="Cerrar (Esc)">✕</button>
+    </div>
+    <div class="up-status ${estadoCls}">${estado}</div>
+    <div class="up-where">Posición: <b>${provName(u.pos)}</b></div>`;
+
+  html += meter("HP", hp, `${Math.round(hp)} / 100`, hpColor(hp));
+  html += meter("Moral", morale, `${morale} %`, morale < 30 ? "var(--danger)" : "#6fa8d9");
+  html += meter("Exp", nextVet ? (exp / nextVet) * 100 : 100, nextVet ? `${exp} / ${nextVet}` : "máx", "#c9a227");
+  html += `<div class="up-vet">Veteranía: ${
+    vet
+      ? `<span class="up-chev">${"▲".repeat(vet)}</span> nivel ${vet} <span class="cost">(+${vet * Math.round(C.VET_BONUS_PER_LEVEL * 100)}% ataque y defensa)</span>`
+      : "sin experiencia"
+  }</div>`;
+
+  html += `<div class="up-stats">
+      <div><span>Velocidad</span><b>${T.speed} km/h</b></div>
+      <div><span>Captura provincias</span><b>${T.captures ? "sí" : "no"}</b></div>
+      <div><span>Defensa media</span><b>${avgDefense(T)}</b></div>
+      ${T.capacity ? `<div><span>Bodega</span><b>${u.cargo?.length || 0} / ${T.capacity}</b></div>` : ""}
+    </div>
+    <div class="up-atk"><span class="up-mlabel">Mejor ataque</span> ${topAttacks(T)}</div>`;
+
+  // Órdenes: solo sobre unidades propias (las enemigas son ficha informativa)
+  if (mine) {
+    const moving = !!u.edgeLeft || !!u.path?.length;
+    const transport = (T.capacity || 0) > 0;
+    html += `<div class="up-actions">
+      <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
+      <button class="btn small" data-up-stop="${u.id}" ${moving ? "" : "disabled"}>Detener</button>
+      <button class="btn small" data-up-center="${u.pos}">Centrar</button>
+      ${transport ? `<button class="btn small" data-up-embark="${u.id}">Embarcar</button>
+      <button class="btn small" data-up-disembark="${u.id}" ${u.cargo?.length ? "" : "disabled"}>Desembarcar</button>` : ""}
+      ${u.edgeLeft ? "" : strikeButtonsFor(state, u)}
+    </div>
+    <div class="up-hint">Con la unidad seleccionada, <b>clic derecho</b> en una provincia la envía allí.</div>`;
+  }
+
+  // Resto de la pila: las demás unidades del mismo tipo apiladas en la celda
+  const stack = (ui.selStackIds || []).filter((id) => id !== u.id);
+  if (stack.length) {
+    html += `<div class="up-stack"><span class="up-mlabel">Pila (${stack.length + 1})</span><div class="up-chips">`;
+    html += `<button class="up-chip active" data-up-pick="${u.id}" title="${T.name} · ${Math.round(hp)} HP">${Math.round(hp)}</button>`;
+    for (const id of stack) {
+      const o = state.units.find((x) => x.id === id && !x.dead);
+      if (!o) continue;
+      html += `<button class="up-chip" data-up-pick="${id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
+    }
+    html += `</div>`;
+    if (mine) html += `<button class="btn small" id="up-move-all">Mover toda la pila (${stack.length + 1})</button>`;
+    html += `</div>`;
+  }
+
+  panel.innerHTML = html;
+  drawPanelIcons(panel);
+
+  panel.querySelector("#up-close").addEventListener("click", () => hooks.onCloseUnit());
+  panel.querySelectorAll("[data-up-move]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onMove(parseInt(b.dataset.upMove, 10)))
+  );
+  panel.querySelectorAll("[data-up-stop]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onStop(parseInt(b.dataset.upStop, 10)))
+  );
+  panel.querySelectorAll("[data-up-center]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onCenter(b.dataset.upCenter))
+  );
+  panel.querySelectorAll("[data-up-embark]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onEmbark(parseInt(b.dataset.upEmbark, 10)))
+  );
+  panel.querySelectorAll("[data-up-disembark]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onDisembarkMode(parseInt(b.dataset.upDisembark, 10)))
+  );
+  panel.querySelectorAll("[data-strike]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onStrike(parseInt(b.dataset.strike, 10)))
+  );
+  panel.querySelectorAll("[data-up-pick]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onSelectUnit(parseInt(b.dataset.upPick, 10)))
+  );
+  panel.querySelector("#up-move-all")?.addEventListener("click", () => hooks.onMove(u.id, ui.selStackIds));
 }
 
 // ---------- Registro de eventos ----------
