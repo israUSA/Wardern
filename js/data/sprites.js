@@ -74,6 +74,9 @@ export const SPRITES = {
     "occ-1-caza": "assets/sprites/v-occ-1-caza.svg",
     "occ-2-caza": "assets/sprites/v-occ-2-caza.svg",
     "occ-3-caza": "assets/sprites/v-occ-3-caza.svg",
+    // PENDIENTE: el F-35 reutiliza el arte del F-22 (ambos delta furtivos, a
+    // 27-46 px se leen igual). Cuando exista v-occ-3-caza-f35.svg, cambiar aquí.
+    "occ-3-caza-f35": "assets/sprites/v-occ-3-caza.svg",
     "ori-1-caza": "assets/sprites/v-ori-1-caza.svg",
     "ori-2-caza": "assets/sprites/v-ori-2-caza.svg",
     "ori-3-caza": "assets/sprites/v-ori-3-caza.svg",

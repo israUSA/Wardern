@@ -1,7 +1,8 @@
 # Wardern — Unidades y balance militar
 
 > Fuente de verdad: `js/data/units-data.js` — **60 variantes de doctrina × tier**
-> (10 categorías × occidental/oriental × 3 tiers) **+ 10 alias legacy**, leído por el
+> (10 categorías × occidental/oriental × 3 tiers) **+ 1 variante especial
+> (`EXTRA_VARIANTS`) + 10 alias legacy**, leído por el
 > motor tal cual (`ALL_UNITS` en `js/engine/state.js`). Números verificados con
 > `node tools/test-variants.mjs`, una réplica EXACTA de la fórmula de
 > `js/engine/combat.js` (97 aserciones: R1–R12 en las 6 combinaciones doctrina×tier,
@@ -39,6 +40,24 @@
   variante. `combat.js` normaliza el id a `def.category` (las ids legacy ya eran
   categorías: para el roster viejo el comportamiento es bit a bit el mismo). Sin esta
   normalización, cualquier unidad con id de variante recibía daño `NaN`.
+
+## Variantes especiales (`EXTRA_VARIANTS`)
+
+La rejilla genera **una** variante por doctrina y tier, pero la doctrina real no
+funciona así: hay tiers donde conviven dos aparatos con papeles distintos y una
+fuerza aérea compra los dos. Para eso existe `EXTRA_VARIANTS`, un mapa escrito a
+mano que se fusiona en `UNITS` **sin tocar el generador**: `availableVariants`
+filtra por categoría, doctrina y tier investigado, no exige unicidad, así que las
+variantes extra aparecen junto a la de la rejilla en el reclutamiento.
+
+| Variante | Rejilla | Papel |
+|---|---|---|
+| `occ-3-caza-f35` — F-35A Lightning II | convive con `occ-3-caza` (F-22 Raptor) | Multirol furtivo: más barato (0,82×), peor contra el aire, mejor contra el suelo, y bahía interna mixta aire-aire + aire-suelo que el Raptor no tiene (ver `docs/AIR-COMBAT.md`) |
+
+Requisitos para añadir una: `id` único, `category` existente, `doctrine`, `tier`,
+y el bloque completo de stats (`cost`, `attack`, `defense`, `terrainDefBonus`,
+`terrainAtkPenalty`, `buildHours`, `hp: 100`, `speed`, `captures`). Si además es
+aeronave, necesita entrada en `AIR_LOADOUTS` y en `SPRITES.variantes`.
 
 ## Sabor de doctrina (verificado que no rompe R1–R12)
 

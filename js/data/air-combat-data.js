@@ -187,6 +187,14 @@ export const AIR_LOADOUTS = {
     radarKm: 250, evasion: 0.45,
     armas: { aim120: 6, aim9x: 2, gbu: 2 },
   },
+  "occ-3-caza-f35": { // F-35A Lightning II — APG-81 AESA, configuración furtiva
+    // Bahía INTERNA: 4 AMRAAM + 2 JDAM. Menos disparos que el Raptor (6 frente a
+    // 10), pero es el único caza furtivo occidental que entra a por blindados y
+    // baterías sin colgar nada por fuera. El "modo bestia" con pilones externos
+    // no se modela: rompe la furtividad, que es justo lo que se compra aquí.
+    radarKm: 200, evasion: 0.42,
+    armas: { aim120: 4, gbu: 2 },
+  },
   "ori-1-caza": { // MiG-23ML — radar Sapfir-23
     radarKm: 55, evasion: 0.05,
     armas: { r23: 2, r60: 4 },

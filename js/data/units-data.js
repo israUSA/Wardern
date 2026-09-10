@@ -265,6 +265,37 @@ for (const cat of KEYS) {
   }
 }
 
+// ---- Variantes especiales fuera de la rejilla doctrina × tier ----
+// La rejilla genera UNA variante por doctrina y tier, pero la doctrina real no
+// funciona así: el F-35 no sustituye al F-22, conviven. Uno es superioridad aérea
+// pura y el otro el multirol furtivo de ataque, y las fuerzas aéreas compran
+// ambos. Se añade como SEGUNDA variante occidental de tier 3 sin tocar el
+// generador: availableVariants filtra por categoría, doctrina y tier investigado,
+// no exige unicidad, así que ambos aparecen juntos en el reclutamiento.
+//
+// Deltas frente al F-22 (occ-3-caza), todos deliberados:
+//  - Más barato (0,82×) y algo más rápido de construir: es el avión "de número".
+//  - Más lento (360 vs 400 km/h de escala): supercrucero solo lo tiene el Raptor.
+//  - PEOR contra el aire (caza 13 vs 15, bombardero 27 vs 31) y MEJOR contra el
+//    suelo (infantería 8 vs 5, artillería 12 vs 10, antiaéreo 11 vs 8).
+//  - Defensa casi idéntica; cede 1 punto en caza.
+// Su verdadera diferencia está en el armamento y los sensores, en
+// js/data/air-combat-data.js: menos misiles que el Raptor pero bahía interna
+// mixta aire-aire + aire-suelo, que es justo lo que el F-22 no tiene.
+export const EXTRA_VARIANTS = {
+  "occ-3-caza-f35": {
+    id: "occ-3-caza-f35", doctrine: "occidental", tier: 3, category: "caza",
+    name: "F-35A Lightning II", icon: "caza",
+    cost: { money: 55000, supplies: 5000, manpower: 400, fuel: 3800 },
+    buildHours: 32, hp: 100, speed: 360, captures: false, air: true,
+    attack: { infanteria: 8, motorizada: 8, mbt: 6, cazatanques: 6, artilleria: 12, antiaereo: 11, caza: 13, bombardero: 27, helicoptero: 22, drone: 25 },
+    defense: { infanteria: 10, motorizada: 10, mbt: 10, cazatanques: 10, artilleria: 10, antiaereo: 9, caza: 13, bombardero: 13, helicoptero: 13, drone: 13 },
+    terrainDefBonus: { llanura: 1, bosque: 1, selva: 1, montaña: 1, desierto: 1, tundra: 1, urbano: 1 },
+    terrainAtkPenalty: {},
+    rangedTicks: 0,
+  },
+};
+
 // ---- Alias legacy: ids planas de las partidas guardadas (stats intachables) ----
 // Sin `doctrine` ni `tier`: se comportan exactamente como antes (tier efectivo 1,
 // reclutables por cualquier doctrina si algún día se listaran). `legacy: true` le
@@ -281,8 +312,9 @@ for (const [cat, base] of Object.entries(LEGACY_BASE)) {
   };
 }
 
-// Mapa consumido por el motor: variantes nuevas + alias legacy (unitDef resuelve ambos)
-export const UNITS = { ...GROUND_VARIANTS, ...LEGACY_UNITS };
+// Mapa consumido por el motor: variantes nuevas + especiales + alias legacy
+// (unitDef resuelve las tres familias)
+export const UNITS = { ...GROUND_VARIANTS, ...EXTRA_VARIANTS, ...LEGACY_UNITS };
 
 // Categorías de unidades (contrato del motor para la UI y el reclutamiento)
 export const UNIT_CATEGORIES = [

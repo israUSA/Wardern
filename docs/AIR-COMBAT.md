@@ -51,6 +51,7 @@ la mecánica central: ves al enemigo acercarse mucho antes de poder hacer nada.
 | F-16A (APG-66) | 300 km | AIM-9L, 72 km | 228 km |
 | F/A-18E (APG-73) | 600 km | AIM-120C, 420 km | 180 km |
 | F-22 (APG-77 AESA) | 1.000 km | AIM-120C, 420 km | 580 km |
+| F-35A (APG-81 AESA) | 800 km | AIM-120C, 420 km | 380 km |
 | MiG-23 (Sapfir-23) | 220 km | R-23, 140 km | 80 km |
 | Su-27 (N001) | 440 km | R-27, 280 km | 160 km |
 | Su-57 (N036) | 960 km | R-77, 440 km | 520 km |
@@ -72,12 +73,19 @@ Ejemplos (la tabla completa está en `AIR_LOADOUTS`):
 | F-16A | 4× AIM-9L + 2× AGM-65 |
 | F/A-18E | 4× AIM-120C + 2× AIM-9X + 4× AGM-65 + 2× AGM-88 |
 | F-22 Raptor | 6× AIM-120C + 2× AIM-9X + 2× GBU-31 (carga interna) |
+| F-35A Lightning II | 4× AIM-120C + 2× GBU-31 (bahía interna, config. furtiva) |
 | MiG-23 | 2× R-23 + 4× R-60 |
 | Su-27 | 6× R-27 + 4× R-73 + 2× Kh-25 |
 | Su-57 | 4× R-77 + 2× R-73 + 2× Kh-31P (carga interna) |
 | AH-64 Apache | 16× Hellfire |
 | AH-64E Guardian | 16× Hellfire + 2× Stinger |
 | MQ-9 Reaper / Orion | 4× Hellfire / 4× Ataka |
+
+El F-35 y el F-22 conviven en el tier 3 occidental (`EXTRA_VARIANTS`, ver
+`docs/UNITS.md`) y no son intercambiables: el Raptor lleva 10 misiles y domina el
+aire; el F-35 solo 6, pero es el único caza furtivo occidental que entra a por
+blindados y baterías **sin colgar nada por fuera**. El "modo bestia" con pilones
+externos no se modela: rompería la furtividad, que es justo lo que se compra.
 
 Los drones t1/t2 siguen siendo reconocimiento puro. Los t3 van armados —el Reaper
 y el Orion lo están— y eso los convierte también en **blanco válido**: no combaten
@@ -155,7 +163,36 @@ combinación arma/blanco que maximiza `Pk × daño` —así no malgasta un AMRAA
 dron ni tira un Maverick contra infantería atrincherada—. Prioriza la amenaza
 aérea sobre la terrestre y dispara un misil por aparato y ciclo.
 
-## 9. Compatibilidad con guardados
+## 9. Furtividad: lo que hace y lo que NO hace
+
+**Limitación conocida.** Hoy `evasion` se usa en un único punto del motor
+(`targetEvasion`, que alimenta solo a `pkFor`). Es decir: la furtividad hace al
+aparato **más difícil de derribar**, nunca **más difícil de detectar**.
+
+`radarContacts` filtra exclusivamente por distancia, así que un B-2 aparece en el
+radar enemigo exactamente igual que un Tu-22M2, y el sistema de niebla (`intel`)
+tampoco distingue: un bombardero furtivo parado en una provincia se ve como se
+vería un pelotón de infantería.
+
+Aparatos con firma reducida y su evasión actual:
+
+| Aparato | Evasión | Efecto real hoy |
+|---|---|---|
+| B-21 Raider | 0,50 | −50% al Pk de quien le dispara |
+| F-22 Raptor / B-2 Spirit | 0,45 | −45% |
+| F-35A Lightning II | 0,42 | −42% |
+| Su-57 | 0,40 | −40% |
+| MQ-9 Reaper / Orion | 0,35 | −35% (célula pequeña, no furtiva) |
+| Drones t1/t2 | 0,30 | −30% |
+
+**Pendiente** si se quiere furtividad de verdad: que la firma radar recorte el
+alcance de DETECCIÓN, no solo el Pk — p. ej. `alcance_efectivo = radarKm ×
+(1 − rcs)`, con contrapesos para que siga habiendo respuesta (radares de
+vigilancia terrestres, detección a corta distancia siempre garantizada, o que
+disparar un misil activo delate la posición del tirador durante unos minutos).
+Sin esos contrapesos, un F-22 invisible es imbatible y aburrido.
+
+## 10. Compatibilidad con guardados
 
 `ammo` se crea **perezosamente** (`ensureAmmo`) la primera vez que se consulta,
 así que las partidas guardadas antes de esta versión cargan con la dotación
