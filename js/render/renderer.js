@@ -3,6 +3,7 @@ import { S, atWar, visibleProvinces, intel, unitDef, controller } from "../engin
 import { DRONE_VISION_KM } from "../data/missiles-data.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import { radarRangeKm } from "../engine/air-combat.js";
+import { CARRIER_CAPACITY } from "../data/air-combat-data.js";
 import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
 import { buildingReady } from "./sprite-cache.js";
@@ -302,6 +303,15 @@ export class MapRenderer {
       // inteligencia débil como contactos "?" sin identificar.
       const it = intel(state);
       const AIR_CATS = new Set(["caza", "bombardero", "helicoptero", "drone"]);
+      // Aeronaves en cubierta por buque. Un aparato embarcado no se dibuja (está
+      // dentro del portaviones), así que sin este recuento el ala desaparecía del
+      // mapa sin más y no había forma de saber que el buque la llevaba.
+      // Un solo barrido por frame, en vez de filtrar state.units por portaviones.
+      const aboardBy = new Map();
+      for (const u of state.units) {
+        if (u.dead || !u.embarked || !unitDef(u.type)?.air) continue;
+        aboardBy.set(u.embarked, (aboardBy.get(u.embarked) || 0) + 1);
+      }
       const groups = new Map(); // pid → [unidades]
       const movingUnits = [];
       for (const u of state.units) {
@@ -325,12 +335,18 @@ export class MapRenderer {
           const k = u.owner + "|" + u.type;
           let g = byType.get(k);
           if (!g) {
-            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type) }));
+            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), aboard: 0, deck: 0 }));
           }
           g.ids.push(u.id);
           g.n++;
           g.hp += u.hp;
           g.level = Math.max(g.level, vetLevel(u));
+          // Portaviones: plazas y aparatos de TODA la pila, que es lo que se dibuja
+          const cap = CARRIER_CAPACITY[u.type] || 0;
+          if (cap) {
+            g.deck += cap;
+            g.aboard += aboardBy.get(u.id) || 0;
+          }
         }
         const all = [...byType.values()];
 
@@ -426,6 +442,11 @@ export class MapRenderer {
         });
         this.unitHits.push({ x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), ids: [u.id], pid: u.pos });
         this.drawFlagBadge(ctx, sx + 12, sy - (air ? 7 : 0) + 8, this.countryColor(u.owner), u.cargo?.length ? "+" + u.cargo.length : null);
+        // El ala embarcada viaja con el buque: el recuento también, mientras navega
+        const deck = CARRIER_CAPACITY[u.type] || 0;
+        if (deck) {
+          this.drawDeckChip(ctx, sx, sy - unitSize / 2 - 3, aboardBy.get(u.id) || 0, deck, deckScale(unitSize));
+        }
         if (mine) {
           const mins = Math.max(0, u.edgeLeft.minutesLeft);
           const eta = mins >= 60 ? `${Math.floor(mins / 60)} h ${Math.round(mins % 60)} min` : `${Math.max(1, Math.round(mins))} min`;
@@ -596,6 +617,49 @@ export class MapRenderer {
       variant: g.type, // sprite del vehículo real (F-16A, Abrams, Arleigh Burke...)
     });
     if (g.n > 1) this.drawFlagBadge(ctx, x + 13, y - lift + 9, this.countryColor(g.owner), "×" + g.n);
+    if (g.deck) {
+      const size = this.unitIconSize();
+      this.drawDeckChip(ctx, x, y - lift - size / 2 - 3, g.aboard, g.deck, deckScale(size));
+    }
+  }
+
+  // Cubierta de vuelo de un portaviones: siluetita de avión y plazas ocupadas.
+  // Se dibuja SIEMPRE que el buque tenga cubierta (aunque esté vacía) para que se
+  // entienda de un vistazo que ese barco es el que puede llevar aviación.
+  // `k` acompaña al zoom igual que la ficha: con el mapa alejado del todo el
+  // icono baja a 16 px y una chapa de tamaño fijo sería más ancha que el barco.
+  drawDeckChip(ctx, x, y, aboard, cap, k = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(k, k);
+
+    rrect(ctx, -15, -7, 30, 14, 4);
+    ctx.fillStyle = aboard ? "rgba(16,40,58,0.92)" : "rgba(12,16,20,0.78)";
+    ctx.fill();
+    ctx.strokeStyle = aboard ? "rgba(127,212,255,0.85)" : "rgba(159,176,192,0.45)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Avioncito visto en planta, mirando arriba: fuselaje, alas y estabilizador
+    const px = -8.5;
+    ctx.fillStyle = aboard ? "#7fd4ff" : "#6d7a86";
+    ctx.beginPath();
+    ctx.moveTo(px, -4.5);
+    ctx.lineTo(px + 1.5, -1);
+    ctx.lineTo(px + 1.5, 2.5);
+    ctx.lineTo(px, 4.5);
+    ctx.lineTo(px - 1.5, 2.5);
+    ctx.lineTo(px - 1.5, -1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillRect(px - 4.5, -0.6, 9, 1.5); // ala
+    ctx.fillRect(px - 2.4, 2.8, 4.8, 1.3); // estabilizador
+
+    ctx.fillStyle = aboard ? "#dff1ff" : "#9fb0c0";
+    ctx.font = "bold 9px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(`${aboard}/${cap}`, 5.5, 3.5);
+    ctx.restore();
   }
 
   // Insignia pequeña con el color del país y un texto (recuento/carga)
@@ -655,6 +719,12 @@ export class MapRenderer {
 
 // Orden fijo de los iconos de edificio, para que no bailen de sitio entre frames
 const BUILDING_KEYS = Object.keys(BUILDINGS);
+
+// Tamaño de la chapa de cubierta respecto al de la ficha, con topes: ni ilegible
+// con el mapa alejado ni desproporcionada encima del barco con el mapa cerca.
+function deckScale(size) {
+  return Math.max(0.72, Math.min(1.1, size / 27));
+}
 
 // Radio clicable de una ficha: la mitad del sprite, con un mínimo cómodo para
 // que las fichas sigan siendo fáciles de acertar con el mapa alejado del todo.
