@@ -1,38 +1,130 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AIM-92 Stinger (id del arma: stinger)
-       aire-aire IR · 8 km
-       Silueta heredada de la familia "MANPADS": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: MANPADS (AIM-92 Stinger / Igla-V). Es el misil MÁS PEQUEÑO del
-       juego y se nota: cuerpo corto y rechoncho, aletitas minúsculas, morro
-       cónico opaco. Ocupa poco del lienzo a propósito.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AIM-92 Stinger (perfil esbelto/delgado, punta al norte) -->
   <defs>
-    <linearGradient id="mp-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d4d8cc"/>
-      <stop offset="0.45" stop-color="#969c8c"/>
-      <stop offset="1" stop-color="#565b4e"/>
+    <!-- Cuerpo verde oliva -->
+    <linearGradient id="stinger-olive-slim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5a603a"/>
+      <stop offset="28%" stop-color="#919760"/>
+      <stop offset="68%" stop-color="#73794b"/>
+      <stop offset="100%" stop-color="#3e4324"/>
     </linearGradient>
-    <linearGradient id="mp-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff0cc"/>
-      <stop offset="0.5" stop-color="#ffab55"/>
-      <stop offset="1" stop-color="#d9531f" stop-opacity="0"/>
+
+    <!-- Sección de cola en aluminio pulido -->
+    <linearGradient id="stinger-steel-slim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#939da3"/>
+      <stop offset="28%" stop-color="#f2f5f7"/>
+      <stop offset="65%" stop-color="#c5ced3"/>
+      <stop offset="100%" stop-color="#6e777d"/>
+    </linearGradient>
+
+    <!-- Ojiva metálica delgada -->
+    <linearGradient id="stinger-nose-slim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#464d52"/>
+      <stop offset="32%" stop-color="#889196"/>
+      <stop offset="68%" stop-color="#60686d"/>
+      <stop offset="100%" stop-color="#313639"/>
+    </linearGradient>
+
+    <!-- Banda de cobre del motor cohete -->
+    <linearGradient id="copper-band-slim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7a3f1d"/>
+      <stop offset="35%" stop-color="#d47942"/>
+      <stop offset="70%" stop-color="#a45222"/>
+      <stop offset="100%" stop-color="#52260e"/>
+    </linearGradient>
+
+    <!-- Reflejo longitudinal esbelto -->
+    <linearGradient id="stinger-shine-slim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Aletas traseras metálicas finas -->
+    <linearGradient id="fin-steel-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b0b8bd"/>
+      <stop offset="100%" stop-color="#7e878c"/>
+    </linearGradient>
+    <linearGradient id="fin-steel-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8a9399"/>
+      <stop offset="100%" stop-color="#5e666b"/>
     </linearGradient>
   </defs>
 
-  <path d="M14.2 43 L17.8 43 C18.6 48 17.4 51.5 16 54 C14.6 51.5 13.4 48 14.2 43 Z" fill="url(#mp-flame)"/>
+  <!-- ================= ALETAS TRASERAS DE CONTROL (FINAS) ================= -->
+  <!-- Aleta izquierda -->
+  <polygon points="14.8,49.5 9.2,49.5 9.2,51.8 14.8,51.8" 
+           fill="url(#fin-steel-l)" 
+           stroke="#444b50" 
+           stroke-width="0.2"/>
 
-  <!-- aletitas traseras muy cortas -->
-  <path d="M14.2 37 L10.5 39.5 L10.5 42.5 L14.2 41 Z" fill="#4a4f42"/>
-  <path d="M17.8 37 L21.5 39.5 L21.5 42.5 L17.8 41 Z" fill="#4a4f42"/>
-  <!-- aletitas de morro, casi testimoniales -->
-  <path d="M14.2 20 L11.6 21.5 L11.6 24 L14.2 23 Z" fill="#6c7263"/>
-  <path d="M17.8 20 L20.4 21.5 L20.4 24 L17.8 23 Z" fill="#6c7263"/>
+  <!-- Aleta derecha -->
+  <polygon points="17.2,49.5 22.8,49.5 22.8,51.8 17.2,51.8" 
+           fill="url(#fin-steel-r)" 
+           stroke="#343a3e" 
+           stroke-width="0.2"/>
 
-  <rect x="14.1" y="18" width="3.8" height="25" rx="0.9" fill="url(#mp-body)"/>
-  <rect x="14.1" y="30" width="3.8" height="1.8" fill="#9e3a2b"/>
-  <!-- ojiva cónica, sin cristal: el buscador va tapado hasta el disparo -->
-  <path d="M14.1 18 C14.7 13 15.2 11 16 10 C16.8 11 17.3 13 17.9 18 Z" fill="#343930"/>
+  <!-- ================= CANARDS DELANTEROS DESPLEGABLES ================= -->
+  <!-- Canard izquierdo en el cuello -->
+  <polygon points="15.2,8.8 13.6,11.2 14.8,11.2" 
+           fill="url(#fin-steel-l)" 
+           stroke="#343a3e" 
+           stroke-width="0.18"/>
+
+  <!-- Canard derecho en el cuello -->
+  <polygon points="16.8,8.8 18.4,11.2 17.2,11.2" 
+           fill="url(#fin-steel-r)" 
+           stroke="#2a2e32" 
+           stroke-width="0.18"/>
+
+  <!-- ================= CUERPO PRINCIPAL ESBELTO (ANCHO 2.4 mm) ================= -->
+  <!-- 1. Ojiva y cabeza buscadora estrecha -->
+  <rect x="15.2" y="4.5" width="1.6" height="4.5" fill="url(#stinger-nose-slim)"/>
+  <polygon points="15.2,9 16.8,9 17.2,11.5 14.8,11.5" fill="url(#stinger-olive-slim)"/>
+
+  <!-- 2. Tubo central extra delgado verde oliva -->
+  <rect x="14.8" y="11.5" width="2.4" height="26" fill="url(#stinger-olive-slim)"/>
+
+  <!-- 3. Sección de transición oscura -->
+  <rect x="14.8" y="37.5" width="2.4" height="4" fill="#323639"/>
+
+  <!-- 4. Anillo de cobre del motor cohete -->
+  <rect x="14.8" y="41.5" width="2.4" height="1.6" fill="url(#copper-band-slim)"/>
+
+  <!-- 5. Sección de popa en acero pulido -->
+  <rect x="14.8" y="43.1" width="2.4" height="11.5" fill="url(#stinger-steel-slim)"/>
+
+  <!-- Brillo lateral longitudinal continuo -->
+  <rect x="14.8" y="4.5" width="2.4" height="50.1" fill="url(#stinger-shine-slim)"/>
+
+  <!-- ================= DETALLES DE LA CABEZA Y DOMO ================= -->
+  <!-- Domo óptico del seeker UV/IR -->
+  <path d="M 15.2 4.5 C 15.2 3.2 15.5 2.5 16 2.5 C 16.5 2.5 16.8 3.2 16.8 4.5 Z" 
+        fill="#141718" 
+        stroke="#0b0d0e" 
+        stroke-width="0.18"/>
+  <ellipse cx="15.8" cy="3.3" rx="0.2" ry="0.35" fill="#ffffff" opacity="0.45"/>
+
+  <!-- Estrías y anillos del cabezal sensor -->
+  <line x1="15.2" y1="5.6" x2="16.8" y2="5.6" stroke="#262a2c" stroke-width="0.2"/>
+  <line x1="15.2" y1="7.2" x2="16.8" y2="7.2" stroke="#262a2c" stroke-width="0.2"/>
+
+  <!-- ================= DETALLES Y RANURAS DE LA COLA ================= -->
+  <!-- Ranura longitudinal de plegado de aletas -->
+  <line x1="16" y1="44.2" x2="16" y2="48" stroke="#25292c" stroke-width="0.28" stroke-linecap="round"/>
+  <circle cx="16" cy="44.2" r="0.22" fill="#141618"/>
+  <circle cx="16" cy="48" r="0.22" fill="#141618"/>
+
+  <!-- Juntas del fuselaje posterior -->
+  <line x1="14.8" y1="43.1" x2="17.2" y2="43.1" stroke="#5d666d" stroke-width="0.18"/>
+  <line x1="14.8" y1="53" x2="17.2" y2="53" stroke="#5d666d" stroke-width="0.18"/>
+
+  <!-- Micro-esténciles técnicos -->
+  <line x1="16.3" y1="46" x2="17" y2="46" stroke="#485157" stroke-width="0.16" opacity="0.8"/>
+  <line x1="16.3" y1="47" x2="17" y2="47" stroke="#485157" stroke-width="0.16" opacity="0.8"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 15 54.6 L 17 54.6 L 16.8 56.4 L 15.2 56.4 Z" fill="#2d3235" stroke="#17191b" stroke-width="0.18"/>
+  <path d="M 15.3 56.4 C 15.3 57.5 15.6 58.5 16 58.5 C 16.4 58.5 16.7 57.5 16.7 56.4 Z" fill="#0f1112"/>
+  <circle cx="16" cy="58" r="0.2" fill="#52585c"/>
 </svg>

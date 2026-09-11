@@ -1,42 +1,135 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- R-60 (AA-8 Aphid) (id del arma: r60)
-       aire-aire IR · 8 km
-       Silueta heredada de la familia "IR oriental": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: aire-aire infrarrojo ORIENTAL (R-60 Aphid / R-73 Archer).
-       Rasgo propio frente al Sidewinder: canards MUY adelantados pegados al
-       morro y desestabilizadores largos a media panza. Tono verde oliva.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- R-60 / R-60M (AA-8 Aphid)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características de la referencia:
+       - Domo óptico cónico de protección frontal naranja/ámbar
+       - Canards dobles característicos:
+         * Generadores de vórtice fijos muy pequeños en la punta
+         * Aletas de control desestabilizadoras intermedias triangulares
+       - Cuerpo cilíndrico en verde militar / blanco sucio soviético
+       - Cable umbilical colgante característico
+       - Grandes aletas traseras en flecha con borde posterior escalonado -->
   <defs>
-    <linearGradient id="ar-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#dfe6d8"/>
-      <stop offset="0.45" stop-color="#a8b39a"/>
-      <stop offset="1" stop-color="#5e6a54"/>
+    <!-- Gradiente del cuerpo cilíndrico verde/oliva claro soviético -->
+    <linearGradient id="r60-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7a785d"/>
+      <stop offset="30%" stop-color="#b0ad8b"/>
+      <stop offset="68%" stop-color="#939071"/>
+      <stop offset="100%" stop-color="#5a5843"/>
     </linearGradient>
-    <linearGradient id="ar-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffe9bd"/>
-      <stop offset="0.5" stop-color="#ff9a4a"/>
-      <stop offset="1" stop-color="#d8441c" stop-opacity="0"/>
+
+    <!-- Resplandor lateral suave para dar volumen al cilindro -->
+    <linearGradient id="r60-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="32%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Punta naranja/ámbar de protección/seeker de la foto -->
+    <linearGradient id="nose-orange" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#963d12"/>
+      <stop offset="30%" stop-color="#e06522"/>
+      <stop offset="68%" stop-color="#bd4e15"/>
+      <stop offset="100%" stop-color="#6e2808"/>
+    </linearGradient>
+
+    <!-- Aletas en sombra y luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a6a383"/>
+      <stop offset="100%" stop-color="#78755c"/>
+    </linearGradient>
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7e7c62"/>
+      <stop offset="100%" stop-color="#555341"/>
     </linearGradient>
   </defs>
 
-  <path d="M13.6 48 L18.4 48 C19.4 54 17.8 58.5 16 62 C14.2 58.5 12.6 54 13.6 48 Z" fill="url(#ar-flame)"/>
+  <!-- ================= GRANDES ALETAS TRASERAS DE COLA ================= -->
+  <!-- Aleta trasera izquierda con corte escalonado típico del Aphid -->
+  <polygon points="13.7,46 5.5,50.5 5.5,58.5 10.5,55.5 13.7,56.5" 
+           fill="url(#fin-left)" 
+           stroke="#3d3c2e" 
+           stroke-width="0.25"/>
 
-  <!-- aletas traseras en cruz, grandes -->
-  <path d="M13.6 38 L7 42.5 L7 48 L13.6 45 Z" fill="#4f5a46"/>
-  <path d="M18.4 38 L25 42.5 L25 48 L18.4 45 Z" fill="#4f5a46"/>
-  <!-- desestabilizadores largos de panza (el rasgo del R-73) -->
-  <path d="M13.7 20 L11.2 21 L11.2 34 L13.7 33 Z" fill="#78846c"/>
-  <path d="M18.3 20 L20.8 21 L20.8 34 L18.3 33 Z" fill="#78846c"/>
-  <!-- canards pegadísimos al morro -->
-  <path d="M13.7 11 L9 13 L9 16.5 L13.7 15 Z" fill="#8d9a80"/>
-  <path d="M18.3 11 L23 13 L23 16.5 L18.3 15 Z" fill="#8d9a80"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.3,46 26.5,50.5 26.5,58.5 21.5,55.5 18.3,56.5" 
+           fill="url(#fin-right)" 
+           stroke="#323125" 
+           stroke-width="0.25"/>
 
-  <rect x="13.6" y="9" width="4.8" height="39" rx="1" fill="url(#ar-body)"/>
-  <rect x="13.6" y="25" width="4.8" height="2" fill="#b23a2c"/>
-  <!-- buscador IR -->
-  <path d="M13.6 9 C14.3 4.5 15.1 1.6 16 0 C16.9 1.6 17.7 4.5 18.4 9 Z" fill="#39412f"/>
-  <circle cx="16" cy="4.8" r="1.2" fill="#c9f0a8" opacity="0.85"/>
+  <!-- ================= SEGUNDO GRUPO CANARD (ALETAS DE CONTROL TRIANGULARES) ================= -->
+  <polygon points="13.7,21.5 8,24 13.7,25" 
+           fill="url(#fin-left)" 
+           stroke="#3d3c2e" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+  <polygon points="18.3,21.5 24,24 18.3,25" 
+           fill="url(#fin-right)" 
+           stroke="#323125" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= PRIMER GRUPO CANARD (GENERADORES DE VÓRTICE FIJOS DELANTEROS) ================= -->
+  <polygon points="13.7,11.5 9.5,12 13.7,15" 
+           fill="url(#fin-left)" 
+           stroke="#3d3c2e" 
+           stroke-width="0.2"/>
+  <polygon points="18.3,11.5 22.5,12 18.3,15" 
+           fill="url(#fin-right)" 
+           stroke="#323125" 
+           stroke-width="0.2"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Ojiva cónica superior -->
+  <path d="M 13.7 10 
+           C 13.7 6.5, 14.5 4, 16 4 
+           C 17.5 4, 18.3 6.5, 18.3 10 
+           Z" 
+        fill="url(#r60-body)"/>
+
+  <!-- Tubo cilíndrico largo y esbelto característico del R-60 -->
+  <rect x="13.7" y="10" width="4.6" height="47.5" fill="url(#r60-body)"/>
+
+  <!-- Brillo lateral cilíndrico longitudinal -->
+  <rect x="13.7" y="4.5" width="4.6" height="53" fill="url(#r60-shine)"/>
+
+  <!-- ================= CÚPULA FRONTAL / CASQUETE (NARANJA VIVO DE LA FOTO) ================= -->
+  <!-- Tapa cónica naranja -->
+  <path d="M 14.1 7.2 
+           C 14.1 4.5, 14.8 3.2, 16 3.2 
+           C 17.2 3.2, 17.9 4.5, 17.9 7.2 
+           Z" 
+        fill="url(#nose-orange)" 
+        stroke="#5a2208" 
+        stroke-width="0.2"/>
+  <ellipse cx="16" cy="7.2" rx="1.9" ry="0.6" fill="#8f3a12" stroke="#5a2208" stroke-width="0.2"/>
+
+  <!-- Punta / Sensor en el vértice del casquete -->
+  <ellipse cx="16" cy="3.5" rx="0.75" ry="0.4" fill="#e8eae6" stroke="#5a2208" stroke-width="0.15"/>
+
+  <!-- ================= DETALLES, FRANJAS Y CABLEADO ================= -->
+  <!-- Banda verde oscura de referencia en la sección media -->
+  <rect x="13.7" y="27.5" width="4.6" height="3" fill="#3a543b" opacity="0.85"/>
+
+  <!-- Abrazaderas metálicas de la guía APU-60 -->
+  <rect x="13.5" y="26.5" width="5" height="0.6" fill="#4d4c3c" stroke="#2b2a20" stroke-width="0.15"/>
+  <rect x="13.5" y="38" width="5" height="0.6" fill="#4d4c3c" stroke="#2b2a20" stroke-width="0.15"/>
+  <rect x="15.4" y="38" width="1.2" height="2.5" fill="#676652" stroke="#2b2a20" stroke-width="0.15"/>
+
+  <!-- Conector y cable umbilical colgante (como en el soporte de la foto) -->
+  <rect x="13.3" y="32" width="0.8" height="1.4" fill="#4a493a"/>
+  <path d="M 13.3 32.7 C 10.5 33, 10 38, 12 41" 
+        fill="none" 
+        stroke="#d1d4cf" 
+        stroke-width="0.6" 
+        stroke-linecap="round"/>
+  <ellipse cx="12" cy="41" rx="0.6" ry="0.9" fill="#8f918b" stroke="#333" stroke-width="0.15"/>
+
+  <!-- Líneas de juntas de sección del proyectil -->
+  <line x1="13.7" y1="10" x2="18.3" y2="10" stroke="#52503d" stroke-width="0.25"/>
+  <line x1="13.7" y1="19.5" x2="18.3" y2="19.5" stroke="#52503d" stroke-width="0.25"/>
+  <line x1="13.7" y1="46" x2="18.3" y2="46" stroke="#52503d" stroke-width="0.25"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 14.3 57.5 L 17.7 57.5 L 17.3 59.8 L 14.7 59.8 Z" fill="#20201a" stroke="#12120e" stroke-width="0.25"/>
 </svg>

@@ -1,38 +1,144 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- R-23 (AA-7 Apex) (id del arma: r23)
-       aire-aire SARH · 35 km
-       Silueta heredada de la familia "radar semiactivo": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: aire-aire de RADAR SEMIACTIVO (AIM-7 Sparrow / R-23 Apex /
-       R-27 Alamo). El rasgo que los identifica a simple vista son las ALAS
-       DELTA GRANDES a media panza; son misiles largos y pesados.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- R-23R / R-23T (AA-7 Apex)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características:
+       - Ojiva ogival puntiaguda con anillo metálico de sujeción
+       - Aletas canard delanteras de cuerda ancha con diedro recortado
+       - Cuerpo esbelto en blanco brillante / marfil
+       - Sección central con marco de soporte y collar técnico
+       - Grandes alas delta principales hacia la popa con corte trapezoidal
+       - Pequeñas aletas estabilizadoras en el extremo trasero de la tobera -->
   <defs>
-    <linearGradient id="sa-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#eef2f6"/>
-      <stop offset="0.45" stop-color="#b8c2cc"/>
-      <stop offset="1" stop-color="#6b7681"/>
+    <!-- Gradiente cilíndrico del cuerpo en blanco brillante -->
+    <linearGradient id="apex-white" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b8c2c7"/>
+      <stop offset="28%" stop-color="#ffffff"/>
+      <stop offset="68%" stop-color="#e3e9ed"/>
+      <stop offset="100%" stop-color="#9aabb3"/>
     </linearGradient>
-    <linearGradient id="sa-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#d8ecff"/>
-      <stop offset="0.5" stop-color="#7fbaff"/>
-      <stop offset="1" stop-color="#2f6fd0" stop-opacity="0"/>
+
+    <!-- Resplandor longitudinal cilíndrico -->
+    <linearGradient id="apex-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Aletas en sombra y luz -->
+    <linearGradient id="apex-fin-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#eff4f7"/>
+      <stop offset="100%" stop-color="#b6c2c8"/>
+    </linearGradient>
+    <linearGradient id="apex-fin-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#cbd7dd"/>
+      <stop offset="100%" stop-color="#93a2a9"/>
+    </linearGradient>
+
+    <!-- Anillo metálico de la ojiva -->
+    <linearGradient id="apex-metal-ring" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#695b45"/>
+      <stop offset="30%" stop-color="#b8a786"/>
+      <stop offset="70%" stop-color="#8c7c5f"/>
+      <stop offset="100%" stop-color="#4d412e"/>
+    </linearGradient>
+
+    <!-- Abrazadera / faja central -->
+    <linearGradient id="apex-clamp" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#872b26"/>
+      <stop offset="35%" stop-color="#c9433c"/>
+      <stop offset="70%" stop-color="#a8332d"/>
+      <stop offset="100%" stop-color="#691d19"/>
     </linearGradient>
   </defs>
 
-  <path d="M13.5 50 L18.5 50 C19.6 56 18 60 16 63 C14 60 12.4 56 13.5 50 Z" fill="url(#sa-flame)"/>
+  <!-- ================= ALETAS TRASERAS DE TOBERA (PEQUEÑAS Y RETRÁCTILES) ================= -->
+  <!-- Aleta trasera extrema izquierda -->
+  <polygon points="14.4,56 10,58 10,59.8 14.4,58.8" 
+           fill="url(#apex-fin-l)" 
+           stroke="#4a555c" 
+           stroke-width="0.2"/>
 
-  <!-- aletas de control traseras, pequeñas -->
-  <path d="M13.6 43 L9.5 45.5 L9.5 49 L13.6 47.5 Z" fill="#5d6772"/>
-  <path d="M18.4 43 L22.5 45.5 L22.5 49 L18.4 47.5 Z" fill="#5d6772"/>
-  <!-- ALAS DELTA GRANDES a media panza: la seña de identidad -->
-  <path d="M13.6 20 L3 33 L3 38 L13.6 34 Z" fill="#7d8894"/>
-  <path d="M18.4 20 L29 33 L29 38 L18.4 34 Z" fill="#7d8894"/>
+  <!-- Aleta trasera extrema derecha -->
+  <polygon points="17.6,56 22,58 22,59.8 17.6,58.8" 
+           fill="url(#apex-fin-r)" 
+           stroke="#3c454a" 
+           stroke-width="0.2"/>
 
-  <rect x="13.5" y="10" width="5" height="40" rx="1.1" fill="url(#sa-body)"/>
-  <rect x="13.5" y="16" width="5" height="2.2" fill="#2f6fd0"/>
-  <!-- radomo de radar: ojiva larga y opaca, sin cristal -->
-  <path d="M13.5 10 C14.2 4.5 15 1.5 16 0 C17 1.5 17.8 4.5 18.5 10 Z" fill="#404a55"/>
+  <!-- ================= ALAS PRINCIPALES DELTA (TRAPEZOIDALES RETRASADAS) ================= -->
+  <!-- Gran ala delta izquierda -->
+  <polygon points="14.4,36.5 4,43.5 4,49.5 11,46.5 14.4,53.5" 
+           fill="url(#apex-fin-l)" 
+           stroke="#4a555c" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- Gran ala delta derecha -->
+  <polygon points="17.6,36.5 28,43.5 28,49.5 21,46.5 17.6,53.5" 
+           fill="url(#apex-fin-r)" 
+           stroke="#3c454a" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= ALETAS CANARD DELANTERAS (DE CUERDA LARGA) ================= -->
+  <!-- Canard izquierdo con quiebre aerodinámico -->
+  <polygon points="14.4,17.5 9.2,20.5 10.8,24 14.4,22.8" 
+           fill="url(#apex-fin-l)" 
+           stroke="#4a555c" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard derecho con quiebre aerodinámico -->
+  <polygon points="17.6,17.5 22.8,20.5 21.2,24 17.6,22.8" 
+           fill="url(#apex-fin-r)" 
+           stroke="#3c454a" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard vertical dorsal -->
+  <polygon points="15.6,17.5 15.6,14 16.4,14 16.4,17.5" fill="#dce6eb" stroke="#4a555c" stroke-width="0.2"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL (ESBELTO) ================= -->
+  <!-- Radomo / Ojiva ojival frontal cónica -->
+  <path d="M 14.4 12 
+           C 14.4 7.5, 15.1 3.2, 16 3.2 
+           C 16.9 3.2, 17.6 7.5, 17.6 12 
+           Z" 
+        fill="url(#apex-white)"/>
+
+  <!-- Tubo cilíndrico central esbelto (diámetro 3.2) -->
+  <rect x="14.4" y="12" width="3.2" height="45" fill="url(#apex-white)"/>
+
+  <!-- Brillo lateral longitudinal continuo -->
+  <rect x="14.4" y="3.5" width="3.2" height="53.5" fill="url(#apex-shine)"/>
+
+  <!-- ================= ANILLOS Y DETALLES DEL FUSELAJE ================= -->
+  <!-- Anillo metálico de cierre de la ojiva -->
+  <rect x="14.4" y="10.8" width="3.2" height="1.2" fill="url(#apex-metal-ring)" stroke="#3b3223" stroke-width="0.15"/>
+  <circle cx="15.2" cy="11.4" r="0.2" fill="#e2d4be"/>
+  <circle cx="16.8" cy="11.4" r="0.2" fill="#e2d4be"/>
+
+  <!-- Sección central de la espoleta / amarre (marcos rojizos/metálicos) -->
+  <rect x="14.4" y="27.2" width="3.2" height="4.5" fill="#e8edf0" stroke="#7a8890" stroke-width="0.18"/>
+  <rect x="14.3" y="27.8" width="3.4" height="0.5" fill="url(#apex-clamp)"/>
+  <rect x="14.3" y="30.6" width="3.4" height="0.5" fill="url(#apex-clamp)"/>
+  <line x1="14.8" y1="27.8" x2="14.8" y2="31.1" stroke="url(#apex-clamp)" stroke-width="0.3"/>
+  <line x1="17.2" y1="27.8" x2="17.2" y2="31.1" stroke="url(#apex-clamp)" stroke-width="0.3"/>
+
+  <!-- Zapatas de suspensión para lanzador APU-23 -->
+  <rect x="15.4" y="28.2" width="1.2" height="2.5" rx="0.2" fill="#4d5559" stroke="#252b2e" stroke-width="0.15"/>
+  <rect x="15.4" y="44" width="1.2" height="2.2" rx="0.2" fill="#4d5559" stroke="#252b2e" stroke-width="0.15"/>
+
+  <!-- Juntas de división de módulos -->
+  <line x1="14.4" y1="12" x2="17.6" y2="12" stroke="#73828a" stroke-width="0.2"/>
+  <line x1="14.4" y1="16.5" x2="17.6" y2="16.5" stroke="#73828a" stroke-width="0.2"/>
+  <line x1="14.4" y1="26.5" x2="17.6" y2="26.5" stroke="#73828a" stroke-width="0.2"/>
+  <line x1="14.4" y1="32.5" x2="17.6" y2="32.5" stroke="#73828a" stroke-width="0.2"/>
+  <line x1="14.4" y1="54.5" x2="17.6" y2="54.5" stroke="#73828a" stroke-width="0.2"/>
+
+  <!-- Micro-líneas de remaches técnicos -->
+  <line x1="15" y1="20" x2="17" y2="20" stroke="#8997a0" stroke-width="0.18" stroke-dasharray="0.4 0.4"/>
+  <line x1="15" y1="35" x2="17" y2="35" stroke="#8997a0" stroke-width="0.18" stroke-dasharray="0.4 0.4"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 14.7 57 L 17.3 57 L 17 59.5 L 15 59.5 Z" fill="#202426" stroke="#0e1112" stroke-width="0.2"/>
 </svg>

@@ -1,41 +1,156 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AIM-9X Sidewinder (id del arma: aim9x)
-       aire-aire IR · 35 km
-       Silueta heredada de la familia "Sidewinder": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- Misil aire-aire (Sidewinder / AMRAAM / R-73...). Delgado, aletas en cruz
-       y estela corta: vuela mucho más rápido que un misil de crucero.
-       Morro hacia ARRIBA (norte). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AIM-9X Sidewinder con bandera de EE.UU. en el fuselaje
+       Orientación: Punta hacia ARRIBA (Norte) -->
   <defs>
-    <linearGradient id="ma-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#f2f5f8"/>
-      <stop offset="0.45" stop-color="#c3cbd3"/>
-      <stop offset="1" stop-color="#78828c"/>
+    <!-- Gradiente del cuerpo gris oscuro / grafito naval -->
+    <linearGradient id="aim9x-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4a5054"/>
+      <stop offset="30%" stop-color="#7d858c"/>
+      <stop offset="68%" stop-color="#5a6166"/>
+      <stop offset="100%" stop-color="#363b3e"/>
     </linearGradient>
-    <linearGradient id="ma-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#cfe9ff"/>
-      <stop offset="0.5" stop-color="#7db8ff"/>
-      <stop offset="1" stop-color="#2f6fd0" stop-opacity="0"/>
+
+    <!-- Resplandor lateral suave para dar volumen al tubo cilíndrico -->
+    <linearGradient id="aim9x-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="32%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Domo frontal con lente del seeker púrpura/iridiscente -->
+    <linearGradient id="seeker-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#939ba0"/>
+      <stop offset="50%" stop-color="#4e3b59"/>
+      <stop offset="100%" stop-color="#18151c"/>
+    </linearGradient>
+
+    <!-- Aletas en sombra y luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#555c61"/>
+      <stop offset="100%" stop-color="#3e4347"/>
+    </linearGradient>
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#42474b"/>
+      <stop offset="100%" stop-color="#2d3134"/>
     </linearGradient>
   </defs>
 
-  <!-- estela corta y azulada (motor de alto impulso) -->
-  <path d="M14 48 L18 48 C19 54 17.6 58 16 61 C14.4 58 13 54 14 48 Z" fill="url(#ma-flame)"/>
+  <!-- ================= ALETAS TRASERAS DE COLA (COMPACTAS / TVC) ================= -->
+  <!-- Aleta trasera izquierda -->
+  <polygon points="13.7,51.5 8.2,55.2 8.2,58.8 13.7,57.5" 
+           fill="url(#fin-left)" 
+           stroke="#222527" 
+           stroke-width="0.25"/>
 
-  <!-- aletas traseras -->
-  <path d="M13.8 40 L8 43.5 L8 47 L13.8 44.5 Z" fill="#6d7681"/>
-  <path d="M18.2 40 L24 43.5 L24 47 L18.2 44.5 Z" fill="#6d7681"/>
-  <!-- canards delanteros -->
-  <path d="M13.8 16 L9.5 18 L9.5 21 L13.8 19.5 Z" fill="#8b949e"/>
-  <path d="M18.2 16 L22.5 18 L22.5 21 L18.2 19.5 Z" fill="#8b949e"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.3,51.5 23.8,55.2 23.8,58.8 18.3,57.5" 
+           fill="url(#fin-right)" 
+           stroke="#1c1f21" 
+           stroke-width="0.25"/>
 
-  <!-- fuselaje -->
-  <rect x="13.7" y="9" width="4.6" height="39" rx="1" fill="url(#ma-body)"/>
-  <!-- banda de ejercicio -->
-  <rect x="13.7" y="22" width="4.6" height="2" fill="#2f6fd0"/>
-  <!-- buscador (cabeza de cristal) -->
-  <path d="M13.7 9 C14.4 4 15.1 1.4 16 0 C16.9 1.4 17.6 4 18.3 9 Z" fill="#3a4450"/>
-  <circle cx="16" cy="4.6" r="1.2" fill="#9fd8ff" opacity="0.85"/>
+  <!-- ================= ALETAS CANARD DELANTERAS (FIJAS Y PEQUEÑAS) ================= -->
+  <!-- Canard izquierdo triangular compacto -->
+  <polygon points="13.7,19 7.8,25 13.7,24" 
+           fill="url(#fin-left)" 
+           stroke="#1c1f21" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard derecho triangular compacto -->
+  <polygon points="18.3,19 24.2,25 18.3,24" 
+           fill="url(#fin-right)" 
+           stroke="#1c1f21" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- Aleta vertical frontal (perspectiva) -->
+  <polygon points="15.6,18.5 15.6,14.5 16.4,14.5 16.4,18.5" fill="#353b3f" stroke="#1c1f21" stroke-width="0.2"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Ojiva frontal aerodinámica -->
+  <path d="M 13.7 14 
+           C 13.7 7.5, 14.6 4.8, 16 4.8 
+           C 17.4 4.8, 18.3 7.5, 18.3 14 
+           Z" 
+        fill="url(#aim9x-body)"/>
+
+  <!-- Tubo cilíndrico central -->
+  <rect x="13.7" y="14" width="4.6" height="43.5" fill="url(#aim9x-body)"/>
+
+  <!-- Brillo cilíndrico longitudinal -->
+  <rect x="13.7" y="5.2" width="4.6" height="52.3" fill="url(#aim9x-shine)"/>
+
+  <!-- ================= DOMO DEL SENSOR ÓPTICO/IR ================= -->
+  <!-- Base metálica del domo -->
+  <ellipse cx="16" cy="5.4" rx="1.5" ry="0.6" fill="#353a3d" stroke="#1c1f21" stroke-width="0.15"/>
+
+  <!-- Cúpula de cristal transparente -->
+  <path d="M 14.8 5.2 
+           C 14.8 3.4, 15.3 2.6, 16 2.6 
+           C 16.7 2.6, 17.2 3.4, 17.2 5.2 
+           Z" 
+        fill="url(#seeker-glass)" 
+        stroke="#1a1c1e" 
+        stroke-width="0.2"/>
+
+  <!-- Núcleo sensor púrpura/azulado característico del AIM-9X -->
+  <circle cx="16" cy="4.2" r="0.65" fill="#6d398b"/>
+  <circle cx="16" cy="4.2" r="0.3" fill="#2d133b"/>
+  <ellipse cx="15.7" cy="3.6" rx="0.35" ry="0.5" fill="#ffffff" opacity="0.6"/>
+
+  <!-- ================= CONDUCTO DORSAL Y BANDAS TÁCTICAS ================= -->
+  <!-- Túnel de cableado externo -->
+  <rect x="15.5" y="24" width="1" height="23" rx="0.3" fill="#383e42" stroke="#222527" stroke-width="0.15"/>
+
+  <!-- Zapata de anclaje de riel LAU-128/LAU-7 -->
+  <rect x="15.3" y="32" width="1.4" height="3.2" rx="0.2" fill="#525a5f" stroke="#282d30" stroke-width="0.15"/>
+
+  <!-- Banda verde/marrón militar -->
+  <rect x="13.7" y="20.5" width="4.6" height="1.6" fill="#4d6148"/>
+  <rect x="13.7" y="20.5" width="4.6" height="1.6" fill="url(#aim9x-shine)"/>
+
+  <!-- Banda azul táctica -->
+  <rect x="13.7" y="22.3" width="4.6" height="1.6" fill="#2c5c84"/>
+  <rect x="13.7" y="22.3" width="4.6" height="1.6" fill="url(#aim9x-shine)"/>
+
+  <!-- Juntas y líneas de sección -->
+  <line x1="13.7" y1="13.8" x2="18.3" y2="13.8" stroke="#353b3e" stroke-width="0.25"/>
+  <line x1="13.7" y1="28" x2="18.3" y2="28" stroke="#353b3e" stroke-width="0.2"/>
+  <line x1="13.7" y1="50" x2="18.3" y2="50" stroke="#353b3e" stroke-width="0.2"/>
+
+  <!-- ================= BANDERA DE EE.UU. ================= -->
+  <g id="us-flag" transform="translate(14.8, 38)">
+    <!-- Base blanca -->
+    <rect x="0" y="0" width="2.4" height="4" fill="#ffffff" stroke="#2b3136" stroke-width="0.1"/>
+
+    <!-- Franjas rojas horizontales -->
+    <rect x="0" y="0.33" width="2.4" height="0.28" fill="#bf2626"/>
+    <rect x="0" y="0.95" width="2.4" height="0.28" fill="#bf2626"/>
+    <rect x="0" y="1.57" width="2.4" height="0.28" fill="#bf2626"/>
+    <rect x="0" y="2.19" width="2.4" height="0.28" fill="#bf2626"/>
+    <rect x="0" y="2.81" width="2.4" height="0.28" fill="#bf2626"/>
+    <rect x="0" y="3.43" width="2.4" height="0.28" fill="#bf2626"/>
+
+    <!-- Cantón azul superior -->
+    <rect x="0" y="0" width="1.2" height="1.9" fill="#143666"/>
+
+    <!-- Estrellas representativas -->
+    <circle cx="0.32" cy="0.45" r="0.1" fill="#ffffff"/>
+    <circle cx="0.60" cy="0.45" r="0.1" fill="#ffffff"/>
+    <circle cx="0.88" cy="0.45" r="0.1" fill="#ffffff"/>
+
+    <circle cx="0.46" cy="0.95" r="0.1" fill="#ffffff"/>
+    <circle cx="0.74" cy="0.95" r="0.1" fill="#ffffff"/>
+
+    <circle cx="0.32" cy="1.45" r="0.1" fill="#ffffff"/>
+    <circle cx="0.60" cy="1.45" r="0.1" fill="#ffffff"/>
+    <circle cx="0.88" cy="1.45" r="0.1" fill="#ffffff"/>
+  </g>
+
+  <!-- Marcas de esténcil técnico blanco -->
+  <line x1="14.3" y1="26" x2="17.7" y2="26" stroke="#ffffff" stroke-width="0.2" opacity="0.6"/>
+  <line x1="14.3" y1="44" x2="17.7" y2="44" stroke="#ffffff" stroke-width="0.2" opacity="0.6"/>
+
+  <!-- ================= TOBERA Y PALETAS VECTORIALES ================= -->
+  <path d="M 14.3 57.5 L 17.7 57.5 L 17.3 59.8 L 14.7 59.8 Z" fill="#1d2022" stroke="#0e1011" stroke-width="0.25"/>
 </svg>

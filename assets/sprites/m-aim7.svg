@@ -1,38 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AIM-7M Sparrow (id del arma: aim7)
-       aire-aire SARH · 45 km
-       Silueta heredada de la familia "radar semiactivo": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: aire-aire de RADAR SEMIACTIVO (AIM-7 Sparrow / R-23 Apex /
-       R-27 Alamo). El rasgo que los identifica a simple vista son las ALAS
-       DELTA GRANDES a media panza; son misiles largos y pesados.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AIM-7M Sparrow
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características de la referencia:
+       - Ojiva ojival blanca puntiaguda (radomo cerámico de radar semiactivo)
+       - Cuerpo blanco brillante cilíndrico
+       - Cuatro grandes alas delta intermedias móviles (control cruciforme)
+       - Cuatro aletas traseras triangulares fijas en la cola
+       - Bandas azules de entrenamiento/inerte ("INERT") y banda dorada/amarilla de prueba
+       - Punto/círculo rojo característico cerca de la raíz alar -->
   <defs>
-    <linearGradient id="sa-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#eef2f6"/>
-      <stop offset="0.45" stop-color="#b8c2cc"/>
-      <stop offset="1" stop-color="#6b7681"/>
+    <!-- Gradiente cilíndrico del cuerpo en blanco brillante -->
+    <linearGradient id="sparrow-white" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b6c0c5"/>
+      <stop offset="28%" stop-color="#ffffff"/>
+      <stop offset="68%" stop-color="#e2e8ec"/>
+      <stop offset="100%" stop-color="#98a3a9"/>
     </linearGradient>
-    <linearGradient id="sa-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#d8ecff"/>
-      <stop offset="0.5" stop-color="#7fbaff"/>
-      <stop offset="1" stop-color="#2f6fd0" stop-opacity="0"/>
+
+    <!-- Resplandor longitudinal para dar volumen 3D al cilindro -->
+    <linearGradient id="sparrow-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Aletas delta intermedias en sombra/luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#eef3f6"/>
+      <stop offset="100%" stop-color="#b8c2c7"/>
+    </linearGradient>
+
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#cbd5da"/>
+      <stop offset="100%" stop-color="#909ba0"/>
     </linearGradient>
   </defs>
 
-  <path d="M13.5 50 L18.5 50 C19.6 56 18 60 16 63 C14 60 12.4 56 13.5 50 Z" fill="url(#sa-flame)"/>
+  <!-- ================= ALETAS FIJAS DE COLA (TRIANGULARES TRASERAS) ================= -->
+  <!-- Aleta trasera izquierda -->
+  <polygon points="13.5,49.5 4.5,53.5 13.5,57" 
+           fill="url(#fin-left)" 
+           stroke="#525d63" 
+           stroke-width="0.25"/>
 
-  <!-- aletas de control traseras, pequeñas -->
-  <path d="M13.6 43 L9.5 45.5 L9.5 49 L13.6 47.5 Z" fill="#5d6772"/>
-  <path d="M18.4 43 L22.5 45.5 L22.5 49 L18.4 47.5 Z" fill="#5d6772"/>
-  <!-- ALAS DELTA GRANDES a media panza: la seña de identidad -->
-  <path d="M13.6 20 L3 33 L3 38 L13.6 34 Z" fill="#7d8894"/>
-  <path d="M18.4 20 L29 33 L29 38 L18.4 34 Z" fill="#7d8894"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.5,49.5 27.5,53.5 18.5,57" 
+           fill="url(#fin-right)" 
+           stroke="#424c52" 
+           stroke-width="0.25"/>
 
-  <rect x="13.5" y="10" width="5" height="40" rx="1.1" fill="url(#sa-body)"/>
-  <rect x="13.5" y="16" width="5" height="2.2" fill="#2f6fd0"/>
-  <!-- radomo de radar: ojiva larga y opaca, sin cristal -->
-  <path d="M13.5 10 C14.2 4.5 15 1.5 16 0 C17 1.5 17.8 4.5 18.5 10 Z" fill="#404a55"/>
+  <!-- ================= ALAS DELTA PRINCIPALES (MÓVILES, GRAN ENVERGADURA) ================= -->
+  <!-- Ala intermedia izquierda -->
+  <polygon points="13.5,23.5 2,33 13.5,35" 
+           fill="url(#fin-left)" 
+           stroke="#4e585e" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- Borde de corte/bisel del ala izquierda -->
+  <line x1="2" y1="33" x2="13.5" y2="35" stroke="#2b3135" stroke-width="0.4"/>
+
+  <!-- Ala intermedia derecha -->
+  <polygon points="18.5,23.5 30,33 18.5,35" 
+           fill="url(#fin-right)" 
+           stroke="#3e474d" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- Borde de corte/bisel del ala derecha -->
+  <line x1="30" y1="33" x2="18.5" y2="35" stroke="#2b3135" stroke-width="0.4"/>
+
+  <!-- Aleta delta vertical central (perspectiva dorsal) -->
+  <polygon points="15.6,23.5 15.6,18.5 16.4,18.5 16.4,23.5" fill="#d9e2e6" stroke="#4e585e" stroke-width="0.2"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Radomo / Ojiva frontal cónica puntiaguda -->
+  <path d="M 13.5 11 
+           C 13.5 7, 14.7 2.8, 16 2.8 
+           C 17.3 2.8, 18.5 7, 18.5 11 
+           Z" 
+        fill="url(#sparrow-white)"/>
+
+  <!-- Fuselaje cilíndrico completo -->
+  <rect x="13.5" y="11" width="5" height="46.5" fill="url(#sparrow-white)"/>
+
+  <!-- Resplandor lateral longitudinal para dar volumen cilíndrico -->
+  <rect x="13.5" y="3" width="5" height="54.5" fill="url(#sparrow-shine)"/>
+
+  <!-- ================= BANDAS TÁCTICAS Y DE ENTRENAMIENTO (INERT) ================= -->
+  <!-- Banda azul 1 (en la ojiva frontal) -->
+  <rect x="13.5" y="7.5" width="5" height="1.4" fill="#1e4f9c"/>
+  <rect x="13.5" y="7.5" width="5" height="1.4" fill="url(#sparrow-shine)"/>
+
+  <!-- Banda azul 2 (detrás de la ojiva) -->
+  <rect x="13.5" y="10.8" width="5" height="1.5" fill="#1e4f9c"/>
+  <rect x="13.5" y="10.8" width="5" height="1.5" fill="url(#sparrow-shine)"/>
+
+  <!-- Banda azul 3 (delante de las alas principales) -->
+  <rect x="13.5" y="22.2" width="5" height="1.4" fill="#1e4f9c"/>
+  <rect x="13.5" y="22.2" width="5" height="1.4" fill="url(#sparrow-shine)"/>
+
+  <!-- Banda azul 4 (detrás de las alas principales) -->
+  <rect x="13.5" y="34.8" width="5" height="1.5" fill="#1e4f9c"/>
+  <rect x="13.5" y="34.8" width="5" height="1.5" fill="url(#sparrow-shine)"/>
+
+  <!-- Anillo técnico dorado/ámbar -->
+  <rect x="13.5" y="37.8" width="5" height="1.4" fill="#c99532"/>
+  <rect x="13.5" y="37.8" width="5" height="1.4" fill="url(#sparrow-shine)"/>
+
+  <!-- Banda azul 5 (sección trasera del motor cohete) -->
+  <rect x="13.5" y="40.8" width="5" height="1.5" fill="#1e4f9c"/>
+  <rect x="13.5" y="40.8" width="5" height="1.5" fill="url(#sparrow-shine)"/>
+
+  <!-- ================= DETALLES, JUNTAS Y MARCAS DE SERVICIO ================= -->
+  <!-- Punto rojo circular en la raíz del ala (indicador de seguridad de la foto) -->
+  <circle cx="15.8" cy="24.8" r="0.6" fill="#c9281e"/>
+
+  <!-- Ranuras longitudinales de montaje del fuselaje -->
+  <line x1="14.8" y1="13.5" x2="14.8" y2="21.5" stroke="#909ba2" stroke-width="0.25"/>
+  <line x1="17.2" y1="13.5" x2="17.2" y2="21.5" stroke="#909ba2" stroke-width="0.25"/>
+
+  <!-- Zapatas de anclaje ventrales para túnel de sujeción (ej. F-4, F-15) -->
+  <rect x="15.5" y="28" width="1" height="2.2" rx="0.2" fill="#586369" stroke="#31373a" stroke-width="0.15"/>
+  <rect x="15.5" y="44" width="1" height="2.2" rx="0.2" fill="#586369" stroke="#31373a" stroke-width="0.15"/>
+
+  <!-- Juntas de división entre secciones del fuselaje -->
+  <line x1="13.5" y1="11" x2="18.5" y2="11" stroke="#7e898f" stroke-width="0.25"/>
+  <line x1="13.5" y1="36.5" x2="18.5" y2="36.5" stroke="#7e898f" stroke-width="0.25"/>
+  <line x1="13.5" y1="49.5" x2="18.5" y2="49.5" stroke="#7e898f" stroke-width="0.25"/>
+
+  <!-- Líneas de remaches técnicos en el motor -->
+  <line x1="14" y1="39.6" x2="18" y2="39.6" stroke="#4e565c" stroke-width="0.25" stroke-dasharray="0.6 0.6"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 14.1 57.5 L 17.9 57.5 L 17.4 59.8 L 14.6 59.8 Z" fill="#1b1e20" stroke="#0e1011" stroke-width="0.25"/>
 </svg>

@@ -1,41 +1,127 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AGM-88 HARM (id del arma: agm88)
-       antirradar · 100 km
-       Silueta heredada de la familia "antirradar": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: ANTIRRADAR (AGM-88 HARM / Kh-31P). Son los más rápidos del
-       catálogo y se dibujan como un DARDO: morro larguísimo y afilado, cuerpo
-       fino, alas pequeñas a media panza y tomas de aire laterales marcadas.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AGM-88 HARM (High-speed Anti-Radiation Missile)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características de la referencia:
+       - Ojiva ojival puntiaguda (radomo de guía pasiva de radar)
+       - Banda amarilla de alto explosivo (High Explosive)
+       - Aletas medias cruciformes trapezoidales de gran envergadura (alas de maniobra)
+       - Conducto/cable umbilical curvado sobre la raíz alar
+       - Banda marrón de motor cohete y franja roja de advertencia
+       - Aletas traseras compactas con corte trapezoidal
+       - Tobera trasera cónica -->
   <defs>
-    <linearGradient id="ir-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d9dde2"/>
-      <stop offset="0.45" stop-color="#8f98a1"/>
-      <stop offset="1" stop-color="#4d555d"/>
+    <!-- Gradiente cilíndrico del cuerpo (blanco naval / gris claro mate) -->
+    <linearGradient id="harm-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b6bec2"/>
+      <stop offset="28%" stop-color="#edf2f4"/>
+      <stop offset="65%" stop-color="#d4dcde"/>
+      <stop offset="100%" stop-color="#939da1"/>
     </linearGradient>
-    <linearGradient id="ir-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffe7e0"/>
-      <stop offset="0.5" stop-color="#ff7a4a"/>
-      <stop offset="1" stop-color="#c02f1a" stop-opacity="0"/>
+
+    <!-- Resplandor lateral cilíndrico -->
+    <linearGradient id="harm-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Aletas alares en sombra/luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#cdd4d8"/>
+      <stop offset="100%" stop-color="#a4adb2"/>
+    </linearGradient>
+
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9aa4aa"/>
+      <stop offset="100%" stop-color="#768086"/>
+    </linearGradient>
+
+    <!-- Banda marrón del motor cohete -->
+    <linearGradient id="harm-brown" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#693b22"/>
+      <stop offset="40%" stop-color="#945837"/>
+      <stop offset="100%" stop-color="#4e2814"/>
     </linearGradient>
   </defs>
 
-  <path d="M13.8 52 L18.2 52 C19.4 57 17.8 61 16 64 C14.2 61 12.6 57 13.8 52 Z" fill="url(#ir-flame)"/>
+  <!-- ================= ALETAS TRASERAS (ESTABILIZADORES DE COLA) ================= -->
+  <!-- Aleta trasera izquierda -->
+  <polygon points="13.2,54 8.5,57.5 8.5,60 13.2,58.5" 
+           fill="url(#fin-left)" 
+           stroke="#525d63" 
+           stroke-width="0.25"/>
 
-  <!-- aletas traseras en flecha pronunciada -->
-  <path d="M13.8 41 L8.5 47 L8.5 51.5 L13.8 49 Z" fill="#454d55"/>
-  <path d="M18.2 41 L23.5 47 L23.5 51.5 L18.2 49 Z" fill="#454d55"/>
-  <!-- tomas de aire laterales (el estatorreactor del Kh-31) -->
-  <rect x="11.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
-  <rect x="18.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
-  <!-- alitas medias pequeñas -->
-  <path d="M13.8 26 L10.8 27.5 L10.8 30 L13.8 29.5 Z" fill="#78818a"/>
-  <path d="M18.2 26 L21.2 27.5 L21.2 30 L18.2 29.5 Z" fill="#78818a"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.8,54 23.5,57.5 23.5,60 18.8,58.5" 
+           fill="url(#fin-right)" 
+           stroke="#424c52" 
+           stroke-width="0.25"/>
 
-  <rect x="13.75" y="12" width="4.5" height="40" rx="1" fill="url(#ir-body)"/>
-  <rect x="13.75" y="22" width="4.5" height="2" fill="#e0a21e"/>
-  <!-- morro AFILADO larguísimo: antena pasiva de guerra electrónica -->
-  <path d="M13.75 12 C14.4 5 15.2 1 16 0 C16.8 1 17.6 5 18.25 12 Z" fill="#333a41"/>
+  <!-- ================= ALETAS MEDIAS PRINCIPALES (TRAPEZOIDALES GRANDES) ================= -->
+  <!-- Ala izquierda (gran envergadura característica del HARM) -->
+  <polygon points="13.2,28 3.5,33.5 3.5,37.5 13.2,34.5" 
+           fill="url(#fin-left)" 
+           stroke="#556066" 
+           stroke-width="0.3" 
+           stroke-linejoin="round"/>
+
+  <!-- Ala derecha -->
+  <polygon points="18.8,28 28.5,33.5 28.5,37.5 18.8,34.5" 
+           fill="url(#fin-right)" 
+           stroke="#455056" 
+           stroke-width="0.3" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Radomo / Ojiva puntiaguda de búsqueda de radar -->
+  <path d="M 13.2 12.5 
+           C 13.2 8.5, 14.5 3, 16 3 
+           C 17.5 3, 18.8 8.5, 18.8 12.5 
+           Z" 
+        fill="url(#harm-body)"/>
+
+  <!-- Fuselaje cilíndrico alargado -->
+  <rect x="13.2" y="12.5" width="5.6" height="46" fill="url(#harm-body)"/>
+
+  <!-- Brillo lateral continuo de curvatura -->
+  <rect x="13.2" y="3.5" width="5.6" height="55" fill="url(#harm-shine)"/>
+
+  <!-- ================= BANDAS Y PANELES ================= -->
+  <!-- Banda amarilla de alto explosivo -->
+  <rect x="13.2" y="19.5" width="5.6" height="2.4" fill="#f2b41c"/>
+  <rect x="13.2" y="19.5" width="5.6" height="2.4" fill="url(#harm-shine)"/>
+
+  <!-- Anillo marrón del motor cohete tras las alas -->
+  <rect x="13.2" y="35" width="5.6" height="1.6" fill="url(#harm-brown)"/>
+  <rect x="13.2" y="35" width="5.6" height="1.6" fill="url(#harm-shine)"/>
+
+  <!-- Anillo rojo de advertencia cerca de la cola -->
+  <line x1="13.2" y1="52.5" x2="18.8" y2="52.5" stroke="#cc2d23" stroke-width="0.35"/>
+
+  <!-- Líneas de juntas de secciones -->
+  <line x1="13.2" y1="12.5" x2="18.8" y2="12.5" stroke="#879196" stroke-width="0.25"/>
+  <line x1="13.2" y1="27" x2="18.8" y2="27" stroke="#879196" stroke-width="0.25"/>
+  <line x1="13.2" y1="47" x2="18.8" y2="47" stroke="#879196" stroke-width="0.25"/>
+
+  <!-- ================= DETALLES, UMBILICAL Y ESTÉNCILES ================= -->
+  <!-- Cable umbilical curvo entre la raíz del ala y el fuselaje -->
+  <path d="M 16 27.5 Q 14.5 29 14.8 31.5" fill="none" stroke="#252b2e" stroke-width="0.4" stroke-linecap="round"/>
+
+  <!-- Conectores / zapatas dorsales de riel LAU-118 -->
+  <rect x="15.6" y="38" width="0.8" height="1.8" rx="0.3" fill="#677379" stroke="#3d464a" stroke-width="0.15"/>
+  <rect x="15.6" y="44" width="0.8" height="1.8" rx="0.3" fill="#677379" stroke="#3d464a" stroke-width="0.15"/>
+
+  <!-- Placas de acceso con remaches en la ojiva -->
+  <g fill="#434c50">
+    <circle cx="15.2" cy="15.5" r="0.18"/><circle cx="16" cy="15.5" r="0.18"/><circle cx="16.8" cy="15.5" r="0.18"/>
+    <circle cx="15.2" cy="17.2" r="0.18"/><circle cx="16" cy="17.2" r="0.18"/><circle cx="16.8" cy="17.2" r="0.18"/>
+  </g>
+
+  <!-- Marcas técnicas / bloques de datos militares -->
+  <rect x="14" y="22.5" width="2.4" height="1.2" fill="#586369" opacity="0.6"/>
+  <rect x="14.2" y="40.5" width="2" height="1.6" fill="#586369" opacity="0.5"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 14 58.5 L 18 58.5 L 17.5 60.5 L 14.5 60.5 Z" fill="#202426" stroke="#111314" stroke-width="0.25"/>
 </svg>
+

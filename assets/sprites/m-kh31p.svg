@@ -1,41 +1,159 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- Kh-31P (id del arma: kh31p)
-       antirradar · 110 km
-       Silueta heredada de la familia "antirradar": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: ANTIRRADAR (AGM-88 HARM / Kh-31P). Son los más rápidos del
-       catálogo y se dibujan como un DARDO: morro larguísimo y afilado, cuerpo
-       fino, alas pequeñas a media panza y tomas de aire laterales marcadas.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- Kh-31P (AS-17 Krypton - Antirradiación / Estatorreactor supersónico)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características:
+       - Radomo cónico oscuro puntiagudo (guía pasiva de radar)
+       - Cuerpo cilíndrico central esbelto en gris militar claro
+       - Cuatro tomas de aire/góndolas de estatorreactor (ramjet) simétricas con conos de choque
+       - Aletas canard/alas fijas montadas sobre las tomas de aire
+       - Aletas de control cruciformes traseras
+       - Tobera trasera central ancha -->
   <defs>
-    <linearGradient id="ir-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d9dde2"/>
-      <stop offset="0.45" stop-color="#8f98a1"/>
-      <stop offset="1" stop-color="#4d555d"/>
+    <!-- Gradiente del cuerpo principal gris claro -->
+    <linearGradient id="kh31-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9da6ab"/>
+      <stop offset="28%" stop-color="#e2e8ec"/>
+      <stop offset="68%" stop-color="#c4ccd1"/>
+      <stop offset="100%" stop-color="#7c878d"/>
     </linearGradient>
-    <linearGradient id="ir-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffe7e0"/>
-      <stop offset="0.5" stop-color="#ff7a4a"/>
-      <stop offset="1" stop-color="#c02f1a" stop-opacity="0"/>
+
+    <!-- Resplandor lateral cilíndrico -->
+    <linearGradient id="kh31-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Radomo frontal cónico oscuro -->
+    <linearGradient id="kh31-radome" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d3336"/>
+      <stop offset="32%" stop-color="#556066"/>
+      <stop offset="68%" stop-color="#3b4347"/>
+      <stop offset="100%" stop-color="#1d2123"/>
+    </linearGradient>
+
+    <!-- Tomas de aire/góndolas ramjet laterales -->
+    <linearGradient id="intake-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#90999e"/>
+      <stop offset="35%" stop-color="#d6dde2"/>
+      <stop offset="100%" stop-color="#70797e"/>
+    </linearGradient>
+
+    <linearGradient id="intake-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7a8388"/>
+      <stop offset="35%" stop-color="#bcc4c9"/>
+      <stop offset="100%" stop-color="#5e666b"/>
+    </linearGradient>
+
+    <!-- Aletas en sombra y luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b6c0c6"/>
+      <stop offset="100%" stop-color="#838e94"/>
+    </linearGradient>
+
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8d979d"/>
+      <stop offset="100%" stop-color="#606a70"/>
     </linearGradient>
   </defs>
 
-  <path d="M13.8 52 L18.2 52 C19.4 57 17.8 61 16 64 C14.2 61 12.6 57 13.8 52 Z" fill="url(#ir-flame)"/>
+  <!-- ================= ALETAS DE CONTROL TRASERAS ================= -->
+  <!-- Aleta trasera exterior izquierda -->
+  <polygon points="12.2,50 6,55 6.8,58.5 12.2,56.5" 
+           fill="url(#fin-left)" 
+           stroke="#3c4347" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
 
-  <!-- aletas traseras en flecha pronunciada -->
-  <path d="M13.8 41 L8.5 47 L8.5 51.5 L13.8 49 Z" fill="#454d55"/>
-  <path d="M18.2 41 L23.5 47 L23.5 51.5 L18.2 49 Z" fill="#454d55"/>
-  <!-- tomas de aire laterales (el estatorreactor del Kh-31) -->
-  <rect x="11.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
-  <rect x="18.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
-  <!-- alitas medias pequeñas -->
-  <path d="M13.8 26 L10.8 27.5 L10.8 30 L13.8 29.5 Z" fill="#78818a"/>
-  <path d="M18.2 26 L21.2 27.5 L21.2 30 L18.2 29.5 Z" fill="#78818a"/>
+  <!-- Aleta trasera exterior derecha -->
+  <polygon points="19.8,50 26,55 25.2,58.5 19.8,56.5" 
+           fill="url(#fin-right)" 
+           stroke="#2f3538" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
 
-  <rect x="13.75" y="12" width="4.5" height="40" rx="1" fill="url(#ir-body)"/>
-  <rect x="13.75" y="22" width="4.5" height="2" fill="#e0a21e"/>
-  <!-- morro AFILADO larguísimo: antena pasiva de guerra electrónica -->
-  <path d="M13.75 12 C14.4 5 15.2 1 16 0 C16.8 1 17.6 5 18.25 12 Z" fill="#333a41"/>
+  <!-- ================= ALAS/ESTABILIZADORES MEDIOS SOBRE LAS TOMAS ================= -->
+  <!-- Ala media izquierda montada en la toma exterior -->
+  <polygon points="11,35 4.5,43 5.5,47.5 11,44.5" 
+           fill="url(#fin-left)" 
+           stroke="#3c4347" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- Ala media derecha -->
+  <polygon points="21,35 27.5,43 26.5,47.5 21,44.5" 
+           fill="url(#fin-right)" 
+           stroke="#2f3538" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= CUERPO CILÍNDRICO PRINCIPAL ================= -->
+  <!-- Conexión cónica hacia la ojiva -->
+  <path d="M 14.5 13 
+           C 14.5 9.5, 15.1 7.5, 16 7.5 
+           C 16.9 7.5, 17.5 9.5, 17.5 13 
+           Z" 
+        fill="url(#kh31-body)"/>
+
+  <!-- Tubo central completo -->
+  <rect x="14.5" y="13" width="3" height="43" fill="url(#kh31-body)"/>
+
+  <!-- Brillo cilíndrico central longitudinal -->
+  <rect x="14.5" y="7.5" width="3" height="48.5" fill="url(#kh31-shine)"/>
+
+  <!-- ================= RADOMO FRONTAL CÓNICO OSCURO ================= -->
+  <path d="M 14.7 8.5 
+           C 14.7 6.2, 15.3 2.5, 16 2.5 
+           C 16.7 2.5, 17.3 6.2, 17.3 8.5 
+           Z" 
+        fill="url(#kh31-radome)" 
+        stroke="#121517" 
+        stroke-width="0.2"/>
+  <ellipse cx="16" cy="8.5" rx="1.3" ry="0.3" fill="#24292b"/>
+
+  <!-- Reflejo curvo sobre el radomo -->
+  <ellipse cx="15.8" cy="4.5" rx="0.25" ry="0.8" fill="#ffffff" opacity="0.35"/>
+  <line x1="14.5" y1="13" x2="17.5" y2="13" stroke="#687379" stroke-width="0.22"/>
+
+  <!-- ================= TOMAS DE AIRE DEL ESTATORREACTOR (4 GÓNDOLAS RAMJET) ================= -->
+  <!-- 1. Góndola Ramjet Lateral Izquierda -->
+  <polygon points="12.2,20 13.8,21.5 13.8,55 12,54 11.2,50 11.2,23" 
+           fill="url(#intake-left)" 
+           stroke="#384044" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+  <!-- Cono de choque supersónico / boca de entrada izquierda -->
+  <polygon points="11.2,23 12.2,20 12.8,22 11.8,24" fill="#2a3033"/>
+  <polygon points="12.2,20 13.8,21.5 12.8,22.2" fill="#586369"/>
+
+  <!-- 2. Góndola Ramjet Lateral Derecha -->
+  <polygon points="19.8,20 18.2,21.5 18.2,55 20,54 20.8,50 20.8,23" 
+           fill="url(#intake-right)" 
+           stroke="#2d3337" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+  <!-- Cono de choque supersónico / boca de entrada derecha -->
+  <polygon points="20.8,23 19.8,20 19.2,22 20.2,24" fill="#202426"/>
+  <polygon points="19.8,20 18.2,21.5 19.2,22.2" fill="#4a5257"/>
+
+  <!-- 3. Góndola Ramjet Frontal/Ventral (visión en eje dorsal) -->
+  <rect x="15.2" y="24" width="1.6" height="30" rx="0.4" fill="url(#intake-left)" stroke="#384044" stroke-width="0.2"/>
+  <polygon points="15.2,24 16,21.5 16.8,24" fill="#252a2d" stroke="#1b1e20" stroke-width="0.15"/>
+  <line x1="16" y1="21.5" x2="16" y2="54" stroke="#ffffff" stroke-width="0.25" opacity="0.4"/>
+
+  <!-- ================= DETALLES DE FIJACIÓN Y LÍNEAS DE PANEL ================= -->
+  <!-- Zapatas de suspensión para rail AKU-58 -->
+  <rect x="15.4" y="26.5" width="1.2" height="2.5" rx="0.2" fill="#4d5559" stroke="#252a2d" stroke-width="0.15"/>
+  <rect x="15.4" y="42.5" width="1.2" height="2.5" rx="0.2" fill="#4d5559" stroke="#252a2d" stroke-width="0.15"/>
+
+  <!-- Juntas transversales de sección -->
+  <line x1="14.5" y1="18.5" x2="17.5" y2="18.5" stroke="#717c82" stroke-width="0.18"/>
+  <line x1="12.2" y1="38" x2="19.8" y2="38" stroke="#717c82" stroke-width="0.18"/>
+  <line x1="12.2" y1="48" x2="19.8" y2="48" stroke="#717c82" stroke-width="0.18"/>
+
+  <!-- ================= TOBERA TRASERA DEL ESTATORREACTOR ================= -->
+  <!-- Salida de escape principal central ancha -->
+  <path d="M 13.8 55.5 L 18.2 55.5 L 17.6 59.2 L 14.4 59.2 Z" fill="#222629" stroke="#0e1011" stroke-width="0.25"/>
+  <ellipse cx="16" cy="59.2" rx="1.6" ry="0.45" fill="#0d0f10"/>
 </svg>
+

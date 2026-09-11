@@ -1,41 +1,171 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AIM-9L Sidewinder (id del arma: aim9)
-       aire-aire IR · 18 km
-       Silueta heredada de la familia "Sidewinder": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- Misil aire-aire (Sidewinder / AMRAAM / R-73...). Delgado, aletas en cruz
-       y estela corta: vuela mucho más rápido que un misil de crucero.
-       Morro hacia ARRIBA (norte). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AIM-9L Sidewinder (Cuerpo blanco operativo / live missile)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características:
+       - Domo seeker infrarrojo oscuro frontal
+       - Ojiva delantera verde oliva / gris oscuro mate
+       - Cuerpo/tronco principal en blanco naval con bandas de advertencia activas
+       - Aletas canard de doble delta pronunciadas
+       - Aletas traseras con rollerons estabilizadores -->
   <defs>
-    <linearGradient id="ma-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#f2f5f8"/>
-      <stop offset="0.45" stop-color="#c3cbd3"/>
-      <stop offset="1" stop-color="#78828c"/>
+    <!-- Ojiva oscura delantera -->
+    <linearGradient id="aim-nose" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#232a26"/>
+      <stop offset="35%" stop-color="#414c45"/>
+      <stop offset="70%" stop-color="#313a34"/>
+      <stop offset="100%" stop-color="#191e1b"/>
     </linearGradient>
-    <linearGradient id="ma-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#cfe9ff"/>
-      <stop offset="0.5" stop-color="#7db8ff"/>
-      <stop offset="1" stop-color="#2f6fd0" stop-opacity="0"/>
+
+    <!-- Tronco/cuerpo cilíndrico en blanco naval -->
+    <linearGradient id="aim-white" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b8c0c4"/>
+      <stop offset="30%" stop-color="#f5f8fa"/>
+      <stop offset="70%" stop-color="#dde4e8"/>
+      <stop offset="100%" stop-color="#9ea7ab"/>
+    </linearGradient>
+
+    <!-- Resplandor lateral suave para dar volumen al tubo cilíndrico -->
+    <linearGradient id="aim-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.38"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Lente del seeker infrarrojo oscuro frontal -->
+    <linearGradient id="seeker-dome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3c3f3f"/>
+      <stop offset="45%" stop-color="#202222"/>
+      <stop offset="100%" stop-color="#0c0d0d"/>
+    </linearGradient>
+
+    <!-- Aletas delanteras oscuras (alabeo canard doble delta) -->
+    <linearGradient id="fin-front-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#46514b"/>
+      <stop offset="100%" stop-color="#2d3531"/>
+    </linearGradient>
+    <linearGradient id="fin-front-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#353e39"/>
+      <stop offset="100%" stop-color="#1f2522"/>
+    </linearGradient>
+
+    <!-- Aletas traseras metálicas -->
+    <linearGradient id="fin-tail-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d5dde0"/>
+      <stop offset="100%" stop-color="#a4aeb3"/>
+    </linearGradient>
+    <linearGradient id="fin-tail-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b4bec2"/>
+      <stop offset="100%" stop-color="#889296"/>
+    </linearGradient>
+
+    <!-- Banda marrón del motor cohete -->
+    <linearGradient id="aim-brown" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#693b22"/>
+      <stop offset="40%" stop-color="#945837"/>
+      <stop offset="100%" stop-color="#4e2814"/>
     </linearGradient>
   </defs>
 
-  <!-- estela corta y azulada (motor de alto impulso) -->
-  <path d="M14 48 L18 48 C19 54 17.6 58 16 61 C14.4 58 13 54 14 48 Z" fill="url(#ma-flame)"/>
+  <!-- ================= ALETAS TRASERAS DE COLA (CON ROLLERONS) ================= -->
+  <!-- Aleta trasera izquierda -->
+  <polygon points="13.6,49.5 5.5,53.5 5.5,59.2 13.6,57.5" 
+           fill="url(#fin-tail-l)" 
+           stroke="#525d63" 
+           stroke-width="0.25"/>
+  <!-- Rolleron estabilizador en la punta del ala izquierda -->
+  <rect x="5.2" y="58" width="1.2" height="1.8" rx="0.3" fill="#32383b"/>
+  <circle cx="5.8" cy="58.9" r="0.35" fill="#8d979c"/>
 
-  <!-- aletas traseras -->
-  <path d="M13.8 40 L8 43.5 L8 47 L13.8 44.5 Z" fill="#6d7681"/>
-  <path d="M18.2 40 L24 43.5 L24 47 L18.2 44.5 Z" fill="#6d7681"/>
-  <!-- canards delanteros -->
-  <path d="M13.8 16 L9.5 18 L9.5 21 L13.8 19.5 Z" fill="#8b949e"/>
-  <path d="M18.2 16 L22.5 18 L22.5 21 L18.2 19.5 Z" fill="#8b949e"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.4,49.5 26.5,53.5 26.5,59.2 18.4,57.5" 
+           fill="url(#fin-tail-r)" 
+           stroke="#424c52" 
+           stroke-width="0.25"/>
+  <!-- Rolleron estabilizador en la punta del ala derecha -->
+  <rect x="25.6" y="58" width="1.2" height="1.8" rx="0.3" fill="#32383b"/>
+  <circle cx="26.2" cy="58.9" r="0.35" fill="#8d979c"/>
 
-  <!-- fuselaje -->
-  <rect x="13.7" y="9" width="4.6" height="39" rx="1" fill="url(#ma-body)"/>
-  <!-- banda de ejercicio -->
-  <rect x="13.7" y="22" width="4.6" height="2" fill="#2f6fd0"/>
-  <!-- buscador (cabeza de cristal) -->
-  <path d="M13.7 9 C14.4 4 15.1 1.4 16 0 C16.9 1.4 17.6 4 18.3 9 Z" fill="#3a4450"/>
-  <circle cx="16" cy="4.6" r="1.2" fill="#9fd8ff" opacity="0.85"/>
+  <!-- ================= ALETAS CANARD DELANTERAS (DOBLE DELTA) ================= -->
+  <!-- Aleta canard izquierda -->
+  <polygon points="13.6,17.5 1.5,12.5 13.6,22" 
+           fill="url(#fin-front-l)" 
+           stroke="#181d1a" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- Aleta canard derecha -->
+  <polygon points="18.4,17.5 30.5,12.5 18.4,22" 
+           fill="url(#fin-front-r)" 
+           stroke="#181d1a" 
+           stroke-width="0.28" 
+           stroke-linejoin="round"/>
+
+  <!-- Aletas en perspectiva frontal/dorsal -->
+  <polygon points="15.5,17 15.6,10 16.4,10 16.5,17" fill="#2d3632" stroke="#181d1a" stroke-width="0.2"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Ojiva frontal oscura cónica -->
+  <path d="M 13.6 15 
+           C 13.6 8, 14.6 4.8, 16 4.8 
+           C 17.4 4.8, 18.4 8, 18.4 15 
+           Z" 
+        fill="url(#aim-nose)"/>
+
+  <!-- Tronco cilíndrico central en color blanco naval -->
+  <rect x="13.6" y="15" width="4.8" height="42.5" fill="url(#aim-white)"/>
+
+  <!-- Brillo lateral longitudinal para efecto 3D curvo -->
+  <rect x="13.6" y="5" width="4.8" height="52.5" fill="url(#aim-shine)"/>
+
+  <!-- ================= DOMO INFRARROJO FRONTAL (SEEKER OSCURO) ================= -->
+  <!-- Anillo metálico de la óptica -->
+  <path d="M 14.6 6 L 17.4 6 L 17.1 5.2 L 14.9 5.2 Z" fill="#67736d" stroke="#252b28" stroke-width="0.15"/>
+
+  <!-- Domo semiesférico buscador de calor -->
+  <path d="M 14.7 5.2 
+           C 14.7 3.2, 15.3 2.5, 16 2.5 
+           C 16.7 2.5, 17.3 3.2, 17.3 5.2 
+           Z" 
+        fill="url(#seeker-dome)" 
+        stroke="#0d0e0e" 
+        stroke-width="0.2"/>
+
+  <!-- Brillo especular en la óptica -->
+  <ellipse cx="15.7" cy="3.5" rx="0.4" ry="0.6" fill="#ffffff" opacity="0.45"/>
+
+  <!-- ================= ABRAZADERAS, BANDAS Y ZAPATAS LAU-7 ================= -->
+  <!-- Collar metálico entre ojiva y cuerpo -->
+  <rect x="13.6" y="15" width="4.8" height="0.8" fill="#586660" stroke="#2d3531" stroke-width="0.2"/>
+
+  <!-- Ventanas del sensor de proximidad activo -->
+  <circle cx="16" cy="18.8" r="0.5" fill="#1b201d"/>
+  <circle cx="14.3" cy="18.8" r="0.4" fill="#1b201d"/>
+  <circle cx="17.7" cy="18.8" r="0.4" fill="#1b201d"/>
+
+  <!-- Banda amarilla de alto explosivo (versión activa) -->
+  <rect x="13.6" y="21.5" width="4.8" height="1.6" fill="#f0ad18"/>
+  <rect x="13.6" y="21.5" width="4.8" height="1.6" fill="url(#aim-shine)"/>
+
+  <!-- Banda marrón del motor cohete -->
+  <rect x="13.6" y="23.6" width="4.8" height="1.4" fill="url(#aim-brown)"/>
+  <rect x="13.6" y="23.6" width="4.8" height="1.4" fill="url(#aim-shine)"/>
+
+  <!-- Anillos de montaje con clips intermedios -->
+  <rect x="13.5" y="26.5" width="5" height="0.8" fill="#758994" stroke="#364249" stroke-width="0.18"/>
+  <rect x="13.5" y="30.5" width="5" height="0.8" fill="#758994" stroke="#364249" stroke-width="0.18"/>
+
+  <!-- Zapatas de montaje en riel (hangers) -->
+  <rect x="15.5" y="27" width="1" height="2" rx="0.2" fill="#8898a3" stroke="#48555c" stroke-width="0.15"/>
+  <rect x="15.5" y="44" width="1" height="2.2" rx="0.2" fill="#8898a3" stroke="#48555c" stroke-width="0.15"/>
+
+  <!-- Esténciles técnicos oscuros sobre el cuerpo blanco -->
+  <line x1="14.5" y1="35" x2="17.5" y2="35" stroke="#3f484d" stroke-width="0.25" opacity="0.6"/>
+  <line x1="14.5" y1="37" x2="17.5" y2="37" stroke="#3f484d" stroke-width="0.25" opacity="0.6"/>
+
+  <!-- Banda de separación de sección de popa -->
+  <rect x="13.6" y="55" width="4.8" height="1" fill="#728087" stroke="#3b464c" stroke-width="0.15"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 14.3 57.5 L 17.7 57.5 L 17.4 59.8 L 14.6 59.8 Z" fill="#1d2224" stroke="#0e1112" stroke-width="0.25"/>
 </svg>
+

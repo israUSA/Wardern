@@ -1,38 +1,132 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- Igla-V (id del arma: igla)
-       aire-aire IR · 8 km
-       Silueta heredada de la familia "MANPADS": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: MANPADS (AIM-92 Stinger / Igla-V). Es el misil MÁS PEQUEÑO del
-       juego y se nota: cuerpo corto y rechoncho, aletitas minúsculas, morro
-       cónico opaco. Ocupa poco del lienzo a propósito.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- 9K38 Igla (SA-18 Grouse)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características:
+       - Aguja aerodinámica frontal ("aerospike") con punta cónica roja/naranja
+       - Domo seeker cónico metálico claro
+       - Fuselaje muy delgado y uniforme en tono gris plateado / aluminio
+       - Collar oscuro y canards plegables delanteros con ranuras longitudinales
+       - Sección trasera con 4 aletas curvas/plegables y anillo de tobera con ribete rojo -->
   <defs>
-    <linearGradient id="mp-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d4d8cc"/>
-      <stop offset="0.45" stop-color="#969c8c"/>
-      <stop offset="1" stop-color="#565b4e"/>
+    <!-- Gradiente cilíndrico gris aluminio del cuerpo -->
+    <linearGradient id="igla-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#949da2"/>
+      <stop offset="28%" stop-color="#e2e8ec"/>
+      <stop offset="65%" stop-color="#c1c9ce"/>
+      <stop offset="100%" stop-color="#7a8388"/>
     </linearGradient>
-    <linearGradient id="mp-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff0cc"/>
-      <stop offset="0.5" stop-color="#ffab55"/>
-      <stop offset="1" stop-color="#d9531f" stop-opacity="0"/>
+
+    <!-- Resplandor longitudinal para dar volumen al tubo esbelto -->
+    <linearGradient id="igla-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Aletas delanteras en sombra/luz -->
+    <linearGradient id="igla-canard-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#768085"/>
+      <stop offset="100%" stop-color="#555c61"/>
+    </linearGradient>
+    <linearGradient id="igla-canard-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#60676b"/>
+      <stop offset="100%" stop-color="#44494c"/>
+    </linearGradient>
+
+    <!-- Aletas traseras plegables -->
+    <linearGradient id="igla-fin-tail-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#889297"/>
+      <stop offset="100%" stop-color="#60686c"/>
+    </linearGradient>
+    <linearGradient id="igla-fin-tail-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#727b80"/>
+      <stop offset="100%" stop-color="#4d5357"/>
+    </linearGradient>
+
+    <!-- Punta del dardo aerodinámico (aerospike) -->
+    <linearGradient id="igla-spike-tip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8e2017"/>
+      <stop offset="35%" stop-color="#dc4032"/>
+      <stop offset="100%" stop-color="#66140e"/>
     </linearGradient>
   </defs>
 
-  <path d="M14.2 43 L17.8 43 C18.6 48 17.4 51.5 16 54 C14.6 51.5 13.4 48 14.2 43 Z" fill="url(#mp-flame)"/>
+  <!-- ================= ALETAS TRASERAS PLEGABLES (COLA) ================= -->
+  <!-- Aleta trasera izquierda con curvatura de empaque -->
+  <polygon points="14.8,55 10.8,55.8 10.8,59.4 14.8,58.6" 
+           fill="url(#igla-fin-tail-l)" 
+           stroke="#34393c" 
+           stroke-width="0.2"/>
 
-  <!-- aletitas traseras muy cortas -->
-  <path d="M14.2 37 L10.5 39.5 L10.5 42.5 L14.2 41 Z" fill="#4a4f42"/>
-  <path d="M17.8 37 L21.5 39.5 L21.5 42.5 L17.8 41 Z" fill="#4a4f42"/>
-  <!-- aletitas de morro, casi testimoniales -->
-  <path d="M14.2 20 L11.6 21.5 L11.6 24 L14.2 23 Z" fill="#6c7263"/>
-  <path d="M17.8 20 L20.4 21.5 L20.4 24 L17.8 23 Z" fill="#6c7263"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="17.2,55 21.2,55.8 21.2,59.4 17.2,58.6" 
+           fill="url(#igla-fin-tail-r)" 
+           stroke="#2a2e30" 
+           stroke-width="0.2"/>
 
-  <rect x="14.1" y="18" width="3.8" height="25" rx="0.9" fill="url(#mp-body)"/>
-  <rect x="14.1" y="30" width="3.8" height="1.8" fill="#9e3a2b"/>
-  <!-- ojiva cónica, sin cristal: el buscador va tapado hasta el disparo -->
-  <path d="M14.1 18 C14.7 13 15.2 11 16 10 C16.8 11 17.3 13 17.9 18 Z" fill="#343930"/>
+  <!-- ================= CANARDS DELANTEROS DESPLEGABLES ================= -->
+  <!-- Aleta canard izquierda en ángulo de flecha -->
+  <polygon points="14.8,17.2 10.2,19.2 11.5,23.5 14.8,21" 
+           fill="url(#igla-canard-l)" 
+           stroke="#34393c" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- Aleta canard derecha -->
+  <polygon points="17.2,17.2 21.8,19.2 20.5,23.5 17.2,21" 
+           fill="url(#igla-canard-r)" 
+           stroke="#2a2e30" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- Canards en perspectiva perpendicular frontal -->
+  <polygon points="15.6,16 15.6,13.2 16.4,13.2 16.4,16" fill="#586166" stroke="#2a2e30" stroke-width="0.18"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL (EXTRA DELGADO: 2.4 mm) ================= -->
+  <!-- Ojiva cónica superior -->
+  <path d="M 14.8 11.5 C 14.8 8.8, 15.2 6.5, 16 6.5 C 16.8 6.5, 17.2 8.8, 17.2 11.5 Z" 
+        fill="url(#igla-body)"/>
+
+  <!-- Tubo cilíndrico continuo y uniforme -->
+  <rect x="14.8" y="11.5" width="2.4" height="45.5" fill="url(#igla-body)"/>
+
+  <!-- Brillo cilíndrico longitudinal -->
+  <rect x="14.8" y="6.5" width="2.4" height="50.5" fill="url(#igla-shine)"/>
+
+  <!-- ================= AGUJA AERODINÁMICA FRONTAL (AEROSPIKE DEL IGLA) ================= -->
+  <!-- Vástago metálico de la aguja -->
+  <line x1="16" y1="6.5" x2="16" y2="2.6" stroke="#c0c9ce" stroke-width="0.32" stroke-linecap="round"/>
+  <line x1="16" y1="6.5" x2="16" y2="2.6" stroke="#525b60" stroke-width="0.12"/>
+
+  <!-- Base cónica de anclaje de la aguja en el domo -->
+  <polygon points="15.5,6.5 16.5,6.5 16.2,5.2 15.8,5.2" fill="#758086"/>
+
+  <!-- Punta roja aerodinámica -->
+  <polygon points="15.5,3.2 16.5,3.2 16,1.8" fill="url(#igla-spike-tip)" stroke="#4d0e09" stroke-width="0.15"/>
+
+  <!-- ================= COLLAR DELANTERO Y DETALLES DEL FUSELAJE ================= -->
+  <!-- Anillo oscuro de fijación de los canards -->
+  <rect x="14.7" y="17.2" width="2.6" height="1.4" fill="#3c4347" stroke="#1f2325" stroke-width="0.15"/>
+
+  <!-- Ranuras longitudinales de repliegue de aletas -->
+  <line x1="15.2" y1="19.5" x2="15.2" y2="22.5" stroke="#3c4347" stroke-width="0.22" stroke-linecap="round"/>
+  <line x1="16.8" y1="19.5" x2="16.8" y2="22.5" stroke="#3c4347" stroke-width="0.22" stroke-linecap="round"/>
+
+  <!-- Juntas de ensamble del cuerpo cilíndrico -->
+  <line x1="14.8" y1="11.5" x2="17.2" y2="11.5" stroke="#687379" stroke-width="0.2"/>
+  <line x1="14.8" y1="14.2" x2="17.2" y2="14.2" stroke="#687379" stroke-width="0.18"/>
+  <line x1="14.8" y1="28" x2="17.2" y2="28" stroke="#687379" stroke-width="0.18"/>
+  <line x1="14.8" y1="30.5" x2="17.2" y2="30.5" stroke="#687379" stroke-width="0.18"/>
+
+  <!-- Micro-puertos de sensores en el fuselaje -->
+  <circle cx="16" cy="24.5" r="0.22" fill="#2d3336"/>
+
+  <!-- ================= SECCIÓN DE COLA Y TOBERA ================= -->
+  <!-- Anillo posterior con ribete rojo de advertencia -->
+  <rect x="14.8" y="56.2" width="2.4" height="0.6" fill="#c02f23"/>
+  <rect x="14.8" y="56.8" width="2.4" height="2" fill="#3b4246"/>
+
+  <!-- Tobera trasera de escape cónica -->
+  <path d="M 15 58.8 L 17 58.8 L 16.7 60.5 L 15.3 60.5 Z" fill="#1b1e20" stroke="#0e1011" stroke-width="0.2"/>
 </svg>

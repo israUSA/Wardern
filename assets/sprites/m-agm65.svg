@@ -1,41 +1,145 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AGM-65 Maverick (id del arma: agm65)
-       aire-suelo EO · 25 km
-       Silueta heredada de la familia "aire-suelo pesado": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: aire-suelo PESADO de morro sensor (AGM-65 Maverick / Kh-25ML).
-       Rasgo propio: cuerpo GORDO y corto, alas en cruz grandes bien atrás y
-       ventana plana cuadrada del buscador en el morro (electroóptico o láser).
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AGM-65 Maverick
+       Orientación: Punta hacia ARRIBA (Norte)
+       Características:
+       - Domo óptico frontal esférico (lente electro-óptica / IR ámbar/dorada)
+       - Anillo naranja/cobre bajo la óptica
+       - Cuerpo cilíndrico gris neutro militar
+       - Banda metálica de unión y banda amarilla de alto explosivo
+       - Alas delta largas con guías de anclaje (rail shoes)
+       - Aletas de control traseras en cruz y banda marrón de motor cohete -->
   <defs>
-    <linearGradient id="ap-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#dfe3e7"/>
-      <stop offset="0.45" stop-color="#9fa8b0"/>
-      <stop offset="1" stop-color="#5a636b"/>
+    <!-- Gradiente del cuerpo cilíndrico gris -->
+    <linearGradient id="mav-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#959fa6"/>
+      <stop offset="28%" stop-color="#dce3e7"/>
+      <stop offset="65%" stop-color="#bcc7cd"/>
+      <stop offset="100%" stop-color="#848e94"/>
     </linearGradient>
-    <linearGradient id="ap-flame" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff0c9"/>
-      <stop offset="0.5" stop-color="#ffa040"/>
-      <stop offset="1" stop-color="#d94a1c" stop-opacity="0"/>
+
+    <!-- Resplandor lateral cilíndrico -->
+    <linearGradient id="mav-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Alas delta metálicas en sombra y luz -->
+    <linearGradient id="mav-wing-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b0bcc2"/>
+      <stop offset="100%" stop-color="#8a969c"/>
+    </linearGradient>
+
+    <linearGradient id="mav-wing-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9aa5ab"/>
+      <stop offset="100%" stop-color="#737e84"/>
+    </linearGradient>
+
+    <!-- Lente del seeker óptico/IR (cúpula ámbar / dorada translúcida) -->
+    <linearGradient id="mav-lens" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a49363"/>
+      <stop offset="45%" stop-color="#7a693b"/>
+      <stop offset="100%" stop-color="#4a3e21"/>
+    </linearGradient>
+
+    <!-- Banda marrón del motor cohete (Rocket Motor Band) -->
+    <linearGradient id="mav-brown" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#693b22"/>
+      <stop offset="40%" stop-color="#945837"/>
+      <stop offset="100%" stop-color="#4e2814"/>
     </linearGradient>
   </defs>
 
-  <path d="M12.6 48 L19.4 48 C20.5 53 18.4 58 16 61 C13.6 58 11.5 53 12.6 48 Z" fill="url(#ap-flame)"/>
+  <!-- ================= ALETAS TRASERAS DE CONTROL ================= -->
+  <!-- Aleta de cola izquierda -->
+  <polygon points="12.2,51 7.4,51 7.4,54 12.2,54" 
+           fill="url(#mav-wing-l)" 
+           stroke="#525d63" 
+           stroke-width="0.25"/>
 
-  <!-- alas en cruz grandes y traseras -->
-  <path d="M12.6 30 L2.5 40 L2.5 46 L12.6 42 Z" fill="#59626a"/>
-  <path d="M19.4 30 L29.5 40 L29.5 46 L19.4 42 Z" fill="#59626a"/>
-  <!-- aletillas de guiado delanteras -->
-  <path d="M12.6 20 L9 22 L9 25.5 L12.6 24 Z" fill="#7b848c"/>
-  <path d="M19.4 20 L23 22 L23 25.5 L19.4 24 Z" fill="#7b848c"/>
+  <!-- Aleta de cola derecha -->
+  <polygon points="19.8,51 24.6,51 24.6,54 19.8,54" 
+           fill="url(#mav-wing-r)" 
+           stroke="#424c52" 
+           stroke-width="0.25"/>
 
-  <!-- fuselaje ancho -->
-  <rect x="12.5" y="11" width="7" height="37" rx="1.4" fill="url(#ap-body)"/>
-  <rect x="12.5" y="27" width="7" height="2.4" fill="#c9432f"/>
-  <!-- morro ROMO con ventana plana del buscador: no es ojiva puntiaguda -->
-  <path d="M12.5 11 L12.9 5.5 L19.1 5.5 L19.5 11 Z" fill="#3a424a"/>
-  <rect x="13.4" y="6" width="5.2" height="4" rx="0.6" fill="#2a3038"/>
-  <rect x="14" y="6.6" width="4" height="2.8" rx="0.4" fill="#8fd0e8" opacity="0.8"/>
+  <!-- ================= ALAS DELTA LARGAS CARACTERÍSTICAS ================= -->
+  <!-- Ala Delta Izquierda (nacen a mitad del cuerpo y se abren hacia la cola) -->
+  <polygon points="12.2,23 7.2,48.5 12.2,48.5" 
+           fill="url(#mav-wing-l)" 
+           stroke="#505a60" 
+           stroke-width="0.3" 
+           stroke-linejoin="round"/>
+
+  <!-- Ala Delta Derecha -->
+  <polygon points="19.8,23 24.8,48.5 19.8,48.5" 
+           fill="url(#mav-wing-r)" 
+           stroke="#404a50" 
+           stroke-width="0.3" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- Nariz / Ojiva superior cónica -->
+  <path d="M 12.2 14.5 
+           C 12.2 9, 13.6 5.8, 16 5.8 
+           C 18.4 5.8, 19.8 9, 19.8 14.5 
+           Z" 
+        fill="url(#mav-body)"/>
+
+  <!-- Tubo cilíndrico central -->
+  <rect x="12.2" y="14.5" width="7.6" height="42.5" fill="url(#mav-body)"/>
+
+  <!-- Brillo lateral para dar curvatura -->
+  <rect x="12.2" y="6" width="7.6" height="51" fill="url(#mav-shine)"/>
+
+  <!-- ================= DOMO ÓPTICO FRONTAL (SEEKER) ================= -->
+  <!-- Anillo naranja de sellado en la base del domo -->
+  <path d="M 13.4 6.8 L 18.6 6.8 L 18.2 6.1 L 13.8 6.1 Z" fill="#d95e26"/>
+
+  <!-- Cúpula esférica de cristal óptico / sensor -->
+  <path d="M 13.6 6.1 
+           C 13.6 3.7, 14.6 2.8, 16 2.8 
+           C 17.4 2.8, 18.4 3.7, 18.4 6.1 
+           Z" 
+        fill="url(#mav-lens)" 
+        stroke="#45381a" 
+        stroke-width="0.2"/>
+
+  <!-- Reflejo curvo sobre la lente -->
+  <path d="M 14.5 5 C 14.5 3.8, 15.2 3.4, 16 3.4" 
+        fill="none" 
+        stroke="#ffffff" 
+        stroke-width="0.35" 
+        stroke-linecap="round" 
+        opacity="0.65"/>
+
+  <!-- ================= BANDAS DEL FUSELAJE ================= -->
+  <!-- Anillo divisorio metálico gris acero -->
+  <rect x="12.2" y="17.2" width="7.6" height="1.4" fill="#75828a" stroke="#485359" stroke-width="0.2"/>
+
+  <!-- Banda amarilla de alto explosivo (High Explosive Warhead) -->
+  <rect x="12.2" y="20.8" width="7.6" height="2.2" fill="#f0ad18"/>
+  <rect x="12.2" y="20.8" width="7.6" height="2.2" fill="url(#mav-shine)"/>
+
+  <!-- Banda marrón del motor cohete hacia la popa -->
+  <rect x="12.2" y="48.5" width="7.6" height="2.8" fill="url(#mav-brown)"/>
+  <rect x="12.2" y="48.5" width="7.6" height="2.8" fill="url(#mav-shine)"/>
+
+  <!-- ================= RIELES DE ANCLAJE (LAUNCH LUGS / RAIL SHOES) ================= -->
+  <!-- Zapata superior de anclaje en el lomo -->
+  <polygon points="15.2,18 16.8,18 16.6,22.5 15.4,22.5" fill="#677278" stroke="#3b4448" stroke-width="0.2"/>
+  
+  <!-- Zapata inferior alargada sobre el fuselaje -->
+  <polygon points="15.3,31 16.7,31 16.5,47.5 15.5,47.5" fill="#677278" stroke="#3b4448" stroke-width="0.2"/>
+
+  <!-- Línea de costura dorsal y remaches del fuselaje -->
+  <line x1="16" y1="22.5" x2="16" y2="31" stroke="#5d676d" stroke-width="0.2" stroke-dasharray="0.8 0.8"/>
+
+  <!-- Flecha indicadora de ensamblaje en la nariz -->
+  <polygon points="18.5,8.8 17.5,9.5 17.5,8.2" fill="#1b2226"/>
+  <line x1="18.5" y1="8.8" x2="19.3" y2="8.8" stroke="#1b2226" stroke-width="0.35"/>
+
+  <!-- ================= TOBERA TRASERA ================= -->
+  <path d="M 13.4 57 L 18.6 57 L 18.2 59 L 13.8 59 Z" fill="#252b2e" stroke="#121517" stroke-width="0.25"/>
 </svg>
+
