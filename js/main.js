@@ -73,6 +73,79 @@ function resetClock() {
   lastAutosave = Date.now();
 }
 
+// ---------- Progresión offline ----------
+// El mundo sigue corriendo con la pestaña cerrada. Al cargar una partida se mide
+// el tiempo REAL transcurrido desde el guardado y se adelanta la simulación esos
+// minutos de juego. Es lo que hace viable el reloj lento: sin esto, una
+// construcción de 3 horas reales no terminaría nunca.
+//
+// Se avanza a pasos de OFFLINE_STEP_MINUTES en vez de tick a tick porque el
+// número de ticks lo fija TICK_MS, no el reloj de juego: una noche fuera serían
+// cientos de miles de ticks y la pestaña se quedaría colgada al abrir.
+async function catchUpOffline(s) {
+  if (!s?.savedAt || s.gameOver) return null;
+  const realMin = (Date.now() - s.savedAt) / 60000;
+  if (realMin <= 0) return null;
+  const porMinutoReal = (60000 / C.TICK_MS) * C.MINUTES_PER_TICK_BASE;
+  const pedidos = realMin * porMinutoReal;
+  if (pedidos < C.OFFLINE_MIN_GAME_MINUTES) return null;
+
+  const recuperados = Math.min(pedidos, C.OFFLINE_MAX_GAME_MINUTES);
+  const diaAntes = gameDay(s);
+  const unidadesAntes = s.units.length;
+  const logAntes = s.log.length;
+  // Siempre a 1×: la pausa es una comodidad de la interfaz, no detiene el mundo
+  // mientras no estás (y con speed 0 guardado, tick() no avanzaría nada).
+  const speedPrev = s.speed;
+  s.speed = 1;
+  // Recuperar el tope (14 días) cuesta ~20 s con una partida avanzada: sin ceder
+  // el hilo cada pocos pasos, el juego arrancaría con la pestaña congelada y sin
+  // pintar nada. Con el cartel se ve que está trabajando.
+  const cartel = offlineOverlay();
+  let hecho = 0;
+  for (let left = recuperados; left > 0; left -= C.OFFLINE_STEP_MINUTES) {
+    tick(s, Math.min(C.OFFLINE_STEP_MINUTES, left));
+    hecho += C.OFFLINE_STEP_MINUTES;
+    if (hecho % (C.OFFLINE_STEP_MINUTES * 10) === 0) {
+      cartel.textContent = `Recuperando el tiempo transcurrido… ${Math.min(100, Math.round((hecho / recuperados) * 100))} %`;
+      await new Promise((r) => setTimeout(r, 0)); // deja pintar
+    }
+  }
+  cartel.remove();
+  s.speed = speedPrev;
+
+  return {
+    dias: Math.max(1, Math.round(gameDay(s) - diaAntes)),
+    unidades: s.units.length - unidadesAntes,
+    eventos: s.log.slice(logAntes).filter((e) => e.kind === "war").length,
+    topado: pedidos > C.OFFLINE_MAX_GAME_MINUTES,
+  };
+}
+
+// Cartel de "recuperando", creado a mano para no depender del panel de modales
+// (que es de botones y aquí no hay nada que pulsar).
+function offlineOverlay() {
+  const el = document.createElement("div");
+  el.className = "offline-overlay";
+  el.textContent = "Recuperando el tiempo transcurrido… 0 %";
+  document.body.appendChild(el);
+  return el;
+}
+
+// Resumen de lo que pasó mientras no estabas. Modal y no toast: si te han
+// declarado una guerra en ese hueco, no puede pasar desapercibido.
+function reportOffline(res) {
+  if (!res) return;
+  const partes = [`Han pasado <b>${res.dias} día(s)</b> de juego mientras no estabas.`];
+  if (res.eventos) partes.push(`<b>${res.eventos}</b> movimiento(s) de guerra en el parte.`);
+  if (res.unidades > 0) partes.push(`Se han incorporado <b>${res.unidades}</b> unidades nuevas al mapa.`);
+  else if (res.unidades < 0) partes.push(`Se han perdido <b>${-res.unidades}</b> unidades.`);
+  if (res.topado) {
+    partes.push(`El mundo se detuvo al llegar al tope de ${C.OFFLINE_MAX_GAME_MINUTES / 1440} días: llevabas demasiado fuera.`);
+  }
+  UI.showModal("Mientras no estabas", partes.join(" "), [{ label: "Continuar" }]);
+}
+
 const hooks = {
   selCountry: null,
   difficulty: C.DEFAULT_DIFFICULTY,
@@ -99,7 +172,7 @@ const hooks = {
     UI.showGame();
     updateUI();
   },
-  onContinue() {
+  async onContinue() {
     const s = Save.loadSave();
     if (!s) {
       UI.toast("No hay partida guardada");
@@ -115,6 +188,7 @@ const hooks = {
       return;
     }
     state = s;
+    const offline = await catchUpOffline(state);
     window.__wardern = state; // hook de QA/pruebas automatizadas
     window.__wardernUI = { ui, renderer }; // hook de QA: vista y selecciones
     endShown = false;
@@ -127,6 +201,7 @@ const hooks = {
     UI.hideStart();
     UI.showGame();
     updateUI();
+    reportOffline(offline);
   },
   onSpeed(v) {
     if (state) state.speed = v;
@@ -142,6 +217,7 @@ const hooks = {
     try {
       const s = await Save.importGame(file);
       state = s;
+      const offline = await catchUpOffline(state);
       endShown = false;
       ui.mode = "game";
       ui.sel = null;
@@ -153,6 +229,7 @@ const hooks = {
       UI.showGame();
       updateUI();
       UI.toast("Partida importada");
+      reportOffline(offline);
     } catch (e) {
       UI.toast("Archivo no válido: " + e.message);
     }

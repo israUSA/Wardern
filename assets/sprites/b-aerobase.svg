@@ -1,44 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Base aerea - hangar arqueado, pista con marcas y torre de control, vista 3/4 superior.
-       Tinte por pais: sobreescribir .base/.shade/.light (hangar, torre, plataformas).
-       Fijos: .glass (cabina), .rubber (asfalto), .dark (contornos). -->
-  <defs><style>
-    .base{fill:#7c8464}.shade{fill:#5b6349}.dark{fill:#3d4232}.light{fill:#9aa378}.hi{fill:#b8bfa2}
-    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
-    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}.rubber{fill:#2b2e28}
-  </style></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <!-- Base aérea con fondo transparente y pista extendida de borde a borde -->
+  <defs>
+    <style>
+      .runway { fill: #1c1d1a; }
+      .shoulder { fill: #2b2e28; }
+      .marking { fill: #e8ecda; stroke: #e8ecda; }
+      .tower-body { fill: #828a6f; }
+      .tower-dark { fill: #5c634d; }
+      .tower-roof { fill: #9da687; }
+      .tower-glass { fill: #385d75; }
+      .edge { stroke: #1b1e16; stroke-width: 0.7; stroke-linejoin: round; }
+    </style>
+  </defs>
 
-  <!-- pista -->
-  <path class="rubber" d="M60 6 L80 10 L72 122 L52 118 Z"/>
-  <path d="M60 6 L80 10 L72 122 L52 118 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
-  <path d="M66 14 L62 112" stroke="#9aa378" stroke-width="1.5" stroke-dasharray="9 6" fill="none" opacity=".8"/>
-  <path d="M56 108 L58 116 M61.5 109 L63.5 117 M67 110 L69 118 M72.5 111 L74.5 119" stroke="#9aa378" stroke-width="1.4" opacity=".8"/>
-  <path d="M61 12 L69 13.6 M60.5 24 L68.5 25.6" stroke="#9aa378" stroke-width="1.4" opacity=".6"/>
+  <!-- Arcén / borde de asfalto secundario -->
+  <polygon points="12,-20 48,-20 148,105 148,148 112,148 -20,-17" class="shoulder"/>
 
-  <!-- plataforma de estacionamiento -->
-  <path class="shade" d="M40 62 L58 66 L56 88 L38 84 Z" opacity=".8"/>
-  <path d="M40 62 L58 66 L56 88 L38 84 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8" opacity=".5"/>
+  <!-- PISTA PRINCIPAL (Extremadamente larga, atraviesa de vértice a vértice) -->
+  <polygon points="18,-20 42,-20 148,112 148,148 124,148 -20,-14" class="runway"/>
+  <polygon points="18,-20 42,-20 148,112 148,148 124,148 -20,-14" fill="none" stroke="#121310" stroke-width="0.8"/>
 
-  <!-- hangar arqueado -->
-  <path class="shade" d="M10 40 Q27 20 44 40 L44 46 L10 46 Z"/>
-  <path d="M10 40 Q27 20 44 40 L44 46 L10 46 Z" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
-  <path class="light" d="M13 38 Q27 24 41 38" stroke="#9aa378" stroke-width="1.6" fill="none" opacity=".7"/>
-  <rect class="base" x="10" y="44" width="34" height="26"/>
-  <rect class="base" x="10" y="44" width="34" height="26" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
-  <rect class="dark" x="16" y="50" width="22" height="20"/>
-  <path d="M20 50 L20 70 M25 50 L25 70 M30 50 L30 70 M34 50 L34 70" stroke="#9aa378" stroke-width="1.1" opacity=".65"/>
+  <!-- Líneas de borde de pista continuas -->
+  <line x1="20" y1="-20" x2="148" y2="114" stroke="#e8ecda" stroke-width="0.7" opacity="0.85"/>
+  <line x1="-20" y1="-12" x2="126" y2="148" stroke="#e8ecda" stroke-width="0.7" opacity="0.85"/>
 
-  <!-- caza estacionado en plataforma -->
-  <path class="metalL" d="M45 68 L50.5 72 L48 80 L46.5 84 L45 80 L41.5 72 Z"/>
-  <path class="metalL" d="M98 78 L103.5 82 L101 90 L99.5 94 L98 90 L94.5 82 Z"/>
+  <!-- Línea central discontinua de extremo a extremo -->
+  <line x1="0" y1="-20" x2="148" y2="131" stroke="#e8ecda" stroke-width="1.6" stroke-dasharray="6 4" stroke-linecap="butt"/>
 
-  <!-- torre de control -->
-  <rect class="shade" x="92" y="72" width="12" height="12"/>
-  <rect class="shade" x="92" y="72" width="12" height="12" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
-  <rect class="base" x="88" y="58" width="20" height="14"/>
-  <rect class="base" x="88" y="58" width="20" height="14" fill-opacity="0" stroke="#3d4232" stroke-width="1"/>
-  <rect class="glass" x="90.5" y="60.5" width="15" height="6.5"/>
-  <path class="glassL" d="M92 61.5 L96 61.5 L96 66 L92 66 Z" opacity=".8"/>
-  <rect class="metalS" x="96.5" y="52" width="3" height="6"/>
-  <rect class="metalL" x="93" y="53.5" width="10" height="2.2"/>
+  <!-- Umbral superior (Piano keys) -->
+  <g class="marking" stroke-width="0.9">
+    <line x1="6" y1="-12" x2="11" y2="-6"/>
+    <line x1="9" y1="-9" x2="14" y2="-3"/>
+    <line x1="12" y1="-6" x2="17" y2="0"/>
+    <line x1="15" y1="-3" x2="20" y2="3"/>
+    <line x1="18" y1="0" x2="23" y2="6"/>
+  </g>
+
+  <!-- Umbral inferior (Piano keys) -->
+  <g class="marking" stroke-width="0.9">
+    <line x1="102" y1="99" x2="107" y2="105"/>
+    <line x1="105" y1="102" x2="110" y2="108"/>
+    <line x1="108" y1="105" x2="113" y2="111"/>
+    <line x1="111" y1="108" x2="116" y2="114"/>
+    <line x1="114" y1="111" x2="119" y2="117"/>
+  </g>
+
+  <!-- Conexión / Calle de rodaje corta -->
+  <polygon points="78,28 92,20 98,28 84,36" class="shoulder"/>
+  <polygon points="80,30 90,23 95,29 85,35" class="runway"/>
+
+  <!-- TORRE DE CONTROL (Único edificio aislado) -->
+  <g class="edge">
+    <!-- Base -->
+    <polygon points="94,18 108,14 114,21 100,25" fill="#383d2c"/>
+
+    <!-- Fuste / Columna -->
+    <polygon points="100,20 106,18 106,34 100,36" class="tower-body"/>
+    <polygon points="106,18 110,16 110,32 106,34" class="tower-dark"/>
+
+    <!-- Cabina acristalada -->
+    <polygon points="98,14 108,12 112,10 102,12" class="tower-roof"/>
+    <polygon points="98,14 108,12 108,17 98,19" class="tower-glass"/>
+    <polygon points="108,12 112,10 112,15 108,17" fill="#5885a2"/>
+
+    <!-- Techo y antena -->
+    <polygon points="97,14 109,12 113,10 101,12" class="tower-roof"/>
+    <line x1="105" y1="12" x2="105" y2="5" stroke="#1c1d1a" stroke-width="0.8"/>
+    <circle cx="105" cy="4" r="1.1" fill="#c93b2b" stroke="#1c1d1a" stroke-width="0.3"/>
+  </g>
 </svg>
+

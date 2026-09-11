@@ -130,6 +130,25 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       `tickMovement` borraba `task` en CADA tramo intermedio de la ruta, no solo al llegar.
       Verificado con un tick real de 3 saltos en el navegador: llega, cuenta atrás en la
       ficha, log de "agota su patrulla" y aterriza sola
+- [x] **Ritmo CoN y progresión offline** (2026-09-11): el reloj baja de 1440 a 24 minutos
+      de juego por minuto real — **1 hora real = 1 día de juego**. Patrulla 20 min,
+      industria 3 h, base aérea 4 h. No se tocó ninguna duración: todas estaban ya en
+      días de juego y se estiran solas con `MINUTES_PER_TICK_BASE`.
+      Prerrequisito resuelto: el **combate era el único sistema por TICK** y no por
+      tiempo de juego (`tickCombat` recibía `dt` y no lo usaba), así que corría a 4
+      rondas por segundo real pasara lo que pasara con el reloj — de ahí una deriva
+      silenciosa al bajar de 15 a 6. Ahora el daño va por `dt/COMBAT_REF_MINUTES` y
+      `battleTicks` pasa a `battleMinutes`. Medido: la misma batalla dura 880 min de
+      juego con pasos de 0,1 y de 6 min, con HP final idéntico.
+      **Progresión offline** (`catchUpOffline` en main.js): al cargar se mide el reloj de
+      pared y se adelanta la simulación a pasos de 30 min de juego, con cartel de
+      progreso y resumen de lo ocurrido. Tope de 14 días de juego. Sin esto el reloj
+      lento dejaba el juego muerto: nadie deja el navegador abierto 3 horas
+- [x] **Edificios en el mapa rediseñados** (2026-09-11): sin el panel negro semitransparente
+      (y sin sombra de canvas, medida en ×2,4 el coste de la fila), un 60 % más grandes,
+      en columna A UN LADO para dejar el centro a las unidades. El **puerto** se planta
+      hacia la costa (`seaDirFor`, cacheado) y los **aviones en base se posan en fila
+      junto a la pista** del aeródromo en vez de junto al centro de la provincia
 - [ ] Apoyo aéreo cercano, formaciones al mover, ciudades con red vial bajo las
       unidades (como la referencia)
 

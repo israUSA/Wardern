@@ -211,6 +211,14 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 .mk-stock { font-size: 12px; color: var(--text-dim); text-align: right; margin-bottom: 6px; }
 .mk-stock b { color: var(--text); }
 
+/* Cartel de recuperación offline: el mundo avanzó con la pestaña cerrada y hay
+   que simular ese hueco antes de devolver el control (ver catchUpOffline). */
+.offline-overlay {
+  position: absolute; inset: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: center;
+  background: #000c; color: var(--text); font-size: 15px; letter-spacing: 0.5px;
+}
+
 /* ---- Fin de partida ---- */
 .end-screen { position: absolute; inset: 0; background: #000b; display: flex; align-items: center; justify-content: center; z-index: 60; flex-direction: column; gap: 16px; }
 .end-screen h1 { font-size: 44px; letter-spacing: 6px; }

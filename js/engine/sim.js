@@ -8,9 +8,12 @@ import { tickMissiles } from "./missiles.js";
 import { tickRearm } from "./air-combat.js";
 import { aiTickAll } from "./ai.js";
 
-export function tick(state) {
+// `dtOverride` (minutos de juego) lo usa la recuperación offline para avanzar a
+// pasos grandes: replicar una noche entera al ritmo de simulación serían cientos
+// de miles de ticks. El resto del motor no lo pasa nunca y se comporta igual.
+export function tick(state, dtOverride) {
   if (state.gameOver) return;
-  const dt = C.MINUTES_PER_TICK_BASE * (state.speed || 0);
+  const dt = dtOverride ?? C.MINUTES_PER_TICK_BASE * (state.speed || 0);
   if (dt <= 0) return;
 
   const prevHour = Math.floor(state.time / 60);

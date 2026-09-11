@@ -52,14 +52,14 @@ export function tickCombat(state, dt) {
     const isBattle = owners.some((a, i) => owners.some((b, j) => i !== j && atWar(state, a, b)));
 
     if (!isBattle) {
-      for (const u of units) u.battleTicks = 0;
+      for (const u of units) u.battleMinutes = 0;
       continue;
     }
 
-    for (const u of fighting) u.battleTicks = (u.battleTicks || 0) + 1;
+    for (const u of fighting) u.battleMinutes = (u.battleMinutes || 0) + dt;
 
-    // Log al comenzar una batalla (todos los presentes tienen tick 1)
-    if (fighting.every((u) => u.battleTicks === 1)) {
+    // Log al comenzar una batalla (todos los presentes acaban de sumar su primer dt)
+    if (fighting.every((u) => u.battleMinutes <= dt + 1e-9)) {
       log(state, `Batalla en ${prov.isSea ? "alta mar" : prov.name}`, "war");
     }
 
@@ -99,7 +99,12 @@ export function tickCombat(state, dt) {
       const defBonus = T.terrainDefBonus?.[prov.terrain] ?? 1;
       const fortLevel = ps?.buildings?.fortaleza || 0;
       const fort = controller(ps) === target.owner ? 1 + C.FORT_DEF_PER_LEVEL * fortLevel : 1;
-      const prep = A.rangedTicks && u.battleTicks <= A.rangedTicks ? C.ARTILLERY_PREP_MULT : 1;
+      // `rangedTicks` de units-data está en TICKS DE REFERENCIA (12 para la
+      // artillería). Se convierte a minutos de juego con COMBAT_REF_MINUTES para
+      // que el bombardeo preparatorio dure lo mismo en tiempo de JUEGO aunque
+      // cambie el reloj, sin tener que reescribir las 96 fichas de unidad.
+      const prepMin = (A.rangedTicks || 0) * C.COMBAT_REF_MINUTES;
+      const prep = prepMin && u.battleMinutes <= prepMin ? C.ARTILLERY_PREP_MULT : 1;
 
       const vetA = 1 + vetLevel(u) * C.VET_BONUS_PER_LEVEL;
       const vetT = 1 + vetLevel(target) * C.VET_BONUS_PER_LEVEL;
@@ -120,6 +125,14 @@ export function tickCombat(state, dt) {
         vetA *
         C.COMBAT_SCALE;
       dmg *= C.DEF_SOFTENER / (C.DEF_SOFTENER + defVal);
+      // El daño va por TIEMPO DE JUEGO, no por tick. Antes era por tick: el
+      // combate corría a 4 rondas por segundo real pasara lo que pasara con el
+      // reloj, así que cada vez que se tocaba MINUTES_PER_TICK_BASE el combate
+      // cambiaba de velocidad respecto a todo lo demás sin que se notara (pasó
+      // al bajar de 15 a 6: se volvió 2,5× más rápido que el movimiento).
+      // Anclado a COMBAT_REF_MINUTES, el balance de combate queda expresado en
+      // minutos de juego y es inmune a cualquier cambio de reloj o de tick.
+      dmg *= dt / C.COMBAT_REF_MINUTES;
 
       // Experiencia por daño infligido (solo si sobrevive la unidad)
       if (u.hp > 0) u.exp = Math.min(C.VET_EXP_MAX, (u.exp || 0) + dmg * C.VET_EXP_PER_DAMAGE);
@@ -151,7 +164,7 @@ export function tickCombat(state, dt) {
             edgeMinutes(u.type, prov, S.provinces.get(dest), !!e?.strait) / C.RETREAT_SPEED_MULT;
           u.edgeLeft = { to: dest, strait: !!e?.strait, minutesLeft: total, total };
           u.path = [dest];
-          u.battleTicks = 0;
+          u.battleMinutes = 0;
           log(state, `${unitDef(u.type)?.name} de ${S.countries[u.owner].name} se retira de ${prov.isSea ? "alta mar" : prov.name}`, "war");
         } else {
           dead.add(u.id); // sin retirada: se rinde
@@ -201,7 +214,7 @@ function captureProvince(state, pid, iso) {
   ps.occupier = iso;
   state.stats.taken[iso] = (state.stats.taken[iso] || 0) + 1;
   log(state, `${S.countries[iso].name} ocupa ${S.provinces.get(pid).name}`, "war");
-  for (const u of state.units) if (u.pos === pid) u.battleTicks = 0;
+  for (const u of state.units) if (u.pos === pid) u.battleMinutes = 0;
   if (prevCtrl !== ps.owner) checkElimination(state, prevCtrl);
   checkElimination(state, ps.owner);
 }

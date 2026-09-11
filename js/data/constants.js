@@ -2,14 +2,28 @@
 // Todas las magnitudes de tiempo están en MINUTOS DE JUEGO salvo que se indique.
 
 export const TICK_MS = 250;               // duración real de un tick
-// Minutos de juego por tick a 1×. A 4 ticks/s, con 15 el reloj corría a UNA HORA
-// de juego por segundo real: no es que las unidades fueran rápidas, es que el
-// tiempo volaba, y por eso un avión cruzaba una provincia antes de que te diera
-// tiempo a mirarlo. Con 6 el ritmo baja a 24 min de juego por segundo (2,5× más
-// lento) y TODO se ralentiza por igual —movimiento, economía, construcción,
-// investigación y combate— sin tocar una sola cifra de balance. Quien quiera el
-// ritmo anterior lo tiene en el botón 2×/4×.
-export const MINUTES_PER_TICK_BASE = 6;
+// Minutos de juego por tick a 1×. ESTE es el mando del ritmo de todo el juego:
+//
+//   minutos de juego por minuto real = (60000 / TICK_MS) × MINUTES_PER_TICK_BASE
+//   con 0.1:  (60000/250) × 0.1 = 24   →  1 hora real = 1 día de juego
+//
+// Con 6 (el valor anterior) un día de juego pasaba en UN MINUTO real: una
+// patrulla aérea de 8 h duraba 20 segundos y una industria militar se levantaba
+// en 3 minutos, así que ninguna decisión de construcción pesaba. A 0.1 el mismo
+// día tarda una hora real: patrulla 20 min, industria 3 h, base aérea 4 h.
+// No hay que retocar ninguna duración — están todas en días/horas de JUEGO y se
+// estiran solas. Los botones 2× y 4× multiplican esto.
+//
+// Requisito para que esto funcione (ver js/main.js): con el reloj lento, el
+// mundo tiene que avanzar también con la pestaña CERRADA, o no se terminaría
+// nunca una construcción. De eso se encarga la recuperación offline al cargar.
+export const MINUTES_PER_TICK_BASE = 0.1;
+
+// Minutos de juego por tick con los que está CALIBRADO el combate. El daño se
+// escala por dt/este valor, así que cambiar el reloj de arriba no altera lo que
+// dura una batalla en tiempo de JUEGO. Antes el daño iba por tick a secas y el
+// combate era el único sistema que ignoraba el reloj (ver js/engine/combat.js).
+export const COMBAT_REF_MINUTES = 6;
 export const SPEEDS = [0, 1, 2, 4];
 
 // ---- Simulación en segundo plano ----
@@ -30,6 +44,21 @@ export const CATCHUP_BUDGET_MS = 12;          // ms de simulación por llamada c
 export const CATCHUP_BUDGET_HIDDEN_MAX_MS = 5000;
 
 export const START_DATE_MS = Date.UTC(2026, 0, 1);
+
+// ---- Progresión offline ----
+// El mundo avanza aunque la pestaña esté cerrada: al cargar se mira el reloj de
+// pared y se adelanta la simulación. Sin esto, con el reloj lento no terminaría
+// jamás una construcción de 3 horas, porque nadie deja el navegador abierto.
+// Se avanza a PASOS GRANDES (no tick a tick): una noche entera son ~500 pasos en
+// vez de 300.000 ticks. El combate resuelto a saltos de 30 min es más tosco que
+// en vivo, pero es la diferencia entre que funcione y que bloquee la pestaña.
+export const OFFLINE_STEP_MINUTES = 30;
+// Tope de lo que se recupera: 14 días de juego = 14 horas reales fuera. Más allá
+// el mundo "espera" — mejor que volver de un fin de semana y encontrar la
+// partida decidida sin ti.
+export const OFFLINE_MAX_GAME_MINUTES = 14 * 24 * 60;
+// Por debajo de esto no se avisa: cerrar y abrir el juego no merece un modal.
+export const OFFLINE_MIN_GAME_MINUTES = 30;
 
 // Economía
 export const OCCUPY_SHARE = 0.25;         // producción que recibe el ocupante
@@ -149,7 +178,10 @@ export const MARKET = {
 export const MARKET_LOTS = [1000, 5000];
 
 // IA
-export const AI_CHECK_HOURS = 6;
+// Cada cuántas horas de JUEGO decide un bot. Con el reloj a 1 día = 1 hora real,
+// 6 h de juego eran 15 minutos reales sin que los bots movieran ficha: parecían
+// congelados. Con 2 h reaccionan cada 5 minutos reales.
+export const AI_CHECK_HOURS = 2;
 // Reclutamientos que un bot puede iniciar por chequeo (antes era 1 para todo el
 // país: EEUU con 30 provincias reclutaba igual que Belice con 1).
 export const AI_RECRUITS_PER_CHECK = (provinces) => Math.max(1, Math.min(4, Math.ceil(provinces / 6)));

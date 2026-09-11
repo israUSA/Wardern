@@ -3,6 +3,9 @@ const KEY = "wardern-save";
 
 export function saveGame(state) {
   try {
+    // Sello de reloj de PARED: es el ancla de la progresión offline (main.js).
+    // Se pone aquí y no en el autoguardado para que valga también al exportar.
+    state.savedAt = Date.now();
     localStorage.setItem(KEY, JSON.stringify(state));
     return true;
   } catch {

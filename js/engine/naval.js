@@ -67,7 +67,7 @@ export function disembark(state, transportId, targetPid) {
       g.embarked = null;
       g.pos = targetPid;
       g.path = [];
-      g.battleTicks = 0;
+      g.battleMinutes = 0;
     }
   }
   log(state, `${S.countries[t.owner].name} desembarca ${t.cargo.length} unidades en ${target.name}`, "info");

@@ -487,7 +487,7 @@ export function launchFromCarrier(state, aircraftId) {
   u.pos = c.pos;
   u.path = [];
   u.edgeLeft = null;
-  u.battleTicks = 0;
+  u.battleMinutes = 0;
   log(state, `${unitDef(u.type)?.name} despega de ${unitDef(c.type)?.name}`, "info");
   return { ok: true, msg: `${unitDef(u.type)?.name} en vuelo desde cubierta` };
 }

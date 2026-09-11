@@ -19,6 +19,13 @@ export class MapRenderer {
     this.mapBounds = null;
     // Rumbo dibujado de cada unidad, para que virar sea un giro y no un salto
     this.headings = new Map();
+    // Hacia dónde cae el mar desde cada provincia costera (para plantar el puerto
+    // en la orilla). El mapa es estático: se calcula una vez y se guarda.
+    this.seaDir = new Map();
+    // Dónde quedó el icono de aeródromo de cada provincia en ESTE frame, para
+    // posar encima los aviones que estén en base. Lo llena el paso de edificios,
+    // que corre antes que el de unidades.
+    this.airstrip = new Map();
     this.lastDrawT = 0;
     this.resize();
     window.addEventListener("resize", () => {
@@ -107,6 +114,27 @@ export class MapRenderer {
       this.paths.set(p.id, path);
     }
     return path;
+  }
+
+  // Vector unitario (en coordenadas de mundo, que a escala uniforme valen también
+  // para pantalla) desde el centro de la provincia hacia la celda de mar vecina
+  // más cercana. null si no tiene costa.
+  seaDirFor(p) {
+    let d = this.seaDir.get(p.id);
+    if (d !== undefined) return d;
+    d = null;
+    let best = Infinity;
+    for (const e of S.edges.get(p.id) || []) {
+      const q = S.provinces.get(e.to);
+      if (!q?.isSea) continue;
+      const dx = q.pcx - p.pcx, dy = q.pcy - p.pcy;
+      const len = Math.hypot(dx, dy);
+      if (!len || len >= best) continue;
+      best = len;
+      d = [dx / len, dy / len];
+    }
+    this.seaDir.set(p.id, d);
+    return d;
   }
 
   countryColor(iso) {
@@ -236,7 +264,10 @@ export class MapRenderer {
         // Tipografía y tamaño se fijan UNA vez por frame, no por provincia:
         // asignar ctx.font invalida el estado del contexto y es de lo más caro
         // que se puede hacer en un bucle de 200+ iteraciones.
-        const bSize = Math.max(16, Math.min(34, unitSize * 0.78));
+        // Más grandes que la ficha de unidad: son el "pueblo" de la provincia y
+        // antes quedaban como adornos diminutos debajo de las tropas.
+        const bSize = Math.max(26, Math.min(54, unitSize * 1.25));
+        this.airstrip.clear();
         ctx.font = `bold ${Math.max(8, bSize * 0.42)}px monospace`;
         ctx.textAlign = "center";
         for (const p of this.paintList || S.provinceList) {
@@ -253,7 +284,7 @@ export class MapRenderer {
           const [bx, by] = this.w2s(p.pcx, p.pcy);
           if (bx < -80 || bx > this.w + 80 || by < -80 || by > this.h + 80) continue; // fuera de pantalla
           const keys = BUILDING_KEYS.filter((k) => b[k] > 0);
-          this.drawBuildings(ctx, keys, psB, bx, by + 40, this.countryColor(psB.occupier || psB.owner), bSize);
+          this.drawBuildings(ctx, keys, psB, p, bx, by, this.countryColor(psB.occupier || psB.owner), bSize, unitSize);
         }
       }
 
@@ -381,19 +412,34 @@ export class MapRenderer {
         // quedan aparcados en pista. Un caza dando vueltas eternamente sobre su
         // propio aeródromo no tenía sentido y era lo que se veía raro al aterrizar.
         const psProv = state.provinces[pid];
+        // Pista de la provincia (la dejó el paso de edificios de este frame).
+        // Si el mapa está muy alejado no se dibujan edificios y no hay pista:
+        // entonces los aparcados se quedan junto al centro, como antes.
+        const pista = this.airstrip.get(pid);
         air.slice(0, 4).forEach((g, i) => {
           const enBase =
             psProv && controller(psProv) === g.owner && (psProv.buildings?.aerobase || 0) >= 1;
-          const phase = hashStr(g.owner + "|" + g.type) % 628 / 100;
-          // En base la posición es FIJA (sin el término del reloj): no se mueve.
-          const ang = enBase ? -Math.PI / 2 + (i * Math.PI) / 2 : timeMs / 2400 + phase + (i * Math.PI) / 2;
-          const lift = enBase ? 3 : 12; // aparcado se posa; en vuelo va elevado
-          const bx = cx + Math.cos(ang) * 27;
-          const by = cy + Math.sin(ang) * 16 - lift;
-          // Morro en la TANGENTE de la órbita: derivando la elipse (27, 16) sale
-          // (−sin·27, cos·16). Sin esto el avión daba vueltas mirando siempre al
-          // norte, como arrastrado de lado, que es lo que se veía robótico.
-          const tang = enBase ? undefined : Math.atan2(Math.cos(ang) * 16, -Math.sin(ang) * 27) + Math.PI / 2;
+          let bx, by, tang;
+          if (enBase && pista) {
+            // POSADOS EN LA PISTA: en fila A LA DERECHA del icono del aeródromo
+            // (debajo caería encima del siguiente edificio de la columna), con el
+            // morro al norte. Es donde estarían de verdad, y de paso libera el
+            // centro de la provincia para las tropas de tierra.
+            const [ax, ay, aSize] = pista;
+            bx = ax + aSize * 0.5 + unitSize * 0.72 + i * unitSize * 0.72;
+            by = ay;
+          } else {
+            const phase = hashStr(g.owner + "|" + g.type) % 628 / 100;
+            // En base la posición es FIJA (sin el término del reloj): no se mueve.
+            const ang = enBase ? -Math.PI / 2 + (i * Math.PI) / 2 : timeMs / 2400 + phase + (i * Math.PI) / 2;
+            const lift = enBase ? 3 : 12; // aparcado se posa; en vuelo va elevado
+            bx = cx + Math.cos(ang) * 27;
+            by = cy + Math.sin(ang) * 16 - lift;
+            // Morro en la TANGENTE de la órbita: derivando la elipse (27, 16) sale
+            // (−sin·27, cos·16). Sin esto el avión daba vueltas mirando siempre al
+            // norte, como arrastrado de lado, que es lo que se veía robótico.
+            tang = enBase ? undefined : Math.atan2(Math.cos(ang) * 16, -Math.sin(ang) * 27) + Math.PI / 2;
+          }
           this.drawUnitGroup(ctx, g, bx, by, { airborne: !enBase, angle: tang });
           this.unitHits.push({ x: bx, y: by - (enBase ? 0 : 7), r: hitRadius(unitSize), ids: g.ids, pid });
         });
@@ -570,20 +616,42 @@ export class MapRenderer {
 
   // Fila de iconos de edificio con su nivel. El tamaño acompaña al zoom como el
   // de las unidades, pero más pequeño: son decorado informativo, no fichas.
-  drawBuildings(ctx, keys, ps, cx, cy, color, size) {
-    const gap = size + 3;
-    let x = cx - ((keys.length - 1) * gap) / 2;
-    const w = keys.length * gap + 4;
-    rrect(ctx, cx - w / 2, cy - size / 2 - 3, w, size + 6, 4);
-    ctx.fillStyle = "rgba(10,14,18,0.45)";
-    ctx.fill();
+  // Edificios de una provincia. Las UNIDADES mandan en el centro; los edificios
+  // van en columna A UN LADO, fuera del abanico de la pila, para que no se pisen.
+  // El PUERTO es la excepción: se planta hacia la costa, que es donde estaría.
+  drawBuildings(ctx, keys, ps, prov, cx, cy, color, size, unitSize) {
+    const gap = size + 4;
+    // Columna a la derecha del centro, despejando el abanico de unidades (radio
+    // 18 + media ficha) y centrada en vertical sobre la provincia.
+    const colX = cx + 22 + unitSize * 0.6 + size / 2;
+    const enColumna = keys.filter((k) => k !== "puerto");
+    let y = cy - ((enColumna.length - 1) * gap) / 2;
+    // SIN panel oscuro detrás y SIN sombra de canvas (misma decisión que las
+    // fichas de unidad, ver docs/ROADMAP.md v1.3): la chapa semitransparente
+    // ensuciaba el mapa y convertía cada provincia en una caja. Los sprites ya
+    // traen su propio sombreado, y `shadowBlur` se midió en x2,4 el coste de
+    // dibujar la fila (3,9 ms frente a 1,6 ms con 133 iconos en pantalla) — caro
+    // para algo que corre en CADA frame.
+    ctx.save();
     for (const k of keys) {
+      let x;
+      if (k === "puerto") {
+        // A la orilla: en la dirección del mar vecino. Sin costa (no debería
+        // pasar, el motor no deja construirlo) cae a la columna.
+        const d = this.seaDirFor(prov);
+        const r = 26 + unitSize * 0.7;
+        x = d ? cx + d[0] * r : colX;
+        y = d ? cy + d[1] * r : y;
+      } else {
+        x = colX;
+      }
+      if (k === "aerobase") this.airstrip.set(prov.id, [x, y, size]);
       const img = buildingReady(k, color);
       if (img) {
-        ctx.drawImage(img, x - size / 2, cy - size / 2, size, size);
+        ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
       } else {
         // Aún cargando: cuadro sobrio para que no "parpadee" el hueco
-        rrect(ctx, x - size / 2, cy - size / 2, size, size, 3);
+        rrect(ctx, x - size / 2, y - size / 2, size, size, 3);
         ctx.fillStyle = "rgba(12,16,20,0.55)";
         ctx.fill();
       }
@@ -592,12 +660,13 @@ export class MapRenderer {
         // font/textAlign ya vienen fijados por el frame (ver draw)
         ctx.lineWidth = 2.5;
         ctx.strokeStyle = "rgba(8,12,16,0.85)";
-        ctx.strokeText(lvl, x + size * 0.34, cy + size * 0.52);
+        ctx.strokeText(lvl, x + size * 0.34, y + size * 0.52);
         ctx.fillStyle = "#ffe9a0";
-        ctx.fillText(lvl, x + size * 0.34, cy + size * 0.52);
+        ctx.fillText(lvl, x + size * 0.34, y + size * 0.52);
       }
-      x += gap;
+      if (k !== "puerto") y += gap; // el puerto vive fuera de la columna
     }
+    ctx.restore();
   }
 
   // ---- Ayudas de dibujo de unidades (estilo CoN) ----

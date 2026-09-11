@@ -446,7 +446,7 @@ export function spawnUnit(state, iso, type, pos, hp = 100) {
     type,
     hp,
     morale: 1,
-    battleTicks: 0,
+    battleMinutes: 0,
     pos,
     path: [],
     edgeLeft: null,
