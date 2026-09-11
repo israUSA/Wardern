@@ -881,7 +881,7 @@ function airSection(state, u, mine) {
     const vacio = left <= 0;
     html += `<div class="up-wrow${vacio ? " vacio" : ""}" title="${w.nombre} · guía ${w.guia} · ${Math.round(w.pk * 100)}% de impacto base · alcance real ${w.rangoKm} km (${effRange(w)} en escala de teatro)">
       <span class="up-wname">${w.nombre}</span>
-      <span class="up-wtag">${w.tipo === "aa" ? "aire-aire" : "aire-suelo"} · ${effRange(w)} km</span>
+      <span class="up-wtag">${w.tipo === "aa" ? "aire-aire" : "aire-suelo"} · ${effRange(w)} km · −${w.danio} HP</span>
       <span class="up-wammo">${left}<span class="cost">/${total}</span></span>
     </div>`;
   }
@@ -999,14 +999,22 @@ export function updateRadarPanel(state, ui) {
   for (const a of delModo) {
     const act = sel && a.weapon.id === sel.weapon.id;
     wHtml += `<button class="rp-wchip${act ? " active" : ""}${a.left <= 0 ? " vacio" : ""}" data-rweapon="${a.weapon.id}"
-      title="${a.weapon.nombre} · guía ${a.weapon.guia} · ${effRange(a.weapon)} km · ${Math.round(a.weapon.pk * 100)}% base">
+      title="${a.weapon.nombre} · guía ${a.weapon.guia} · ${effRange(a.weapon)} km · ${a.weapon.danio} HP por impacto · ${Math.round(a.weapon.pk * 100)}% base">
       ${a.weapon.nombre.split(" ")[0]} <b>${a.left}</b></button>`;
   }
   $("rp-weapons").innerHTML = wHtml;
 
-  $("rp-note").innerHTML = enTransito
-    ? `<div class="up-rearm warn">En tránsito: el avión debe estar en su sector para disparar.</div>`
-    : "";
+  // Qué hace el arma elegida. El DAÑO no estaba a la vista en ninguna parte: se
+  // veía el alcance y la munición, pero no lo que quita un impacto, que es
+  // justo lo que hace falta para decidir si merece la pena gastar el misil.
+  const resumenArma = (w) => {
+    const clases = w.clases?.length ? w.clases.map((k) => CAT_NAMES[k] || k).join(", ") : null;
+    return `<div class="rp-wsum"><b>${w.nombre}</b> · <b>−${w.danio} HP</b> por impacto ·
+      ${Math.round(w.pk * 100)} % base · ${effRange(w)} km${clases ? ` · solo contra ${clases}` : ""}</div>`;
+  };
+  $("rp-note").innerHTML =
+    (sel ? resumenArma(sel.weapon) : "") +
+    (enTransito ? `<div class="up-rearm warn">En tránsito: el avión debe estar en su sector para disparar.</div>` : "");
 
   // Lista de contactos
   let cHtml = "";
@@ -1032,7 +1040,7 @@ export function updateRadarPanel(state, ui) {
       <span class="rp-blip${c.datalink ? " dl" : ""}" style="background:${c.datalink ? "transparent" : color};border-color:${color}"></span>
       <div class="rp-cinfo">
         <b>${eT?.name || e.type}</b> <span class="cost">${S.countries[e.owner].name}</span>${c.datalink ? ` <span class="rp-dl" title="Fuera del alcance de tu radar: lo marca una batería antiaérea propia">ENLACE</span>` : ""}
-        <div class="cost">${Math.round(c.km)} km · rumbo ${Math.round(c.bearing)}° · ${Math.round(e.hp)} HP${pk !== null ? ` · <span class="rp-pk">Pk ${pk}%</span>` : ""}</div>
+        <div class="cost">${Math.round(c.km)} km · rumbo ${Math.round(c.bearing)}° · ${Math.round(e.hp)} HP${pk !== null ? ` · <span class="rp-pk">Pk ${pk}%</span> · −${sel.weapon.danio} HP${e.hp <= sel.weapon.danio ? ` <b class="rp-kill">lo mata</b>` : ""}` : ""}</div>
       </div>
       <button class="btn small" data-rfire="${e.id}" ${motivo ? `disabled title="${motivo}"` : ""}>Disparar</button>
     </div>`;
