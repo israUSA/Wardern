@@ -567,6 +567,57 @@ function provName(pid) {
 
 // ¿Hay enemigos en guerra en la misma celda? Mismo criterio que el motor: las
 // unidades en tránsito no combaten (ver tickCombat en js/engine/combat.js).
+// Parte de combate: contra quién pelea esta unidad, con cuánta vida le queda a
+// cada bando y a qué ritmo se están haciendo daño. Antes la batalla era una "X"
+// en el mapa y nada más: no había forma de saber quién ganaba ni cuánto faltaba.
+//
+// El ritmo NO se recalcula aquí: sale de lo que el motor midió en el último paso
+// de combate (`dmgInPerH` / `dmgOutPerH` en js/engine/combat.js). Rehacer la
+// fórmula en la interfaz habría creado una segunda verdad que se separa de la
+// primera al primer cambio de balance.
+function battleSection(state, u) {
+  const enLaCelda = state.units.filter(
+    (x) => !x.dead && !x.embarked && !x.edgeLeft && x.pos === u.pos &&
+      unitDef(x.type)?.category !== "drone" // los drones no combaten (combat.js)
+  );
+  const enemigos = enLaCelda.filter((x) => atWar(state, u.owner, x.owner));
+  const propios = enLaCelda.filter((x) => !atWar(state, u.owner, x.owner));
+  if (!enemigos.length) return "";
+
+  const suma = (list, campo) => list.reduce((s, x) => s + (x[campo] || 0), 0);
+  const hpEnemigo = suma(enemigos, "hp");
+  const hpPropio = suma(propios, "hp");
+  const pegamos = suma(propios, "dmgOutPerH");
+  const pegan = suma(enemigos, "dmgOutPerH");
+  // Pronóstico simple: HP del bando ÷ daño por hora que recibe. No cuenta
+  // retiradas ni refuerzos, y se dice, para que nadie lo lea como una promesa.
+  const horas = (hp, dph) => (dph > 0 ? etaText((hp / dph) * 60) : "—");
+
+  const fila = (x) => {
+    const T = unitDef(x.type);
+    const c = S.countries[x.owner];
+    const hp = Math.max(0, Math.round(x.hp));
+    const caida = x.dmgInPerH > 0 ? ` · cae en ${horas(x.hp, x.dmgInPerH)}` : "";
+    return `<div class="bt-row${x.id === u.id ? " bt-me" : ""}">
+      <span class="bt-name">${flagSpan(x.owner, c.color)}${T?.name || x.type}</span>
+      <span class="bt-bar"><i style="width:${Math.max(0, Math.min(100, hp))}%;background:${hpColor(hp)}"></i></span>
+      <span class="bt-val">${hp}<span class="cost">${caida}</span></span>
+    </div>`;
+  };
+
+  return `<div class="pp-section bt-sec"><h4>⚔ Combate en ${provName(u.pos)}</h4>
+    <div class="bt-line">Lleva <b>${etaText(u.battleMinutes || 0)}</b> de pelea.
+      El daño es continuo: no hay turnos, las dos partes se desgastan a la vez.</div>
+    <div class="bt-line">Esta unidad recibe <b>${Math.round(u.dmgInPerH || 0)} HP/h</b>
+      e inflige <b>${Math.round(u.dmgOutPerH || 0)} HP/h</b>.</div>
+    <div class="bt-side">Enemigo · ${Math.round(hpEnemigo)} HP · cae en <b>${horas(hpEnemigo, pegamos)}</b></div>
+    ${enemigos.map(fila).join("")}
+    <div class="bt-side">Tu bando · ${Math.round(hpPropio)} HP · aguanta <b>${horas(hpPropio, pegan)}</b></div>
+    ${propios.map(fila).join("")}
+    <div class="garrison-note">Por debajo de ${C.RETREAT_HP} HP o ${Math.round(C.RETREAT_MORALE * 100)} % de moral, una unidad se retira sola a una provincia vecina.</div>
+  </div>`;
+}
+
 function inBattle(state, u) {
   if (u.edgeLeft) return false;
   return state.units.some(
@@ -695,6 +746,8 @@ export function updateUnitPanel(state, ui) {
     </div>
     <div class="up-atk"><span class="up-mlabel">Mejor ataque</span> ${topAttacks(T)}</div>`;
 
+  // En combate: el parte de la batalla va lo primero, que es lo que urge
+  if (inBattle(state, u)) html += battleSection(state, u);
   // Aeronaves: sensores y carga de misiles (docs/AIR-COMBAT.md)
   if (airLoadout(u.type)) html += airSection(state, u, mine);
   // Portaviones: cubierta de vuelo con su ala embarcada

@@ -52,7 +52,11 @@ export function tickCombat(state, dt) {
     const isBattle = owners.some((a, i) => owners.some((b, j) => i !== j && atWar(state, a, b)));
 
     if (!isBattle) {
-      for (const u of units) u.battleMinutes = 0;
+      for (const u of units) {
+        u.battleMinutes = 0;
+        u.dmgInPerH = 0;
+        u.dmgOutPerH = 0;
+      }
       continue;
     }
 
@@ -68,7 +72,8 @@ export function tickCombat(state, dt) {
         ? Math.max(0.4, 1 - C.OVERSTACK_PENALTY * (fighting.length - C.OVERSTACK_FREE))
         : 1;
 
-    const dmgMap = new Map();
+    const dmgMap = new Map();  // daño RECIBIDO por unidad en este paso
+    const outMap = new Map();  // daño INFLIGIDO por unidad en este paso
     for (const u of fighting) {
       if (dead.has(u.id)) continue;
       const enemies = fighting.filter((e) => e.owner !== u.owner && atWar(state, u.owner, e.owner) && !dead.has(e.id));
@@ -138,6 +143,19 @@ export function tickCombat(state, dt) {
       if (u.hp > 0) u.exp = Math.min(C.VET_EXP_MAX, (u.exp || 0) + dmg * C.VET_EXP_PER_DAMAGE);
 
       dmgMap.set(target, (dmgMap.get(target) || 0) + dmg);
+      outMap.set(u, (outMap.get(u) || 0) + dmg);
+    }
+
+    // Ritmo del combate en HP por HORA de juego, para la ficha de unidad. Se
+    // MIDE lo que acaba de pasar en vez de rehacer la fórmula en la interfaz:
+    // una segunda copia del cálculo se separaría de esta a la primera de cambio.
+    // Media móvil porque el blanco se elige AL AZAR en cada paso: la cifra cruda
+    // saltaba entre 0 y el pico cuatro veces por segundo y el "cae en" de la
+    // ficha parpadeaba. Con 0,85 se asienta en kilo y medio de segundo real.
+    for (const u of fighting) {
+      const suave = (prev, v) => (prev || 0) * 0.85 + v * 0.15;
+      u.dmgInPerH = suave(u.dmgInPerH, ((dmgMap.get(u) || 0) / dt) * 60);
+      u.dmgOutPerH = suave(u.dmgOutPerH, ((outMap.get(u) || 0) / dt) * 60);
     }
 
     for (const [u, dmg] of dmgMap) {
