@@ -205,6 +205,34 @@ function enemyPresent(state, unit) {
   );
 }
 
+// Patrulla: el avión vuela a `pid` y se queda dando vueltas ahí (visualmente ya
+// orbita cualquier aeronave parada fuera de su base — ver renderer.js) durante
+// AIR_PATROL_MINUTES; al agotarse, tickAirPatrol la manda sola de vuelta.
+// Si ya está exactamente en `pid` y sin nada pendiente, patrulla in situ.
+export function orderPatrol(state, unit, pid) {
+  if (!unitDef(unit.type)?.air || unit.embarked) return false;
+  const yaAhi = pid === unit.pos && !unit.edgeLeft && !unit.path.length;
+  if (!yaAhi && !orderMove(state, unit, pid)) return false;
+  unit.task = { kind: "patrol", minutesLeft: C.AIR_PATROL_MINUTES };
+  return true;
+}
+
+// Cuenta atrás de la patrulla. Solo corre con el avión YA EN SITIO (sin tramo en
+// curso): encadenar los saltos del viaje de ida no gasta horas de patrulla, esas
+// empiezan a correr al llegar. Al agotarse, vuelve a base sola —la misma orden
+// que el botón "Volver a base"— sin que el jugador tenga que vigilar el reloj.
+export function tickAirPatrol(state, dt) {
+  for (const u of state.units) {
+    if (u.dead || u.embarked || u.edgeLeft || u.path.length) continue;
+    if (u.task?.kind !== "patrol") continue;
+    u.task.minutesLeft -= dt;
+    if (u.task.minutesLeft > 0) continue;
+    const dest = orderReturnToBase(state, u); // éxito → limpia el task por su cuenta
+    if (dest) log(state, `${unitDef(u.type)?.name} agota su patrulla y regresa a base`, "info");
+    else u.task = null; // sin base propia alcanzable: se queda, pero sin repetir el aviso cada tick
+  }
+}
+
 export function tickMovement(state, dt) {
   for (const u of state.units) {
     if (!u.edgeLeft) continue;
@@ -214,7 +242,11 @@ export function tickMovement(state, dt) {
     u.pos = u.edgeLeft.to;
     u.edgeLeft = null;
     u.path.shift();
-    u.task = null;
+    // Se limpia la tarea de la IA (defend/attack) en CADA salto, no solo al
+    // llegar — así vuelve a evaluar la situación en la provincia intermedia.
+    // La patrulla es la excepción: su cuenta atrás vive en la MISMA tarea, así
+    // que un destino a más de un salto la perdía antes de completar la ruta.
+    if (u.task?.kind !== "patrol") u.task = null;
 
     const cell = S.provinces.get(u.pos);
     if (cell?.isSea) {

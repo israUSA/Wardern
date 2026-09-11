@@ -120,8 +120,18 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       de las clases CSS `.base/.shade/.light/.hi`, así que hoy no responden al tinte. La
       doctrina se lee por paleta, el país no. Opciones: reescribir los `stop-color` en el
       sprite-cache, o aplicar un filtro suave por país
-- [ ] Misiones de aire (patrulla con radio, apoyo aéreo cercano), formaciones al
-      mover, ciudades con red vial bajo las unidades (como la referencia)
+- [x] **Misión de patrulla aérea** (2026-09-11): botón 🎯 en la ficha del avión, mismo
+      mecanismo de "elige destino en el mapa" que Mover (incluido el aviso de territorio
+      neutral). Al llegar se queda dando vueltas sobre el punto durante `AIR_PATROL_MINUTES`
+      (8 h de juego) y, al agotarse, vuelve SOLA a la base propia más cercana
+      (`orderReturnToBase`) sin que el jugador tenga que vigilar el reloj. La cuenta atrás
+      vive en `unit.task = { kind: "patrol", minutesLeft }`; arreglado de paso un bug
+      latente que la habría dejado inútil en cualquier destino a más de un salto:
+      `tickMovement` borraba `task` en CADA tramo intermedio de la ruta, no solo al llegar.
+      Verificado con un tick real de 3 saltos en el navegador: llega, cuenta atrás en la
+      ficha, log de "agota su patrulla" y aterriza sola
+- [ ] Apoyo aéreo cercano, formaciones al mover, ciudades con red vial bajo las
+      unidades (como la referencia)
 
 ## v1.4 — Combate aéreo y aviación embarcada (2026-09-10)
 

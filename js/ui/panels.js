@@ -639,9 +639,14 @@ export function updateUnitPanel(state, ui) {
   } else if (inBattle(state, u)) {
     estado = "⚔ En combate";
     estadoCls = "up-st-fight";
+  } else if (u.task?.kind === "patrol") {
+    // Patrulla CON ORDEN (a diferencia de la órbita visual de cualquier avión
+    // parado fuera de base): tiene cuenta atrás y vuelve sola a base al agotarse.
+    estado = `🎯 Patrullando ${provName(u.pos)} · vuelve en ${etaText(u.task.minutesLeft)}`;
+    estadoCls = "up-st-move";
   } else if (airLoadout(u.type)) {
     // Para una aeronave, estar quieta no es un estado único: o está en pista o
-    // está gastando horas de vuelo dando vueltas sobre la posición.
+    // está gastando horas de vuelo dando vueltas sobre la posición SIN orden.
     const psU = state.provinces[u.pos];
     const enBase = psU && controller(psU) === u.owner && (psU.buildings?.aerobase || 0) >= 1;
     estado = enBase ? "🛬 En base · lista para despegar" : "✈ En patrulla sobre la posición";
@@ -699,8 +704,11 @@ export function updateUnitPanel(state, ui) {
   if (mine) {
     const moving = !!u.edgeLeft || !!u.path?.length;
     const transport = (T.capacity || 0) > 0;
+    const puedePatrullar = airLoadout(u.type) && !u.embarked;
     html += `<div class="up-actions">
       <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
+      ${puedePatrullar ? `<button class="btn small" data-up-patrol="${u.id}"
+        title="Vuela a la provincia elegida y patrulla ahí durante ${Math.round(C.AIR_PATROL_MINUTES / 60)} h de juego; al agotarse vuelve sola a base">🎯 Patrullar</button>` : ""}
       <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}
         title="${airLoadout(u.type) ? "Cancela la misión y vuelve al aeródromo propio más cercano" : "Termina el tramo actual y se detiene"}">${airLoadout(u.type) ? "🛬 Volver a base" : "Detener"}</button>
       <button class="btn small" data-up-center="${u.pos}">Centrar</button>
@@ -733,6 +741,9 @@ export function updateUnitPanel(state, ui) {
   panel.querySelector("#up-close").addEventListener("click", () => hooks.onCloseUnit());
   panel.querySelectorAll("[data-up-move]").forEach((b) =>
     b.addEventListener("click", () => hooks.onMove(parseInt(b.dataset.upMove, 10)))
+  );
+  panel.querySelectorAll("[data-up-patrol]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onPatrol(parseInt(b.dataset.upPatrol, 10)))
   );
   panel.querySelectorAll("[data-up-stop]").forEach((b) =>
     b.addEventListener("click", () => hooks.onStop(parseInt(b.dataset.upStop, 10)))

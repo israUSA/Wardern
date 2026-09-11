@@ -123,6 +123,12 @@ export const STRAIT_COST_MULT = 2;
 // 0,75 = todas un 25 % más lentas (los trayectos duran un tercio más).
 export const MOVE_SPEED_MULT = 0.75;
 
+// Patrulla aérea (docs/AIR-COMBAT.md): tiempo que un avión aguanta dando vueltas
+// sobre el punto elegido antes de volver solo a base. 8 h de juego: a 1× con el
+// reloj actual (24 min de juego por segundo real, ver MINUTES_PER_TICK_BASE) son
+// 20 s reales de margen para reaccionar antes de que se retire por su cuenta.
+export const AIR_PATROL_MINUTES = 8 * 60;
+
 // Dificultad (se elige en la pantalla de inicio y viaja en state.difficulty).
 // Solo toca a los bots: producción bruta de sus provincias y ganas de declarar
 // guerras. El balance de unidades no cambia con la dificultad.

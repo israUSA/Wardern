@@ -1,7 +1,7 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
@@ -193,11 +193,21 @@ const hooks = {
   onMove(unitId, ids) {
     ui.moveUnitId = unitId;
     ui.moveIds = ids?.length ? [...ids] : [unitId];
+    ui.orderKind = "move";
     UI.toast(
       ui.moveIds.length > 1
         ? `Destino para ${ui.moveIds.length} unidades: clic en la provincia (clic derecho cancela)`
         : "Haz clic en la provincia de destino (clic derecho para cancelar)"
     );
+  },
+  // Patrulla aérea: mismo mecanismo de "elige destino en el mapa" que Mover,
+  // pero al llegar el avión se queda dando vueltas un tiempo fijo (ver
+  // AIR_PATROL_MINUTES) y vuelve solo a base al agotarse.
+  onPatrol(unitId, ids) {
+    ui.moveUnitId = unitId;
+    ui.moveIds = ids?.length ? [...ids] : [unitId];
+    ui.orderKind = "patrol";
+    UI.toast("Haz clic en la provincia a patrullar (clic derecho para cancelar)");
   },
   onSelectUnit(unitId, stackIds) {
     if (!state?.units.some((x) => x.id === unitId && !x.dead)) return;
@@ -550,14 +560,32 @@ function issueMove(ids, pid) {
   updateUI();
 }
 
-// Movimiento con aviso diplomático. Entrar en un país neutral —por tierra o por
-// aire— exige declararle la guerra, así que en vez de fallar con un "sin ruta"
-// que no explica nada, se ofrece declararla ahí mismo.
-function tryOrderMove(ids, pid) {
+// Emite la orden de patrulla y resume el resultado (mismo patrón que issueMove)
+function issuePatrol(ids, pid) {
+  let ok = 0;
+  for (const id of ids) {
+    const u = state.units.find((x) => x.id === id && !x.dead);
+    if (u && orderPatrol(state, u, pid)) ok++;
+  }
+  UI.toast(
+    ok === 0
+      ? "Solo los aviones sin embarcar pueden patrullar"
+      : ids.length > 1
+        ? `Patrulla ordenada a ${ok} de ${ids.length} aparatos`
+        : `Patrullando ${S.provinces.get(pid)?.name}: vuelve a base sola al agotarse el tiempo`
+  );
+  updateUI();
+}
+
+// Movimiento/patrulla con aviso diplomático. Entrar en país neutral —por tierra
+// o por aire— exige declararle la guerra, así que en vez de fallar con un "sin
+// ruta" que no explica nada, se ofrece declararla ahí mismo. `issue` es
+// issueMove o issuePatrol: mismo aviso, orden distinta al confirmar.
+function tryOrderTo(ids, pid, issue) {
   if (!pid || !state) return;
   const iso = neutralBlocker(state, state.player, pid);
   if (!iso) {
-    issueMove(ids, pid);
+    issue(ids, pid);
     return;
   }
   const nombre = S.countries[iso].name;
@@ -573,12 +601,14 @@ function tryOrderMove(ids, pid) {
         cls: "danger",
         cb: () => {
           declareWar(state, state.player, iso);
-          issueMove(ids, pid);
+          issue(ids, pid);
         },
       },
     ]
   );
 }
+function tryOrderMove(ids, pid) { tryOrderTo(ids, pid, issueMove); }
+function tryOrderPatrol(ids, pid) { tryOrderTo(ids, pid, issuePatrol); }
 
 // Tooltip de una ficha del mapa: nombre, país y HP (o el contacto sin identificar)
 function unitTooltip(hit) {
@@ -663,10 +693,12 @@ function bindInput() {
 
     if (ui.moveUnitId) {
       const ids = ui.moveIds?.length ? ui.moveIds : [ui.moveUnitId];
+      const kind = ui.orderKind;
       ui.moveUnitId = null;
       ui.moveIds = null;
+      ui.orderKind = null;
       ui.disembarkUnit = null;
-      if (pid) tryOrderMove(ids, pid);
+      if (pid) (kind === "patrol" ? tryOrderPatrol : tryOrderMove)(ids, pid);
       updateUI();
       return;
     }
@@ -731,6 +763,7 @@ function bindInput() {
       if (ui.strike) UI.toast("Lanzamiento de misil cancelado");
       ui.moveUnitId = null;
       ui.moveIds = null;
+      ui.orderKind = null;
       ui.disembarkUnit = null;
       ui.strike = null;
       updateUI();
@@ -756,6 +789,7 @@ function bindInput() {
     if (e.key === "Escape") {
       ui.moveUnitId = null;
       ui.moveIds = null;
+      ui.orderKind = null;
       ui.disembarkUnit = null;
       ui.strike = null;
       clearUnitSel();
