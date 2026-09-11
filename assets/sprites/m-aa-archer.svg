@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- FAMILIA: aire-aire infrarrojo ORIENTAL (R-60 Aphid / R-73 Archer).
+       Rasgo propio frente al Sidewinder: canards MUY adelantados pegados al
+       morro y desestabilizadores largos a media panza. Tono verde oliva.
+       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+  <defs>
+    <linearGradient id="ar-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#dfe6d8"/>
+      <stop offset="0.45" stop-color="#a8b39a"/>
+      <stop offset="1" stop-color="#5e6a54"/>
+    </linearGradient>
+    <linearGradient id="ar-flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9bd"/>
+      <stop offset="0.5" stop-color="#ff9a4a"/>
+      <stop offset="1" stop-color="#d8441c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M13.6 48 L18.4 48 C19.4 54 17.8 58.5 16 62 C14.2 58.5 12.6 54 13.6 48 Z" fill="url(#ar-flame)"/>
+
+  <!-- aletas traseras en cruz, grandes -->
+  <path d="M13.6 38 L7 42.5 L7 48 L13.6 45 Z" fill="#4f5a46"/>
+  <path d="M18.4 38 L25 42.5 L25 48 L18.4 45 Z" fill="#4f5a46"/>
+  <!-- desestabilizadores largos de panza (el rasgo del R-73) -->
+  <path d="M13.7 20 L11.2 21 L11.2 34 L13.7 33 Z" fill="#78846c"/>
+  <path d="M18.3 20 L20.8 21 L20.8 34 L18.3 33 Z" fill="#78846c"/>
+  <!-- canards pegadísimos al morro -->
+  <path d="M13.7 11 L9 13 L9 16.5 L13.7 15 Z" fill="#8d9a80"/>
+  <path d="M18.3 11 L23 13 L23 16.5 L18.3 15 Z" fill="#8d9a80"/>
+
+  <rect x="13.6" y="9" width="4.8" height="39" rx="1" fill="url(#ar-body)"/>
+  <rect x="13.6" y="25" width="4.8" height="2" fill="#b23a2c"/>
+  <!-- buscador IR -->
+  <path d="M13.6 9 C14.3 4.5 15.1 1.6 16 0 C16.9 1.6 17.7 4.5 18.4 9 Z" fill="#39412f"/>
+  <circle cx="16" cy="4.8" r="1.2" fill="#c9f0a8" opacity="0.85"/>
+</svg>

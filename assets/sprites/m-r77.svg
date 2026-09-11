@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- R-77 (AA-12 Adder) — arte propio. Su seña inconfundible son las ALETAS
+       DE REJILLA traseras (rejilla enrejada tipo persiana), que no lleva
+       ningún otro misil del juego. Por eso no comparte sprite con nadie.
+       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+  <defs>
+    <linearGradient id="r7-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e2e8dd"/>
+      <stop offset="0.45" stop-color="#aab49f"/>
+      <stop offset="1" stop-color="#616b57"/>
+    </linearGradient>
+    <linearGradient id="r7-flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffeec4"/>
+      <stop offset="0.5" stop-color="#ff9f4f"/>
+      <stop offset="1" stop-color="#d8441c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M13.9 53 L18.1 53 C19.1 57.5 17.7 61 16 64 C14.3 61 12.9 57.5 13.9 53 Z" fill="url(#r7-flame)"/>
+
+  <!-- ALETAS DE REJILLA: dos paneles enrejados. El rasgo único del R-77 -->
+  <g fill="none" stroke="#4f5a46" stroke-width="0.9">
+    <rect x="7.6" y="42" width="6" height="9"/>
+    <path d="M7.6 45 H13.6 M7.6 48 H13.6 M9.6 42 V51 M11.6 42 V51"/>
+    <rect x="18.4" y="42" width="6" height="9"/>
+    <path d="M18.4 45 H24.4 M18.4 48 H24.4 M20.4 42 V51 M22.4 42 V51"/>
+  </g>
+  <!-- alitas medias cortas -->
+  <path d="M13.9 27 L11.3 28.5 L11.3 34 L13.9 33 Z" fill="#8b9680"/>
+  <path d="M18.1 27 L20.7 28.5 L20.7 34 L18.1 33 Z" fill="#8b9680"/>
+
+  <rect x="13.85" y="7" width="4.3" height="46" rx="1" fill="url(#r7-body)"/>
+  <rect x="13.85" y="15" width="4.3" height="2.2" fill="#b23a2c"/>
+  <!-- radomo activo largo -->
+  <path d="M13.85 7 C14.5 3 15.2 1.2 16 0 C16.8 1.2 17.5 3 18.15 7 Z" fill="#39412f"/>
+</svg>

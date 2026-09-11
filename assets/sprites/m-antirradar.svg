@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- FAMILIA: ANTIRRADAR (AGM-88 HARM / Kh-31P). Son los más rápidos del
+       catálogo y se dibujan como un DARDO: morro larguísimo y afilado, cuerpo
+       fino, alas pequeñas a media panza y tomas de aire laterales marcadas.
+       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+  <defs>
+    <linearGradient id="ir-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d9dde2"/>
+      <stop offset="0.45" stop-color="#8f98a1"/>
+      <stop offset="1" stop-color="#4d555d"/>
+    </linearGradient>
+    <linearGradient id="ir-flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe7e0"/>
+      <stop offset="0.5" stop-color="#ff7a4a"/>
+      <stop offset="1" stop-color="#c02f1a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M13.8 52 L18.2 52 C19.4 57 17.8 61 16 64 C14.2 61 12.6 57 13.8 52 Z" fill="url(#ir-flame)"/>
+
+  <!-- aletas traseras en flecha pronunciada -->
+  <path d="M13.8 41 L8.5 47 L8.5 51.5 L13.8 49 Z" fill="#454d55"/>
+  <path d="M18.2 41 L23.5 47 L23.5 51.5 L18.2 49 Z" fill="#454d55"/>
+  <!-- tomas de aire laterales (el estatorreactor del Kh-31) -->
+  <rect x="11.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
+  <rect x="18.4" y="30" width="2.2" height="12" rx="0.8" fill="#3f474f"/>
+  <!-- alitas medias pequeñas -->
+  <path d="M13.8 26 L10.8 27.5 L10.8 30 L13.8 29.5 Z" fill="#78818a"/>
+  <path d="M18.2 26 L21.2 27.5 L21.2 30 L18.2 29.5 Z" fill="#78818a"/>
+
+  <rect x="13.75" y="12" width="4.5" height="40" rx="1" fill="url(#ir-body)"/>
+  <rect x="13.75" y="22" width="4.5" height="2" fill="#e0a21e"/>
+  <!-- morro AFILADO larguísimo: antena pasiva de guerra electrónica -->
+  <path d="M13.75 12 C14.4 5 15.2 1 16 0 C16.8 1 17.6 5 18.25 12 Z" fill="#333a41"/>
+</svg>
