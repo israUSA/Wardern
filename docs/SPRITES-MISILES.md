@@ -77,9 +77,9 @@ Arte propio, cada uno con un rasgo que no comparte con nadie.
 
 | | Arma | `id` | Archivo | Ficha | Lo dispara |
 |---|---|---|---|---|---|
-| [x] | **AIM-120C AMRAAM** | `aim120` | `m-aim120.svg` | activo · 105 km · 70 dmg | F/A-18E, F-22 |
+| [x] | **AIM-120C AMRAAM** | `aim120` | `m-aim120.svg` | activo · 105 km · 70 dmg | F/A-18E, F-22 Raptor, F-35A Lightning II |
 | [x] | **R-77 (AA-12 Adder)** | `r77` | `m-r77.svg` | activo · 110 km · 70 dmg | Su-57 |
-| [x] | **Salva MLRS** | `mlrs` | `m-mlrs.svg` | 350 km · 8 dmg | Artilleria t2/t3 |
+| [x] | **Salva MLRS** | `mlrs` | `m-mlrs.svg` | 350 km · 8 dmg | M109A6 Paladin, 2S19 Msta-S, M1299 ERCA, 2S35 Koalitsiya |
 
 ## 2. Pendientes — los que vas a hacer distintos
 
@@ -88,38 +88,45 @@ a los demas** aunque hoy compartan silueta de partida.
 
 | | Arma | `id` | Archivo | Ficha | Lo dispara |
 |---|---|---|---|---|---|
-| [ ] | **AGM-65 Maverick** | `agm65` | `m-agm65.svg` | EO · 25 km · 45 dmg | F-16A, F/A-18E |
-| [ ] | **AGM-114 Hellfire** | `hellfireL` | `m-hellfireL.svg` | laser · 8 km · 40 dmg | Apache |
-| [ ] | **BGM-109 Tomahawk** | `tomahawk` | `m-tomahawk.svg` | 1.200 km · 15 dmg | Destructor t2/t3 |
-| [ ] | **Harpoon** | `harpoon` | `m-harpoon.svg` | 450 km · 25 dmg | Fragata t3 |
-| [ ] | **Misil de crucero** | `jassm` | `m-jassm.svg` | 1.000 km · 12 dmg | Bombardero t3 |
+| [ ] | **AGM-65 Maverick** | `agm65` | `m-agm65.svg` | EO · 25 km · 45 dmg | F-16A, F/A-18E, B-52G, B-21 Raider |
+| [ ] | **AGM-114 Hellfire** | `hellfireL` | `m-hellfireL.svg` | laser · 8 km · 40 dmg | AH-64 Apache, AH-64E Guardian, MQ-9 Reaper |
+| [ ] | **BGM-109 Tomahawk** | `tomahawk` | `m-tomahawk.svg` | 1.200 km · 15 dmg | USS Arleigh Burke, Udaloy (Proy. 1155), USS Zumwalt, Lider (Proy. 23560) |
+| [ ] | **Harpoon** | `harpoon` | `m-harpoon.svg` | 450 km · 25 dmg | USS Constellation, Proyecto 22350M |
+| [ ] | **Misil de crucero** | `jassm` | `m-jassm.svg` | 1.000 km · 12 dmg | B-21 Raider, Tu-160M |
 
 ## 3. Pendientes — heredan silueta de familia
 
 Nacieron con el cuerpo de su familia. Se ven bien en el mapa y se distinguen
 entre familias, pero dentro de cada familia todavia son gemelos.
 
-| | Arma | `id` | Archivo | Hereda de | Ficha |
+| | Arma | `id` | Archivo | Hereda de | Lo dispara |
 |---|---|---|---|---|---|
-| [ ] | **AIM-9L Sidewinder** | `aim9` | `m-aim9.svg` | Sidewinder | IR · 18 km · 55 dmg |
-| [ ] | **AIM-9X Sidewinder** | `aim9x` | `m-aim9x.svg` | Sidewinder | IR · 35 km · 55 dmg |
-| [ ] | **R-60 (AA-8 Aphid)** | `r60` | `m-r60.svg` | IR oriental | IR · 8 km · 40 dmg |
-| [ ] | **R-73 (AA-11 Archer)** | `r73` | `m-r73.svg` | IR oriental | IR · 30 km · 55 dmg |
-| [ ] | **AIM-92 Stinger** | `stinger` | `m-stinger.svg` | MANPADS | IR · 8 km · 40 dmg |
-| [ ] | **Igla-V** | `igla` | `m-igla.svg` | MANPADS | IR · 8 km · 40 dmg |
-| [ ] | **AIM-7M Sparrow** | `aim7` | `m-aim7.svg` | radar semiactivo | SARH · 45 km · 65 dmg |
-| [ ] | **R-23 (AA-7 Apex)** | `r23` | `m-r23.svg` | radar semiactivo | SARH · 35 km · 60 dmg |
-| [ ] | **R-27 (AA-10 Alamo)** | `r27` | `m-r27.svg` | radar semiactivo | SARH · 70 km · 65 dmg |
-| [ ] | **Kh-25ML** | `kh25` | `m-kh25.svg` | aire-suelo pesado | laser · 20 km · 45 dmg |
-| [ ] | **AGM-88 HARM** | `agm88` | `m-agm88.svg` | antirradar | antirradar · 100 km · 60 dmg |
-| [ ] | **Kh-31P** | `kh31p` | `m-kh31p.svg` | antirradar | antirradar · 110 km · 60 dmg |
-| [ ] | **GBU-31 JDAM** | `gbu` | `m-gbu.svg` | bomba guiada | GPS · 25 km · 35 dmg |
-| [ ] | **KAB-500S** | `kab` | `m-kab.svg` | bomba guiada | GPS · 20 km · 35 dmg |
-| [ ] | **BGM-71 TOW** | `tow` | `m-tow.svg` | anticarro ligero | alambre · 4 km · 35 dmg |
-| [ ] | **9M120 Ataka** | `ataka` | `m-ataka.svg` | anticarro ligero | radio · 8 km · 40 dmg |
-| [ ] | **9M114 Shturm** | `shturm` | `m-shturm.svg` | anticarro ligero | radio · 5 km · 35 dmg |
+| [ ] | **AIM-9L Sidewinder** | `aim9` | `m-aim9.svg` | Sidewinder | F-16A |
+| [ ] | **AIM-9X Sidewinder** | `aim9x` | `m-aim9x.svg` | Sidewinder | F/A-18E, F-22 Raptor |
+| [ ] | **R-60 (AA-8 Aphid)** | `r60` | `m-r60.svg` | IR oriental | MiG-23 |
+| [ ] | **R-73 (AA-11 Archer)** | `r73` | `m-r73.svg` | IR oriental | Su-27, Su-57 |
+| [ ] | **AIM-92 Stinger** | `stinger` | `m-stinger.svg` | MANPADS | AH-64E Guardian |
+| [ ] | **Igla-V** | `igla` | `m-igla.svg` | MANPADS | Mi-28NM |
+| [ ] | **AIM-7M Sparrow** | `aim7` | `m-aim7.svg` | radar semiactivo | **nadie** — ver nota |
+| [ ] | **R-23 (AA-7 Apex)** | `r23` | `m-r23.svg` | radar semiactivo | MiG-23 |
+| [ ] | **R-27 (AA-10 Alamo)** | `r27` | `m-r27.svg` | radar semiactivo | Su-27 |
+| [ ] | **Kh-25ML** | `kh25` | `m-kh25.svg` | aire-suelo pesado | Su-27, Tu-22M2, Tu-160M |
+| [ ] | **AGM-88 HARM** | `agm88` | `m-agm88.svg` | antirradar | F/A-18E, B-2 Spirit, B-21 Raider |
+| [ ] | **Kh-31P** | `kh31p` | `m-kh31p.svg` | antirradar | Su-57, Tu-22M3, Tu-160M |
+| [ ] | **GBU-31 JDAM** | `gbu` | `m-gbu.svg` | bomba guiada | F-22 Raptor, F-35A Lightning II, B-52G, B-2 Spirit, B-21 Raider |
+| [ ] | **KAB-500S** | `kab` | `m-kab.svg` | bomba guiada | Tu-22M2, Tu-22M3, Tu-160M |
+| [ ] | **BGM-71 TOW** | `tow` | `m-tow.svg` | anticarro ligero | AH-1F Cobra |
+| [ ] | **9M120 Ataka** | `ataka` | `m-ataka.svg` | anticarro ligero | Mi-28N, Mi-28NM, Orion |
+| [ ] | **9M114 Shturm** | `shturm` | `m-shturm.svg` | anticarro ligero | Mi-24D |
 
 ---
+
+> **`aim7` (AIM-7M Sparrow) no lo lleva ningun avion.** Esta definido en
+> `air-combat-data.js` y tiene su archivo, pero ningun `AIR_LOADOUTS` lo incluye,
+> asi que hoy no se dispara nunca y su sprite no llega a verse. O se le da un
+> portador (el hueco natural es el MiG-23, que ya lleva su equivalente R-23), o
+> se puede dejar como esta a la espera de un avion futuro. Dibujarlo no corre
+> ninguna prisa.
 
 ## Orden sugerido
 

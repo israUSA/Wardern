@@ -1,46 +1,140 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- AGM-114 Hellfire (id del arma: hellfireL)
-       anticarro laser · 8 km
-       Arte propio, ya diferenciado.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- Misil Hellfire compacto, vista lateral vertical, punta hacia arriba.
-       El motor puede rotarlo hacia el objetivo. Colores fijos (proyectil neutro). -->
-  <defs><style>
-    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
-    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}
-    .dark{fill:#3d4232}.rubber{fill:#2b2e28}
-  </style></defs>
+  <!-- AGM-114R Hellfire II con domo óptico/seeker ampliado que cubre toda la punta -->
+  <defs>
+    <!-- Gradiente cilíndrico del cuerpo -->
+    <linearGradient id="body-cyl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#181a1a"/>
+      <stop offset="28%" stop-color="#3a3d3d"/>
+      <stop offset="65%" stop-color="#2a2c2c"/>
+      <stop offset="100%" stop-color="#151717"/>
+    </linearGradient>
 
-  <!-- llama del cohete -->
-  <path d="M13 52.5 L19 52.5 C20.5 56 19 60 16 62.5 C13 60 11.5 56 13 52.5 Z" fill="#e8a33d" opacity=".9"/>
-  <path d="M14.2 52.5 L17.8 52.5 C18.6 55.5 17.8 58.3 16 60 C14.2 58.3 13.4 55.5 14.2 52.5 Z" fill="#f6d47c"/>
+    <!-- Reflejo curvo del cilindro -->
+    <linearGradient id="highlight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
 
-  <!-- tobera -->
-  <path class="rubber" d="M11.6 49 L20.4 49 L19.4 52.5 L12.6 52.5 Z"/>
+    <!-- Gradiente para las aletas -->
+    <linearGradient id="fin-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#141515"/>
+      <stop offset="100%" stop-color="#2c2e2e"/>
+    </linearGradient>
 
-  <!-- aletas de cola -->
-  <path class="metal" d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z"/>
-  <path d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z"/>
-  <path d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+    <!-- Domo óptico de cristal que cubre la cúpula frontal -->
+    <linearGradient id="large-seeker" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fa3a8"/>
+      <stop offset="35%" stop-color="#47575c"/>
+      <stop offset="85%" stop-color="#1c2528"/>
+      <stop offset="100%" stop-color="#101416"/>
+    </linearGradient>
+  </defs>
 
-  <!-- aletas centrales -->
-  <path class="metal" d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z"/>
-  <path d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z"/>
-  <path d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+  <!-- ================= ALETAS TRASERAS ================= -->
+  <polygon points="12,47.5 7,49.2 7,57.5 12,57.5" fill="url(#fin-grad)" stroke="#0f1111" stroke-width="0.35"/>
+  <polygon points="20,47.5 25,49.2 25,57.5 20,57.5" fill="url(#fin-grad)" stroke="#0f1111" stroke-width="0.35"/>
 
-  <!-- cuerpo -->
-  <path class="metalL" d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z"/>
-  <path d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <path class="hi" d="M13 12 L15 12 L15 48.6 L13 48.6 Z" opacity=".55"/>
-  <path d="M11.6 20 L20.4 20 M11.6 36 L20.4 36" stroke="#3d4232" stroke-width=".5" opacity=".45"/>
+  <!-- ================= ALETAS DELANTERAS ================= -->
+  <polygon points="12,18 8.8,18.4 8.8,22 12,21" fill="url(#fin-grad)" stroke="#0f1111" stroke-width="0.3"/>
+  <polygon points="20,18 23.2,18.4 23.2,22 20,21" fill="url(#fin-grad)" stroke="#0f1111" stroke-width="0.3"/>
 
-  <!-- cabeza buscadora laser -->
-  <path class="metalS" d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z"/>
-  <path d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <circle class="glass" cx="16" cy="8" r="1.7"/>
-  <circle class="glassL" cx="15.3" cy="7.3" r=".6"/>
+  <!-- ================= CUERPO PRINCIPAL ================= -->
+  <!-- Ojiva metálica base -->
+  <path d="M 12 12.5 
+           C 12 9, 13 7.5, 14 7 
+           L 18 7 
+           C 19 7.5, 20 9, 20 12.5 
+           Z" 
+        fill="url(#body-cyl)"/>
+
+  <!-- Tubo cilíndrico central -->
+  <rect x="12" y="11.5" width="8" height="47.5" fill="url(#body-cyl)"/>
+
+  <!-- Base de cola / tobera cónica -->
+  <path d="M 12 59 
+           C 12 60.6, 13.5 61.2, 16 61.2 
+           C 18.5 61.2, 20 60.6, 20 59 
+           Z" 
+        fill="#141515"/>
+
+  <!-- Brillo cilíndrico a lo largo del cuerpo -->
+  <rect x="12" y="7.5" width="8" height="51.5" fill="url(#highlight)"/>
+
+  <!-- ================= ÓPTICA / DOMO FRONTAL (CUBRE TODA LA PUNTA) ================= -->
+  <!-- Anillo de engaste metálico de la lente -->
+  <path d="M 12.8 7.8 L 19.2 7.8 L 19 7 L 13 7 Z" fill="#202526" stroke="#0d1011" stroke-width="0.2"/>
+
+  <!-- Domo semiesférico de vidrio completo de borde a borde del morro -->
+  <path d="M 13.2 7.4 
+           C 13.2 4.2, 14.4 3.2, 16 3.2 
+           C 17.6 3.2, 18.8 4.2, 18.8 7.4 
+           Z" 
+        fill="url(#large-seeker)" 
+        stroke="#1a2022" 
+        stroke-width="0.3"/>
+
+  <!-- Sensor interno visible tras el cristal -->
+  <ellipse cx="16" cy="5.8" rx="1.6" ry="1.2" fill="#0d1417"/>
+  <circle cx="16" cy="5.8" r="0.6" fill="#1e3238"/>
+
+  <!-- Reflejos curvos de la óptica -->
+  <path d="M 14.2 6.5 C 14.2 4.6, 15 3.8, 16 3.8" fill="none" stroke="#ffffff" stroke-width="0.45" stroke-linecap="round" opacity="0.65"/>
+  <circle cx="17.2" cy="4.7" r="0.3" fill="#ffffff" opacity="0.5"/>
+
+  <!-- ================= BANDAS AMARILLAS ================= -->
+  <rect x="12" y="23" width="8" height="2.8" fill="#e5a912"/>
+  <rect x="12" y="34.2" width="8" height="2.8" fill="#e5a912"/>
+  <rect x="12" y="47.2" width="8" height="2.5" fill="#e5a912"/>
+
+  <!-- Sombra curva sobre las bandas -->
+  <rect x="12" y="23" width="8" height="2.8" fill="url(#highlight)"/>
+  <rect x="12" y="34.2" width="8" height="2.8" fill="url(#highlight)"/>
+  <rect x="12" y="47.2" width="8" height="2.5" fill="url(#highlight)"/>
+
+  <!-- ================= REMACHES ================= -->
+  <g fill="#111212">
+    <circle cx="13.2" cy="27.4" r="0.22"/><circle cx="14.3" cy="27.4" r="0.22"/>
+    <circle cx="15.4" cy="27.4" r="0.22"/><circle cx="16.5" cy="27.4" r="0.22"/>
+    <circle cx="17.6" cy="27.4" r="0.22"/><circle cx="18.7" cy="27.4" r="0.22"/>
+
+    <circle cx="13.2" cy="29.2" r="0.22"/><circle cx="14.3" cy="29.2" r="0.22"/>
+    <circle cx="15.4" cy="29.2" r="0.22"/><circle cx="16.5" cy="29.2" r="0.22"/>
+    <circle cx="17.6" cy="29.2" r="0.22"/><circle cx="18.7" cy="29.2" r="0.22"/>
+
+    <circle cx="13.2" cy="31.8" r="0.22"/><circle cx="14.3" cy="31.8" r="0.22"/>
+    <circle cx="15.4" cy="31.8" r="0.22"/><circle cx="16.5" cy="31.8" r="0.22"/>
+    <circle cx="17.6" cy="31.8" r="0.22"/><circle cx="18.7" cy="31.8" r="0.22"/>
+
+    <circle cx="13.2" cy="33" r="0.22"/><circle cx="14.3" cy="33" r="0.22"/>
+    <circle cx="15.4" cy="33" r="0.22"/><circle cx="16.5" cy="33" r="0.22"/>
+    <circle cx="17.6" cy="33" r="0.22"/><circle cx="18.7" cy="33" r="0.22"/>
+  </g>
+
+  <!-- ================= TEXTOS ================= -->
+  <text x="13.2" y="15.2" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="2.6" 
+        font-weight="bold" 
+        fill="#b8bcbc" 
+        letter-spacing="0">R</text>
+
+  <text x="16" y="52.2" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="1" 
+        font-weight="bold" 
+        fill="#e0be67" 
+        text-anchor="middle">WARNING</text>
+
+  <text x="16" y="53.8" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="0.65" 
+        fill="#989c9c" 
+        text-anchor="middle">2-MAN LIFT</text>
+  <text x="16" y="54.9" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="0.55" 
+        fill="#727878" 
+        text-anchor="middle">WT: 49.0 kg/ 108 LB</text>
 </svg>
+
