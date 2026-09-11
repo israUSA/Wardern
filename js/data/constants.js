@@ -45,6 +45,11 @@ export const CATCHUP_BUDGET_HIDDEN_MAX_MS = 5000;
 
 export const START_DATE_MS = Date.UTC(2026, 0, 1);
 
+// Efectos de impacto (explosiones). Duran en MINUTOS DE JUEGO para que el
+// reloj los gobierne igual que a todo lo demás: 1 minuto de juego son ~2,5 s
+// reales a 1×, y a 4× duran menos, que es lo coherente.
+export const FX_MINUTES = 1;
+
 // ---- Progresión offline ----
 // El mundo avanza aunque la pestaña esté cerrada: al cargar se mira el reloj de
 // pared y se adelanta la simulación. Sin esto, con el reloj lento no terminaría

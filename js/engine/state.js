@@ -330,7 +330,12 @@ export function makePeace(state, a, b) {
 }
 
 export function log(state, msg, kind = "info") {
-  state.log.push({ t: state.time, msg, kind });
+  // `id` correlativo: la interfaz pinta solo lo NUEVO y antes lo hacía contando
+  // entradas. Como la lista se recorta por arriba al pasar de 200, la longitud
+  // dejaba de crecer y el panel se quedaba congelado para siempre justo cuando
+  // la partida se ponía interesante.
+  state.logSeq = (state.logSeq || 0) + 1;
+  state.log.push({ id: state.logSeq, t: state.time, msg, kind });
   if (state.log.length > 200) state.log.shift();
 }
 

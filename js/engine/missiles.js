@@ -95,9 +95,15 @@ export function tickMissiles(state, dt) {
     else impact(state, m);
   }
   state.missiles = alive;
+  // Las explosiones caducan solas; si no, se acumularían en el guardado
+  if (state.fx?.length) state.fx = state.fx.filter((f) => state.time - f.t < C.FX_MINUTES);
 }
 
 function impact(state, m) {
+  // Marca visual del impacto. Vive en el estado (no en el render) porque el
+  // render no sabe cuándo desaparece un misil: solo ve la lista de vuelos.
+  state.fx = state.fx || [];
+  state.fx.push({ pid: m.toId, t: state.time });
   // Guiado contra unidad: lo resuelve el motor de combate aéreo (Pk, evasión,
   // pérdida de enganche). Los golpes contra provincia siguen abajo.
   if (m.air) {

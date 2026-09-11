@@ -164,6 +164,10 @@ export function tickCombat(state, dt) {
       if (u.hp <= 0 && !dead.has(u.id)) {
         dead.add(u.id);
         state.stats.lost[u.owner] = (state.stats.lost[u.owner] || 0) + 1;
+        // Sin esto, perder una unidad en combate no dejaba NINGUNA marca: se
+        // avisaba de la retirada y de la rendición, pero no de la destrucción,
+        // que es justo el desenlace que hay que ver.
+        log(state, `${unitDef(u.type)?.name} de ${S.countries[u.owner].name} DESTRUIDA en ${prov.isSea ? "alta mar" : prov.name}`, "war");
       }
     }
 

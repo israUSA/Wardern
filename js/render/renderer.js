@@ -6,8 +6,9 @@ import { radarRangeKm } from "../engine/air-combat.js";
 import { CARRIER_CAPACITY } from "../data/air-combat-data.js";
 import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
-import { buildingReady } from "./sprite-cache.js";
-import { BUILDINGS } from "../data/constants.js";
+import { buildingReady, flatReady } from "./sprite-cache.js";
+import { SPRITES } from "../data/sprites.js";
+import { BUILDINGS, FX_MINUTES } from "../data/constants.js";
 
 export class MapRenderer {
   constructor(canvas) {
@@ -593,6 +594,26 @@ export class MapRenderer {
         }
       }
 
+      // Explosiones de impacto: crecen y se apagan con la edad. El estado solo
+      // guarda dónde y cuándo (ver impact() en missiles.js); la animación es
+      // cosa del render, así que no gasta un byte del guardado por fotograma.
+      if (state.fx?.length) {
+        const boom = flatReady("efectos", "explosion");
+        if (boom) {
+          for (const f of state.fx) {
+            const p = S.provinces.get(f.pid);
+            if (!p || (vis && !vis.has(f.pid))) continue;
+            const edad = Math.max(0, Math.min(1, (state.time - f.t) / FX_MINUTES));
+            const [fx, fy] = this.w2s(p.pcx, p.pcy);
+            const tam = (unitSize * 1.1) * (0.5 + edad * 1.1); // se expande
+            ctx.save();
+            ctx.globalAlpha = 1 - edad * edad;                 // se apaga al final
+            ctx.drawImage(boom, fx - tam / 2, fy - tam / 2, tam, tam);
+            ctx.restore();
+          }
+        }
+      }
+
       // Marcadores de batalla (solo en zonas visibles)
       for (const pid of battleProvinces(state)) {
         if (vis && !vis.has(pid)) continue;
@@ -621,10 +642,26 @@ export class MapRenderer {
           ctx.lineTo(sx, sy);
           ctx.stroke();
           ctx.setLineDash([]);
-          ctx.fillStyle = "#ffb060";
-          ctx.beginPath();
-          ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
-          ctx.fill();
+          // La cabeza del misil: su sprite girado al rumbo. El punto naranja se
+          // queda de respaldo para el primer frame (el SVG aún se está
+          // cacheando) y para cualquier arma sin arte propio ni genérico.
+          const img = projectileSprite(m);
+          if (img) {
+            const ang = Math.atan2(by - ay, bx - ax) + Math.PI / 2; // sprites con morro al norte
+            const rot = (SPRITES.rotProyectil?.[m.weaponId] || 0) * (Math.PI / 180);
+            const h = Math.max(14, Math.min(26, unitSize * 0.6));
+            const w = h * 0.5;
+            ctx.save();
+            ctx.translate(sx, sy);
+            ctx.rotate(ang + rot);
+            ctx.drawImage(img, -w / 2, -h / 2, w, h);
+            ctx.restore();
+          } else {
+            ctx.fillStyle = "#ffb060";
+            ctx.beginPath();
+            ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
     }
@@ -864,6 +901,14 @@ export class MapRenderer {
 
 // Orden fijo de los iconos de edificio, para que no bailen de sitio entre frames
 const BUILDING_KEYS = Object.keys(BUILDINGS);
+
+// Sprite de un proyectil en vuelo. Primero el suyo propio; si no tiene arte,
+// el del tipo (aire-aire/aire-suelo usan el mismo misil fino) y, en último
+// término, el genérico. Devuelve null mientras el SVG se está cacheando.
+function projectileSprite(m) {
+  if (SPRITES.proyectiles?.[m.weaponId]) return flatReady("proyectiles", m.weaponId);
+  return flatReady("proyectiles", m.air ? "aire" : "generico");
+}
 
 // Tamaño de la chapa de cubierta respecto al de la ficha, con topes: ni ilegible
 // con el mapa alejado ni desproporcionada encima del barco con el mapa cerca.

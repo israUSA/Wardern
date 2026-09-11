@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Explosión de impacto. Cuadrada y CENTRADA en 32,32: el render la escala y
+       la desvanece con la edad, así que el dibujo es un fotograma único, no una
+       animación. Dibujo base — mejóralo cuando quieras, el motor solo necesita
+       que esté centrada y quepa en el viewBox. -->
+  <defs>
+    <radialGradient id="fx-core" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.35" stop-color="#ffe89a"/>
+      <stop offset="0.7" stop-color="#ff9a34"/>
+      <stop offset="1" stop-color="#e2541f" stop-opacity="0.15"/>
+    </radialGradient>
+    <radialGradient id="fx-humo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.55" stop-color="#5a4638" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#3a2e26" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- nube de humo por detrás -->
+  <circle cx="32" cy="32" r="30" fill="url(#fx-humo)"/>
+
+  <!-- esquirlas: rayos en ocho direcciones -->
+  <g fill="#ffb455" opacity="0.9">
+    <path d="M32 2 L35 24 L29 24 Z"/>
+    <path d="M32 62 L35 40 L29 40 Z"/>
+    <path d="M2 32 L24 29 L24 35 Z"/>
+    <path d="M62 32 L40 29 L40 35 Z"/>
+  </g>
+  <g fill="#ff8a2b" opacity="0.75">
+    <path d="M11 11 L28 26 L26 28 Z"/>
+    <path d="M53 53 L36 38 L38 36 Z"/>
+    <path d="M53 11 L38 28 L36 26 Z"/>
+    <path d="M11 53 L26 36 L28 38 Z"/>
+  </g>
+
+  <!-- bola de fuego -->
+  <circle cx="32" cy="32" r="18" fill="url(#fx-core)"/>
+  <circle cx="32" cy="32" r="7.5" fill="#fffdf2" opacity="0.95"/>
+</svg>

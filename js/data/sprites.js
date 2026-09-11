@@ -137,8 +137,22 @@ export const SPRITES = {
     "ori-3-portaviones": "assets/sprites/v-ori-3-portaviones.svg",
     "ori-3-transporte": "assets/sprites/v-ori-3-transporte.svg",
   },
+  // Proyectiles EN VUELO. La clave es el id del arma (missiles-data.js o
+  // air-combat-data.js); lo que no esté aquí cae en `generico`.
+  // CONVENCIÓN: morro hacia ARRIBA (norte), igual que los sprites de avión — el
+  // render los gira al rumbo. El Tomahawk se dibujó apuntando a la derecha antes
+  // de que existiera esta regla, así que lleva su corrección en `rotProyectil`.
   proyectiles: {
+    generico: "assets/sprites/m-misil.svg",
     tomahawk: "assets/sprites/m-tomahawk.svg",
     hellfire: "assets/sprites/m-hellfire.svg",
+    mlrs: "assets/sprites/m-cohete.svg",
+    aire: "assets/sprites/m-aire.svg",
+  },
+  // Grados a corregir para los que no siguen la convención de morro al norte
+  rotProyectil: { tomahawk: -90 },
+  // Efectos: un fotograma que el render escala y desvanece
+  efectos: {
+    explosion: "assets/sprites/fx-explosion.svg",
   },
 };

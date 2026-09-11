@@ -69,6 +69,19 @@ export function buildingReady(key, color) {
   return null;
 }
 
+// Proyectil en vuelo o efecto de impacto. Sin tinte por país: un misil es del
+// color de su fabricante, no de quien lo dispara.
+export function flatReady(tabla, key) {
+  const ck = tabla + ":" + key;
+  const img = cache.get(ck);
+  if (img && img.complete && img.naturalWidth > 0) return img;
+  if (!img && !cache.has(ck)) {
+    const path = SPRITES[tabla]?.[key];
+    if (path) buildFromPath(path, ck, null);
+  }
+  return null;
+}
+
 async function loadSprite(icon, color, key, variant) {
   cache.set(key, undefined);
   // Prioridad: sprite POR VARIANTE (el vehículo real, p. ej. v-occ-1-caza = F-16A);

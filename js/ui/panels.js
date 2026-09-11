@@ -21,7 +21,7 @@ import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
 
 let hooks = null;
-let lastLogLen = 0;
+let lastLogId = 0;
 let toastTimer = null;
 
 const $ = (id) => document.getElementById(id);
@@ -115,7 +115,7 @@ export function hideStart() {
 
 export function showGame() {
   $("game-ui").classList.remove("hidden");
-  lastLogLen = 0;
+  lastLogId = 0;
   $("event-log").innerHTML = "";
 }
 
@@ -1198,15 +1198,26 @@ function drawRadarScope(panel, state, ui, u, contactos, sel, radarKm) {
 
 export function updateLog(state) {
   const el = $("event-log");
-  for (let i = lastLogLen; i < state.log.length; i++) {
-    const e = state.log[i];
+  // Guardados anteriores a los ids: se les pone uno ahora, en orden
+  state.logSeq = state.logSeq || 0;
+  for (const e of state.log) if (e.id == null) e.id = ++state.logSeq;
+
+  // ¿Estaba el jugador mirando el final? Si se ha desplazado hacia arriba para
+  // leer algo, NO se le arrastra abajo: antes se forzaba el scroll en cada
+  // refresco (4 veces por segundo) y era imposible leer el historial.
+  const pegadoAbajo = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
+
+  for (const e of state.log) {
+    if (e.id <= lastLogId) continue;
+    lastLogId = e.id;
     const div = document.createElement("div");
     div.className = "log-entry " + (e.kind || "info");
     div.innerHTML = `<span class="t">${C.fmtGameDate(e.t).split("·")[0]}</span>${e.msg}`;
     el.appendChild(div);
   }
-  lastLogLen = state.log.length;
-  el.scrollTop = el.scrollHeight;
+  // El DOM no crece sin fin: el motor guarda 200 entradas, el panel 300
+  while (el.childElementCount > 300) el.removeChild(el.firstChild);
+  if (pegadoAbajo) el.scrollTop = el.scrollHeight;
 }
 
 // Panel de investigación y doctrina (estilo CoN: tiers ordenados)
