@@ -12,12 +12,20 @@ dibujo, solo de que el archivo exista con su nombre.
 - Todo el mapeo vive en `proyectiles` de
   [`js/data/sprites.js`](../js/data/sprites.js). **Ya estan los 25 enganchados**:
   para mejorar uno basta con sobrescribir su SVG, no hay que tocar codigo.
-- **Convencion: morro hacia ARRIBA (norte).** El render gira el sprite al rumbo
-  del misil. La unica excepcion es el Tomahawk, dibujado apuntando a la derecha
-  antes de que existiera la regla; lleva su correccion en `rotProyectil`. Si lo
-  redibujas con el morro al norte, **borra su linea de `rotProyectil`**.
-- Lienzo de referencia: `viewBox="0 0 32 64"`. Sin tinte por pais — un misil es
-  del color de su fabricante, no de quien lo dispara.
+- **Convencion: morro hacia ARRIBA (norte)**, lienzo `viewBox="0 0 32 64"`. El
+  render gira el sprite al rumbo del misil.
+- **Si dibujas uno apuntando a otro lado, hay que declararlo** en `rotProyectil`
+  (`js/data/sprites.js`) con los grados que le faltan para mirar al norte. Es la
+  situacion del Tomahawk: esta dibujado apuntando a la DERECHA, en lienzo
+  apaisado `64x32`, y lleva `tomahawk: -90`. Funciona, pero es una excepcion que
+  hay que recordar. **Lo comodo es dibujar siempre con el morro arriba**: asi no
+  se toca codigo. Si redibujas el Tomahawk al norte, borra su linea.
+- La proporcion del lienzo si se respeta: el render mide el lado largo del
+  sprite y saca el corto de la proporcion del propio SVG, asi que un dibujo
+  apaisado no se aplasta. Pero cuanto mas se parezca a `32x64`, mas parecido
+  sera el tamano en pantalla al del resto.
+- Sin tinte por pais — un misil es del color de su fabricante, no de quien lo
+  dispara.
 - `generico` y `aire` (`m-misil.svg` y `m-aire.svg`) siguen ahi como respaldo por
   si se anade un arma nueva sin archivo. Hoy no los usa nadie.
 

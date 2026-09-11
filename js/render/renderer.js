@@ -649,8 +649,15 @@ export class MapRenderer {
           if (img) {
             const ang = Math.atan2(by - ay, bx - ax) + Math.PI / 2; // sprites con morro al norte
             const rot = (SPRITES.rotProyectil?.[m.weaponId] || 0) * (Math.PI / 180);
-            const h = Math.max(14, Math.min(26, unitSize * 0.6));
-            const w = h * 0.5;
+            // El lado LARGO del sprite mide `largo`; el corto sale de su propia
+            // proporción. Antes se fijaba w = h/2 dando por hecho un lienzo
+            // vertical 32x64, así que el Tomahawk —el único apaisado, 64x32— se
+            // dibujaba con la proporción invertida: aplastado a lo ancho y
+            // estirado a lo alto. Ahora da igual cómo esté orientado el dibujo.
+            const largo = Math.max(14, Math.min(26, unitSize * 0.6));
+            const ar = img.naturalWidth / img.naturalHeight || 0.5;
+            const w = ar >= 1 ? largo : largo * ar;
+            const h = ar >= 1 ? largo / ar : largo;
             ctx.save();
             ctx.translate(sx, sy);
             ctx.rotate(ang + rot);
