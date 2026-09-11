@@ -116,7 +116,8 @@ export function startBuilding(state, pid, type) {
   if (level >= C.BUILDINGS[type].max) return false;
   const cost = buildingCost(type, level);
   if (!pay(state, ps.owner, cost)) return false;
-  ps.queue = { kind: "building", type, minutesLeft: C.BUILDINGS[type].minutes, total: C.BUILDINGS[type].minutes };
+  const obra = C.BUILDINGS[type].minutes * C.BUILD_TIME_MULT;
+  ps.queue = { kind: "building", type, minutesLeft: obra, total: obra };
   return true;
 }
 
@@ -147,7 +148,7 @@ export function startRecruit(state, pid, unitType) {
   const u = unitDef(unitType);
   if (!pay(state, ps.owner, u.cost)) return false;
   ps.recruits = ps.recruits || []; // los guardados anteriores no traen el campo
-  const total = u.buildHours * 60;
+  const total = u.buildHours * 60 * C.BUILD_TIME_MULT;
   if (isNaval(unitType)) {
     const seaEdge = (S.edges.get(pid) || []).find((e) => S.provinces.get(e.to)?.isSea);
     ps.recruits.push({ kind: "naval", type: unitType, minutesLeft: total, total, seaCell: seaEdge.to });

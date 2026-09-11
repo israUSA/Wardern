@@ -118,6 +118,13 @@ export const BUILDINGS = {
   },
 };
 
+// Multiplicador GLOBAL de lo que TARDAN edificios y unidades. Igual que
+// MOVE_SPEED_MULT con el movimiento: una sola cifra mueve las 96 fichas y los 5
+// edificios a la vez, sin tocar sus duraciones ni cambiar las proporciones entre
+// ellos (un tanque sigue costando el triple que una infantería).
+// 0,5 = la mitad de espera.
+export const BUILD_TIME_MULT = 0.5;
+
 // Gradas de reclutamiento por provincia. La OBRA (edificios y anexión) va por su
 // cuenta en ps.queue: construir un cuartel no debería impedir reclutar en él, que
 // son dos cosas distintas y antes compartían la única ranura que había.
@@ -154,8 +161,10 @@ export const STRAIT_COST_MULT = 2;
 // vez y las proporciones entre ellas quedan intactas: un tanque sigue siendo
 // exactamente el doble de rápido que la infantería. Tocar los `speed` uno a uno
 // habría sido 96 ediciones y un balance distinto.
-// 0,75 = todas un 25 % más lentas (los trayectos duran un tercio más).
-export const MOVE_SPEED_MULT = 0.75;
+// 1,5 = todas un 50 % más rápidas que su `speed` de ficha (el doble de rápidas
+// que con el 0,75 anterior). Cruzar el continente seguía costando horas reales
+// con el reloj nuevo, y esperar por una columna no es la parte divertida.
+export const MOVE_SPEED_MULT = 1.5;
 
 // Patrulla aérea (docs/AIR-COMBAT.md): tiempo que un avión aguanta dando vueltas
 // sobre el punto elegido antes de volver solo a base. 8 h de juego: a 1× con el

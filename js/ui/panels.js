@@ -399,7 +399,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
           if (r.fuel < (u.cost.fuel || 0)) falta.push(`${C.fmtInt(u.cost.fuel - r.fuel)} combustible`);
           why.push("Recursos insuficientes: faltan " + falta.join(", "));
         }
-        html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${u.buildHours}h${req}</span></div>
+        html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${etaText(u.buildHours * 60 * C.BUILD_TIME_MULT)}${req}</span></div>
           <button class="btn small" data-recruit="${u.id}" ${lockedTier || lockedBase || lockedPort || gradasLlenas || !afford ? "disabled" : ""} ${why.length ? `title="${why.join("&#10;")}"` : ""}>Reclutar</button></div>`;
       }
     };
