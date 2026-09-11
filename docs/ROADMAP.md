@@ -65,8 +65,16 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       del rival se ESTIMA (visto + provincias × AI_GUESS_PER_PROVINCE, con sesgo fijo por
       pareja) en vez de leerse exacto. Los edificios quedan fuera de la niebla —obra
       pública— y disparan contramedidas con un dado (AI_COUNTER_CHANCE)
-- [ ] Etiquetas de países en el mapa y agrupación visual de stacks
-- [ ] Puerto Rico como provincia (falta en el mapa; agregar en build-map.mjs)
+- [x] **Etiquetas de países en el mapa** (2026-09-11): el nombre escrito sobre su
+      territorio, con el del jugador en claro y el resto apagado. El ancla y el tamaño
+      salen del territorio que CONTROLA, no del que posee, así que al conquistar se
+      mueven y crecen solos. Se omiten los países que ocupan menos de 70 px de ancho en
+      pantalla: es lo que evita el amasijo de nombres con el mapa alejado
+- [x] Agrupación visual de stacks: hecha con las pilas en abanico + insignia de recuento
+      y la chapa "+N" de desbordamiento (ver v1.3 más abajo)
+- [x] ~~Puerto Rico como provincia~~ — **ya estaba**: `usa-puerto-rico` existe en el mapa
+      (3,2 M hab., 11 VP), unido a República Dominicana por estrecho y a 12 celdas de mar.
+      La entrada del roadmap estaba obsoleta; verificado en partida (2026-09-11)
 
 ## v1.2 — Misiles y reconocimiento (COMPLETADO)
 - [x] Especificación completa en docs/MISSILES.md (Hellfire en batalla, Tomahawk/Harpoon

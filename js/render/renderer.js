@@ -116,6 +116,54 @@ export class MapRenderer {
     return path;
   }
 
+  // Nombres de país escritos sobre su territorio, como en un mapa de verdad.
+  // El ancla y el tamaño salen del territorio que CONTROLA ahora mismo (no del
+  // que posee), así que al conquistarle provincias a un vecino su nombre se
+  // desplaza y crece solo, sin datos que mantener.
+  drawCountryLabels(ctx, state, ui) {
+    // Una sola pasada por provincia: centro medio y caja del territorio de cada país
+    const acc = new Map();
+    for (const p of this.paintList || S.provinceList) {
+      if (p.isSea) continue;
+      const iso = state ? controller(state.provinces[p.id]) : p.country;
+      if (!iso) continue;
+      let a = acc.get(iso);
+      if (!a) acc.set(iso, (a = { n: 0, x: 0, y: 0, minx: Infinity, maxx: -Infinity, miny: Infinity, maxy: -Infinity }));
+      a.n++;
+      a.x += p.pcx;
+      a.y += p.pcy;
+      if (p.pcx < a.minx) a.minx = p.pcx;
+      if (p.pcx > a.maxx) a.maxx = p.pcx;
+      if (p.pcy < a.miny) a.miny = p.pcy;
+      if (p.pcy > a.maxy) a.maxy = p.pcy;
+    }
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const [iso, a] of acc) {
+      const c = S.countries[iso];
+      if (!c) continue;
+      const anchoPx = (a.maxx - a.minx) * this.view.scale;
+      // Demasiado pequeño en pantalla: el nombre no cabría y solo ensuciaría.
+      // Esto es lo que hace que al alejar el mapa solo queden los países grandes.
+      if (anchoPx < 70) continue;
+      const [sx, sy] = this.w2s(a.x / a.n, a.y / a.n);
+      if (sx < 0 || sx > this.w || sy < 0 || sy > this.h) continue; // centro fuera de la vista
+      const size = Math.max(11, Math.min(30, anchoPx / 9));
+      ctx.font = `bold ${size.toFixed(1)}px system-ui, sans-serif`;
+      const txt = c.name.toUpperCase();
+      // Contorno oscuro: el nombre tiene que leerse igual sobre el amarillo de
+      // Brasil que sobre el azul de Estados Unidos.
+      ctx.lineWidth = Math.max(2, size / 6);
+      ctx.strokeStyle = "rgba(8,12,16,0.7)";
+      ctx.strokeText(txt, sx, sy);
+      // El país del jugador va en claro; el resto, algo más apagado.
+      ctx.fillStyle = state && iso === state.player ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.6)";
+      ctx.fillText(txt, sx, sy);
+    }
+    ctx.textBaseline = "alphabetic"; // el resto del render cuenta con el valor por defecto
+  }
+
   // Vector unitario (en coordenadas de mundo, que a escala uniforme valen también
   // para pantalla) desde el centro de la provincia hacia la celda de mar vecina
   // más cercana. null si no tiene costa.
@@ -249,6 +297,10 @@ export class MapRenderer {
 
     // ---- Capas en píxeles de pantalla ----
     screenT();
+
+    // Nombres de país sobre su territorio. Van lo primero de esta capa para que
+    // cualquier ficha o edificio quede por encima: son fondo, no interfaz.
+    this.drawCountryLabels(ctx, state, ui);
 
     if (state) {
       // Niebla de guerra: solo se ven unidades propias y las de provincias visibles
