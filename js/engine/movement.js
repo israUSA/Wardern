@@ -7,7 +7,7 @@ import { CARRIER_CAPACITY, CARRIER_CAPABLE } from "../data/air-combat-data.js";
 export function edgeMinutes(unitType, fromP, toP, strait) {
   const d = distKm([fromP.cx, fromP.cy], [toP.cx, toP.cy]);
   const u = unitDef(unitType);
-  const hours = d / (u?.speed || 20);
+  const hours = d / ((u?.speed || 20) * C.MOVE_SPEED_MULT);
   const mult = u?.air
     ? 1 // los aéreos ignoran terreno y estrechos
     : (C.TERRAIN_MOVE_MULT[toP.terrain] || 1) * (strait ? C.STRAIT_COST_MULT : 1);
@@ -190,6 +190,21 @@ function landIfCarrier(state, unit) {
   log(state, `${unitDef(unit.type)?.name} toma cubierta en ${unitDef(c.type)?.name}`, "info");
 }
 
+// ¿Hay tropa enemiga DETENIDA en la celda de esta unidad? Solo cuenta lo que
+// puede combatir: los drones no pelean (js/engine/combat.js los excluye) y una
+// unidad de paso tampoco, así que ninguno de los dos frena a nadie.
+// Los aéreos no se detienen por esto: un caza no se queda clavado sobre una
+// columna de tanques, la sobrevuela.
+function enemyPresent(state, unit) {
+  if (unitDef(unit.type)?.air) return false;
+  return state.units.some(
+    (e) =>
+      !e.dead && !e.embarked && !e.edgeLeft && e.pos === unit.pos &&
+      unitDef(e.type)?.category !== "drone" && !unitDef(e.type)?.air &&
+      atWar(state, unit.owner, e.owner)
+  );
+}
+
 export function tickMovement(state, dt) {
   for (const u of state.units) {
     if (!u.edgeLeft) continue;
@@ -209,8 +224,12 @@ export function tickMovement(state, dt) {
       continue;
     }
     const ctrl = controller(state.provinces[u.pos]);
-    if (atWar(state, u.owner, ctrl)) {
-      u.path = []; // llega a territorio hostil: se detiene y combate
+    if (atWar(state, u.owner, ctrl) || enemyPresent(state, u)) {
+      // Territorio hostil O tropa enemiga plantada aquí: se detiene y combate.
+      // Lo segundo faltaba: si el enemigo estaba dentro de una provincia MÍA
+      // (invadiéndola, aún sin conquistarla), el controlador seguía siendo yo y
+      // mis columnas le pasaban por al lado sin pegar un tiro.
+      u.path = [];
     } else if (u.path.length) {
       u.edgeLeft = startEdgeFor(state, u, u.path[0]);
     }

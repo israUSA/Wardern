@@ -115,6 +115,13 @@ export const VET_BONUS_PER_LEVEL = 0.08;   // +8% ataque y defensa por nivel
 
 // Movimiento
 export const STRAIT_COST_MULT = 2;
+// Multiplicador GLOBAL de la velocidad de todas las unidades. Se aplica en
+// edgeMinutes, así que una sola cifra frena (o acelera) a las 96 variantes a la
+// vez y las proporciones entre ellas quedan intactas: un tanque sigue siendo
+// exactamente el doble de rápido que la infantería. Tocar los `speed` uno a uno
+// habría sido 96 ediciones y un balance distinto.
+// 0,75 = todas un 25 % más lentas (los trayectos duran un tercio más).
+export const MOVE_SPEED_MULT = 0.75;
 
 // Dificultad (se elige en la pantalla de inicio y viaja en state.difficulty).
 // Solo toca a los bots: producción bruta de sus provincias y ganas de declarar
