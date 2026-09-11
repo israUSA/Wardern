@@ -304,27 +304,30 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       ${ps.occupier && ps.occupier !== ps.owner ? `<br><span style="color:var(--danger)">Ocupada por ${S.countries[ps.occupier].name} (25% producción)</span>` : ""}
     </div>`;
 
-  // Cola en curso
-  if (ps.queue) {
-    const q = ps.queue;
-    const label =
-      q.kind === "unit" || q.kind === "naval"
-        ? unitDef(q.type)?.name ?? q.type
-        : q.kind === "annex"
-          ? "Anexión"
-          : C.BUILDINGS[q.type].name;
+  // Trabajos en curso. Son DOS colas independientes: la obra (un edificio o una
+  // anexión) y las gradas de reclutamiento. Construir ya no bloquea reclutar.
+  const trabajo = (q) => {
+    const esUnidad = q.kind === "unit" || q.kind === "naval";
+    const label = esUnidad
+      ? unitDef(q.type)?.name ?? q.type
+      : q.kind === "annex"
+        ? "Anexión"
+        : C.BUILDINGS[q.type].name;
     const pct = Math.round((1 - q.minutesLeft / q.total) * 100);
     // miniatura del sprite de la unidad en construcción (variante real)
-    const thumb =
-      q.kind === "unit" || q.kind === "naval"
-        ? `<canvas width="42" height="34" data-symbol="${unitDef(q.type)?.icon}" data-variant="${q.type}" data-color="${S.countries[state.player].color}"></canvas>`
-        : "";
-    html += `<div class="queue-box" style="display:flex;align-items:center;gap:8px">${thumb}<div>${label} — ${Math.ceil(q.minutesLeft / 60)} h restantes
+    const thumb = esUnidad
+      ? `<canvas width="42" height="34" data-symbol="${unitDef(q.type)?.icon}" data-variant="${q.type}" data-color="${S.countries[state.player].color}"></canvas>`
+      : "";
+    return `<div class="queue-box" style="display:flex;align-items:center;gap:8px">${thumb}<div>${label} — ${etaText(q.minutesLeft)} restantes
       <div class="progress"><div style="width:${pct}%"></div></div></div></div>`;
-  }
+  };
+  if (ps.queue) html += trabajo(ps.queue);
+  for (const r of ps.recruits || []) html += trabajo(r);
 
-  // Construcción y reclutamiento (solo en provincias propias controladas)
-  if (mine && !ps.queue) {
+  // Construcción y reclutamiento (solo en provincias propias controladas).
+  // La sección entera se muestra siempre: dentro, Construir se bloquea si hay
+  // obra en curso y Reclutar si las gradas están llenas, por separado.
+  if (mine) {
     html += `<div class="pp-section"><h4>Construir</h4>`;
     const hasCoast = (S.edges.get(selId) || []).some((e) => S.provinces.get(e.to)?.isSea);
     for (const [key, b] of Object.entries(C.BUILDINGS)) {
@@ -343,8 +346,10 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       const cost = buildingCost(key, level);
       const r = state.countries[state.player].resources;
       const afford = canAfford(state, state.player, cost);
+      const obraOcupada = !!ps.queue;
       let why = "";
       if (maxed) why = "Nivel máximo alcanzado";
+      else if (obraOcupada) why = "Ya hay una obra en curso en esta provincia (los edificios van de uno en uno)";
       else if (!afford) {
         const falta = [];
         if (r.money < cost.money) falta.push(`${C.fmtInt(cost.money - r.money)}$`);
@@ -352,7 +357,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
         why = "Recursos insuficientes: faltan " + falta.join(", ");
       }
       html += `<div class="build-row"><div>${b.name} <span class="cost">(nv ${level}/${b.max}) · ${C.fmtInt(cost.money)}$${cost.supplies ? " + " + C.fmtInt(cost.supplies) + " sumin" : ""} · ${b.desc}</span></div>
-        <button class="btn small" data-build="${key}" ${maxed || !afford ? "disabled" : ""} ${why ? `title="${why}"` : ""}>${maxed ? "Máx" : "Construir"}</button></div>`;
+        <button class="btn small" data-build="${key}" ${maxed || obraOcupada || !afford ? "disabled" : ""} ${why ? `title="${why}"` : ""}>${maxed ? "Máx" : "Construir"}</button></div>`;
     }
     html += `</div>${recruitSection(state, selId, ps)}`;
   }
@@ -361,7 +366,12 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     const iso = state.player;
     const r = state.countries[iso].resources;
     const researched = state.countries[iso].researchedTier ?? 1; // tier inicial de toda partida (newGame)
-    let html = `<div class="pp-section"><h4>Reclutar</h4>`;
+    const enGradas = ps.recruits?.length || 0;
+    const gradasLlenas = enGradas >= C.RECRUIT_SLOTS;
+    let html = `<div class="pp-section"><h4>Reclutar <span class="cost">gradas ${enGradas}/${C.RECRUIT_SLOTS}</span></h4>`;
+    if (gradasLlenas) {
+      html += `<div class="garrison-note">Las ${C.RECRUIT_SLOTS} gradas están ocupadas. En cuanto salga una unidad se libera sitio.</div>`;
+    }
     const rowsFor = (variants) => {
       for (const u of variants) {
         const tier = u.tier ?? 1;
@@ -380,6 +390,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
         if (lockedTier) why.push(`🔒 Requiere investigación: ${TIERS.find((t) => t.id === tier)?.name ?? "nivel " + tier} (tier ${tier})`);
         if (lockedBase) why.push(`✈ Requiere Base aérea nivel ${tier} construida en ESTA provincia`);
         if (lockedPort) why.push(`⚓ Requiere Puerto nivel ${u.minPortLevel ?? 1} en esta provincia`);
+        if (gradasLlenas) why.push(`🏭 Las ${C.RECRUIT_SLOTS} gradas de la provincia están ocupadas`);
         if (!afford) {
           const falta = [];
           if (r.money < u.cost.money) falta.push(`${C.fmtInt(u.cost.money - r.money)}$`);
@@ -389,7 +400,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
           why.push("Recursos insuficientes: faltan " + falta.join(", "));
         }
         html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${u.buildHours}h${req}</span></div>
-          <button class="btn small" data-recruit="${u.id}" ${lockedTier || lockedBase || lockedPort || !afford ? "disabled" : ""} ${why.length ? `title="${why.join("&#10;")}"` : ""}>Reclutar</button></div>`;
+          <button class="btn small" data-recruit="${u.id}" ${lockedTier || lockedBase || lockedPort || gradasLlenas || !afford ? "disabled" : ""} ${why.length ? `title="${why.join("&#10;")}"` : ""}>Reclutar</button></div>`;
       }
     };
     for (const cat of UNIT_CATEGORIES) {

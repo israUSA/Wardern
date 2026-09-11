@@ -118,6 +118,11 @@ export const BUILDINGS = {
   },
 };
 
+// Gradas de reclutamiento por provincia. La OBRA (edificios y anexión) va por su
+// cuenta en ps.queue: construir un cuartel no debería impedir reclutar en él, que
+// son dos cosas distintas y antes compartían la única ranura que había.
+export const RECRUIT_SLOTS = 2;
+
 // Anexión
 export const ANNEX_DAYS = 5 * 24 * 60;
 export const ANNEX_COST = (pop) => Math.round(pop / 2000) + 2000;

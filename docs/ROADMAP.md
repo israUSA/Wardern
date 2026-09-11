@@ -157,6 +157,15 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
       en columna A UN LADO para dejar el centro a las unidades. El **puerto** se planta
       hacia la costa (`seaDirFor`, cacheado) y los **aviones en base se posan en fila
       junto a la pista** del aeródromo en vez de junto al centro de la provincia
+- [x] **Parte de combate en la ficha** (2026-09-11): al hacer clic en una unidad en
+      combate se ve contra quién pelea, la vida de cada bando y el ritmo al que se
+      desgastan, con pronóstico ("el enemigo cae en 12 h"). El ritmo lo MIDE el motor
+      (`dmgInPerH`/`dmgOutPerH` en combat.js) en vez de rehacer la fórmula en la UI
+- [x] **Obra y reclutamiento en paralelo** (2026-09-11): `ps.queue` se queda con la obra
+      (un edificio o una anexión) y aparece `ps.recruits`, hasta `RECRUIT_SLOTS` = 2
+      unidades a la vez. Antes una sola ranura servía para todo: levantar una fábrica
+      dejaba la provincia sin reclutar durante días. De paso, `startBuilding` no
+      comprobaba la cola y podía borrar una anexión en curso con lo pagado dentro
 - [ ] Apoyo aéreo cercano, formaciones al mover, ciudades con red vial bajo las
       unidades (como la referencia)
 

@@ -109,6 +109,9 @@ export function startBuilding(state, pid, type) {
   if (!p || p.isSea) return false;
   // el puerto exige costa: provincia con salida a celda de mar
   if (type === "puerto" && !(S.edges.get(pid) || []).some((e) => S.provinces.get(e.to)?.isSea)) return false;
+  // La obra es de UNA en una. Sin esta guarda, construir sobre una anexión en
+  // curso la borraba y se perdía lo pagado: hasta ahora solo lo impedía la UI.
+  if (ps.queue) return false;
   const level = ps.buildings[type] || 0;
   if (level >= C.BUILDINGS[type].max) return false;
   const cost = buildingCost(type, level);
@@ -132,6 +135,7 @@ export function recruitBlocker(state, pid, unitType) {
     if ((ps.buildings.puerto || 0) < (u.minPortLevel ?? 1)) return "puerto";
     if (!(S.edges.get(pid) || []).some((e) => S.provinces.get(e.to)?.isSea)) return "costa";
   }
+  if ((ps.recruits?.length || 0) >= C.RECRUIT_SLOTS) return "gradas";
   return null;
 }
 
@@ -142,11 +146,13 @@ export function startRecruit(state, pid, unitType) {
   if (blocker) return false;
   const u = unitDef(unitType);
   if (!pay(state, ps.owner, u.cost)) return false;
+  ps.recruits = ps.recruits || []; // los guardados anteriores no traen el campo
+  const total = u.buildHours * 60;
   if (isNaval(unitType)) {
     const seaEdge = (S.edges.get(pid) || []).find((e) => S.provinces.get(e.to)?.isSea);
-    ps.queue = { kind: "naval", type: unitType, minutesLeft: u.buildHours * 60, total: u.buildHours * 60, seaCell: seaEdge.to };
+    ps.recruits.push({ kind: "naval", type: unitType, minutesLeft: total, total, seaCell: seaEdge.to });
   } else {
-    ps.queue = { kind: "unit", type: unitType, minutesLeft: u.buildHours * 60, total: u.buildHours * 60 };
+    ps.recruits.push({ kind: "unit", type: unitType, minutesLeft: total, total });
   }
   return true;
 }
@@ -240,34 +246,56 @@ export function tickResearch(state, dt) {
   }
 }
 
+// Termina un trabajo acabado (unidad, barco, edificio o anexión)
+function finishJob(state, ps, p, q) {
+  if (q.kind === "unit") {
+    spawnUnit(state, ps.owner, q.type, p.id, 50);
+    log(state, `${unitDef(q.type)?.name ?? q.type} movilizado en ${p.name}`, "info");
+  } else if (q.kind === "naval") {
+    spawnUnit(state, ps.owner, q.type, q.seaCell, 50);
+    // Decir que sale AL MAR: el barco no aparece dentro de la provincia y sin
+    // esta pista el jugador lo busca en el puerto y cree que no se ha construido.
+    log(state, `${unitDef(q.type)?.name ?? q.type} botado en ${p.name} — fondeado en el mar adyacente`, "good");
+  } else if (q.kind === "building") {
+    ps.buildings[q.type] = (ps.buildings[q.type] || 0) + 1;
+    log(state, `Construcción finalizada: ${C.BUILDINGS[q.type].name} (nivel ${ps.buildings[q.type]}) en ${p.name}`, "good");
+  } else if (q.kind === "annex") {
+    const oldOwner = ps.owner;
+    ps.owner = ps.occupier;
+    ps.occupier = null;
+    log(state, `${S.countries[ps.owner].name} anexiona ${p.name}`, "info");
+    checkElimination(state, oldOwner);
+  }
+}
+
+// Dos colas por provincia que avanzan EN PARALELO: la obra (un edificio o una
+// anexión) y las gradas de reclutamiento (hasta RECRUIT_SLOTS unidades a la vez).
+// Antes había una sola ranura para todo, así que levantar una fábrica dejaba la
+// provincia sin poder reclutar durante días.
 export function tickQueues(state, dt) {
   for (const p of S.provinceList) {
     if (p.isSea) continue;
     const ps = state.provinces[p.id];
+
+    // Gradas de reclutamiento
+    if (ps.recruits?.length) {
+      for (const r of ps.recruits) r.minutesLeft -= dt;
+      const listas = ps.recruits.filter((r) => r.minutesLeft <= 0);
+      if (listas.length) {
+        ps.recruits = ps.recruits.filter((r) => r.minutesLeft > 0);
+        for (const r of listas) finishJob(state, ps, p, r);
+      }
+    }
+
     if (!ps.queue) continue;
     ps.queue.minutesLeft -= dt;
     if (ps.queue.minutesLeft > 0) continue;
-
     const q = ps.queue;
     ps.queue = null;
-    if (q.kind === "unit") {
-      spawnUnit(state, ps.owner, q.type, p.id, 50);
-      log(state, `${unitDef(q.type)?.name ?? q.type} movilizado en ${p.name}`, "info");
-    } else if (q.kind === "naval") {
-      spawnUnit(state, ps.owner, q.type, q.seaCell, 50);
-      // Decir que sale AL MAR: el barco no aparece dentro de la provincia y sin
-      // esta pista el jugador lo busca en el puerto y cree que no se ha construido.
-      log(state, `${unitDef(q.type)?.name ?? q.type} botado en ${p.name} — fondeado en el mar adyacente`, "good");
-    } else if (q.kind === "building") {
-      ps.buildings[q.type] = (ps.buildings[q.type] || 0) + 1;
-      log(state, `Construcción finalizada: ${C.BUILDINGS[q.type].name} (nivel ${ps.buildings[q.type]}) en ${p.name}`, "good");
-    } else if (q.kind === "annex") {
-      const oldOwner = ps.owner;
-      ps.owner = ps.occupier;
-      ps.occupier = null;
-      log(state, `${S.countries[ps.owner].name} anexiona ${p.name}`, "info");
-      checkElimination(state, oldOwner);
-    }
+    // Compatibilidad: los guardados anteriores a las gradas llevan la unidad en
+    // curso dentro de ps.queue. Se termina donde está y a partir de ahí ya no se
+    // vuelve a usar esa ranura para reclutar.
+    finishJob(state, ps, p, q);
   }
 }
 

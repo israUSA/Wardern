@@ -92,11 +92,11 @@ function aiEconomy(state, iso, vis) {
   // una sola por país, un bot de 30 provincias reclutaba igual que uno de 1 y el
   // jugador (que sí recluta en todas) lo desbordaba sin esfuerzo.
   const target = own.length * 2 + (c.wars.length ? 6 : 0);
-  const queued = own.filter((p) => ["unit", "naval"].includes(state.provinces[p.id].queue?.kind)).length;
+  const queued = own.reduce((n, p) => n + (state.provinces[p.id].recruits?.length || 0), 0);
   let slots = Math.min(C.AI_RECRUITS_PER_CHECK(own.length), target - units.length - queued);
   if (slots > 0) {
     const cands = own
-      .filter((p) => !state.provinces[p.id].queue)
+      .filter((p) => (state.provinces[p.id].recruits?.length || 0) < C.RECRUIT_SLOTS)
       .sort(
         (a, b) =>
           (b.capital ? 1 : 0) - (a.capital ? 1 : 0) || (b.prod.manpower || 0) - (a.prod.manpower || 0)

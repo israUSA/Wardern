@@ -417,7 +417,8 @@ export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
       owner: p.country,
       occupier: null,
       buildings: { industria: 0, reclutamiento: 0, fortaleza: 0, aerobase: 0, puerto: 0 },
-      queue: null,
+      queue: null,     // obra: un edificio o una anexión
+      recruits: [],    // gradas: hasta C.RECRUIT_SLOTS unidades a la vez
     };
   }
 
