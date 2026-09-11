@@ -3,7 +3,7 @@ import { S, atWar, visibleProvinces, intel, unitDef, controller } from "../engin
 import { DRONE_VISION_KM } from "../data/missiles-data.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import { radarRangeKm } from "../engine/air-combat.js";
-import { CARRIER_CAPACITY } from "../data/air-combat-data.js";
+import { CARRIER_CAPACITY, AIR_WEAPONS } from "../data/air-combat-data.js";
 import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
 import { buildingReady, flatReady } from "./sprite-cache.js";
@@ -907,7 +907,11 @@ const BUILDING_KEYS = Object.keys(BUILDINGS);
 // término, el genérico. Devuelve null mientras el SVG se está cacheando.
 function projectileSprite(m) {
   if (SPRITES.proyectiles?.[m.weaponId]) return flatReady("proyectiles", m.weaponId);
-  return flatReady("proyectiles", m.air ? "aire" : "generico");
+  // El respaldo va por el TIPO del arma, no por el flag `air`: ese lo llevan
+  // también las aire-suelo (significa "lo resuelve el motor aéreo"), así que un
+  // Maverick o una JDAM se dibujaban con la silueta de un misil aire-aire.
+  const aa = AIR_WEAPONS[m.weaponId]?.tipo === "aa";
+  return flatReady("proyectiles", aa ? "aire" : "generico");
 }
 
 // Tamaño de la chapa de cubierta respecto al de la ficha, con topes: ni ilegible

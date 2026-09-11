@@ -145,7 +145,10 @@ export const SPRITES = {
   proyectiles: {
     generico: "assets/sprites/m-misil.svg",
     tomahawk: "assets/sprites/m-tomahawk.svg",
-    hellfire: "assets/sprites/m-hellfire.svg",
+    // OJO: `hellfireL` (air-combat-data.js) es el misil que VUELA. El `hellfire`
+    // de missiles-data.js es el bonus pasivo del helicóptero y nunca llega a
+    // dibujarse, así que con esa clave el sprite seguía siendo un asset muerto.
+    hellfireL: "assets/sprites/m-hellfire.svg",
     mlrs: "assets/sprites/m-cohete.svg",
     aire: "assets/sprites/m-aire.svg",
   },
