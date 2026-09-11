@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- GBU-31 JDAM (id del arma: gbu)
+       bomba GPS · 25 km
+       Silueta heredada de la familia "bomba guiada": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: BOMBA GUIADA (GBU-31 JDAM / KAB-500S). La silueta más distinta
        de todas: NO tiene motor (sin llama), cuerpo de bomba en gota, cola con
        kit de guiado cuadrado y estabilizadores laterales largos. Cae, no vuela.

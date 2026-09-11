@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- R-27 (AA-10 Alamo) (id del arma: r27)
+       aire-aire SARH · 70 km
+       Silueta heredada de la familia "radar semiactivo": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: aire-aire de RADAR SEMIACTIVO (AIM-7 Sparrow / R-23 Apex /
        R-27 Alamo). El rasgo que los identifica a simple vista son las ALAS
        DELTA GRANDES a media panza; son misiles largos y pesados.

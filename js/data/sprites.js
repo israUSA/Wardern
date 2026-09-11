@@ -138,66 +138,59 @@ export const SPRITES = {
     "ori-3-transporte": "assets/sprites/v-ori-3-transporte.svg",
   },
   // Proyectiles EN VUELO. La clave es el id del arma (missiles-data.js o
-  // air-combat-data.js); lo que no esté aquí cae en `generico`.
-  // CONVENCIÓN: morro hacia ARRIBA (norte), igual que los sprites de avión — el
-  // render los gira al rumbo. El Tomahawk se dibujó apuntando a la derecha antes
-  // de que existiera esta regla, así que lleva su corrección en `rotProyectil`.
-  // Se agrupan por SILUETA, no por id: a 20 px de pantalla lo único que
-  // distingue a un misil de otro es su forma. Un AIM-9L y un AIM-9X son el
-  // mismo cuerpo con distinto buscador → mismo dibujo. Un AMRAAM (sin alas
-  // grandes) o un R-77 (aletas de rejilla) no se parecen a nada → arte propio.
-  // Así bastan 12 dibujos para las 21 armas del catálogo.
+  // air-combat-data.js). CONVENCIÓN: morro hacia ARRIBA (norte), igual que los
+  // sprites de avión — el render los gira al rumbo.
+  // UN ARCHIVO POR ARMA: `m-<id>.svg`, siempre. Varios comparten todavia la
+  // misma silueta de familia de partida (un TOW nace con el cuerpo del
+  // Hellfire), pero cada uno tiene ya su propio archivo con su nombre, asi que
+  // mejorar uno NO toca a los demas. Ver docs/SPRITES-MISILES.md para el
+  // checklist de cual lleva arte propio y cual sigue heredando.
   proyectiles: {
-    // --- respaldos (lo que no esté listado cae aquí) ---
+    // --- respaldos: solo para un arma nueva que aun no tenga archivo ---
     generico: "assets/sprites/m-misil.svg",
     aire: "assets/sprites/m-aire.svg",
 
-    // --- aire-aire IR occidental: Sidewinder, mismo cuerpo ---
-    aim9: "assets/sprites/m-aire.svg",
-    aim9x: "assets/sprites/m-aire.svg",
-    // --- aire-aire IR oriental: canards al morro, verde oliva ---
-    r60: "assets/sprites/m-aa-archer.svg",
-    r73: "assets/sprites/m-aa-archer.svg",
-    // --- MANPADS: los más pequeños del juego ---
-    stinger: "assets/sprites/m-manpads.svg",
-    igla: "assets/sprites/m-manpads.svg",
-    // --- radar semiactivo: alas delta grandes a media panza ---
-    aim7: "assets/sprites/m-aa-radar.svg",
-    r23: "assets/sprites/m-aa-radar.svg",
-    r27: "assets/sprites/m-aa-radar.svg",
-    // --- radar activo: cada uno con su seña, sin pareja ---
-    aim120: "assets/sprites/m-amraam.svg",
-    r77: "assets/sprites/m-r77.svg",
-
-    // --- aire-suelo pesado de morro sensor: cuerpo gordo, alas en cruz ---
-    agm65: "assets/sprites/m-as-pesado.svg",
-    kh25: "assets/sprites/m-as-pesado.svg",
-    // --- antirradar: dardo de morro afilado ---
-    agm88: "assets/sprites/m-antirradar.svg",
-    kh31p: "assets/sprites/m-antirradar.svg",
-    // --- bombas guiadas: sin motor, cuerpo en gota con kit de cola ---
-    gbu: "assets/sprites/m-bomba.svg",
-    kab: "assets/sprites/m-bomba.svg",
-    // --- anticarro ligero de helicóptero: todos tubos cortos iguales ---
-    // OJO: `hellfireL` (air-combat-data.js) es el misil que VUELA. El `hellfire`
-    // de missiles-data.js es el bonus pasivo del helicóptero y nunca llega a
-    // dibujarse, así que con esa clave el sprite seguía siendo un asset muerto.
-    hellfireL: "assets/sprites/m-hellfire.svg",
-    tow: "assets/sprites/m-hellfire.svg",
-    ataka: "assets/sprites/m-hellfire.svg",
-    shturm: "assets/sprites/m-hellfire.svg",
-
-    // --- crucero: fuselaje tubular con alas desplegables ---
-    tomahawk: "assets/sprites/m-tomahawk.svg",
-    harpoon: "assets/sprites/m-tomahawk.svg",
-    jassm: "assets/sprites/m-tomahawk.svg",
-    // --- cohete de saturación ---
-    mlrs: "assets/sprites/m-cohete.svg",
+    // --- aire-aire infrarrojo occidental ---
+    aim9: "assets/sprites/m-aim9.svg",   // AIM-9L Sidewinder
+    aim9x: "assets/sprites/m-aim9x.svg", // AIM-9X Sidewinder
+    // --- aire-aire infrarrojo oriental ---
+    r60: "assets/sprites/m-r60.svg", // R-60 Aphid
+    r73: "assets/sprites/m-r73.svg", // R-73 Archer
+    // --- MANPADS ---
+    stinger: "assets/sprites/m-stinger.svg", // AIM-92 Stinger
+    igla: "assets/sprites/m-igla.svg",       // Igla-V
+    // --- aire-aire de radar semiactivo ---
+    aim7: "assets/sprites/m-aim7.svg", // AIM-7M Sparrow
+    r23: "assets/sprites/m-r23.svg",   // R-23 Apex
+    r27: "assets/sprites/m-r27.svg",   // R-27 Alamo
+    // --- aire-aire de radar activo ---
+    aim120: "assets/sprites/m-aim120.svg", // AIM-120C AMRAAM
+    r77: "assets/sprites/m-r77.svg",       // R-77 Adder
+    // --- aire-suelo pesado ---
+    agm65: "assets/sprites/m-agm65.svg", // AGM-65 Maverick
+    kh25: "assets/sprites/m-kh25.svg",   // Kh-25ML
+    // --- antirradar ---
+    agm88: "assets/sprites/m-agm88.svg", // AGM-88 HARM
+    kh31p: "assets/sprites/m-kh31p.svg", // Kh-31P
+    // --- bombas guiadas ---
+    gbu: "assets/sprites/m-gbu.svg", // GBU-31 JDAM
+    kab: "assets/sprites/m-kab.svg", // KAB-500S
+    // --- anticarro ligero de helicoptero ---
+    hellfireL: "assets/sprites/m-hellfireL.svg", // AGM-114 Hellfire
+    tow: "assets/sprites/m-tow.svg",             // BGM-71 TOW
+    ataka: "assets/sprites/m-ataka.svg",         // 9M120 Ataka
+    shturm: "assets/sprites/m-shturm.svg",       // 9M114 Shturm
+    // --- crucero ---
+    tomahawk: "assets/sprites/m-tomahawk.svg", // BGM-109 Tomahawk
+    harpoon: "assets/sprites/m-harpoon.svg",   // Harpoon
+    jassm: "assets/sprites/m-jassm.svg",       // Crucero de bombardero
+    // --- cohete de saturacion ---
+    mlrs: "assets/sprites/m-mlrs.svg", // Salva MLRS
   },
-  // Grados a corregir para los que no siguen la convención de morro al norte.
-  // Los tres de crucero comparten el dibujo del Tomahawk, así que comparten
-  // también su corrección.
-  rotProyectil: { tomahawk: -90, harpoon: -90, jassm: -90 },
+  // Grados a corregir para los que no siguen la convencion de morro al norte.
+  // Solo el Tomahawk: se dibujo apuntando a la derecha antes de que existiera
+  // la regla. Sus copias (Harpoon, JASSM) nacen ya rotadas al norte.
+  rotProyectil: { tomahawk: -90 },
   // Efectos: un fotograma que el render escala y desvanece
   efectos: {
     explosion: "assets/sprites/fx-explosion.svg",

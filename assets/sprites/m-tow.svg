@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- BGM-71 TOW (id del arma: tow)
+       anticarro alambre · 4 km
+       Silueta heredada de la familia "anticarro ligero": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- Misil Hellfire compacto, vista lateral vertical, punta hacia arriba.
        El motor puede rotarlo hacia el objetivo. Colores fijos (proyectil neutro). -->
   <defs><style>

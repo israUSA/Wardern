@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- AIM-9X Sidewinder (id del arma: aim9x)
+       aire-aire IR · 35 km
+       Silueta heredada de la familia "Sidewinder": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
+  <!-- Misil aire-aire (Sidewinder / AMRAAM / R-73...). Delgado, aletas en cruz
+       y estela corta: vuela mucho más rápido que un misil de crucero.
+       Morro hacia ARRIBA (norte). -->
+  <defs>
+    <linearGradient id="ma-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f2f5f8"/>
+      <stop offset="0.45" stop-color="#c3cbd3"/>
+      <stop offset="1" stop-color="#78828c"/>
+    </linearGradient>
+    <linearGradient id="ma-flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfe9ff"/>
+      <stop offset="0.5" stop-color="#7db8ff"/>
+      <stop offset="1" stop-color="#2f6fd0" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- estela corta y azulada (motor de alto impulso) -->
+  <path d="M14 48 L18 48 C19 54 17.6 58 16 61 C14.4 58 13 54 14 48 Z" fill="url(#ma-flame)"/>
+
+  <!-- aletas traseras -->
+  <path d="M13.8 40 L8 43.5 L8 47 L13.8 44.5 Z" fill="#6d7681"/>
+  <path d="M18.2 40 L24 43.5 L24 47 L18.2 44.5 Z" fill="#6d7681"/>
+  <!-- canards delanteros -->
+  <path d="M13.8 16 L9.5 18 L9.5 21 L13.8 19.5 Z" fill="#8b949e"/>
+  <path d="M18.2 16 L22.5 18 L22.5 21 L18.2 19.5 Z" fill="#8b949e"/>
+
+  <!-- fuselaje -->
+  <rect x="13.7" y="9" width="4.6" height="39" rx="1" fill="url(#ma-body)"/>
+  <!-- banda de ejercicio -->
+  <rect x="13.7" y="22" width="4.6" height="2" fill="#2f6fd0"/>
+  <!-- buscador (cabeza de cristal) -->
+  <path d="M13.7 9 C14.4 4 15.1 1.4 16 0 C16.9 1.4 17.6 4 18.3 9 Z" fill="#3a4450"/>
+  <circle cx="16" cy="4.6" r="1.2" fill="#9fd8ff" opacity="0.85"/>
+</svg>

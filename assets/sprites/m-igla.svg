@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- Igla-V (id del arma: igla)
+       aire-aire IR · 8 km
+       Silueta heredada de la familia "MANPADS": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: MANPADS (AIM-92 Stinger / Igla-V). Es el misil MÁS PEQUEÑO del
        juego y se nota: cuerpo corto y rechoncho, aletitas minúsculas, morro
        cónico opaco. Ocupa poco del lienzo a propósito.

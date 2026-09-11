@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- Kh-25ML (id del arma: kh25)
+       aire-suelo laser · 20 km
+       Silueta heredada de la familia "aire-suelo pesado": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: aire-suelo PESADO de morro sensor (AGM-65 Maverick / Kh-25ML).
        Rasgo propio: cuerpo GORDO y corto, alas en cruz grandes bien atrás y
        ventana plana cuadrada del buscador en el morro (electroóptico o láser).

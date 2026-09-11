@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- AGM-88 HARM (id del arma: agm88)
+       antirradar · 100 km
+       Silueta heredada de la familia "antirradar": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: ANTIRRADAR (AGM-88 HARM / Kh-31P). Son los más rápidos del
        catálogo y se dibujan como un DARDO: morro larguísimo y afilado, cuerpo
        fino, alas pequeñas a media panza y tomas de aire laterales marcadas.

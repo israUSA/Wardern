@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- Salva MLRS (id del arma: mlrs)
+       cohete de saturacion · 350 km
+       Arte propio, ya diferenciado.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- Cohete de artillería (salva MLRS: HIMARS occidental / Smerch oriental).
        Más flaco que un misil de crucero y con muchísima más llama: es un cohete
        no guiado disparado en salva. Morro hacia ARRIBA (norte). -->

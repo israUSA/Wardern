@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- AIM-120C AMRAAM (id del arma: aim120)
+       aire-aire activo · 105 km
+       Arte propio, ya diferenciado.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- AIM-120 AMRAAM (arte propio). Radar ACTIVO: se distingue del Sparrow en
        que NO lleva alas grandes — cuerpo largo, delgado y limpio, con cuatro
        aletas recortadas pequeñas atrás. Es el misil largo moderno.

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- Misil de crucero (bombardero) (id del arma: jassm)
+       crucero aire · 1.000 km
+       Silueta heredada de la familia "crucero": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
+  <g transform="translate(0,64) rotate(-90)">
+<!-- BGM-109 Tomahawk Block IV/V (Tactical Tomahawk - Versión Oficial Raytheon / NAVAIR)
+       100% idéntico a la fotografía de prueba en vuelo:
+       - Fuselaje cilíndrico blanco naval.
+       - Aletas de cola en NARANJA FLUORESCENTE / DAY-GLO intenso.
+       - Alas desplegadas en flecha hacia atrás con borde naranja brillante.
+       - Banda negra vertical en proa con el logo NAVAIR y ala azul.
+       - Logo 'Raytheon' en rojo corporativo en el fuselaje trasero.
+       - Paneles de antena conformada grises en el lomo. -->
+  <defs>
+    <!-- Sombreado cilíndrico realista para el fuselaje blanco -->
+    <linearGradient id="tom-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="25%" stop-color="#f4f6f8"/>
+      <stop offset="65%" stop-color="#dde2e8"/>
+      <stop offset="90%" stop-color="#b0b9c3"/>
+      <stop offset="100%" stop-color="#919ba6"/>
+    </linearGradient>
+
+    <!-- Naranja fluorescente Day-Glo (aletas y alas) -->
+    <linearGradient id="tom-orange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6a1a"/>
+      <stop offset="50%" stop-color="#ff4400"/>
+      <stop offset="100%" stop-color="#d62b00"/>
+    </linearGradient>
+
+    <linearGradient id="tom-orange-dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e63b00"/>
+      <stop offset="100%" stop-color="#a81e00"/>
+    </linearGradient>
+
+    <!-- Tobera de escape en popa -->
+    <linearGradient id="tom-nozzle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a525a"/>
+      <stop offset="50%" stop-color="#24282c"/>
+      <stop offset="100%" stop-color="#111315"/>
+    </linearGradient>
+
+    <!-- Estela / llama de propulsión trasera -->
+    <linearGradient id="tom-flame" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#fff2b2"/>
+      <stop offset="35%" stop-color="#ff881a"/>
+      <stop offset="75%" stop-color="#e62a00" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#cc0e00" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== LLAMA DE TOBERA EN COLA ==================== -->
+  <path d="M 12 16.5 C 9 14.8 5 15.2 1 16.5 C 5 17.8 9 18.2 12 16.5 Z" fill="url(#tom-flame)"/>
+  <ellipse cx="11.5" cy="16.5" rx="1.5" ry="0.8" fill="#ffffff" opacity="0.9"/>
+
+  <!-- ==================== TOBERA METÁLICA ==================== -->
+  <rect x="11.6" y="15.2" width="1.6" height="2.6" rx="0.3" fill="url(#tom-nozzle)"/>
+
+  <!-- ==================== ALETAS DE COLA NARANJAS (DAY-GLO ORANGE) ==================== -->
+  <!-- Aleta superior (apunta hacia arriba) -->
+  <polygon points="14.8,14.4 14.0,7.2 17.8,7.6 17.6,14.5" fill="url(#tom-orange)" stroke="#b82600" stroke-width="0.3" stroke-linejoin="round"/>
+  <line x1="14.0" y1="7.2" x2="17.8" y2="7.6" stroke="#ffa366" stroke-width="0.4"/>
+
+  <!-- Aleta inferior (apunta hacia abajo) -->
+  <polygon points="14.8,18.6 14.0,24.8 17.8,24.4 17.6,18.5" fill="url(#tom-orange-dark)" stroke="#8c1b00" stroke-width="0.3" stroke-linejoin="round"/>
+
+  <!-- Aleta lateral trasera en perspectiva -->
+  <polygon points="13.2,16.5 11.5,15.2 11.3,17.8" fill="#c42b00"/>
+
+  <!-- ==================== FUSELAJE CILÍNDRICO BLANCO ==================== -->
+  <path d="
+    M 13 15.2
+    C 14.5 15.0, 16 14.2, 18 14.2
+    L 55 14.2
+    C 57.8 14.2, 59.8 14.8, 60.6 15.6
+    C 60.9 16.0, 60.9 17.0, 60.6 17.4
+    C 59.8 18.2, 57.8 18.8, 55 18.8
+    L 18 18.8
+    C 16 18.8, 14.5 18.0, 13 17.8
+    Z
+  " fill="url(#tom-body)" stroke="#747e88" stroke-width="0.35"/>
+
+  <!-- Punta del morro ahusada con casquete suave -->
+  <path d="M 60.2 15.5 C 61.2 16.1 61.2 16.9 60.2 17.5" fill="none" stroke="#ffffff" stroke-width="0.6" stroke-linecap="round"/>
+
+  <!-- ==================== BANDA NEGRA Y LOGO NAVAIR ==================== -->
+  <rect x="51.8" y="14.2" width="1.8" height="4.6" fill="#161b20"/>
+
+  <g transform="translate(43.5, 17.1) scale(0.46)">
+    <text x="0" y="0" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="3.2" fill="#525d69" letter-spacing="0.4">NAVAIR</text>
+    <path d="M 10 -1.6 Q 14 -3.8 18.5 -1.0" fill="none" stroke="#006cd9" stroke-width="0.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- ==================== LOGO "Raytheon" EN ROJO CORPORATIVO ==================== -->
+  <g transform="translate(20.5, 17.2) scale(0.50)">
+    <text x="0" y="0" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="3.2" fill="#de1c24" letter-spacing="0.1">Raytheon</text>
+    <circle cx="-2.5" cy="-0.9" r="0.4" fill="#66727e"/>
+  </g>
+
+  <!-- ==================== PANELES GRISES DORSALES DE ANTENA ==================== -->
+  <rect x="24" y="14.2" width="3.5" height="0.6" rx="0.2" fill="#75828e"/>
+  <rect x="31" y="14.2" width="4.8" height="0.6" rx="0.2" fill="#75828e"/>
+
+  <!-- ==================== ALA DESPLEGADA (EN FLECHA CON BORDE NARANJA) ==================== -->
+  <polygon points="39.5,15.6 34.5,19.8 30.5,19.8 36.5,15.6" fill="#eef2f6" stroke="#85909c" stroke-width="0.3" stroke-linejoin="round"/>
+  <polygon points="34.5,19.8 30.5,19.8 32.5,17.8 36.5,17.8" fill="#ff4400"/>
+  <line x1="30.5" y1="19.8" x2="34.5" y2="19.8" stroke="#ff6a1a" stroke-width="0.5"/>
+
+  <!-- ==================== ALETA LATERAL EN PRIMER PLANO ==================== -->
+  <polygon points="15.2,16.5 13.0,17.8 15.5,17.8 17.2,16.5" fill="url(#tom-orange)" stroke="#b82600" stroke-width="0.3" stroke-linejoin="round"/>
+
+  <!-- ==================== LÍNEAS DE UNIÓN TÉCNICA ==================== -->
+  <line x1="18" y1="14.3" x2="18" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
+  <line x1="38" y1="14.3" x2="38" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
+  <line x1="55" y1="14.3" x2="55" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
+  </g>
+</svg>

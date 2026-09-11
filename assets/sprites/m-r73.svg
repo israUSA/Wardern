@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- R-73 (AA-11 Archer) (id del arma: r73)
+       aire-aire IR · 30 km
+       Silueta heredada de la familia "IR oriental": todavia NO es su arte propio.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
   <!-- FAMILIA: aire-aire infrarrojo ORIENTAL (R-60 Aphid / R-73 Archer).
        Rasgo propio frente al Sidewinder: canards MUY adelantados pegados al
        morro y desestabilizadores largos a media panza. Tono verde oliva.

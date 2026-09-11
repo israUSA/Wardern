@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- AGM-114 Hellfire (id del arma: hellfireL)
+       anticarro laser · 8 km
+       Arte propio, ya diferenciado.
+       Sustituyelo cuando quieras: el motor solo exige que el archivo
+       exista con este nombre, no depende de ninguna forma concreta.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
+  <!-- Misil Hellfire compacto, vista lateral vertical, punta hacia arriba.
+       El motor puede rotarlo hacia el objetivo. Colores fijos (proyectil neutro). -->
+  <defs><style>
+    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
+    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}
+    .dark{fill:#3d4232}.rubber{fill:#2b2e28}
+  </style></defs>
+
+  <!-- llama del cohete -->
+  <path d="M13 52.5 L19 52.5 C20.5 56 19 60 16 62.5 C13 60 11.5 56 13 52.5 Z" fill="#e8a33d" opacity=".9"/>
+  <path d="M14.2 52.5 L17.8 52.5 C18.6 55.5 17.8 58.3 16 60 C14.2 58.3 13.4 55.5 14.2 52.5 Z" fill="#f6d47c"/>
+
+  <!-- tobera -->
+  <path class="rubber" d="M11.6 49 L20.4 49 L19.4 52.5 L12.6 52.5 Z"/>
+
+  <!-- aletas de cola -->
+  <path class="metal" d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z"/>
+  <path d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+  <path class="metalS" d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z"/>
+  <path d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+
+  <!-- aletas centrales -->
+  <path class="metal" d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z"/>
+  <path d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+  <path class="metalS" d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z"/>
+  <path d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+
+  <!-- cuerpo -->
+  <path class="metalL" d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z"/>
+  <path d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
+  <path class="hi" d="M13 12 L15 12 L15 48.6 L13 48.6 Z" opacity=".55"/>
+  <path d="M11.6 20 L20.4 20 M11.6 36 L20.4 36" stroke="#3d4232" stroke-width=".5" opacity=".45"/>
+
+  <!-- cabeza buscadora laser -->
+  <path class="metalS" d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z"/>
+  <path d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
+  <circle class="glass" cx="16" cy="8" r="1.7"/>
+  <circle class="glassL" cx="15.3" cy="7.3" r=".6"/>
+</svg>
