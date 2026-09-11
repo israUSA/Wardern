@@ -5,6 +5,7 @@ import { MISSILES } from "../data/missiles-data.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
 import { resolveAirImpact } from "./air-combat.js";
+import { tickArtillery } from "./artillery.js";
 
 // Armas de golpe que puede disparar esta variante (con su escalado de tier:
 // plataforma.tier > tierRequerido → rango y daño ×1.25, igual que el roster)
@@ -75,6 +76,7 @@ export function launchMissile(state, unitId, weaponId, targetPid) {
 }
 
 export function tickMissiles(state, dt) {
+  tickArtillery(state, dt);
   for (const u of state.units) {
     if (!u.mslCd) continue;
     for (const k of Object.keys(u.mslCd)) {
@@ -110,6 +112,10 @@ function impact(state, m) {
     resolveAirImpact(state, m);
     return;
   }
+  if (m.arty) {
+    impactArtillery(state, m);
+    return;
+  }
   const w = MISSILES[m.weaponId];
   const to = S.provinces.get(m.toId);
   if (!w || !to) return;
@@ -143,5 +149,38 @@ function impact(state, m) {
   const where = to.isSea ? "alta mar" : to.name;
   if (hits || bld) {
     log(state, `Impacto de ${w.nombre} en ${where}: ${hits || 0} unidad(es) dañada(s)${bld}`, "war");
+  }
+}
+
+// Salva de artillería (js/engine/artillery.js). No hay Pk ni evasión: un obús no
+// falla, cae donde se apuntó. Al blanco le toca el daño entero y al resto de la
+// celda una parte, porque la salva bate un área, no un vehículo.
+function impactArtillery(state, m) {
+  const to = S.provinces.get(m.toId);
+  if (!to) return;
+  const enemigos = state.units.filter(
+    (x) => x.pos === m.toId && !x.embarked && !x.dead && atWar(state, m.owner, x.owner)
+  );
+  if (!enemigos.length) return;
+  const blanco = enemigos.find((x) => x.id === m.targetUnitId);
+  let bajas = 0;
+  let tocadas = 0;
+  for (const e of enemigos) {
+    // Si el blanco previsto ya no está en la celda, la salva se reparte igual:
+    // el fuego estaba pedido sobre esas coordenadas.
+    const dmg = !blanco || e === blanco ? m.danio : m.danio * C.ARTY_SPLASH;
+    if (dmg <= 0) continue;
+    e.hp -= dmg;
+    e.morale = Math.max(0, e.morale - dmg * C.MORALE_HIT);
+    tocadas++;
+    if (e.hp <= 0) {
+      e.dead = true;
+      bajas++;
+      state.stats.lost[e.owner] = (state.stats.lost[e.owner] || 0) + 1;
+      log(state, `${unitDef(e.type)?.name} de ${S.countries[e.owner].name} DESTRUIDA por artillería en ${to.isSea ? "alta mar" : to.name}`, "war");
+    }
+  }
+  if (tocadas && !bajas) {
+    log(state, `Salva de artillería en ${to.isSea ? "alta mar" : to.name}: ${tocadas} unidad(es) tocada(s)`, "war");
   }
 }

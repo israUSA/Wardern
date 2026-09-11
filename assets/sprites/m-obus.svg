@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
+  <!-- Proyectil de artillería (id del arma: obus)
+       Salva de obús · lo dispara toda la artillería con ⚔ Atacar
+       Arte base, pendiente de afinar. Silueta a propósito distinta de un misil:
+       corto, gordo, SIN aletas ni llama — no se guía ni se propulsa, es un tiro
+       balístico. La banda de cobre del culote es lo que lo hace reconocible.
+       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
+  <defs>
+    <linearGradient id="ob-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b9c0aa"/>
+      <stop offset="0.42" stop-color="#7f8a6e"/>
+      <stop offset="1" stop-color="#454d3a"/>
+    </linearGradient>
+    <linearGradient id="ob-banda" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e8b56a"/>
+      <stop offset="0.45" stop-color="#b97b32"/>
+      <stop offset="1" stop-color="#6e4718"/>
+    </linearGradient>
+  </defs>
+
+  <!-- culote plano -->
+  <path d="M11.4 46 L20.6 46 L19.8 49 L12.2 49 Z" fill="#3a4131"/>
+  <!-- banda de forzamiento de cobre -->
+  <rect x="11.2" y="41.5" width="9.6" height="4.5" fill="url(#ob-banda)"/>
+
+  <!-- cuerpo corto y ancho, ojiva larga y continua -->
+  <path d="M16 8 C18.6 13 20.8 20 20.8 27 L20.8 42 L11.2 42 L11.2 27 C11.2 20 13.4 13 16 8 Z" fill="url(#ob-body)"/>
+  <!-- punta -->
+  <path d="M16 8 C15 11 14.2 13.5 13.6 16 L18.4 16 C17.8 13.5 17 11 16 8 Z" fill="#2f3527"/>
+  <!-- espoleta -->
+  <circle cx="16" cy="10.5" r="1.1" fill="#cfd6c2" opacity="0.9"/>
+  <!-- brillo lateral -->
+  <path d="M13.6 17 C13 21 12.6 24 12.6 27 L12.6 41 L14 41 L14 27 C14 24 14.3 21 14.9 17 Z" fill="#ffffff" opacity="0.3"/>
+</svg>

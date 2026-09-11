@@ -186,6 +186,9 @@ export const SPRITES = {
     jassm: "assets/sprites/m-jassm.svg",       // Crucero de bombardero
     // --- cohete de saturacion ---
     mlrs: "assets/sprites/m-mlrs.svg", // Salva MLRS
+    // --- tiro de artilleria (js/engine/artillery.js): no es un arma de
+    //     missiles-data.js, lo genera la propia pieza al disparar ---
+    obus: "assets/sprites/m-obus.svg", // Salva de obús
   },
   // Grados a corregir para los que no siguen la convencion de morro al norte.
   // Solo el Tomahawk: se dibujo apuntando a la derecha antes de que existiera

@@ -2,6 +2,7 @@
 import { ICONS } from "./icons.js";
 import { flagCss } from "../data/flags-data.js";
 import * as C from "../data/constants.js";
+import { artilleryRange, canShell } from "../engine/artillery.js";
 import { UNIT_CATEGORIES } from "../data/units-data.js";
 import { NAVAL_CATEGORIES } from "../data/naval-data.js";
 import {
@@ -213,7 +214,9 @@ function strikeButtonsFor(state, u) {
       if (cd > 0) {
         return `<button class="btn small" disabled title="${weapon.nombre} recargando (${Math.ceil(cd / 60)} h)">🚀 ${Math.ceil(cd / 60)}h</button>`;
       }
-      return `<button class="btn small" data-strike="${u.id}" title="${weapon.nombre}: listo — ${C.fmtInt(weapon.coste.money)}$ + ${C.fmtInt(weapon.coste.fuel)} fuel. Clic y elige el objetivo">🚀 Misil</button>`;
+      // La etiqueta la pone el arma: una salva de artillería no es "un misil"
+      const et = weapon.etiqueta || "🚀 Misil";
+      return `<button class="btn small" data-strike="${u.id}" title="${weapon.nombre}: listo — ${C.fmtInt(weapon.coste.money)}$ + ${C.fmtInt(weapon.coste.fuel)} fuel. Clic y elige la PROVINCIA a batir">${et}</button>`;
     })
     .join("");
 }
@@ -761,6 +764,8 @@ export function updateUnitPanel(state, ui) {
       <div><span>Captura provincias</span><b>${T.captures ? "sí" : "no"}</b></div>
       <div><span>Defensa media</span><b>${avgDefense(T)}</b></div>
       ${T.capacity ? `<div><span>Bodega</span><b>${u.cargo?.length || 0} / ${T.capacity}</b></div>` : ""}
+      ${artilleryRange(u.type) ? `<div title="Con ⚔ Atacar bate fichas enemigas a esta distancia sin moverse del sitio"><span>Alcance de tiro</span><b>${artilleryRange(u.type)} km</b></div>
+      <div title="Minutos de juego hasta la próxima salva"><span>Recarga</span><b>${u.artyCd > 0 ? Math.ceil(u.artyCd) + " min" : "lista"}</b></div>` : ""}
     </div>
     <div class="up-atk"><span class="up-mlabel">Mejor ataque</span> ${topAttacks(T)}</div>`;
 
@@ -779,7 +784,9 @@ export function updateUnitPanel(state, ui) {
     html += `<div class="up-actions">
       <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
       <button class="btn small danger" data-up-attack="${u.id}" ${u.embarked ? "disabled" : ""}
-        title="Elige una ficha enemiga en el mapa: esta unidad irá a por ella y la seguirá si se mueve">⚔ Atacar</button>
+        title="${canShell(u.type)
+          ? `Elige una ficha enemiga en el mapa: si está a menos de ${artilleryRange(u.type)} km le dispara SIN moverse. Si está más lejos, avanza hacia ella.`
+          : "Elige una ficha enemiga en el mapa: esta unidad irá a por ella y la seguirá si se mueve"}">${canShell(u.type) ? `⚔ Atacar (${artilleryRange(u.type)} km)` : "⚔ Atacar"}</button>
       ${puedePatrullar ? `<button class="btn small" data-up-patrol="${u.id}"
         title="Vuela a la provincia elegida y patrulla ahí durante ${Math.round(C.AIR_PATROL_MINUTES / 60)} h de juego; al agotarse vuelve sola a base">🎯 Patrullar</button>` : ""}
       <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}

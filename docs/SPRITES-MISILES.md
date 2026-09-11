@@ -156,6 +156,19 @@ Por si quieres respetar la diferencia visual al redibujar:
 | Anticarro ligero | tubo corto de helicoptero |
 | Crucero | fuselaje tubular con alas desplegables |
 
+## Fuera del arsenal: el obús
+
+No es un arma de `missiles-data.js` ni de `air-combat-data.js`: lo genera la
+propia pieza de artillería al disparar con ⚔ Atacar
+(`js/engine/artillery.js`). Vuela y se dibuja como cualquier proyectil.
+
+| | Que es | Archivo | Lo dispara |
+|---|---|---|---|
+| [ ] | Salva de obus | `m-obus.svg` | M109A2, Paladin, ERCA, D-30, Msta-S, Koalitsiya |
+
+Silueta a proposito distinta de un misil: corto, gordo, **sin aletas ni llama**
+—no se guia ni se propulsa— con la banda de cobre del culote como seña.
+
 ## Efectos
 
 | | Que es | Archivo |

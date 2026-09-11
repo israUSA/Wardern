@@ -145,6 +145,15 @@ export const DEF_SOFTENER = 20;            // dmg ×= DEF_SOFTENER/(DEF_SOFTENER
 export const FORT_DEF_PER_LEVEL = 0.2;     // +20% defensa por nivel de fortaleza
 export const OVERSTACK_FREE = 8;
 export const OVERSTACK_PENALTY = 0.08;     // −8% potencia por unidad extra
+// ---- Tiro a distancia de la artillería (js/engine/artillery.js) ----
+// El alcance vive en la variante (units-data.js): cada obús tiene el suyo. Aquí
+// solo el ritmo y el castigo, por tier de la pieza.
+export const ARTY_COOLDOWN_MIN = 45;                 // minutos de juego entre salvas
+export const ARTY_DAMAGE = { 1: 9, 2: 13, 3: 18 };   // HP al blanco por salva
+export const ARTY_SPLASH = 0.35;                     // parte del daño al resto de la celda
+export const ARTY_COST = { 1: 320, 2: 480, 3: 700 }; // supplies por salva
+export const ARTY_SHELL_KMH = 3000;                  // velocidad del proyectil en vuelo
+
 export const ARTILLERY_PREP_TICKS = 12;
 export const ARTILLERY_PREP_MULT = 1.5;
 export const MORALE_HIT = 0.0012;          // por punto de daño recibido

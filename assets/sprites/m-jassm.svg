@@ -1,120 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- Misil de crucero (bombardero) (id del arma: jassm)
-       crucero aire · 1.000 km
-       Silueta heredada de la familia "crucero": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <g transform="translate(0,64) rotate(-90)">
-<!-- BGM-109 Tomahawk Block IV/V (Tactical Tomahawk - Versión Oficial Raytheon / NAVAIR)
-       100% idéntico a la fotografía de prueba en vuelo:
-       - Fuselaje cilíndrico blanco naval.
-       - Aletas de cola en NARANJA FLUORESCENTE / DAY-GLO intenso.
-       - Alas desplegadas en flecha hacia atrás con borde naranja brillante.
-       - Banda negra vertical en proa con el logo NAVAIR y ala azul.
-       - Logo 'Raytheon' en rojo corporativo en el fuselaje trasero.
-       - Paneles de antena conformada grises en el lomo. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- AGM-158 JASSM - Versión compacta, lomo blanco nítido, tipografía contenida en zona blanca y bandera detallada -->
   <defs>
-    <!-- Sombreado cilíndrico realista para el fuselaje blanco -->
-    <linearGradient id="tom-body" x1="0" y1="0" x2="0" y2="1">
+    <!-- Lomo blanco plano y brillante sin sombras en la zona útil -->
+    <linearGradient id="jassm-white-top" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="25%" stop-color="#f4f6f8"/>
-      <stop offset="65%" stop-color="#dde2e8"/>
-      <stop offset="90%" stop-color="#b0b9c3"/>
-      <stop offset="100%" stop-color="#919ba6"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f2f5f7"/>
     </linearGradient>
 
-    <!-- Naranja fluorescente Day-Glo (aletas y alas) -->
-    <linearGradient id="tom-orange" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ff6a1a"/>
-      <stop offset="50%" stop-color="#ff4400"/>
-      <stop offset="100%" stop-color="#d62b00"/>
+    <!-- Laterales biselados para dar volumen -->
+    <linearGradient id="jassm-side-l" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#bcc7cc"/>
+      <stop offset="100%" stop-color="#dce3e6"/>
     </linearGradient>
 
-    <linearGradient id="tom-orange-dark" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e63b00"/>
-      <stop offset="100%" stop-color="#a81e00"/>
+    <linearGradient id="jassm-side-r" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#cbd5d9"/>
+      <stop offset="100%" stop-color="#aeb9be"/>
     </linearGradient>
 
-    <!-- Tobera de escape en popa -->
-    <linearGradient id="tom-nozzle" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4a525a"/>
-      <stop offset="50%" stop-color="#24282c"/>
-      <stop offset="100%" stop-color="#111315"/>
+    <linearGradient id="jassm-wing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d7e0e5"/>
     </linearGradient>
 
-    <!-- Estela / llama de propulsión trasera -->
-    <linearGradient id="tom-flame" x1="1" y1="0" x2="0" y2="0">
-      <stop offset="0%" stop-color="#fff2b2"/>
-      <stop offset="35%" stop-color="#ff881a"/>
-      <stop offset="75%" stop-color="#e62a00" stop-opacity="0.85"/>
-      <stop offset="100%" stop-color="#cc0e00" stop-opacity="0"/>
+    <!-- Ventana óptica del seeker -->
+    <linearGradient id="seeker-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3338"/>
+      <stop offset="100%" stop-color="#0f1416"/>
     </linearGradient>
   </defs>
 
-  <!-- ==================== LLAMA DE TOBERA EN COLA ==================== -->
-  <path d="M 12 16.5 C 9 14.8 5 15.2 1 16.5 C 5 17.8 9 18.2 12 16.5 Z" fill="url(#tom-flame)"/>
-  <ellipse cx="11.5" cy="16.5" rx="1.5" ry="0.8" fill="#ffffff" opacity="0.9"/>
+  <!-- ================= ALAS RETRÁCTILES ================= -->
+  <!-- Ala Izquierda -->
+  <polygon points="11,26 1.8,30.5 1.8,33.5 11.2,31.5" 
+           fill="url(#jassm-wing)" 
+           stroke="#8b989f" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
 
-  <!-- ==================== TOBERA METÁLICA ==================== -->
-  <rect x="11.6" y="15.2" width="1.6" height="2.6" rx="0.3" fill="url(#tom-nozzle)"/>
+  <!-- Ala Derecha -->
+  <polygon points="21,26 30.2,30.5 30.2,33.5 20.8,31.5" 
+           fill="url(#jassm-wing)" 
+           stroke="#8b989f" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
 
-  <!-- ==================== ALETAS DE COLA NARANJAS (DAY-GLO ORANGE) ==================== -->
-  <!-- Aleta superior (apunta hacia arriba) -->
-  <polygon points="14.8,14.4 14.0,7.2 17.8,7.6 17.6,14.5" fill="url(#tom-orange)" stroke="#b82600" stroke-width="0.3" stroke-linejoin="round"/>
-  <line x1="14.0" y1="7.2" x2="17.8" y2="7.6" stroke="#ffa366" stroke-width="0.4"/>
+  <!-- ================= ESTABILIZADORES TRASEROS ================= -->
+  <polygon points="12,47 7.5,49.5 7.5,52.2 12.5,51.2" 
+           fill="url(#jassm-side-l)" 
+           stroke="#8b989f" 
+           stroke-width="0.22"/>
+  <polygon points="20,47 24.5,49.5 24.5,52.2 19.5,51.2" 
+           fill="url(#jassm-side-r)" 
+           stroke="#8b989f" 
+           stroke-width="0.22"/>
 
-  <!-- Aleta inferior (apunta hacia abajo) -->
-  <polygon points="14.8,18.6 14.0,24.8 17.8,24.4 17.6,18.5" fill="url(#tom-orange-dark)" stroke="#8c1b00" stroke-width="0.3" stroke-linejoin="round"/>
+  <!-- ================= CUERPO PRINCIPAL FACETADO ================= -->
+  <!-- Bisel lateral izquierdo gris -->
+  <polygon points="16,8 12,13 11,27 11.6,49.5 13.5,52 16,52 16,8" 
+           fill="url(#jassm-side-l)"/>
 
-  <!-- Aleta lateral trasera en perspectiva -->
-  <polygon points="13.2,16.5 11.5,15.2 11.3,17.8" fill="#c42b00"/>
+  <!-- Bisel lateral derecho gris -->
+  <polygon points="16,8 20,13 21,27 20.4,49.5 18.5,52 16,52 16,8" 
+           fill="url(#jassm-side-r)"/>
 
-  <!-- ==================== FUSELAJE CILÍNDRICO BLANCO ==================== -->
-  <path d="
-    M 13 15.2
-    C 14.5 15.0, 16 14.2, 18 14.2
-    L 55 14.2
-    C 57.8 14.2, 59.8 14.8, 60.6 15.6
-    C 60.9 16.0, 60.9 17.0, 60.6 17.4
-    C 59.8 18.2, 57.8 18.8, 55 18.8
-    L 18 18.8
-    C 16 18.8, 14.5 18.0, 13 17.8
-    Z
-  " fill="url(#tom-body)" stroke="#747e88" stroke-width="0.35"/>
+  <!-- Lomo central superior BLANCO (ancho y nítido de x=13 a x=19) -->
+  <polygon points="16,9 13,13.5 12.6,26 13,49 16,50.8 19,49 19.4,26 19,13.5" 
+           fill="url(#jassm-white-top)" 
+           stroke="#9aa5ab" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
 
-  <!-- Punta del morro ahusada con casquete suave -->
-  <path d="M 60.2 15.5 C 61.2 16.1 61.2 16.9 60.2 17.5" fill="none" stroke="#ffffff" stroke-width="0.6" stroke-linecap="round"/>
+  <!-- ================= VENTANA ÓPTICA INFRARROJA (SEEKER) ================= -->
+  <polygon points="16,8.5 14.6,11.5 16,12.6 17.4,11.5" 
+           fill="url(#seeker-glass)" 
+           stroke="#182023" 
+           stroke-width="0.25"/>
+  <polygon points="16,9.1 15.1,11.3 16,12" 
+           fill="#4b5d66" 
+           opacity="0.5"/>
 
-  <!-- ==================== BANDA NEGRA Y LOGO NAVAIR ==================== -->
-  <rect x="51.8" y="14.2" width="1.8" height="4.6" fill="#161b20"/>
+  <!-- ================= LÍNEAS DE PANEL Y PIVOTES ================= -->
+  <path d="M 13 17.5 Q 16 19 19 17.5" fill="none" stroke="#cfd7dc" stroke-width="0.25"/>
+  <path d="M 13 23.5 Q 16 25 19 23.5" fill="none" stroke="#cfd7dc" stroke-width="0.25"/>
+  <circle cx="13" cy="26.5" r="0.45" fill="#a4b1b8"/>
+  <circle cx="19" cy="26.5" r="0.45" fill="#a4b1b8"/>
 
-  <g transform="translate(43.5, 17.1) scale(0.46)">
-    <text x="0" y="0" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="3.2" fill="#525d69" letter-spacing="0.4">NAVAIR</text>
-    <path d="M 10 -1.6 Q 14 -3.8 18.5 -1.0" fill="none" stroke="#006cd9" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- ================= TEXTO EN LA FRANJA TOTALMENTE BLANCA ================= -->
+  <!-- Centrado dentro del sector blanco izquierdo (x=14.1) sin pisar bordes grises -->
+  <text x="26" y="-13.8" 
+        transform="rotate(90)" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="1.15" 
+        font-weight="bold" 
+        letter-spacing="0.18" 
+        fill="#1e2930" 
+        opacity="0.95">U.S. AIR FORCE</text>
+
+  <!-- ================= BANDERA DE EE.UU. MEJORADA ================= -->
+  <!-- Ubicada justo después del texto, 100% sobre la franja blanca (x=13.3 a 15.7) -->
+  <g id="us-flag" transform="translate(13.4, 40)">
+    <!-- Base blanca de la bandera -->
+    <rect x="0" y="0" width="2.2" height="3.8" fill="#ffffff" stroke="#909aa0" stroke-width="0.08"/>
+    
+    <!-- Franjas rojas horizontales nítidas -->
+    <rect x="0" y="0.32" width="2.2" height="0.26" fill="#bf2626"/>
+    <rect x="0" y="0.90" width="2.2" height="0.26" fill="#bf2626"/>
+    <rect x="0" y="1.48" width="2.2" height="0.26" fill="#bf2626"/>
+    <rect x="0" y="2.06" width="2.2" height="0.26" fill="#bf2626"/>
+    <rect x="0" y="2.64" width="2.2" height="0.26" fill="#bf2626"/>
+    <rect x="0" y="3.22" width="2.2" height="0.26" fill="#bf2626"/>
+
+    <!-- Cantón azul superior (Union Jack) -->
+    <rect x="0" y="0" width="1.1" height="1.8" fill="#143666"/>
+    
+    <!-- Matriz de estrellas blancas definidas -->
+    <circle cx="0.28" cy="0.4" r="0.1" fill="#ffffff"/>
+    <circle cx="0.55" cy="0.4" r="0.1" fill="#ffffff"/>
+    <circle cx="0.82" cy="0.4" r="0.1" fill="#ffffff"/>
+
+    <circle cx="0.41" cy="0.9" r="0.1" fill="#ffffff"/>
+    <circle cx="0.69" cy="0.9" r="0.1" fill="#ffffff"/>
+
+    <circle cx="0.28" cy="1.4" r="0.1" fill="#ffffff"/>
+    <circle cx="0.55" cy="1.4" r="0.1" fill="#ffffff"/>
+    <circle cx="0.82" cy="1.4" r="0.1" fill="#ffffff"/>
   </g>
 
-  <!-- ==================== LOGO "Raytheon" EN ROJO CORPORATIVO ==================== -->
-  <g transform="translate(20.5, 17.2) scale(0.50)">
-    <text x="0" y="0" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="3.2" fill="#de1c24" letter-spacing="0.1">Raytheon</text>
-    <circle cx="-2.5" cy="-0.9" r="0.4" fill="#66727e"/>
-  </g>
-
-  <!-- ==================== PANELES GRISES DORSALES DE ANTENA ==================== -->
-  <rect x="24" y="14.2" width="3.5" height="0.6" rx="0.2" fill="#75828e"/>
-  <rect x="31" y="14.2" width="4.8" height="0.6" rx="0.2" fill="#75828e"/>
-
-  <!-- ==================== ALA DESPLEGADA (EN FLECHA CON BORDE NARANJA) ==================== -->
-  <polygon points="39.5,15.6 34.5,19.8 30.5,19.8 36.5,15.6" fill="#eef2f6" stroke="#85909c" stroke-width="0.3" stroke-linejoin="round"/>
-  <polygon points="34.5,19.8 30.5,19.8 32.5,17.8 36.5,17.8" fill="#ff4400"/>
-  <line x1="30.5" y1="19.8" x2="34.5" y2="19.8" stroke="#ff6a1a" stroke-width="0.5"/>
-
-  <!-- ==================== ALETA LATERAL EN PRIMER PLANO ==================== -->
-  <polygon points="15.2,16.5 13.0,17.8 15.5,17.8 17.2,16.5" fill="url(#tom-orange)" stroke="#b82600" stroke-width="0.3" stroke-linejoin="round"/>
-
-  <!-- ==================== LÍNEAS DE UNIÓN TÉCNICA ==================== -->
-  <line x1="18" y1="14.3" x2="18" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
-  <line x1="38" y1="14.3" x2="38" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
-  <line x1="55" y1="14.3" x2="55" y2="18.7" stroke="#9ba6b2" stroke-width="0.3" opacity="0.6"/>
-  </g>
+  <!-- ================= ALETA VERTICAL Y TOBERA TRASERA ================= -->
+  <polygon points="15.6,41 16.4,41 16.5,51 15.5,51" 
+           fill="#b5c1c7" 
+           stroke="#7a8990" 
+           stroke-width="0.2"/>
+  <ellipse cx="16" cy="51.8" rx="1.8" ry="0.5" fill="#1b2022"/>
 </svg>

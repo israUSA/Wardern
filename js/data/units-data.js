@@ -265,6 +265,25 @@ for (const cat of KEYS) {
   }
 }
 
+// ---- Alcance de tiro de la artillería (km de MAPA) ----
+// Mismo criterio que AIR_RANGE_SCALE en air-combat-data.js: el dato real no
+// sirve tal cual porque entre dos provincias contiguas hay 324 km de mediana y
+// un M109 real alcanza 24 km, así que no llegaría nunca a la de al lado.
+//
+// Aquí la proporción real NO se conserva, y es deliberado: el abanico real va de
+// 15 km (D-30) a 70 km (ERCA), casi ×5, y al escalarlo el tier 3 acabaría
+// disparando más lejos que un misil de crucero. Se comprime a un salto por tier
+// medido contra esa mediana de 324 km:
+//   · t1 → no alcanza la provincia vecina media; bate la suya y las pegadas.
+//   · t2 → alcanza la vecina con holgura: es el salto que se nota al investigar.
+//   · t3 → llega a vecinas de segundo salto en las zonas apretadas del mapa.
+// La salva de cohetes (missiles-data.js) sigue por encima de las tres: un
+// lanzacohetes supera en alcance a un obús, igual que en la realidad.
+const ARTILLERY_RANGE_KM = { 1: 300, 2: 420, 3: 620 };
+for (const v of Object.values(GROUND_VARIANTS)) {
+  if (v.category === "artilleria") v.rangoKm = ARTILLERY_RANGE_KM[v.tier];
+}
+
 // ---- Variantes especiales fuera de la rejilla doctrina × tier ----
 // La rejilla genera UNA variante por doctrina y tier, pero la doctrina real no
 // funciona así: el F-35 no sustituye al F-22, conviven. Uno es superioridad aérea

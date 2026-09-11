@@ -5,6 +5,7 @@ import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths,
 import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
+import { canShell, shellUnit, artilleryRange, shellDistance } from "./engine/artillery.js";
 import { fireAirWeapon, landOnCarrier, launchFromCarrier, isCarrierCapable } from "./engine/air-combat.js";
 import { aiRespondPeace } from "./engine/ai.js";
 import { MapRenderer, hitProvince, inverseMercY } from "./render/renderer.js";
@@ -694,20 +695,37 @@ function tryOrderTo(ids, pid, issue) {
 }
 function tryOrderMove(ids, pid) { tryOrderTo(ids, pid, issueMove); }
 
+// La artillería ataca SIN moverse: si el blanco le entra en el alcance, dispara
+// desde donde está. Solo las piezas fuera de alcance (y el resto de unidades)
+// salen a por él. Así una batería no pierde su ventaja por pulsar "Atacar".
 function issueAttack(ids, target) {
   let ok = 0;
+  const salvas = [];
+  const fallos = [];
+  const aPie = [];
   for (const id of ids) {
     const u = state.units.find((x) => x.id === id && !x.dead);
-    if (u && orderAttack(state, u, target)) ok++;
+    if (!u) continue;
+    if (!canShell(u.type)) { aPie.push(u); continue; }
+    const r = shellUnit(state, u, target);
+    if (r.ok) salvas.push(u);
+    else if (shellDistance(state, u, target.pos) > artilleryRange(u.type)) aPie.push(u); // lejos: que se acerque
+    else fallos.push(r.msg); // en alcance pero no puede: recarga, munición, sin vista
+  }
+  for (const u of aPie) {
+    if (orderAttack(state, u, target)) ok++;
   }
   const nombre = unitDef(target.type)?.name ?? target.type;
-  UI.toast(
-    ok === 0
-      ? `No hay forma de llegar hasta ${nombre}`
-      : ids.length > 1
-        ? `${ok} unidades van a por ${nombre}`
-        : `A por ${nombre}: lo seguirá si se mueve`
-  );
+  const partes = [];
+  if (salvas.length) {
+    const km = Math.round(shellDistance(state, salvas[0], target.pos));
+    partes.push(salvas.length > 1
+      ? `${salvas.length} piezas abren fuego sobre ${nombre}`
+      : `Fuego sobre ${nombre} a ${km} km, sin moverse`);
+  }
+  if (ok) partes.push(ok > 1 ? `${ok} unidades van a por él` : `Una unidad va a por él`);
+  if (!partes.length) partes.push(fallos[0] || `No hay forma de llegar hasta ${nombre}`);
+  UI.toast(partes.join(" · "));
   updateUI();
 }
 
