@@ -30,6 +30,39 @@ dibujo, solo de que el archivo exista con su nombre.
 
 ---
 
+## El plan corto: 13 dibujos
+
+Pendientes hay **22 archivos**, pero solo **13 dibujos**: 9 de esos 22 son
+gemelos dentro de su familia y pueden seguir heredando para siempre sin que se
+note (un AIM-9L y un AIM-9X son el mismo tubo en la vida real).
+
+| # | Dibujo | Archivo | Le sirve tambien a |
+|---|---|---|---|
+| 1 | Sidewinder | `m-aim9.svg` | `aim9x` |
+| 2 | IR oriental | `m-r60.svg` | `r73` |
+| 3 | MANPADS | `m-stinger.svg` | `igla` |
+| 4 | Radar semiactivo | `m-aim7.svg` | `r23`, `r27` |
+| 5 | **Maverick** | `m-agm65.svg` | — |
+| 6 | Kh-25 | `m-kh25.svg` | — |
+| 7 | Antirradar | `m-agm88.svg` | `kh31p` |
+| 8 | Bomba guiada | `m-gbu.svg` | `kab` |
+| 9 | **Hellfire** | `m-hellfireL.svg` | — |
+| 10 | Anticarro ligero | `m-tow.svg` | `ataka`, `shturm` |
+| 11 | **Tomahawk** | `m-tomahawk.svg` | — |
+| 12 | **Harpoon** | `m-harpoon.svg` | — |
+| 13 | **JASSM** | `m-jassm.svg` | — |
+
+En negrita los cinco que van aparte por decision propia. El Maverick y el Kh-25
+salen los dos porque al sacar el Maverick de su familia el Kh-25 se queda solo.
+
+**Los 9 gemelos que pueden quedarse asi:** `aim9x` · `r73` · `igla` · `r23` ·
+`r27` · `kh31p` · `kab` · `ataka` · `shturm`. Tienen su archivo creado y
+funcionando; si algun dia apetece diferenciarlos, ya esta ahi esperando.
+
+Las tablas de abajo son el detalle arma por arma.
+
+---
+
 ## 1. Listos
 
 Arte propio, cada uno con un rasgo que no comparte con nadie.
