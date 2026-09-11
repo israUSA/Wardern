@@ -233,6 +233,52 @@ export function tickAirPatrol(state, dt) {
   }
 }
 
+// Atacar a una unidad CONCRETA: se va a por ella donde esté. No hay "botón de
+// atacar" en el motor —el combate salta solo cuando dos enemigos comparten
+// provincia y están parados, ver combat.js— así que esto es una orden de
+// movimiento que además recuerda a quién persigue, para volver a salir tras ella
+// si se mueve o se retira.
+export function orderAttack(state, unit, target) {
+  if (!target || target.dead || target.embarked) return false;
+  if (!atWar(state, unit.owner, target.owner)) return false;
+  if (target.pos !== unit.pos && !orderMove(state, unit, target.pos)) return false;
+  unit.task = { kind: "hunt", targetId: target.id };
+  return true;
+}
+
+// Persecución. Solo actúa con la unidad PARADA: replantear la ruta a medio salto
+// reiniciaría el tramo en curso (orderMove recalcula desde unit.pos) y la unidad
+// se quedaría dando tumbos sin avanzar nunca.
+export function tickHunt(state) {
+  for (const u of state.units) {
+    if (u.dead || u.embarked) continue;
+    if (u.task?.kind !== "hunt") continue;
+    const t = state.units.find((x) => x.id === u.task.targetId && !x.dead);
+    if (!t || t.embarked) {
+      // Muerta, embarcada o desaparecida: la caza termina aquí. Esto se mira
+      // también con la unidad EN MARCHA, para no seguir persiguiendo a un
+      // fantasma hasta el final del trayecto (termina el tramo y se queda).
+      u.task = null;
+      continue;
+    }
+    if (u.edgeLeft || u.path.length) continue; // reencaminar a medio salto lo reiniciaría
+    if (t.pos === u.pos) continue; // ya comparten celda: de esto se ocupa el combate
+    // Si hay enemigo plantado aquí, primero se pelea lo que se tiene delante: sin
+    // esto la caza reordenaba la marcha en cuanto el combate la detenía y la
+    // unidad se iba sin disparar, porque en tránsito no combate.
+    if (enemyPresent(state, u)) continue;
+    // orderMove BORRA la tarea (es una orden nueva), así que hay que devolverla:
+    // si no, la caza se cancelaba a sí misma en el primer reencaminamiento.
+    const tarea = u.task;
+    if (orderMove(state, u, t.pos)) {
+      u.task = tarea;
+    } else {
+      log(state, `${unitDef(u.type)?.name} pierde el rastro de su objetivo`, "info");
+      u.task = null;
+    }
+  }
+}
+
 export function tickMovement(state, dt) {
   for (const u of state.units) {
     if (!u.edgeLeft) continue;
@@ -244,9 +290,9 @@ export function tickMovement(state, dt) {
     u.path.shift();
     // Se limpia la tarea de la IA (defend/attack) en CADA salto, no solo al
     // llegar — así vuelve a evaluar la situación en la provincia intermedia.
-    // La patrulla es la excepción: su cuenta atrás vive en la MISMA tarea, así
-    // que un destino a más de un salto la perdía antes de completar la ruta.
-    if (u.task?.kind !== "patrol") u.task = null;
+    // Las órdenes del jugador que duran varios saltos son la excepción: la
+    // patrulla lleva su cuenta atrás dentro y la caza lleva a quién persigue.
+    if (u.task && u.task.kind !== "patrol" && u.task.kind !== "hunt") u.task = null;
 
     const cell = S.provinces.get(u.pos);
     if (cell?.isSea) {

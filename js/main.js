@@ -1,7 +1,7 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack } from "./engine/movement.js";
 import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
@@ -285,6 +285,14 @@ const hooks = {
     ui.moveIds = ids?.length ? [...ids] : [unitId];
     ui.orderKind = "patrol";
     UI.toast("Haz clic en la provincia a patrullar (clic derecho para cancelar)");
+  },
+  // Atacar: se elige la FICHA enemiga en el mapa, no la provincia. La unidad va
+  // a por ella y la sigue si se mueve (ver tickHunt en movement.js).
+  onAttack(unitId, ids) {
+    ui.moveUnitId = unitId;
+    ui.moveIds = ids?.length ? [...ids] : [unitId];
+    ui.orderKind = "attack";
+    UI.toast("Haz clic en la ficha enemiga a atacar (clic derecho para cancelar)");
   },
   onSelectUnit(unitId, stackIds) {
     if (!state?.units.some((x) => x.id === unitId && !x.dead)) return;
@@ -685,6 +693,71 @@ function tryOrderTo(ids, pid, issue) {
   );
 }
 function tryOrderMove(ids, pid) { tryOrderTo(ids, pid, issueMove); }
+
+function issueAttack(ids, target) {
+  let ok = 0;
+  for (const id of ids) {
+    const u = state.units.find((x) => x.id === id && !x.dead);
+    if (u && orderAttack(state, u, target)) ok++;
+  }
+  const nombre = unitDef(target.type)?.name ?? target.type;
+  UI.toast(
+    ok === 0
+      ? `No hay forma de llegar hasta ${nombre}`
+      : ids.length > 1
+        ? `${ok} unidades van a por ${nombre}`
+        : `A por ${nombre}: lo seguirá si se mueve`
+  );
+  updateUI();
+}
+
+// Ataque a una FICHA concreta. Puede hacer falta declarar dos guerras a la vez:
+// una al dueño de la unidad y otra a quien controle el suelo que hay que pisar
+// para llegar (no siempre son el mismo país).
+function tryOrderAttack(ids, hit, pid) {
+  if (!state) return;
+  if (!hit) {
+    UI.toast("Ahí no hay ninguna ficha: haz clic justo encima de la unidad enemiga");
+    return;
+  }
+  // Contacto sin identificar: no se sabe a QUIÉN se persigue, así que lo que se
+  // ordena es avanzar sobre la provincia y que el combate salte al llegar.
+  if (hit.unknown) {
+    UI.toast("Contacto sin identificar: se ordena avanzar sobre su provincia");
+    tryOrderMove(ids, hit.pid || pid);
+    return;
+  }
+  const target = state.units.find((x) => x.id === hit.ids[0] && !x.dead);
+  if (!target) return;
+  if (target.owner === state.player) {
+    UI.toast("Esa unidad es tuya");
+    return;
+  }
+  const isos = new Set();
+  if (!atWar(state, state.player, target.owner)) isos.add(target.owner);
+  const suelo = neutralBlocker(state, state.player, target.pos);
+  if (suelo) isos.add(suelo);
+  if (!isos.size) {
+    issueAttack(ids, target);
+    return;
+  }
+  const nombres = [...isos].map((x) => S.countries[x].name).join(" y ");
+  UI.showModal(
+    "Declaración de guerra",
+    `Para atacar a esa unidad tienes que declarar la guerra a <b>${nombres}</b>.`,
+    [
+      { label: "Cancelar" },
+      {
+        label: `Declarar guerra a ${nombres}`,
+        cls: "danger",
+        cb: () => {
+          for (const x of isos) declareWar(state, state.player, x);
+          issueAttack(ids, target);
+        },
+      },
+    ]
+  );
+}
 function tryOrderPatrol(ids, pid) { tryOrderTo(ids, pid, issuePatrol); }
 
 // Tooltip de una ficha del mapa: nombre, país y HP (o el contacto sin identificar)
@@ -775,7 +848,8 @@ function bindInput() {
       ui.moveIds = null;
       ui.orderKind = null;
       ui.disembarkUnit = null;
-      if (pid) (kind === "patrol" ? tryOrderPatrol : tryOrderMove)(ids, pid);
+      if (kind === "attack") tryOrderAttack(ids, renderer.pickUnit(e.clientX, e.clientY), pid);
+      else if (pid) (kind === "patrol" ? tryOrderPatrol : tryOrderMove)(ids, pid);
       updateUI();
       return;
     }

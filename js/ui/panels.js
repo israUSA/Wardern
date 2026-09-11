@@ -718,6 +718,13 @@ export function updateUnitPanel(state, ui) {
     estadoCls = "up-st-idle";
   }
 
+  // La caza se añade a CUALQUIER estado: marchando dice a dónde y a por quién,
+  // y parada explica por qué sigue moviéndose sola cuando el blanco se retira.
+  if (u.task?.kind === "hunt") {
+    const presa = state.units.find((x) => x.id === u.task.targetId && !x.dead);
+    if (presa) estado += ` · ⚔ a por <b>${unitDef(presa.type)?.name}</b> en ${provName(presa.pos)}`;
+  }
+
   const doc = T.doctrine ? DOCTRINES[T.doctrine]?.name.replace("Doctrina ", "") : null;
   const meta = [CAT_NAMES[T.category] || T.category, T.tier ? `T${T.tier}` : null, doc].filter(Boolean).join(" · ");
 
@@ -771,6 +778,8 @@ export function updateUnitPanel(state, ui) {
     const puedePatrullar = airLoadout(u.type) && !u.embarked;
     html += `<div class="up-actions">
       <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
+      <button class="btn small danger" data-up-attack="${u.id}" ${u.embarked ? "disabled" : ""}
+        title="Elige una ficha enemiga en el mapa: esta unidad irá a por ella y la seguirá si se mueve">⚔ Atacar</button>
       ${puedePatrullar ? `<button class="btn small" data-up-patrol="${u.id}"
         title="Vuela a la provincia elegida y patrulla ahí durante ${Math.round(C.AIR_PATROL_MINUTES / 60)} h de juego; al agotarse vuelve sola a base">🎯 Patrullar</button>` : ""}
       <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}
@@ -808,6 +817,9 @@ export function updateUnitPanel(state, ui) {
   );
   panel.querySelectorAll("[data-up-patrol]").forEach((b) =>
     b.addEventListener("click", () => hooks.onPatrol(parseInt(b.dataset.upPatrol, 10)))
+  );
+  panel.querySelectorAll("[data-up-attack]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onAttack(parseInt(b.dataset.upAttack, 10), ui.selStackIds))
   );
   panel.querySelectorAll("[data-up-stop]").forEach((b) =>
     b.addEventListener("click", () => hooks.onStop(parseInt(b.dataset.upStop, 10)))

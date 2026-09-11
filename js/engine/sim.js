@@ -2,7 +2,7 @@
 import * as C from "../data/constants.js";
 import { S, countryVP, log } from "./state.js";
 import { economyHour, tickQueues, attritionTick, regenTick, tickResearch } from "./economy.js";
-import { tickMovement, tickAirPatrol } from "./movement.js";
+import { tickMovement, tickAirPatrol, tickHunt } from "./movement.js";
 import { tickCombat } from "./combat.js";
 import { tickMissiles } from "./missiles.js";
 import { tickRearm } from "./air-combat.js";
@@ -31,6 +31,7 @@ export function tick(state, dtOverride) {
   tickResearch(state, dt);
   tickMovement(state, dt);
   tickAirPatrol(state, dt);
+  tickHunt(state);
   tickCombat(state, dt);
   tickMissiles(state, dt);
   tickRearm(state, dt);
