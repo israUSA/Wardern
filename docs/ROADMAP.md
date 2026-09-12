@@ -217,3 +217,51 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       que se reiniciaba a las 2 en punto (el `innerHTML` completo cada 250 ms recreaba el
       elemento y reiniciaba la animación CSS → armazón estable), aviones demasiado rápidos
       y girando sobre su propio eje
+
+## v1.5 — Formaciones, espacio aéreo y ritmo (2026-09-12)
+
+- [x] **Formaciones** (docs/FORMACIONES.md): unir tropas en una sola ficha, heterogénea y
+      persistente. Tres dominios que no se mezclan (tierra / aire / mar), nombre derivado
+      de la composición (Regimiento Acorazado, Grupo Táctico, Manada de Submarinos…),
+      escalones por número, sprite del miembro que manda, velocidad del más lento, tope de
+      16 y desacople de una en una. NO suma ataque ni defensa: es un envoltorio de mando.
+      Sustituye a la pila implícita de `stackFor()`, que solo agrupaba el MISMO tipo
+- [x] **Espacio aéreo libre** (revierte la decisión de v1.4): los aéreos vuelven a
+      sobrevolar territorio neutral sin declarar la guerra. La frontera del avión pasa a
+      ser física en vez de política
+- [x] **Radio de acción aéreo**: cada aparato solo alcanza cierta distancia de su base
+      (aeródromo propio o portaviones). Drone 1200/2200/3200 km · bombardero 1000/1400/1800 ·
+      caza 500/700/900 · helicóptero 250/350/450 · RQ-190 4200. Disco semitransparente en
+      el mapa centrado EN LA BASE al seleccionar el aparato. Sin ninguna base propia el
+      límite no se aplica
+- [x] **Patrulla sobre el mar**: un avión ya puede patrullar un sector marítimo sin
+      portaviones debajo y revelar barcos enemigos; al agotarse la patrulla vuelve a base.
+      Quedarse en el mar sigue exigiendo portaviones
+- [x] **Reloj a 15 min reales = 1 día de juego**: `MINUTES_PER_TICK_BASE` 0.1 → 0.4
+- [x] **Botones que necesitaban varias pulsaciones** (y parpadeo al pasar por encima): los
+      paneles se reescribían enteros con `innerHTML` cada 250 ms, así que el `mousedown` y
+      el `mouseup` caían en nodos distintos y el `click` nunca se emitía. `setPanelHTML`
+      solo reescribe si el contenido cambió, y nunca mientras el puntero está sobre un botón
+- [x] **Iconos del mapa**: insignia de recuento legible (plato oscuro, borde del país, texto
+      blanco de 14 px, escala con el zoom) y tamaño por categoría aérea — bombardero ×1.22,
+      helicóptero ×0.92, drone ×0.78
+- [x] **docs/INDICE.md**: índice de toda la documentación por tema, para no releerla entera
+
+### v1.5.1 — Ajustes sobre la marcha
+
+- [x] **Alcance aéreo duplicado** y bombarderos estratégicos aparte: B-21 9600 km, B-2 y
+      Tu-160M 9000, RQ-190 8400. Los tres pasan por encima del dron de T3
+- [x] **Sobrevuelo restringido a quien no se ve**: drones siempre, tripulados solo con
+      `rcs ≥ 0.6` (B-2, B-21, F-22, F-35, Su-57). El Tu-160M queda fuera pese a su alcance:
+      en el radar es enorme. Un caza convencional vuelve a necesitar declarar la guerra
+- [x] **Anillo de alcance de tiro** en el mapa para artillería y cualquier unidad con
+      `rangoKm`, centrado en la pieza. Rojo, para distinguirlo de los discos aéreos
+- [x] **Tiro a distancia dentro de una formación**: las piezas con alcance abren fuego y el
+      resto de la columna mantiene posición, en vez de partirse en dos provincias
+- [x] **Reconocimiento terrestre**: la motorizada (380/470/560 km) y el cazatanques
+      (430/520/610 km) descubren enemigos en su radio, como los drones pero mucho más
+      cerca. Círculo verde solo con la unidad seleccionada. Documentado en
+      docs/RECONOCIMIENTO.md
+- [x] **Visión de los drones subida** a 700/1100/1500 km (era 120/200/300). Con las cifras
+      viejas no llegaban ni a la provincia vecina —la mediana entre vecinas son 324 km— y
+      un Bradley habría visto más que un MQ-9

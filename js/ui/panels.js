@@ -7,7 +7,7 @@ import { UNIT_CATEGORIES } from "../data/units-data.js";
 import { NAVAL_CATEGORIES } from "../data/naval-data.js";
 import {
   S, unitDef, isNaval, controller, unitsIn, atWar, visibleProvinces, intel,
-  availableVariants, doctrineVariants, TIERS, DOCTRINES,
+  availableVariants, doctrineVariants, scoutRangeKm, TIERS, DOCTRINES,
 } from "../engine/state.js";
 import { vetLevel } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
@@ -17,6 +17,8 @@ import {
   isCarrier, carrierCapacity, aircraftAboard, landingOptions,
 } from "../engine/air-combat.js";
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
+import { formationSummary, domainOf, mergeBlocker, MAX_MEMBERS } from "../engine/formations.js";
+import { airRangeKm, canOverfly } from "../engine/movement.js";
 import { buildingCost, canAfford } from "../engine/economy.js";
 import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
@@ -26,6 +28,40 @@ let lastLogId = 0;
 let toastTimer = null;
 
 const $ = (id) => document.getElementById(id);
+
+// Reescribe el panel SOLO si su contenido cambió de verdad.
+//
+// updateUI() corre cada 250 ms y los paneles se armaban con `innerHTML = html`
+// sin condición, así que cada refresco destruía y recreaba todos los botones
+// aunque no hubiera cambiado nada. Eso rompía la interacción de dos maneras:
+//
+//   - El `click` solo se dispara si el mousedown y el mouseup caen en el mismo
+//     elemento. Al reemplazarse el botón entre ambos, el click no llegaba nunca
+//     y había que insistir hasta acertar dentro de la misma ventana de 250 ms.
+//   - El `:hover` se reiniciaba en cada refresco, de ahí el parpadeo al pasar
+//     el puntero por encima.
+//
+// `key` distingue de qué provincia o unidad es el panel: dos selecciones pueden
+// generar el mismo HTML, pero los listeners capturan el id en su clausura, así
+// que reaprovechar el DOM sin comparar la clave dejaría los botones apuntando a
+// la selección anterior.
+//
+// Devuelve true solo si reconstruyó; quien llama debe volver a enganchar los
+// listeners únicamente en ese caso, o los duplicaría.
+function setPanelHTML(panel, key, html) {
+  if (panel.__key === key && panel.__html === html) return false;
+  // Con un contador en pantalla (una obra en curso, por ejemplo) el texto sí
+  // cambia cada minuto de juego, así que la comparación de arriba no basta para
+  // proteger el click. Si el puntero está encima de un botón, el jugador está a
+  // punto de pulsarlo: se aplaza la reescritura hasta que lo suelte. El panel se
+  // refresca 4 veces por segundo, así que en cuanto el puntero se mueva se
+  // aplica sola; lo único que se pospone es el texto, nunca una acción.
+  if (panel.querySelector("button:hover")) return false;
+  panel.__key = key;
+  panel.__html = html;
+  panel.innerHTML = html;
+  return true;
+}
 
 // Banderita en línea para acompañar al nombre de un país (docs: flags-data.js)
 const flagSpan = (iso, color) =>
@@ -256,7 +292,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       </div>`;
     }
     html += `</div>`;
-    panel.innerHTML = html;
+    if (!setPanelHTML(panel, `mar:${selId}:${moveUnitId}`, html)) return;
     drawPanelIcons(panel);
     panel.querySelectorAll("[data-move]").forEach((b) =>
       b.addEventListener("click", () => hooks.onMove(parseInt(b.dataset.move, 10)))
@@ -510,7 +546,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       </div></div>`;
   }
 
-  panel.innerHTML = html;
+  if (!setPanelHTML(panel, `prov:${selId}:${moveUnitId}`, html)) return;
 
   // Iconos de unidad en los canvas del panel
   drawPanelIcons(panel);
@@ -589,6 +625,38 @@ function provName(pid) {
 // de combate (`dmgInPerH` / `dmgOutPerH` en js/engine/combat.js). Rehacer la
 // fórmula en la interfaz habría creado una segunda verdad que se separa de la
 // primera al primer cambio de balance.
+// Unidades de la provincia con las que ESTA puede formar: mismo dueño, mismo
+// dominio (tierra, aire o mar nunca se mezclan), quietas y libres. Se ofrece una
+// por una, igual que se desacopla una por una, y con un botón para meterlas
+// todas de golpe cuando ya se sabe lo que se quiere.
+function formarSection(state, u) {
+  const dom = domainOf(u.type);
+  const cand = state.units.filter(
+    (x) => !x.dead && x.id !== u.id && x.owner === u.owner && x.pos === u.pos &&
+      !x.embarked && !x.edgeLeft && !x.path?.length && !x.formation && domainOf(x.type) === dom
+  );
+  const propia = u.embarked || u.edgeLeft || u.path?.length;
+  if (propia) {
+    return `<div class="up-stack"><span class="up-mlabel">Formación</span>
+      <div class="up-hint">Tiene que estar quieta y desembarcada para formar.</div></div>`;
+  }
+  if (!cand.length) {
+    return `<div class="up-stack"><span class="up-mlabel">Formación</span>
+      <div class="up-hint">No hay ninguna otra unidad ${dom === "aire" ? "aérea" : dom === "naval" ? "naval" : "terrestre"} libre en esta provincia con la que formar.</div></div>`;
+  }
+  let h = `<div class="up-stack"><span class="up-mlabel">Formar unidad (hasta ${MAX_MEMBERS})</span><div class="up-chips">`;
+  for (const o of cand.slice(0, 12)) {
+    h += `<button class="btn small" data-up-merge="${o.id}" title="Une ${unitDef(o.type)?.name} a esta unidad">⊞ ${unitDef(o.type)?.name}</button>`;
+  }
+  h += `</div>`;
+  if (cand.length > 1) {
+    const todos = [u.id, ...cand.map((x) => x.id)].slice(0, MAX_MEMBERS);
+    h += `<button class="btn small primary" data-up-merge-all="${todos.join(",")}">⊞ Formar con ${todos.length - 1} más</button>`;
+  }
+  h += `<div class="up-hint">Tierra, aire y mar no se mezclan. La columna avanza al paso del más lento.</div></div>`;
+  return h;
+}
+
 function battleSection(state, u) {
   const enLaCelda = state.units.filter(
     (x) => !x.dead && !x.embarked && !x.edgeLeft && x.pos === u.pos &&
@@ -666,12 +734,13 @@ export function updateUnitPanel(state, ui) {
   // Contacto sin identificar: se puede seleccionar, pero no revela nada
   if (!ui.selUnit) {
     panel.classList.remove("hidden");
-    panel.innerHTML = `<div class="up-head">
+    const html = `<div class="up-head">
         <div class="up-title"><span class="up-name">Contacto sin identificar</span>
         <span class="up-sub">${provName(ui.selUnknownPid)} · ${ui.selUnknownCount || 1} unidad(es)</span></div>
         <button class="up-close" id="up-close" title="Cerrar">✕</button>
       </div>
       <div class="garrison-note">Inteligencia insuficiente: solo detectas su presencia. Envía un dron o acerca tus tropas para identificar el material.</div>`;
+    if (!setPanelHTML(panel, `desconocido:${ui.selUnknownPid}`, html)) return;
     panel.querySelector("#up-close").addEventListener("click", () => hooks.onCloseUnit());
     return;
   }
@@ -743,6 +812,11 @@ export function updateUnitPanel(state, ui) {
     <div class="up-status ${estadoCls}">${estado}</div>
     <div class="up-where">Posición: <b>${provName(u.pos)}</b></div>`;
 
+  // Pertenece a una formación: se dice arriba del todo, porque cambia el sentido
+  // de todo lo que viene debajo (las órdenes van a la columna entera).
+  const fNombre = u.formation && formationSummary(state, u.formation)?.name;
+  if (fNombre) html += `<div class="up-where">Encuadrada en: <b>${fNombre}</b></div>`;
+
   html += meter("HP", hp, `${Math.round(hp)} / 100`, hpColor(hp));
   html += meter("Moral", morale, `${morale} %`, morale < 30 ? "var(--danger)" : "#6fa8d9");
   html += meter("Exp", nextVet ? (exp / nextVet) * 100 : 100, nextVet ? `${exp} / ${nextVet}` : "máx", "#c9a227");
@@ -762,6 +836,9 @@ export function updateUnitPanel(state, ui) {
       <div><span>Velocidad</span><b>${velReal ? velReal.toLocaleString("es-ES") + " km/h" : T.speed + " km/h"}</b></div>
       ${velReal ? `<div title="El mapa no está a escala de vuelo: este es el ritmo con el que cruza provincias"><span>Ritmo en mapa</span><b>${T.speed}</b></div>` : ""}
       <div><span>Captura provincias</span><b>${T.captures ? "sí" : "no"}</b></div>
+      ${!airLoadout(u.type) && scoutRangeKm(u.type) ? `<div title="Descubre unidades enemigas a esta distancia aunque el territorio no sea tuyo. El círculo verde del mapa lo enseña"><span>Reconocimiento</span><b>${scoutRangeKm(u.type)} km</b></div>` : ""}
+      ${airRangeKm(u.type) ? `<div title="Distancia máxima en línea recta desde su base (aeródromo propio o portaviones). El disco del mapa la enseña centrada en la base"><span>Radio de acción</span><b>${airRangeKm(u.type).toLocaleString("es-ES")} km</b></div>
+      <div title="${canOverfly(u.type) ? "Entra en espacio aéreo y aguas ajenas sin que cuente como declaración de guerra" : "Entrar en espacio aéreo neutral exige declarar la guerra: solo los drones y los furtivos pasan sin más"}"><span>Sobrevuelo sin guerra</span><b>${canOverfly(u.type) ? "sí" : "no"}</b></div>` : ""}
       <div><span>Defensa media</span><b>${avgDefense(T)}</b></div>
       ${T.capacity ? `<div><span>Bodega</span><b>${u.cargo?.length || 0} / ${T.capacity}</b></div>` : ""}
       ${artilleryRange(u.type) ? `<div title="Con ⚔ Atacar bate fichas enemigas a esta distancia sin moverse del sitio"><span>Alcance de tiro</span><b>${artilleryRange(u.type)} km</b></div>
@@ -800,22 +877,56 @@ export function updateUnitPanel(state, ui) {
     <div class="up-hint">Con la unidad seleccionada, <b>clic derecho</b> en una provincia la envía allí.</div>`;
   }
 
-  // Resto de la pila: las demás unidades del mismo tipo apiladas en la celda
-  const stack = (ui.selStackIds || []).filter((id) => id !== u.id);
-  if (stack.length) {
-    html += `<div class="up-stack"><span class="up-mlabel">Pila (${stack.length + 1})</span><div class="up-chips">`;
-    html += `<button class="up-chip active" data-up-pick="${u.id}" title="${T.name} · ${Math.round(hp)} HP">${Math.round(hp)}</button>`;
-    for (const id of stack) {
-      const o = state.units.find((x) => x.id === id && !x.dead);
-      if (!o) continue;
-      html += `<button class="up-chip" data-up-pick="${id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
+  // Formación: sustituye a la pila cuando la unidad pertenece a una. Enseña el
+  // total sumado (que es lo que se pidió al seleccionar el carro) y cada miembro
+  // con su botón de desacoplar, de uno en uno.
+  const F = u.formation ? formationSummary(state, u.formation) : null;
+  if (F) {
+    html += `<div class="up-stack">
+      <span class="up-mlabel">${F.name} (${F.n})</span>
+      <div class="up-stats">
+        <div><span>HP del conjunto</span><b>${Math.round(F.hp)} / ${F.hpMax}</b></div>
+        <div title="Va al paso del miembro más lento: ese es el precio de mezclar armas"><span>Ritmo de la columna</span><b>${F.speed} ${unitDef(F.speedType)?.name ? `(${unitDef(F.speedType).name})` : ""}</b></div>
+        <div title="Solo la infantería y la motorizada toman provincias"><span>Puede capturar</span><b>${F.captures ? "sí" : "no"}</b></div>
+        ${F.rangoKm ? `<div title="Con ⚔ Atacar, las piezas con alcance abren fuego sin moverse y el resto de la columna mantiene posición"><span>Alcance de tiro</span><b>${F.rangoKm} km</b></div>` : ""}
+      </div>
+      <div class="up-chips">`;
+    for (const o of F.members) {
+      const act = o.id === u.id ? " active" : "";
+      html += `<button class="up-chip${act}" data-up-pick="${o.id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
     }
     html += `</div>`;
-    if (mine) html += `<button class="btn small" id="up-move-all">Mover toda la pila (${stack.length + 1})</button>`;
+    if (mine) {
+      html += `<div class="up-chips">`;
+      for (const o of F.members) {
+        html += `<button class="btn small" data-up-detach="${o.id}" title="Saca ${unitDef(o.type)?.name} de la formación">⊟ ${unitDef(o.type)?.name}</button>`;
+      }
+      html += `</div><button class="btn small danger" data-up-dissolve="${F.id}">Deshacer formación</button>`;
+    }
     html += `</div>`;
+  } else {
+    // Resto de la pila: las demás unidades del mismo tipo apiladas en la celda
+    const stack = (ui.selStackIds || []).filter((id) => id !== u.id);
+    if (stack.length) {
+      html += `<div class="up-stack"><span class="up-mlabel">Pila (${stack.length + 1})</span><div class="up-chips">`;
+      html += `<button class="up-chip active" data-up-pick="${u.id}" title="${T.name} · ${Math.round(hp)} HP">${Math.round(hp)}</button>`;
+      for (const id of stack) {
+        const o = state.units.find((x) => x.id === id && !x.dead);
+        if (!o) continue;
+        html += `<button class="up-chip" data-up-pick="${id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
+      }
+      html += `</div>`;
+      if (mine) html += `<button class="btn small" id="up-move-all">Mover toda la pila (${stack.length + 1})</button>`;
+      html += `</div>`;
+    }
+    // Formar con lo que haya en la provincia. Se ofrece SIEMPRE que haya con
+    // quién, aunque sean de tipos distintos —que es el caso interesante: carro
+    // más infantería—, y el motivo del veto se dice antes de intentarlo.
+    if (mine) html += formarSection(state, u);
   }
 
-  panel.innerHTML = html;
+  // La clave lleva la pila seleccionada porque `onAttack` la captura en su clausura.
+  if (!setPanelHTML(panel, `unidad:${ui.selUnit}:${(ui.selStackIds || []).join(",")}`, html)) return;
   drawPanelIcons(panel);
 
   panel.querySelector("#up-close").addEventListener("click", () => hooks.onCloseUnit());
@@ -859,6 +970,20 @@ export function updateUnitPanel(state, ui) {
   );
   panel.querySelectorAll("[data-up-launch]").forEach((b) =>
     b.addEventListener("click", () => hooks.onLaunchAir(parseInt(b.dataset.upLaunch, 10)))
+  );
+  panel.querySelectorAll("[data-up-merge]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onMerge([u.id, parseInt(b.dataset.upMerge, 10)]))
+  );
+  panel.querySelectorAll("[data-up-merge-all]").forEach((b) =>
+    b.addEventListener("click", () =>
+      hooks.onMerge(b.dataset.upMergeAll.split(",").map((x) => parseInt(x, 10)))
+    )
+  );
+  panel.querySelectorAll("[data-up-detach]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onDetach(parseInt(b.dataset.upDetach, 10)))
+  );
+  panel.querySelectorAll("[data-up-dissolve]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onDissolve(b.dataset.upDissolve))
   );
   panel.querySelector("#up-move-all")?.addEventListener("click", () => hooks.onMove(u.id, ui.selStackIds));
 }
@@ -995,9 +1120,17 @@ export function updateRadarPanel(state, ui) {
   const contactos = modo === "aa" ? contactosAA : contactosAS;
   const enTransito = !!u.edgeLeft;
 
-  $("rp-modes").innerHTML =
+  // Cada bloque se reescribe por separado y solo si cambió: los contactos se
+  // mueven en vivo, pero los botones de modo y de arma no tienen por qué
+  // recrearse con ellos y perder el click y el :hover.
+  const modosHtml =
     `<button class="rp-mode${modo === "aa" ? " active" : ""}" data-rmode="aa">Aire-aire <b>${contactosAA.length}</b></button>
      <button class="rp-mode${modo === "as" ? " active" : ""}" data-rmode="as">Aire-suelo <b>${contactosAS.length}</b></button>`;
+  if (setPanelHTML($("rp-modes"), `modos:${u.id}`, modosHtml)) {
+    panel.querySelectorAll("[data-rmode]").forEach((b) =>
+      b.addEventListener("click", () => hooks.onRadarMode(b.dataset.rmode))
+    );
+  }
 
   let wHtml = "";
   if (!delModo.length) {
@@ -1009,7 +1142,11 @@ export function updateRadarPanel(state, ui) {
       title="${a.weapon.nombre} · guía ${a.weapon.guia} · ${effRange(a.weapon)} km · ${a.weapon.danio} HP por impacto · ${Math.round(a.weapon.pk * 100)}% base">
       ${a.weapon.nombre.split(" ")[0]} <b>${a.left}</b></button>`;
   }
-  $("rp-weapons").innerHTML = wHtml;
+  if (setPanelHTML($("rp-weapons"), `armas:${u.id}:${modo}`, wHtml)) {
+    panel.querySelectorAll("[data-rweapon]").forEach((b) =>
+      b.addEventListener("click", () => hooks.onRadarWeapon(b.dataset.rweapon))
+    );
+  }
 
   // Qué hace el arma elegida. El DAÑO no estaba a la vista en ninguna parte: se
   // veía el alcance y la munición, pero no lo que quita un impacto, que es
@@ -1052,26 +1189,21 @@ export function updateRadarPanel(state, ui) {
       <button class="btn small" data-rfire="${e.id}" ${motivo ? `disabled title="${motivo}"` : ""}>Disparar</button>
     </div>`;
   }
-  $("rp-contacts").innerHTML = cHtml;
+  // El arma elegida entra en la clave porque `onFireAir` la captura en su clausura.
+  const contactosEl = $("rp-contacts");
+  if (setPanelHTML(contactosEl, `contactos:${u.id}:${modo}:${sel?.weapon.id || ""}`, cHtml)) {
+    contactosEl.querySelectorAll("[data-rtarget]").forEach((row) =>
+      row.addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+        hooks.onRadarTarget(parseInt(row.dataset.rtarget, 10));
+      })
+    );
+    contactosEl.querySelectorAll("[data-rfire]").forEach((b) =>
+      b.addEventListener("click", () => hooks.onFireAir(sel.weapon.id, parseInt(b.dataset.rfire, 10)))
+    );
+  }
 
   drawRadarScope(panel, state, ui, u, contactos, sel, radar);
-
-  // Los listeners viven en los bloques que se reescriben, así que se reenganchan
-  panel.querySelectorAll("[data-rmode]").forEach((b) =>
-    b.addEventListener("click", () => hooks.onRadarMode(b.dataset.rmode))
-  );
-  panel.querySelectorAll("[data-rweapon]").forEach((b) =>
-    b.addEventListener("click", () => hooks.onRadarWeapon(b.dataset.rweapon))
-  );
-  panel.querySelectorAll("[data-rtarget]").forEach((row) =>
-    row.addEventListener("click", (e) => {
-      if (e.target.closest("button")) return;
-      hooks.onRadarTarget(parseInt(row.dataset.rtarget, 10));
-    })
-  );
-  panel.querySelectorAll("[data-rfire]").forEach((b) =>
-    b.addEventListener("click", () => hooks.onFireAir(sel.weapon.id, parseInt(b.dataset.rfire, 10)))
-  );
 }
 
 // Por qué el radar no marca nada. "Sin contactos" a secas es engañoso cuando hay

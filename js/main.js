@@ -1,7 +1,8 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack, airRangeInfo, canOverfly } from "./engine/movement.js";
+import { mergeUnits, mergeBlocker, detachUnit, dissolveFormation, formationMembers, formationLead, formationName } from "./engine/formations.js";
 import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
@@ -49,9 +50,14 @@ function clearUnitSel() {
 
 // Unidades que el render dibuja en la MISMA ficha que la seleccionada: mismo
 // dueño, tipo y celda, todas quietas (las que viajan se dibujan sueltas).
+//
+// Una formación manda sobre todo lo demás: sus miembros son UNA ficha aunque
+// sean de tipos distintos y aunque vayan de camino, que es justo el sentido de
+// haberlos unido. Por eso se comprueba antes que nada.
 function stackFor(id) {
   const u = state?.units.find((x) => x.id === id && !x.dead);
   if (!u) return [];
+  if (u.formation) return formationMembers(state, u.formation).map((x) => x.id);
   if (u.edgeLeft || u.embarked) return [u.id];
   return state.units
     .filter((x) => !x.dead && !x.embarked && !x.edgeLeft && x.pos === u.pos && x.owner === u.owner && x.type === u.type)
@@ -304,6 +310,47 @@ const hooks = {
   },
   onCloseUnit() {
     clearUnitSel();
+    updateUI();
+  },
+
+  // Unir la selección en una formación. El motivo del fallo se dice tal cual lo
+  // devuelve el motor: "no se pueden mezclar tierra y aire" explica mucho más
+  // que un botón que no hace nada.
+  onMerge(ids) {
+    if (!state || !ids?.length) return;
+    const motivo = mergeBlocker(state, ids);
+    if (motivo) { UI.toast(motivo); return; }
+    const fid = mergeUnits(state, ids);
+    if (!fid) { UI.toast("No se pudo formar la unidad"); return; }
+    ui.selStackIds = formationMembers(state, fid).map((x) => x.id);
+    ui.selUnit = formationLead(state, fid)?.id || ui.selUnit;
+    UI.toast(`${formationName(state, fid)} formado`);
+    updateUI();
+  },
+
+  // Sacar UNA unidad de la formación, que es como pidió poder deshacerlas: de
+  // una en una, no todo de golpe.
+  onDetach(unitId) {
+    if (!state) return;
+    const u = state.units.find((x) => x.id === unitId && !x.dead);
+    const fid = u?.formation;
+    if (!detachUnit(state, unitId)) return;
+    const quedan = formationMembers(state, fid);
+    if (quedan.length >= 2) {
+      ui.selUnit = formationLead(state, fid)?.id || null;
+      ui.selStackIds = quedan.map((x) => x.id);
+      UI.toast(`${unitDef(u.type)?.name} desacoplado · queda ${formationName(state, fid)}`);
+    } else {
+      clearUnitSel();
+      UI.toast(`${unitDef(u.type)?.name} desacoplado · formación deshecha`);
+    }
+    updateUI();
+  },
+
+  onDissolve(fid) {
+    if (!state || !dissolveFormation(state, fid)) return;
+    clearUnitSel();
+    UI.toast("Formación deshecha");
     updateUI();
   },
   onStop(unitId) {
@@ -616,6 +663,14 @@ function checkEnd() {
 // portaviones propio, parado y con plaza libre.
 function moveFailMsg(ids, pid) {
   const u = state.units.find((x) => x.id === ids[0] && !x.dead);
+  if (u && pid === u.pos) return "Esa unidad ya está ahí";
+  // Fuera de radio: el motivo más frecuente desde que el espacio aéreo es libre,
+  // y el que más despista si se resume como "sin ruta". Se dice cuánto falta.
+  const r = u && airRangeInfo(state, u, pid);
+  if (r && !r.ok) {
+    return `Fuera de alcance: ${r.km} km hasta ahí y el radio de acción es de ${r.radioKm} km.
+            Acerca un aeródromo o un portaviones.`;
+  }
   if (!S.provinces.get(pid)?.isSea || !u || !unitDef(u.type)?.air) {
     return "Sin ruta hasta esa provincia";
   }
@@ -653,9 +708,13 @@ function issuePatrol(ids, pid) {
     const u = state.units.find((x) => x.id === id && !x.dead);
     if (u && orderPatrol(state, u, pid)) ok++;
   }
+  const u0 = state.units.find((x) => x.id === ids[0] && !x.dead);
+  const fuera = u0 && unitDef(u0.type)?.air && !u0.embarked && !airRangeInfo(state, u0, pid).ok;
   UI.toast(
     ok === 0
-      ? "Solo los aviones sin embarcar pueden patrullar"
+      ? fuera
+        ? moveFailMsg(ids, pid)
+        : "Solo los aviones sin embarcar pueden patrullar"
       : ids.length > 1
         ? `Patrulla ordenada a ${ok} de ${ids.length} aparatos`
         : `Patrullando ${S.provinces.get(pid)?.name}: vuelve a base sola al agotarse el tiempo`
@@ -669,17 +728,23 @@ function issuePatrol(ids, pid) {
 // issueMove o issuePatrol: mismo aviso, orden distinta al confirmar.
 function tryOrderTo(ids, pid, issue) {
   if (!pid || !state) return;
-  const iso = neutralBlocker(state, state.player, pid);
+  // Si TODO lo seleccionado puede sobrevolar (drones y furtivos), no hay nada
+  // que declarar. Basta con que haya un caza corriente o una unidad de
+  // superficie en la selección para que la frontera vuelva a contar.
+  const aereo = ids.every((id) => canOverfly(state.units.find((x) => x.id === id)?.type));
+  const iso = neutralBlocker(state, state.player, pid, aereo);
   if (!iso) {
     issue(ids, pid);
     return;
   }
   const nombre = S.countries[iso].name;
-  const aereo = ids.some((id) => unitDef(state.units.find((x) => x.id === id)?.type)?.air);
+  const hayAvion = ids.some((id) => unitDef(state.units.find((x) => x.id === id)?.type)?.air);
   UI.showModal(
     "Territorio neutral",
-    `No estás en guerra con <b>${nombre}</b>: ${aereo ? "su espacio aéreo y sus fronteras están cerrados" : "sus fronteras están cerradas"}.
-     Para entrar tienes que declararle la guerra.`,
+    `No estás en guerra con <b>${nombre}</b>: sus fronteras están cerradas.
+     ${hayAvion
+       ? "Un aparato no furtivo entrando en su espacio aéreo lo ven todos sus radares, así que hay que declararle la guerra. Los drones y los furtivos sí pueden pasar sin más."
+       : "Para entrar por tierra tienes que declararle la guerra."}`,
     [
       { label: "Cancelar" },
       {
@@ -703,16 +768,28 @@ function issueAttack(ids, target) {
   const salvas = [];
   const fallos = [];
   const aPie = [];
-  for (const id of ids) {
-    const u = state.units.find((x) => x.id === id && !x.dead);
-    if (!u) continue;
+  const unidades = ids.map((id) => state.units.find((x) => x.id === id && !x.dead)).filter(Boolean);
+
+  // Primero disparan TODOS los que tienen alcance, estén sueltos o encuadrados.
+  // Dentro de un grupo táctico cada pieza tira por su cuenta: el obús bate, y el
+  // fusilero que va al lado no bate nada, que es justo lo que se pidió.
+  for (const u of unidades) {
     if (!canShell(u.type)) { aPie.push(u); continue; }
     const r = shellUnit(state, u, target);
     if (r.ok) salvas.push(u);
     else if (shellDistance(state, u, target.pos) > artilleryRange(u.type)) aPie.push(u); // lejos: que se acerque
     else fallos.push(r.msg); // en alcance pero no puede: recarga, munición, sin vista
   }
+
+  // Una formación NO se parte. Si alguno de sus miembros ha abierto fuego, el
+  // resto se queda: mandar a la infantería sola a por el blanco mientras el obús
+  // se queda atrás dejaría media columna en una provincia y media en otra, las
+  // dos con el mismo nombre de formación. Si no ha disparado nadie, avanza
+  // entera.
+  const conFuego = new Set(salvas.map((u) => u.formation).filter(Boolean));
+  const quietas = aPie.filter((u) => u.formation && conFuego.has(u.formation));
   for (const u of aPie) {
+    if (quietas.includes(u)) continue;
     if (orderAttack(state, u, target)) ok++;
   }
   const nombre = unitDef(target.type)?.name ?? target.type;
@@ -724,6 +801,7 @@ function issueAttack(ids, target) {
       : `Fuego sobre ${nombre} a ${km} km, sin moverse`);
   }
   if (ok) partes.push(ok > 1 ? `${ok} unidades van a por él` : `Una unidad va a por él`);
+  if (quietas.length) partes.push(`la formación mantiene posición`);
   if (!partes.length) partes.push(fallos[0] || `No hay forma de llegar hasta ${nombre}`);
   UI.toast(partes.join(" · "));
   updateUI();
@@ -753,7 +831,11 @@ function tryOrderAttack(ids, hit, pid) {
   }
   const isos = new Set();
   if (!atWar(state, state.player, target.owner)) isos.add(target.owner);
-  const suelo = neutralBlocker(state, state.player, target.pos);
+  // El país que pisa el blanco solo estorba a quien va por tierra: la aviación
+  // entra en su espacio sin permiso. Atacar al dueño del blanco sí sigue siendo
+  // guerra, evidentemente.
+  const aereo = ids.every((id) => canOverfly(state.units.find((x) => x.id === id)?.type));
+  const suelo = neutralBlocker(state, state.player, target.pos, aereo);
   if (suelo) isos.add(suelo);
   if (!isos.size) {
     issueAttack(ids, target);

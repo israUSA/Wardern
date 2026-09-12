@@ -513,14 +513,16 @@ export function intelFor(state, iso) {
     if (u.dead || u.owner !== iso || u.embarked) continue;
     strong.add(u.pos);
   }
-  // Drones de reconocimiento (docs/MISSILES.md §4): círculo = inteligencia fuerte
+  // Reconocimiento: drones (docs/MISSILES.md §4) y vehículos de exploración
+  // terrestres. Los dos hacen lo mismo —convertir en inteligencia FUERTE todo lo
+  // que cae en su radio— y el radio es lo único que los separa. Una columna
+  // motorizada ve lo que tiene delante, no medio continente.
   for (const u of state.units) {
     if (u.dead || u.owner !== iso || u.embarked) continue;
-    const T = unitDef(u.type);
-    if (T?.category !== "drone") continue;
+    const R = scoutRangeKm(u.type);
+    if (!R) continue;
     const from = S.provinces.get(u.pos);
     if (!from) continue;
-    const R = DRONE_VISION_KM[T.tier ?? 1];
     for (const p of S.provinceList) {
       if (distKm([from.cx, from.cy], [p.cx, p.cy]) <= R) strong.add(p.id);
     }
@@ -534,6 +536,31 @@ export function intelFor(state, iso) {
   porPais.set(iso, out);
   return out;
 }
+
+// Radio de descubrimiento de una unidad, en km. 0 si no explora.
+//
+// El dron manda de largo, que para eso es su único trabajo. Debajo están los
+// vehículos que en la realidad hacen reconocimiento: la motorizada, que va por
+// delante de la columna, y el cazatanques, que en ambas doctrinas es literalmente
+// un vehículo de caballería (M3 Bradley, BRDM-2). El resto de la tropa no explora
+// nada: ve su provincia y las de al lado, como siempre.
+export function scoutRangeKm(type) {
+  const T = unitDef(type);
+  if (!T) return 0;
+  if (T.category === "drone") return DRONE_VISION_KM[T.tier ?? 1] || 0;
+  return SCOUT_VISION_KM[T.category]?.[T.tier ?? 1] || 0;
+}
+
+// Las cifras están atadas a la ESCALA DEL MAPA, no a la óptica real del vehículo.
+// La distancia mediana entre dos provincias terrestres vecinas son 324 km (p25
+// 206, p75 544), así que un radio "realista" de 30 km no llegaría ni a la
+// provincia de al lado y el reconocimiento no existiría. 380 km asoma justo al
+// otro lado de la frontera; 560 km ve la segunda línea. Es el mismo ajuste de
+// teatro que ya se hizo con los alcances de misil (docs/AIR-COMBAT.md §1).
+const SCOUT_VISION_KM = {
+  motorizada:  { 1: 380, 2: 470, 3: 560 },
+  cazatanques: { 1: 430, 2: 520, 3: 610 },
+};
 
 export function intel(state) {
   return intelFor(state, state.player);

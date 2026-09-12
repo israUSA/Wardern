@@ -12,10 +12,16 @@ import { S, unitDef, distKm, atWar, log, visibleProvinces } from "./state.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
 
-// Alcance de tiro en km de mapa, 0 si la unidad no es artillería
+// Alcance de tiro en km de mapa, 0 si la unidad no bate a distancia.
+//
+// La condición es tener `rangoKm`, NO ser de la categoría artillería. Hoy solo
+// la artillería lo trae (lo pone units-data.js al construir las variantes), pero
+// dejarlo abierto significa que el día que otra unidad terrestre reciba un
+// `rangoKm` —un lanzacohetes, una batería costera— el tiro a distancia le
+// funciona sin tocar nada más, y sobre todo que la regla del juego es una sola:
+// dispara desde lejos quien tiene alcance, y nadie más.
 export function artilleryRange(type) {
-  const T = unitDef(type);
-  return T?.category === "artilleria" ? T.rangoKm || 0 : 0;
+  return unitDef(type)?.rangoKm || 0;
 }
 
 export function canShell(type) {

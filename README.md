@@ -123,12 +123,19 @@ node tools/test-variants.mjs   # 97 aserciones de balance (deben pasar 97/97)
 
 ## Documentación
 
+**Empieza por el índice: [docs/INDICE.md](docs/INDICE.md)** — qué contiene cada
+documento y en qué sección está cada tema, para no tener que releerlos todos.
+
+- [docs/INDICE.md](docs/INDICE.md) — índice de toda la documentación por tema
 - [docs/GDD.md](docs/GDD.md) — diseño de juego (alcance, economía, combate, IA)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura y contratos de datos
 - [docs/ROADMAP.md](docs/ROADMAP.md) — fases y estado
 - [docs/UNITS.md](docs/UNITS.md) — roster y rationale de balance
 - [docs/NAVAL.md](docs/NAVAL.md) — sistema naval
 - [docs/MISSILES.md](docs/MISSILES.md) — misiles y drones de reconocimiento
+- [docs/AIR-COMBAT.md](docs/AIR-COMBAT.md) — radar, aviación embarcada, radio de acción
+- [docs/FORMACIONES.md](docs/FORMACIONES.md) — unir tropas en pelotones, compañías y regimientos
+- [docs/RECONOCIMIENTO.md](docs/RECONOCIMIENTO.md) — niebla de guerra, drones y exploración terrestre
 - [docs/ARTE.md](docs/ARTE.md) — guía de estilo de sprites
 - [docs/ASSETS-SPRITES.md](docs/ASSETS-SPRITES.md) — inventario completo de assets
 - [docs/DATA-NOTES.md](docs/DATA-NOTES.md) — pipeline de datos del mapa

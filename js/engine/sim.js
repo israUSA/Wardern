@@ -7,6 +7,7 @@ import { tickCombat } from "./combat.js";
 import { tickMissiles } from "./missiles.js";
 import { tickRearm } from "./air-combat.js";
 import { aiTickAll } from "./ai.js";
+import { pruneFormations } from "./formations.js";
 
 // `dtOverride` (minutos de juego) lo usa la recuperación offline para avanzar a
 // pasos grandes: replicar una noche entera al ritmo de simulación serían cientos
@@ -35,7 +36,13 @@ export function tick(state, dtOverride) {
   tickCombat(state, dt);
   tickMissiles(state, dt);
   tickRearm(state, dt);
-  if (state.units.some((u) => u.dead)) state.units = state.units.filter((u) => !u.dead);
+  if (state.units.some((u) => u.dead)) {
+    state.units = state.units.filter((u) => !u.dead);
+    // Las bajas pueden dejar una formación con un solo superviviente: se deshace
+    // sola, porque el mapa no debe seguir enseñando un "Batallón" que ya es un
+    // camión suelto.
+    pruneFormations(state);
+  }
 
   if (Math.floor(state.time / (C.ATTRITION_EVERY_H * 60)) !== prevAttr) {
     attritionTick(state);
