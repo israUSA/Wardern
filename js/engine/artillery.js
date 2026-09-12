@@ -8,7 +8,7 @@
 // El alcance es propio de cada variante (`rangoKm` en js/data/units-data.js):
 // un D-30 no bate lo mismo que un 2S35. El ritmo, el daño y el coste salen de
 // las constantes ARTY_* y escalan por tier de la pieza.
-import { S, unitDef, distKm, atWar, log, visibleProvinces } from "./state.js";
+import { S, unitDef, distKm, atWar, log, visibleProvinces, hpFrac } from "./state.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
 
@@ -72,7 +72,9 @@ export function shellUnit(state, u, target) {
     // arty: el proyectil NO persigue. Cae donde se apuntó, así que si el blanco
     // se mueve durante el vuelo, el impacto lo reparte quien quede en la celda.
     arty: true, targetUnitId: target.id,
-    danio: C.ARTY_DAMAGE[tier] || 9, minutesLeft: minutes, total: minutes,
+    // La salva vale lo que quede de batería: media batería, media salva. Mismo
+    // criterio que el combate en provincia, que ya escalaba por HP.
+    danio: (C.ARTY_DAMAGE[tier] || 9) * hpFrac(u), minutesLeft: minutes, total: minutes,
   });
   const donde = S.provinces.get(target.pos);
   log(state, `${S.countries[u.owner].name} abre fuego de artillería sobre ${donde?.isSea ? "alta mar" : donde?.name}`, "war");

@@ -125,8 +125,24 @@ const AIR_CATS = new Set(["caza", "bombardero", "helicoptero", "drone"]);
 const KEYS = ["infanteria", "motorizada", "mbt", "cazatanques", "artilleria", "antiaereo", "caza", "bombardero", "helicoptero", "drone"];
 
 // ---- Sabor de doctrina (deltas sobre el ancla t2; se heredan a t1 y t3) ----
+//
+// El eje es: ORIENTE AGUANTA, OCCIDENTE PEGA. El oriental compra masa y encaje
+// —más HP, ver CATEGORY_HP y DOCTRINE_HP_MULT—; el occidental compra sensores y
+// letalidad. Antes era justo al revés (el oriental tenía los +1 de ataque y el
+// occidental los de defensa antiaérea), y se invirtió a propósito: el sabor
+// anterior no se correspondía con nada reconocible y hacía a Oriente mejor en
+// los dos ejes que importan en un duelo corto.
+//
+// Los deltas de aquí son de MATRIZ (enteros sobre claves concretas). El grueso
+// de la diferencia va por los multiplicadores de HP y ataque de más abajo; esto
+// es el detalle fino que da carácter a cada categoría.
 const DOCTRINE_DELTAS = {
   occidental: {
+    // El occidental conserva su ventaja defensiva contra el aire —la integración
+    // de la defensa antiaérea sí es una fortaleza suya real— y suma la pegada.
+    // NO lleva deltas de ataque: su pegada va entera por DOCTRINE_ATK_MULT. Al
+    // darle las dos cosas a la vez, el banco midió occ 8 – ori 0 en los duelos
+    // por categoría y 0 % de victorias orientales en 200 combates de stack.
     infanteria:  { defense: { caza: 1, bombardero: 1, helicoptero: 1, drone: 1 } },
     motorizada:  { defense: { caza: 1, bombardero: 1, helicoptero: 1, drone: 1 } },
     mbt:         { defense: { caza: 1, bombardero: 1, helicoptero: 1, drone: 1 } },
@@ -139,18 +155,99 @@ const DOCTRINE_DELTAS = {
     drone:       {},
   },
   oriental: {
+    // Oriente no gana ataque por matriz: su ventaja entera es aguantar. Las dos
+    // excepciones son las dos armas donde la doctrina soviética sí era superior
+    // de forma reconocible: la artillería masiva y el anticarro de infantería.
     infanteria:  {},
     motorizada:  {},
     mbt:         {},
     cazatanques: { attack: { mbt: 1 } },
-    artilleria:  { attack: { motorizada: 1 } },
-    antiaereo:   { attack: { caza: 1, bombardero: 1, helicoptero: 1, drone: 1 } },
-    caza:        { attack: { caza: 1 } },
-    bombardero:  { attack: { infanteria: 1, motorizada: 1 } },
-    helicoptero: { attack: { mbt: 1 } },
-    drone:       { attack: { infanteria: 1 } },
+    artilleria:  { attack: { infanteria: 1 } },
+    antiaereo:   {},
+    caza:        {},
+    bombardero:  {},
+    helicoptero: {},
+    drone:       {},
   },
 };
+
+// ---- HP base por categoría (ancla t2, doctrina neutra) ----
+//
+// Se intentó abrir mucho este abanico —infantería 40, MBT 160, portaviones 450—
+// porque leerlo en pantalla tenía todo el sentido: un portaviones no puede
+// encajar lo mismo que un pelotón de fusileros. NO SE PUDO en tierra y aire, y
+// conviene dejar escrito por qué antes de que alguien lo reintente.
+//
+// El banco (tools/test-variants.mjs) lo midió: el sistema de counters está
+// calibrado con HP UNIFORME, y cualquier desviación lo rompe.
+//
+//   infantería 100 / MBT 100  ->  0 reglas rotas
+//   infantería  87 / MBT 107  ->  R7 rota
+//   infantería  80 / MBT 112  ->  R7, R10, R4
+//   infantería  63 / MBT 126  ->  R2, R4, R6, R7, R10
+//
+// Con un 23 % de diferencia ya se cae. El motivo es que el HP COMPONE: quien
+// aguanta más sigue pegando a plena potencia más tiempo, así que la ventaja va
+// al cuadrado (Lanchester). Medido aparte: un +10 % de vida con ataque igual da
+// el 100 % de las batallas de stack, mientras que un +10 % de ataque no.
+//
+// Abrirlo de verdad exige reescribir las matrices de ataque enteras y volver a
+// calibrar los doce counters. Es un proyecto aparte, no un ajuste de tabla.
+//
+// Lo que SÍ está abierto es el abanico NAVAL (ver naval-data.js): un portaviones
+// tiene 450 y una corbeta 90, porque los barcos solo se baten entre ellos y no
+// entran en ninguna de las reglas de arriba. Ahí el problema original está
+// resuelto: un portaviones aguanta 4,5 veces lo que un pelotón.
+const CATEGORY_HP = {
+  mbt: 100, cazatanques: 100, motorizada: 100, infanteria: 100, antiaereo: 100, artilleria: 100,
+  bombardero: 100, caza: 100, helicoptero: 100, drone: 100,
+};
+
+// Multiplicador de HP por doctrina y categoría. Oriente aguanta más en todo, pero
+// CUÁNTO más cambia por arma, que es lo que evita que sea un "+12 % y ya":
+//   · artillería +22 %: la artillería masiva es la firma soviética.
+//   · infantería +18 %: doctrina de masa.
+//   · helicóptero +15 %: el Mi-24 lleva blindaje real de vehículo de combate y
+//     además transporta tropa. Es un tanque volador, literalmente.
+//   · caza +6 %: un avión no se blinda. Lo que separa a un Su-27 de un F/A-18E es
+//     el radar y el misil, no el fuselaje — y eso ya está en la matriz de ataque.
+// Occidente paga su pegada con menos vida, salvo el helicóptero: el Apache
+// tampoco es de papel.
+const DOCTRINE_HP_MULT = {
+  oriental: {
+    infanteria: 1.03, motorizada: 1.03, mbt: 1.03, cazatanques: 1.025,
+    artilleria: 1.035, antiaereo: 1.03,
+    caza: 1.02, bombardero: 1.03, helicoptero: 1.045, drone: 1.02,
+  },
+  occidental: {
+    infanteria: 1, motorizada: 1, mbt: 1, cazatanques: 1,
+    artilleria: 1, antiaereo: 1,
+    caza: 1, bombardero: 1, helicoptero: 1, drone: 1,
+  },
+};
+
+// Multiplicador de ATAQUE por doctrina y categoría: el contrapeso del anterior.
+// El occidental pega más en todo; cuánto más, otra vez por arma. El caza es el
+// que más gana (+15 %) porque es donde la ventaja occidental es más real, y
+// encaja con lo que ya estaba montado: el AMRAAM alcanza 105 km y el R-27, 70.
+const DOCTRINE_ATK_MULT = {
+  occidental: {
+    infanteria: 1.045, motorizada: 1.04, mbt: 1.045, cazatanques: 1.07,
+    artilleria: 1.045, antiaereo: 1.045,
+    caza: 1.09, bombardero: 1.09, helicoptero: 1.05, drone: 1.09,
+  },
+  oriental: {
+    infanteria: 1, motorizada: 1, mbt: 1, cazatanques: 1,
+    artilleria: 1, antiaereo: 1,
+    caza: 1, bombardero: 1, helicoptero: 1, drone: 1,
+  },
+};
+
+// HP por tier. Más contenido que el 0,9/1,0/1,25 del resto de stats: el HP
+// multiplica con el ataque y la defensa, que YA escalan por tier, así que con
+// 1,25 el t3 se dispararía. Con 1,15 el caza t3 (81 HP) sobrevive a un AMRAAM
+// —70 de daño— y el t1 y el t2 no: el caza cumbre aguanta el mejor misil.
+const TIER_HP_MULT = { 1: 0.9, 2: 1, 3: 1.15 };
 
 // ---- Nombres reales por doctrina y época [t1 años 80, t2 años 2000, t3 ultra-moderno] ----
 const NAMES = {
@@ -207,7 +304,7 @@ function cloneDef(base) {
     terrainDefBonus: { ...base.terrainDefBonus },
     terrainAtkPenalty: { ...base.terrainAtkPenalty },
     buildHours: base.buildHours,
-    hp: 100, // contrato del motor: todas las unidades a 100 HP (docs/UNITS.md)
+    hp: base.hp ?? 100, // lo fija buildTier con CATEGORY_HP × doctrina × tier
     speed: base.speed,
     captures: base.captures,
     air: !!base.air,
@@ -245,6 +342,9 @@ function buildTier(anchor, cat, doctrine, tier, name) {
     def.attack = scaleMatrix(anchor.attack, 1.25, false);
     def.defense = scaleMatrix(anchor.defense, 1.25, false);
   }
+  // HP: categoría × doctrina × tier. Mínimo 1 para que ninguna unidad nazca
+  // muerta si alguna vez se bajan mucho las cifras.
+  def.hp = Math.max(1, Math.round(CATEGORY_HP[cat] * DOCTRINE_HP_MULT[doctrine][cat] * TIER_HP_MULT[tier]));
   return {
     id: `${doctrine === "occidental" ? "occ" : "ori"}-${tier}-${cat}`,
     doctrine, tier, category: cat,
@@ -256,8 +356,12 @@ function buildTier(anchor, cat, doctrine, tier, name) {
 export const GROUND_VARIANTS = {};
 for (const cat of KEYS) {
   for (const doctrine of ["occidental", "oriental"]) {
-    // ancla t2 = base legacy + deltas de doctrina (se propagan escalados a t1/t3)
-    const anchor = applyDeltas(cloneDef(LEGACY_BASE[cat]), DOCTRINE_DELTAS[doctrine][cat]);
+    // ancla t2 = base legacy + multiplicador de ataque de doctrina + deltas finos.
+    // El multiplicador va ANTES que los deltas enteros: así el +1 de una clave
+    // concreta sigue siendo exactamente +1 y no queda diluido por el redondeo.
+    const anchor = cloneDef(LEGACY_BASE[cat]);
+    anchor.attack = scaleMatrix(anchor.attack, DOCTRINE_ATK_MULT[doctrine][cat], false);
+    applyDeltas(anchor, DOCTRINE_DELTAS[doctrine][cat]);
     for (let tier = 1; tier <= 3; tier++) {
       const v = buildTier(anchor, cat, doctrine, tier, NAMES[doctrine][cat][tier - 1]);
       GROUND_VARIANTS[v.id] = v;

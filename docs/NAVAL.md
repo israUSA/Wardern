@@ -41,7 +41,15 @@
 | **Portaviones** | USS Nimitz / Kuznetsov | Dominio de superficie + proyección aérea | Fragata, corbeta, destructor, transporte (1v1) | Submarino, enjambres | 350k | 52/49 | 120 |
 | **Transporte** | USS Whidbey Island / Ivan Rogov | Mueve 3 terrestres por mar (`capacity: 3`) | Nada | Todo (huye o va escoltado) | 60k | 47/44 | 60 |
 
-## Contrarreloj naval (verificado, duelo 1v1 t2 occidental vs oriental)
+## Contrarreloj naval (duelo 1v1 t2 occidental vs oriental)
+
+> **Tabla medida con la escala vieja de HP (todo a 100) y NO revalidada.**
+> Desde v1.6 cada buque tiene su propio maximo —portaviones 450, corbeta 90— asi
+> que los "HP final" de abajo ya no significan lo mismo y los ganadores pueden
+> haber cambiado. **No hay banco de pruebas naval todavia**: es la deuda pendiente
+> mas clara de este sistema, porque el terrestre (tools/test-variants.mjs) si
+> detecto que un 10 % de diferencia de vida decide el 100 % de los combates.
+> Ver la seccion "Puntos de vida" en docs/UNITS.md.
 
 El triángulo: **destructor > submarino > portaviones > superficie** y
 **fragata > corbeta > submarino(por coste)**.

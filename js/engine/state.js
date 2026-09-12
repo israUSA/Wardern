@@ -445,7 +445,46 @@ export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
   return state;
 }
 
-export function spawnUnit(state, iso, type, pos, hp = 100) {
+// HP máximo de un tipo de unidad. Única fuente de verdad: todo lo que antes
+// dividía entre 100 a pelo tiene que pasar por aquí, o una unidad de 450 HP
+// pegaría 4,5 veces más que una de 100 (ver combat.js).
+export function maxHp(type) {
+  return unitDef(type)?.hp || 100;
+}
+
+// Fracción de vida, de 0 a 1. Es lo que escala el daño que HACE una unidad: un
+// escuadrón a media vida pega la mitad.
+export function hpFrac(u) {
+  const m = maxHp(u.type);
+  return m > 0 ? Math.max(0, Math.min(1, u.hp / m)) : 0;
+}
+
+// Migración de guardados anteriores al HP por unidad.
+//
+// Hasta esta versión TODA unidad tenía 100 HP máximos, así que el `hp` guardado
+// es directamente un porcentaje. Se reescala al máximo nuevo del tipo para que
+// una partida en curso no cambie de estado: un carro al 60 % sigue al 60 %, con
+// 96 HP de 160 en vez de 60 de 100.
+//
+// El marcador `hpScaled` evita repetir la conversión si el guardado se vuelve a
+// cargar; sin él, cada carga volvería a multiplicar y las unidades se curarían
+// solas. Se aplica a la partida entera, no unidad por unidad, porque el estado
+// viejo es coherente: o todo estaba en la escala vieja o nada lo estaba.
+export function migrateHp(state) {
+  if (!state || state.hpScaled) return state;
+  for (const u of state.units || []) {
+    const frac = Math.max(0, Math.min(1, (u.hp ?? 100) / 100));
+    u.hp = Math.max(1, Math.round(maxHp(u.type) * frac));
+  }
+  state.hpScaled = true;
+  return state;
+}
+
+// `hp` por defecto = el máximo del tipo. Antes toda unidad construida nacía con
+// 50 (economy.js la pasaba a mano) y tardaba 200 horas de juego en curarse: se
+// pagaban 350.000 por un portaviones y salía a mitad de vida.
+export function spawnUnit(state, iso, type, pos, hp = null) {
+  hp = hp ?? maxHp(type);
   const u = {
     id: state.nextUnitId++,
     owner: iso,
@@ -473,7 +512,7 @@ export function armyPower(state, iso) {
   let power = 0;
   for (const u of state.units) {
     if (u.owner !== iso) continue;
-    power += (u.hp / 100) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
+    power += hpFrac(u) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
   }
   return power;
 }

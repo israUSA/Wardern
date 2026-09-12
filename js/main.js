@@ -1,5 +1,5 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
-import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef } from "./engine/state.js";
+import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef , migrateHp } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
 import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack, airRangeInfo, canOverfly } from "./engine/movement.js";
 import { mergeUnits, mergeBlocker, detachUnit, dissolveFormation, formationMembers, formationLead, formationName } from "./engine/formations.js";

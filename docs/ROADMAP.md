@@ -265,3 +265,36 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [x] **Visión de los drones subida** a 700/1100/1500 km (era 120/200/300). Con las cifras
       viejas no llegaban ni a la provincia vecina —la mediana entre vecinas son 324 km— y
       un Bradley habría visto más que un MQ-9
+
+## v1.6 — Puntos de vida por unidad y doctrinas asimétricas (2026-09-12)
+
+- [x] **HP por unidad**: sale de `CATEGORY_HP × doctrina × tier` y el panel lo muestra
+      sobre el máximo real ("56 / 90", no "56 / 100"). Antes TODO tenía 100 y un
+      portaviones encajaba lo mismo que un pelotón de fusileros
+- [x] **Abanico naval abierto**: portaviones 450 · destructor 220 · transporte 160 ·
+      fragata 150 · submarino 120 · corbeta 90. Es donde estaba el problema que se
+      quería resolver y donde se pudo resolver
+- [x] **Abanico terrestre NO abierto, y medido**: `tools/test-variants.mjs` demostró que
+      el sistema de counters está calibrado con HP uniforme. Con infantería 87 y MBT 107
+      —un 23 % de diferencia— ya se rompe R7; con 63/126 se caen R2, R4, R6, R7 y R10.
+      El HP compone al cuadrado y desborda cualquier ventaja de ataque o terreno.
+      Abrirlo exige reescribir las matrices de ataque enteras: proyecto aparte
+- [x] **Doctrinas invertidas**: ORIENTE AGUANTA (+2-5 % HP), OCCIDENTE PEGA (+4-9 %
+      ataque). Antes era al revés y no se correspondía con nada reconocible. Los
+      márgenes son pequeños porque están MEDIDOS: un +10 % de vida con ataque igual
+      daba el 100 % de las batallas de stack. Equilibrio final: occ 4 · ori 6 duelos por
+      categoría, 68 % de victorias orientales en stack mixto
+- [x] **Unidades nuevas a vida completa**: nacían con 50 HP y tardaban 200 horas de
+      juego en curarse. Se pagaban 350.000 por un portaviones y salía a mitad de vida
+- [x] **El daño escala con la vida en los tres caminos a distancia**: ya lo hacía el
+      combate por provincia, pero el tiro de artillería y la probabilidad de acierto de
+      los misiles aire-aire lo ignoraban — un caza con 5 HP disparaba igual que uno
+      intacto
+- [x] **Reglas derivadas pasadas a porcentaje**: retirada (30 % del máximo, no 30
+      puntos), desgaste, regeneración y caída de moral
+- [x] **Migración de guardados** (`migrateHp`): conserva el porcentaje exacto y es
+      idempotente
+- [x] **Banco de pruebas actualizado** para replicar el motor nuevo (HP por unidad,
+      daño por fracción, retirada y HP final en porcentaje): **97 PASS · 0 FAIL**
+- [ ] **Pendiente**: no hay banco de pruebas NAVAL. El contrarreloj de docs/NAVAL.md
+      quedó marcado como no revalidado

@@ -452,12 +452,13 @@ export class MapRenderer {
           const k = u.formation ? u.owner + "|F|" + u.formation : u.owner + "|" + u.type;
           let g = byType.get(k);
           if (!g) {
-            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), aboard: 0, deck: 0, formation: u.formation || null }));
+            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), hpMax: 0, aboard: 0, deck: 0, formation: u.formation || null }));
           }
           if (u.formation && leadRank(u.type) < leadRank(g.type)) g.type = u.type;
           g.ids.push(u.id);
           g.n++;
           g.hp += u.hp;
+          g.hpMax += unitDef(u.type)?.hp || 100;
           g.level = Math.max(g.level, vetLevel(u));
           // Portaviones: plazas y aparatos de TODA la pila, que es lo que se dibuja
           const cap = CARRIER_CAPACITY[u.type] || 0;
@@ -586,7 +587,7 @@ export class MapRenderer {
         // abajo. A esos el rumbo se les marca con una flecha por delante.
         if (!air) this.drawHeadingArrow(ctx, sx, sy, ang, unitSize);
         drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), this.unitIconSizeFor(u.type), this.countryColor(u.owner), {
-          hp: Math.max(0, Math.min(1, u.hp / 100)),
+          hp: Math.max(0, Math.min(1, u.hp / (unitDef(u.type)?.hp || 100))),
           level: vetLevel(u),
           angle: air ? this.smoothHeading(u.id, ang + Math.PI / 2, dtMs) : undefined,
           variant: u.type,
@@ -835,7 +836,7 @@ export class MapRenderer {
       ctx.fill();
     }
     drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, this.unitIconSizeFor(g.type), this.countryColor(g.owner), {
-      hp: Math.max(0, Math.min(1, g.hp / (g.n * 100))),
+      hp: Math.max(0, Math.min(1, g.hpMax ? g.hp / g.hpMax : 0)),
       level: g.level,
       angle,
       variant: g.type, // sprite del vehículo real (F-16A, Abrams, Arleigh Burke...)

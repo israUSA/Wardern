@@ -1,7 +1,7 @@
 // IA de países bot: economía, operaciones militares y diplomacia.
 import * as C from "../data/constants.js";
 import { UNITS } from "../data/units-data.js";
-import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor } from "./state.js";
+import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor, hpFrac } from "./state.js";
 import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford } from "./economy.js";
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
@@ -270,7 +270,7 @@ function aiMilitary(state, iso, battles) {
   for (const [pid, ready] of candidates) {
     const defenders = unitsIn(state, pid).filter((u) => atWar(state, iso, u.owner));
     const powerOf = (list) =>
-      list.reduce((s, u) => s + (u.hp / 100) * ((unitDef(u.type)?.cost.money || 5000) / 5000), 0);
+      list.reduce((s, u) => s + hpFrac(u) * ((unitDef(u.type)?.cost.money || 5000) / 5000), 0);
     const defPower = powerOf(defenders);
     const atkPower = powerOf(ready);
 
@@ -450,7 +450,7 @@ function guessPower(state, iso, enemy, vis) {
   for (const u of state.units) {
     if (u.dead || u.embarked || u.owner !== enemy) continue;
     if (!vis.union.has(u.pos)) continue;
-    visto += (u.hp / 100) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
+    visto += hpFrac(u) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
   }
   const publico = controlledCount(state, enemy) * C.AI_GUESS_PER_PROVINCE;
   return Math.max(visto, publico) * guessBias(state, iso, enemy);

@@ -7,7 +7,7 @@ import { UNIT_CATEGORIES } from "../data/units-data.js";
 import { NAVAL_CATEGORIES } from "../data/naval-data.js";
 import {
   S, unitDef, isNaval, controller, unitsIn, atWar, visibleProvinces, intel,
-  availableVariants, doctrineVariants, scoutRangeKm, TIERS, DOCTRINES,
+  availableVariants, doctrineVariants, scoutRangeKm, maxHp, TIERS, DOCTRINES,
 } from "../engine/state.js";
 import { vetLevel } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
@@ -817,7 +817,8 @@ export function updateUnitPanel(state, ui) {
   const fNombre = u.formation && formationSummary(state, u.formation)?.name;
   if (fNombre) html += `<div class="up-where">Encuadrada en: <b>${fNombre}</b></div>`;
 
-  html += meter("HP", hp, `${Math.round(hp)} / 100`, hpColor(hp));
+  const hpMax = maxHp(u.type);
+  html += meter("HP", (hp / hpMax) * 100, `${Math.round(hp)} / ${hpMax}`, hpColor((hp / hpMax) * 100));
   html += meter("Moral", morale, `${morale} %`, morale < 30 ? "var(--danger)" : "#6fa8d9");
   html += meter("Exp", nextVet ? (exp / nextVet) * 100 : 100, nextVet ? `${exp} / ${nextVet}` : "máx", "#c9a227");
   html += `<div class="up-vet">Veteranía: ${

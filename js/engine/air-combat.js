@@ -5,7 +5,7 @@
 // PROVINCIA con munición infinita y cooldown; este gasta misiles de una carga
 // finita y apunta a una unidad. Los vuelos se meten en el MISMO `state.missiles`
 // (marcados con `air: true`) para que el render y el tick de vuelo sean únicos.
-import { S, unitDef, controller, atWar, distKm, log, visibleProvinces } from "./state.js";
+import { S, unitDef, controller, atWar, distKm, log, visibleProvinces , hpFrac } from "./state.js";
 import { vetLevel } from "./combat.js";
 import { canAfford, pay } from "./economy.js";
 import { carrierBerths } from "./movement.js";
@@ -196,7 +196,13 @@ export function pkFor(w, shooter, target, km) {
     }
   }
   const vet = vetLevel(shooter) * PK_VET_BONUS;
-  return Math.max(0.05, Math.min(0.95, w.pk * mult * (1 - targetEvasion(target)) + vet));
+  // Un escuadrón maltrecho acierta menos. Se degrada la PROBABILIDAD, no el
+  // daño: el misil explota igual de fuerte, lo que falla es el aparato dañado
+  // colocándose para tirar. Hasta ahora un caza con 5 HP disparaba exactamente
+  // igual que uno intacto, que era el único sitio del motor donde el estado de
+  // la unidad no contaba para nada.
+  const est = hpFrac(shooter);
+  return Math.max(0.05, Math.min(0.95, (w.pk * mult * (1 - targetEvasion(target)) + vet) * est));
 }
 
 // ¿Puede esta arma atacar a ese blanco? Devuelve el motivo si no.

@@ -58,7 +58,8 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
   const mk = (owner, type) => {
     const def = unitDef(type);
     if (!def) throw new Error(`unitDef(${type}) es null`);
-    units.push({ id: nextId++, owner, type, def, hp: 100, morale: 1, battleTicks: 0, exp: 0, edgeLeft: null });
+    const hpMax = def.hp || 100;
+    units.push({ id: nextId++, owner, type, def, hpMax, hp: hpMax, morale: 1, battleTicks: 0, exp: 0, edgeLeft: null });
   };
   for (const t of spec.sideA) mk("A", t);
   for (const t of spec.sideB) mk("B", t);
@@ -100,7 +101,7 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
       const vetT = 1 + vetLevel(target) * C.VET_BONUS_PER_LEVEL;
       const defVal = T.defense[A.category] * defBonus * fort * vetT;
       const atkVal = A.attack[T.category] || 0;
-      let dmg = atkVal * (u.hp / 100) * u.morale * atkPen * prep * overstack * vetA * C.COMBAT_SCALE;
+      let dmg = atkVal * (u.hp / u.hpMax) * u.morale * atkPen * prep * overstack * vetA * C.COMBAT_SCALE;
       dmg *= C.DEF_SOFTENER / (C.DEF_SOFTENER + defVal);
       if (u.hp > 0) u.exp = Math.min(C.VET_EXP_MAX, (u.exp || 0) + dmg * C.VET_EXP_PER_DAMAGE);
       dmgMap.set(target, (dmgMap.get(target) || 0) + dmg);
@@ -108,7 +109,7 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
     }
     for (const [u, dmg] of dmgMap) {
       u.hp -= dmg;
-      u.morale = Math.max(0, u.morale - dmg * C.MORALE_HIT);
+      u.morale = Math.max(0, u.morale - (dmg / u.hpMax) * 100 * C.MORALE_HIT);
       if (u.hp <= 0 && !dead.has(u.id)) dead.add(u.id);
     }
     // retiradas (HP < 30 o moral < 20%); se asume destino de retirada disponible
@@ -116,7 +117,7 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
       if (dead.has(u.id) || u.edgeLeft) continue;
       const stillFighting = fighting.some((e) => e.owner !== u.owner && !dead.has(e.id));
       if (!stillFighting) continue;
-      if (u.hp < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) u.edgeLeft = "retirada";
+      if ((u.hp / u.hpMax) * 100 < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) u.edgeLeft = "retirada";
     }
   }
 
@@ -174,7 +175,9 @@ section("[1] Schema completo: 60 variantes + 10 alias legacy (assert d/e)");
     for (const f of ["name", "icon", "cost", "buildHours", "hp", "speed", "captures", "air", "attack", "defense", "terrainDefBonus", "terrainAtkPenalty", "rangedTicks"]) {
       if (v[f] === undefined) errs.push(`falta ${f}`);
     }
-    if (v.hp !== 100) errs.push("hp≠100");
+    // El HP ya NO es 100 para todos: sale de CATEGORY_HP x doctrina x tier
+    // (units-data.js). Lo que se exige es que exista y sea un numero util.
+    if (!Number.isFinite(v.hp) || v.hp <= 0) errs.push("hp invalido");
     if (!(v.buildHours > 0) || !(v.speed > 0)) errs.push("buildHours/speed");
     for (const k of ["money", "supplies", "manpower", "fuel"]) {
       if (!Number.isFinite(v.cost?.[k]) || v.cost[k] < 0) errs.push(`cost.${k}`);
@@ -196,7 +199,7 @@ section("[1] Schema completo: 60 variantes + 10 alias legacy (assert d/e)");
     if (u.id !== lid) errs.push("id");
     if (u.doctrine !== undefined || u.tier !== undefined) errs.push("no debe tener doctrine/tier");
     if (u.legacy !== true) errs.push("legacy flag");
-    if (u.hp !== 100) errs.push("hp≠100");
+    if (!Number.isFinite(u.hp) || u.hp <= 0) errs.push("hp invalido");
     for (const m of ["attack", "defense"]) {
       if (!KEYS.every((k) => Number.isFinite(u[m]?.[k]))) errs.push(m);
     }
@@ -222,17 +225,22 @@ section("[2] Ancla t2: ataque occidental ≡ legacy; defensa oriental ≡ legacy
     helicoptero: { attack: {}, defense: {} },
     drone: { attack: {}, defense: {} },
   };
+  // Oriente ya NO lleva deltas de ataque: su ventaja entera es el HP
+  // (DOCTRINE_HP_MULT). Antes tenia los +1 en las claves que cazan y eso lo hacia
+  // mejor en los dos ejes a la vez.
   const ORI_DELTAS = {
     infanteria: { attack: {}, defense: {} },
     motorizada: { attack: {}, defense: {} },
     mbt: { attack: {}, defense: {} },
+    // Las dos unicas excepciones: el anticarro y la artilleria masiva, donde la
+    // doctrina sovietica si era superior de forma reconocible.
     cazatanques: { attack: { mbt: 1 }, defense: {} },
-    artilleria: { attack: { motorizada: 1 }, defense: {} },
-    antiaereo: { attack: { caza: 1, bombardero: 1, helicoptero: 1, drone: 1 }, defense: {} },
-    caza: { attack: { caza: 1 }, defense: {} },
-    bombardero: { attack: { infanteria: 1, motorizada: 1 }, defense: {} },
-    helicoptero: { attack: { mbt: 1 }, defense: {} },
-    drone: { attack: { infanteria: 1 }, defense: {} },
+    artilleria: { attack: { infanteria: 1 }, defense: {} },
+    antiaereo: { attack: {}, defense: {} },
+    caza: { attack: {}, defense: {} },
+    bombardero: { attack: {}, defense: {} },
+    helicoptero: { attack: {}, defense: {} },
+    drone: { attack: {}, defense: {} },
   };
   let bad = [];
   for (const cat of KEYS) {
@@ -240,7 +248,11 @@ section("[2] Ancla t2: ataque occidental ≡ legacy; defensa oriental ≡ legacy
     const occ = GROUND_VARIANTS[`occ-2-${cat}`];
     const ori = GROUND_VARIANTS[`ori-2-${cat}`];
     for (const k of KEYS) {
-      if (occ.attack[k] !== base.attack[k] + (OCC_DELTAS[cat].attack[k] || 0)) bad.push(`occ-2-${cat}.attack.${k}`);
+      // La pegada occidental va por DOCTRINE_ATK_MULT, asi que el ataque t2 YA NO
+      // es identico al ancla legacy: se comprueba que sea >= y que el margen no se
+      // dispare (el multiplicador vive entre 1.04 y 1.09).
+      const esperado = Math.round(base.attack[k] * 1.0) + (OCC_DELTAS[cat].attack[k] || 0);
+      if (occ.attack[k] < esperado || occ.attack[k] > Math.ceil(base.attack[k] * 1.12) + 1) bad.push(`occ-2-${cat}.attack.${k}`);
       if (occ.defense[k] !== base.defense[k] + (OCC_DELTAS[cat].defense[k] || 0)) bad.push(`occ-2-${cat}.defense.${k}`);
       if (ori.attack[k] !== base.attack[k] + (ORI_DELTAS[cat].attack[k] || 0)) bad.push(`ori-2-${cat}.attack.${k}`);
       if (ori.defense[k] !== base.defense[k] + (ORI_DELTAS[cat].defense[k] || 0)) bad.push(`ori-2-${cat}.defense.${k}`);
@@ -256,7 +268,7 @@ section("[2] Ancla t2: ataque occidental ≡ legacy; defensa oriental ≡ legacy
   // Resolución real de ids legacy vía unitDef (ruta del motor con partidas guardadas)
   const legacyOk = Object.keys(LEGACY_UNITS).every((lid) => {
     const d = unitDef(lid);
-    return d && d.attack && d.defense && d.cost && d.hp === 100;
+    return d && d.attack && d.defense && d.cost && Number.isFinite(d.hp) && d.hp > 0;
   });
   check("unitDef() resuelve las 10 ids planas legacy con campos completos (guardados viejos)", legacyOk);
   check("sample legacy intacto: mbt.atk.mbt=11, mbt.cost=80k, infanteria.captures=true, caza.air=true",

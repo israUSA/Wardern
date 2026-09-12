@@ -53,6 +53,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Variantes especiales (RQ-190…) | `UNITS.md` | Variantes especiales |
 | Tabla de costes | `UNITS.md` · `NAVAL.md` | Roster / Tabla de costes |
 | Quién gana a quién | `UNITS.md` | Counters |
+| Puntos de vida de una unidad | `UNITS.md` | Puntos de vida |
+| Ventajas de cada doctrina | `UNITS.md` | Sabor de doctrina |
 | Nombres reales de los vehículos | `UNITS.md` | Nombres reales por doctrina y época |
 | Doctrinas y qué país usa cuál | `UNITS.md` | Doctrinas y países |
 

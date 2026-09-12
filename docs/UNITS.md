@@ -62,26 +62,45 @@ aeronave, necesita entrada en `AIR_LOADOUTS` y en `SPRITES.variantes`.
 
 ## Sabor de doctrina (verificado que no rompe R1–R12)
 
-**Costes idénticos entre doctrinas** (simetría de balance, como en naval). El sabor vive
-solo en la matriz de stats, con ±1 sobre el ancla:
+**Costes idénticos entre doctrinas** (simetría de balance, como en naval). El eje es
+**Oriente aguanta, Occidente pega**.
 
-- **OCCIDENTAL — "supervivencia y aviónica"** (+defensa, cero cambios de ataque):
-  +1 defensa contra el AIRE (caza/bombardero/helicóptero/drone) en las 6 categorías
-  terrestres y +1 defensa del caza contra caza (ventaja BVR).
-- **ORIENTAL — "contra-fuerza"** (+ataque, cero cambios de defensa): +1 ataque del
-  cazatanques y del helicóptero contra blindados, del antiaéreo y del caza contra el
-  aire, del bombardero contra personal, de la artillería contra motorizada y del drone
-  contra infantería. Las claves de línea (infantería/motorizada/MBT/artillería entre sí)
-  quedan SIMÉTRICAS a propósito: los combates de desgaste no los decide la doctrina.
-  ⚠️ Lección medida: un +1 del MBT oriental contra artillería le daba el **78%** de los
-  combates mixtos (podía snipear el apoyo enemigo, el DPS del stack); se descartó.
+Hasta v1.5 era justo al revés —Oriente tenía los +1 de ataque y Occidente los de
+defensa antiaérea—, un reparto que no se correspondía con nada reconocible.
 
-**Competitividad medida (t2, réplica exacta del motor)**: en el duelo 1v1 por categoría
-entre doctrinas, 9 de 10 acaban en EMPATE técnico y solo `caza` cae del lado oriental
-(13 vs 12 con +1 defensa occidental: 0,67 contra 0,64 daño/tick). En los 8 contadores
-clásicos, los 4 emparejamientos de doctrina (occ/occ, occ/ori, ori/occ, ori/ori) dan el
-mismo ganador: la doctrina no invierte contadores. Stack mixto (4 inf + 2 MBT + 1 art +
-1 AA por bando): oriental gana el 52% — paridad.
+- **ORIENTAL — "masa y encaje"**: **+2 a +5 % de HP** según el arma
+  (`DOCTRINE_HP_MULT`). El helicóptero es el que más gana (+4,5 %): el Mi-24 lleva
+  blindaje real de vehículo de combate y además transporta tropa. El caza es el que
+  menos (+2 %): un avión no se blinda. Conserva dos deltas de matriz propios, las dos
+  armas donde la doctrina soviética sí era superior de forma reconocible: **+1 del
+  cazatanques contra MBT** y **+1 de la artillería contra infantería**.
+- **OCCIDENTAL — "sensores y letalidad"**: **+4 a +9 % de ataque**
+  (`DOCTRINE_ATK_MULT`). El caza, el bombardero, el drone y el cazatanques se llevan
+  el +9 %; el resto, entre +4 y +5 %. Conserva su ventaja defensiva contra el AIRE
+  (+1 en las 6 categorías terrestres, +1 del caza contra caza).
+
+### Por qué los márgenes son tan pequeños
+
+Están **medidos, no elegidos**. El HP compone al cuadrado: sobrevivir más significa
+seguir pegando a plena potencia más tiempo. Medido con el banco:
+
+| Ventaja oriental | Resultado |
+|---|---|
+| +10 % HP, ataque igual | oriental gana **10 de 10** duelos y el **100 %** de los stacks |
+| +45 % HP vs +10 % ataque occidental | oriental gana el **100 %** |
+| +3 % HP vs +4,5 % ataque occidental | **equilibrio** |
+
+Un 10 % de vida vale mucho más que un 10 % de pegada. Por eso la ventaja oriental
+tiene que quedarse en el entorno del 3 %.
+
+⚠️ Lección anterior, aún válida: un +1 del MBT oriental contra artillería le daba el
+**78 %** de los combates mixtos (podía snipear el apoyo enemigo, el DPS del stack).
+
+**Competitividad medida (t2, réplica exacta del motor)**: duelo 1v1 por categoría
+entre doctrinas, **occ 4 · ori 6** (el límite del banco son 6 de 10). En los 8
+contadores clásicos, los 4 emparejamientos de doctrina dan el mismo ganador: la
+doctrina no invierte contadores. Stack mixto (4 inf + 2 MBT + 1 art + 1 AA por
+bando): **oriental gana el 68 %** (la banda aceptada es 25-75 %).
 
 ## Roster del ancla t2 (10 categorías; costes idénticos para ambas doctrinas)
 
@@ -133,6 +152,65 @@ dinero a 500, sumin/fuel a 100, MO a 50). Ej.: infantería t1 14k/1.3k/1.1k/0, t
 
 La UI los muestra con su tier (`T2 · 80.000$ · …`) en el panel de Reclutar; los alias
 legacy conservan los nombres genéricos ("Infantería", "Tanque (MBT)") para guardados viejos.
+
+
+## Puntos de vida (v1.6)
+
+Hasta v1.5 **todas** las unidades tenían 100 HP y la fragilidad se expresaba solo
+con la matriz `defense`. Eso hacía que un portaviones encajase lo mismo que un
+pelotón de fusileros.
+
+Ahora el HP sale de `CATEGORY_HP × doctrina × tier` y el panel lo muestra sobre el
+máximo real de la unidad (`56 / 90`, no `56 / 100`).
+
+### Lo que se pudo y lo que no
+
+| | Abanico | Estado |
+|---|---|---|
+| **Naval** | portaviones 450 · destructor 220 · transporte 160 · fragata 150 · submarino 120 · corbeta 90 | **abierto** |
+| **Tierra y aire** | 100 para todas las categorías | **uniforme, a la fuerza** |
+
+El abanico terrestre se intentó (infantería 40, MBT 160) y `tools/test-variants.mjs`
+lo tumbó. Medido:
+
+| infantería / MBT | Reglas rotas |
+|---|---|
+| 100 / 100 | ninguna |
+| 87 / 107 | R7 |
+| 80 / 112 | R7, R10, R4 |
+| 63 / 126 | R2, R4, R6, R7, R10 |
+
+Con un 23 % de diferencia ya se cae. El motivo es que **el HP compone**: quien
+aguanta más sigue pegando a plena potencia más tiempo, así que la ventaja va al
+cuadrado. Medido aparte: **+10 % de vida con ataque igual da el 100 % de las
+batallas de stack**; +10 % de ataque, no.
+
+En el mar no hay problema porque los barcos solo se baten entre ellos y no entran
+en ninguno de los doce counters.
+
+Abrir el abanico terrestre exige reescribir las matrices de ataque y recalibrar
+los doce counters. Es un proyecto aparte, no un ajuste de tabla.
+
+### Escalado
+
+- **Tier**: ×0,9 / ×1,0 / ×1,15. Más contenido que el 0,9/1,0/1,25 del resto de
+  stats, porque el HP multiplica con el ataque y la defensa, que ya escalan.
+- **Doctrina**: oriental +2 a +5 % según el arma; el helicóptero es el que más gana
+  (+4,5 %), porque el Mi-24 lleva blindaje real de vehículo de combate.
+
+### Reglas derivadas
+
+- `RETREAT_HP` es un **porcentaje** del máximo (30 %), no 30 puntos absolutos.
+- El desgaste y la regeneración también van por porcentaje.
+- La moral cae por porcentaje de vida perdida: 50 de daño es el 125 % de un pelotón
+  y el 11 % de un portaviones.
+- **El daño que hace una unidad escala con su vida** (`hpFrac`). Ya existía en el
+  combate por provincia; ahora se aplica también al tiro de artillería y a la
+  probabilidad de acierto de los misiles aire-aire, que lo ignoraban por completo —
+  un caza con 5 HP disparaba igual que uno intacto.
+- Las unidades recién construidas nacen **a vida completa**. Antes nacían con 50 y
+  tardaban 200 horas de juego en curarse.
+- Los guardados anteriores se migran conservando el porcentaje (`migrateHp`).
 
 ## Counters (duelos 1v1 en llanura, sin fortaleza, verificados por doctrina y tier)
 

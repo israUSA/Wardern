@@ -310,7 +310,7 @@ export function formationSummary(state, fid) {
     n: m.length,
     lead,
     hp: m.reduce((s, u) => s + u.hp, 0),
-    hpMax: m.length * 100,
+    hpMax: m.reduce((s, u) => s + (unitDef(u.type)?.hp || 100), 0),
     speed: unitDef(lento)?.speed ?? 0,
     speedType: lento,
     captures: formationCaptures(state, fid),

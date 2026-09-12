@@ -1,6 +1,6 @@
 // Economía: producción horaria, mantenimiento, construcción, reclutamiento e investigación.
 import * as C from "../data/constants.js";
-import { S, unitDef, isNaval, availableVariants, log, checkElimination, controller, spawnUnit, TIERS, atWar, difficulty } from "./state.js";
+import { S, unitDef, isNaval, availableVariants, log, checkElimination, controller, spawnUnit, TIERS, atWar, difficulty , maxHp } from "./state.js";
 import { battleSet } from "./combat.js";
 
 export function economyHour(state) {
@@ -250,10 +250,10 @@ export function tickResearch(state, dt) {
 // Termina un trabajo acabado (unidad, barco, edificio o anexión)
 function finishJob(state, ps, p, q) {
   if (q.kind === "unit") {
-    spawnUnit(state, ps.owner, q.type, p.id, 50);
+    spawnUnit(state, ps.owner, q.type, p.id);
     log(state, `${unitDef(q.type)?.name ?? q.type} movilizado en ${p.name}`, "info");
   } else if (q.kind === "naval") {
-    spawnUnit(state, ps.owner, q.type, q.seaCell, 50);
+    spawnUnit(state, ps.owner, q.type, q.seaCell);
     // Decir que sale AL MAR: el barco no aparece dentro de la provincia y sin
     // esta pista el jugador lo busca en el puerto y cree que no se ha construido.
     log(state, `${unitDef(q.type)?.name ?? q.type} botado en ${p.name} — fondeado en el mar adyacente`, "good");
@@ -304,7 +304,9 @@ export function attritionTick(state) {
   for (const u of state.units) {
     const c = state.countries[u.owner];
     if (!c || c.eliminated || !c.shortSupplies) continue;
-    u.hp -= C.ATTRITION_HP;
+    // Porcentaje del maximo, no puntos absolutos: si no, el desgaste mataria a
+    // la infanteria de 40 HP trece veces mas rapido que a un portaviones de 450.
+    u.hp -= maxHp(u.type) * (C.ATTRITION_HP / 100);
     u.morale = Math.max(0, u.morale - C.ATTRITION_MORALE / 100);
     if (u.hp <= 0) {
       state.stats.lost[u.owner] = (state.stats.lost[u.owner] || 0) + 1;
@@ -327,7 +329,8 @@ export function regenTick(state) {
       if (u.morale < 1) u.morale = Math.min(1, u.morale + C.MORALE_REGEN_PER_H * 6);
       continue;
     }
-    if (u.hp < 100) u.hp = Math.min(100, u.hp + 1.5);
+    const tope = maxHp(u.type);
+    if (u.hp < tope) u.hp = Math.min(tope, u.hp + tope * 0.015);
     if (u.morale < 1) u.morale = Math.min(1, u.morale + C.MORALE_REGEN_PER_H * 6);
   }
 }
