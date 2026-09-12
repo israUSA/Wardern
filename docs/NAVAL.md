@@ -41,6 +41,38 @@
 | **Portaviones** | USS Nimitz / Kuznetsov | Dominio de superficie + proyección aérea | Fragata, corbeta, destructor, transporte (1v1) | Submarino, enjambres | 350k | 52/49 | 120 |
 | **Transporte** | USS Whidbey Island / Ivan Rogov | Mueve 3 terrestres por mar (`capacity: 3`) | Nada | Todo (huye o va escoltado) | 60k | 47/44 | 60 |
 
+
+## Puntos de vida por buque (v1.6)
+
+Hasta v1.5 todos los buques tenían 100 HP. Ahora van por desplazamiento, y el
+abanico está abierto de verdad porque los barcos solo se baten entre ellos (en
+tierra no se pudo, ver la sección "Puntos de vida" de docs/UNITS.md).
+
+| Clase | Occidente t1/t2/t3 | Oriente t1/t2/t3 | Ventaja occ. |
+|---|---|---|---|
+| Portaviones | 446/495/569 | 405/450/518 | **+10 %** |
+| Destructor | 208/231/266 | 198/220/253 | +5 % |
+| Fragata | 140/156/179 | 135/150/173 | +4 % |
+| Corbeta | 83/93/107 | 81/90/103 | +3 % |
+| Transporte | 148/165/190 | 144/160/184 | +3 % |
+| Submarino | 108/120/138 | 110/122/141 | **−2 %** |
+
+**En el mar aguanta más Occidente, al revés que en tierra.** La marina soviética se
+construyó alrededor del misil antibuque pesado sobre cascos más pequeños; la
+occidental, alrededor de cascos grandes y supervivientes. El contrapeso oriental es
+su +1 de ataque antibuque, que ya estaba en los datos.
+
+El submarino es la única clase donde manda Oriente: es su arma naval fuerte de
+verdad —Akula, Alfa, hoy los Yasen— y dejarlo sin nada sería mentir.
+
+`hp` y `defense` dicen cosas distintas: **defense es cuánto cuesta acertarte, hp es
+cuánto bulto tienes.** El transporte lo separa bien — mucho casco, ninguna
+protección.
+
+> Estas cifras **no están verificadas por ningún banco de pruebas**: el naval no
+> existe. El terrestre demostró que un 10 % de diferencia de vida puede decidir el
+> 100 % de los combates, así que el +10 % del portaviones es el número a vigilar.
+
 ## Contrarreloj naval (duelo 1v1 t2 occidental vs oriental)
 
 > **Tabla medida con la escala vieja de HP (todo a 100) y NO revalidada.**

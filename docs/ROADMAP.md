@@ -296,5 +296,11 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       idempotente
 - [x] **Banco de pruebas actualizado** para replicar el motor nuevo (HP por unidad,
       daño por fracción, retirada y HP final en porcentaje): **97 PASS · 0 FAIL**
+- [x] **Ventaja naval occidental**: en el mar aguanta más Occidente, al revés que en
+      tierra. Portaviones +10 %, destructor +5 %, fragata +4 %, corbeta y transporte
+      +3 %. El submarino es la única clase donde manda Oriente (−2 %): es su arma naval
+      fuerte de verdad. El contrapeso occidental sigue siendo el +1 de ataque antibuque
+      oriental que ya estaba en los datos
 - [ ] **Pendiente**: no hay banco de pruebas NAVAL. El contrarreloj de docs/NAVAL.md
-      quedó marcado como no revalidado
+      quedó marcado como no revalidado, y el +10 % del portaviones es el número a
+      vigilar — en tierra se midió que un 10 % de vida decide el 100 % de los combates
