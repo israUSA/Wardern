@@ -1,36 +1,130 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- GBU-31 JDAM (id del arma: gbu)
-       bomba GPS · 25 km
-       Silueta heredada de la familia "bomba guiada": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: BOMBA GUIADA (GBU-31 JDAM / KAB-500S). La silueta más distinta
-       de todas: NO tiene motor (sin llama), cuerpo de bomba en gota, cola con
-       kit de guiado cuadrado y estabilizadores laterales largos. Cae, no vuela.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- JDAM-ER (Alas hacia atrás con un 25% más de grosor en las palas)
+       Orientación: Punta hacia ARRIBA (Norte) -->
   <defs>
-    <linearGradient id="bg-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#cfd6db"/>
-      <stop offset="0.45" stop-color="#8b949c"/>
-      <stop offset="1" stop-color="#4a5257"/>
+    <!-- Cuerpo bomba en verde oliva mate -->
+    <linearGradient id="jdam-green" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b4733"/>
+      <stop offset="28%" stop-color="#677a56"/>
+      <stop offset="68%" stop-color="#4d5c41"/>
+      <stop offset="100%" stop-color="#2a3324"/>
+    </linearGradient>
+
+    <!-- Resplandor cilíndrico suave para volumen 3D -->
+    <linearGradient id="jdam-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Sección de cola cónica JDAM en gris naval claro -->
+    <linearGradient id="jdam-tail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9da5ab"/>
+      <stop offset="30%" stop-color="#e2e7eb"/>
+      <stop offset="70%" stop-color="#bdc6cc"/>
+      <stop offset="100%" stop-color="#7d868c"/>
+    </linearGradient>
+
+    <!-- Kit alar y alas gruesas en aluminio/gris -->
+    <linearGradient id="jdam-wing" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c4ccd1"/>
+      <stop offset="50%" stop-color="#eef2f5"/>
+      <stop offset="100%" stop-color="#9aa3a8"/>
+    </linearGradient>
+
+    <!-- Aletas traseras en sombra y luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b4bec4"/>
+      <stop offset="100%" stop-color="#808b91"/>
+    </linearGradient>
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8a959c"/>
+      <stop offset="100%" stop-color="#636e74"/>
     </linearGradient>
   </defs>
 
-  <!-- estabilizadores laterales largos (las "strakes" del kit JDAM) -->
-  <rect x="10.8" y="20" width="1.8" height="24" rx="0.7" fill="#6c757c"/>
-  <rect x="19.4" y="20" width="1.8" height="24" rx="0.7" fill="#6c757c"/>
+  <!-- ================= ALETAS TRASERAS DE CONTROL ================= -->
+  <!-- Aleta trasera izquierda -->
+  <polygon points="13.9,51.5 8.5,53.5 8.5,57.5 14.3,55" 
+           fill="url(#fin-left)" 
+           stroke="#3d4447" 
+           stroke-width="0.22"/>
 
-  <!-- cola: caja de guiado con aletas rectas, no en punta -->
-  <path d="M11.5 44 L20.5 44 L20.5 56 L11.5 56 Z" fill="#4a5257"/>
-  <path d="M11.5 46 L5.5 50 L5.5 55 L11.5 53 Z" fill="#5b646b"/>
-  <path d="M20.5 46 L26.5 50 L26.5 55 L20.5 53 Z" fill="#5b646b"/>
-  <rect x="12.6" y="46.5" width="6.8" height="7" rx="0.8" fill="#39424a"/>
-  <circle cx="16" cy="50" r="1.4" fill="#7fd08a" opacity="0.8"/>
+  <!-- Aleta trasera derecha -->
+  <polygon points="18.1,51.5 23.5,53.5 23.5,57.5 17.7,55" 
+           fill="url(#fin-right)" 
+           stroke="#313639" 
+           stroke-width="0.22"/>
 
-  <!-- cuerpo de bomba en gota: ancho arriba, se estrecha hacia la cola -->
-  <path d="M16 2 C19.2 6 21 12 21 20 L21 44 L11 44 L11 20 C11 12 12.8 6 16 2 Z" fill="url(#bg-body)"/>
-  <rect x="11" y="24" width="10" height="2.6" fill="#c9a22f"/>
-  <rect x="11" y="29" width="10" height="1.4" fill="#c9432f"/>
-  <path d="M12.6 8 C13.6 6 14.8 4.2 16 3 L16 20 L12.6 20 Z" fill="#ffffff" opacity="0.28"/>
+  <!-- Aleta vertical central -->
+  <polygon points="15.7,50 15.7,46 16.3,46 16.3,50" 
+           fill="#b5bfc4" 
+           stroke="#3d4447" 
+           stroke-width="0.18"/>
+
+  <!-- ================= CUERPO PRINCIPAL DE LA BOMBA ================= -->
+  <!-- Ojiva frontal aerodinámica -->
+  <path d="M 13.2 15 
+           C 13.2 9, 14.4 3.8, 16 3.8 
+           C 17.6 3.8, 18.8 9, 18.8 15 
+           Z" 
+        fill="url(#jdam-green)"/>
+
+  <!-- Fuselaje cilíndrico central verde oliva -->
+  <rect x="13.2" y="15" width="5.6" height="27" fill="url(#jdam-green)"/>
+
+  <!-- Cono de cola JDAM -->
+  <polygon points="13.2,42 18.8,42 17.4,56.5 14.6,56.5" 
+           fill="url(#jdam-tail)" 
+           stroke="#5d666b" 
+           stroke-width="0.2"/>
+
+  <!-- Brillo cilíndrico longitudinal -->
+  <rect x="13.2" y="4" width="5.6" height="52" fill="url(#jdam-shine)"/>
+
+  <!-- ================= BANDAS DE IDENTIFICACIÓN ================= -->
+  <!-- Banda amarilla de alto explosivo -->
+  <rect x="13.2" y="11.5" width="5.6" height="1.8" fill="#f0ad18"/>
+  <rect x="13.2" y="11.5" width="5.6" height="1.8" fill="url(#jdam-shine)"/>
+
+  <!-- Anillo metálico plateado de refuerzo -->
+  <rect x="13.2" y="17.2" width="5.6" height="1.2" fill="#c0c8cd" stroke="#687278" stroke-width="0.18"/>
+
+  <!-- Junta de separación de cola -->
+  <rect x="13.2" y="41.2" width="5.6" height="0.8" fill="#b0b8bd" stroke="#5d666b" stroke-width="0.15"/>
+
+  <!-- Abrazadera metálica con ventana -->
+  <rect x="12.9" y="27.5" width="6.2" height="6.5" rx="0.5" fill="#a4aeb3" stroke="#485257" stroke-width="0.2"/>
+  <rect x="15.1" y="29.2" width="1.8" height="3" rx="0.3" fill="#2d3336"/>
+
+  <!-- ================= ALAS HACIA ATRÁS (+25% GROSOR) ================= -->
+  <!-- Ala izquierda (+25% espesor de pala, ancho de 2.5 mm) -->
+  <polygon points="15.2,24.5 16,21.5 7.5,42.2 5,41" 
+           fill="url(#jdam-wing)" 
+           stroke="#3d464c" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- Ala derecha (+25% espesor de pala, simétrica) -->
+  <polygon points="16.8,24.5 16,21.5 24.5,42.2 27,41" 
+           fill="url(#jdam-wing)" 
+           stroke="#3d464c" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+
+  <!-- Carcasa dorsal central que une ambas alas -->
+  <rect x="13.9" y="21" width="4.2" height="7.2" rx="0.8" fill="url(#jdam-wing)" stroke="#4e585d" stroke-width="0.22"/>
+  
+  <!-- Ranuras aerodinámicas del carenado dorsal -->
+  <line x1="14.5" y1="22.8" x2="17.5" y2="22.8" stroke="#717d84" stroke-width="0.22"/>
+  <line x1="14.5" y1="24.5" x2="17.5" y2="24.5" stroke="#717d84" stroke-width="0.22"/>
+  <line x1="14.5" y1="26.2" x2="17.5" y2="26.2" stroke="#717d84" stroke-width="0.22"/>
+
+  <!-- Bisagra / pivote central reforzado -->
+  <circle cx="16" cy="23.6" r="0.75" fill="#32383c" stroke="#1d2123" stroke-width="0.15"/>
+  <circle cx="16" cy="23.6" r="0.3" fill="#ffffff" opacity="0.75"/>
+
+  <!-- ================= EXTREMO DE COLA ================= -->
+  <ellipse cx="16" cy="56.5" rx="1.4" ry="0.4" fill="#222729" stroke="#121517" stroke-width="0.2"/>
+  <circle cx="16" cy="56.5" r="0.45" fill="#4d5559"/>
 </svg>

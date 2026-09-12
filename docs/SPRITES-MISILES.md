@@ -7,14 +7,12 @@ archivo exista con su nombre.
 
 ## Como va la cosa
 
-**20 de 26 hechos. Quedan 6 archivos, que son solo 3 dibujos** — los otros 3 son
-gemelos que pueden heredar del suyo para siempre.
+**26 de 26 hechos.** Ya no hay ningun proyectil heredando la silueta de otro:
+cada arma tiene su propio archivo dibujado.
 
-| Lo que falta | Archivo | Gemelo que arrastra |
-|---|---|---|
-| Bomba guiada | `m-gbu.svg` | `m-kab.svg` (KAB-500S) |
-| Anticarro ligero | `m-tow.svg` | `m-ataka.svg`, `m-shturm.svg` |
-| Obus de artilleria | `m-obus.svg` | — |
+Lo unico que queda es opcional: repasar las cuatro siluetas de la seccion 2, que
+funcionan y se distinguen entre si, pero son arte base sin el nivel de detalle
+de la seccion 1.
 
 ## Como funciona
 
@@ -63,6 +61,11 @@ gemelos que pueden heredar del suyo para siempre.
 | [x] | **Crucero naval (Tomahawk / Kalibr)** | `tomahawk` | `m-tomahawk.svg` | 1.200 km · 15 dmg | USS Arleigh Burke, Udaloy (Proy. 1155), USS Zumwalt, Lider (Proy. 23560) |
 | [x] | **Antibuque (Harpoon / Kh-35)** | `harpoon` | `m-harpoon.svg` | 450 km · 25 dmg | USS Constellation, Proyecto 22350M |
 | [x] | **Crucero aéreo (JASSM / Kh-101)** | `jassm` | `m-jassm.svg` | 1.000 km · 12 dmg | B-21 Raider, Tu-160M |
+| [x] | **GBU-31 JDAM** | `gbu` | `m-gbu.svg` | GPS · 25 km · 35 dmg | F-22 Raptor, F-35A Lightning II, B-52G, B-2 Spirit, B-21 Raider |
+| [x] | **KAB-500S** | `kab` | `m-kab.svg` | GPS · 20 km · 35 dmg | Tu-22M2, Tu-22M3, Tu-160M |
+| [x] | **BGM-71 TOW** | `tow` | `m-tow.svg` | alambre · 4 km · 35 dmg | AH-1F Cobra |
+| [x] | **9M120 Ataka** | `ataka` | `m-ataka.svg` | radio · 8 km · 40 dmg | Mi-28N, Mi-28NM, Orion |
+| [x] | **9M114 Shturm** | `shturm` | `m-shturm.svg` | radio · 5 km · 35 dmg | Mi-24D |
 
 ## 2. Hechos — arte base diferenciado
 
@@ -74,17 +77,13 @@ rejilla del R-77). Funcionan; repasarlas es opcional.
 | [x] | **AIM-120C AMRAAM** | `aim120` | `m-aim120.svg` | activo · 105 km · 70 dmg | F/A-18E, F-22 Raptor, F-35A Lightning II |
 | [x] | **R-77 (AA-12 Adder)** | `r77` | `m-r77.svg` | activo · 110 km · 70 dmg | Su-57 |
 | [x] | **Salva de cohetes (HIMARS / Smerch)** | `mlrs` | `m-mlrs.svg` | 800 km · 8 dmg | M109A6 Paladin, 2S19 Msta-S, M1299 ERCA, 2S35 Koalitsiya |
+| [x] | **Salva de obús** | `obus` | `m-obus.svg` | artillería · 9/13/18 dmg | M109A2, Paladin, ERCA, D-30, Msta-S, Koalitsiya |
 
-## 3. Pendientes
-
-| | Arma | `id` | Archivo | Ficha | Lo dispara |
-|---|---|---|---|---|---|
-| [ ] | **GBU-31 JDAM** | `gbu` | `m-gbu.svg` | GPS · 25 km · 35 dmg | F-22 Raptor, F-35A Lightning II, B-52G, B-2 Spirit, B-21 Raider |
-| [ ] | **KAB-500S** | `kab` | `m-kab.svg` | GPS · 20 km · 35 dmg | Tu-22M2, Tu-22M3, Tu-160M |
-| [ ] | **BGM-71 TOW** | `tow` | `m-tow.svg` | alambre · 4 km · 35 dmg | AH-1F Cobra |
-| [ ] | **9M120 Ataka** | `ataka` | `m-ataka.svg` | radio · 8 km · 40 dmg | Mi-28N, Mi-28NM, Orion |
-| [ ] | **9M114 Shturm** | `shturm` | `m-shturm.svg` | radio · 5 km · 35 dmg | Mi-24D |
-| [ ] | **Salva de obús** | `obus` | `m-obus.svg` | artillería · 9/13/18 dmg | M109A2, Paladin, ERCA, D-30, Msta-S, Koalitsiya |
+> El `obus` esta en esta seccion, y no en la 1, porque su archivo sigue siendo el
+> dibujo corto original (34 lineas frente a las ~140 de los demas). La silueta es
+> suya y no la comparte con nadie —corto, gordo, sin aletas ni llama, banda de
+> cobre al culote—, asi que cumple y se distingue de un misil de un vistazo. Si
+> alguna vez se repasa el arte, es el candidato obvio.
 
 > **`aim7` (AIM-7M Sparrow) no lo lleva ningun avion.** Esta definido en
 > `air-combat-data.js` y tiene su arte, pero ningun `AIR_LOADOUTS` lo incluye,
