@@ -1,46 +1,145 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- 9M120 Ataka (id del arma: ataka)
-       anticarro radio · 8 km
-       Silueta heredada de la familia "anticarro ligero": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- Misil Hellfire compacto, vista lateral vertical, punta hacia arriba.
-       El motor puede rotarlo hacia el objetivo. Colores fijos (proyectil neutro). -->
-  <defs><style>
-    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
-    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}
-    .dark{fill:#3d4232}.rubber{fill:#2b2e28}
-  </style></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- 9M120 Ataka (Configuración de ojiva cónica integrada y aletas traseras plateadas/curvas)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Detalles de la referencia:
+       - Punta cónica afilada con resalte cilíndrico en verde militar oscuro satinado
+       - Aletas canard de control pequeñas y oscuras (negras/grafito)
+       - Banda rojiza/técnica de fábrica junto a los canards
+       - Fuselaje largo cilíndrico verde oliva oscuro
+       - Collar de acople trasero oscuro
+       - Aletas de cola plateadas/aluminio brillante con curvatura envolvente muy visible
+       - Cilindro de popa con puertos laterales -->
+  <defs>
+    <!-- Gradiente del fuselaje verde oliva oscuro ruso -->
+    <linearGradient id="ataka-green" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d3822"/>
+      <stop offset="28%" stop-color="#586b45"/>
+      <stop offset="68%" stop-color="#3e4d2f"/>
+      <stop offset="100%" stop-color="#1f2717"/>
+    </linearGradient>
 
-  <!-- llama del cohete -->
-  <path d="M13 52.5 L19 52.5 C20.5 56 19 60 16 62.5 C13 60 11.5 56 13 52.5 Z" fill="#e8a33d" opacity=".9"/>
-  <path d="M14.2 52.5 L17.8 52.5 C18.6 55.5 17.8 58.3 16 60 C14.2 58.3 13.4 55.5 14.2 52.5 Z" fill="#f6d47c"/>
+    <!-- Resplandor longitudinal cilíndrico -->
+    <linearGradient id="ataka-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
 
-  <!-- tobera -->
-  <path class="rubber" d="M11.6 49 L20.4 49 L19.4 52.5 L12.6 52.5 Z"/>
+    <!-- Canards negros/grafito oscuro -->
+    <linearGradient id="canard-dark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#242928"/>
+      <stop offset="100%" stop-color="#0f1211"/>
+    </linearGradient>
 
-  <!-- aletas de cola -->
-  <path class="metal" d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z"/>
-  <path d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z"/>
-  <path d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+    <!-- Aletas traseras curvas en aluminio/plata brillante (cara externa) -->
+    <linearGradient id="fin-silver-ext" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b8c2c8"/>
+      <stop offset="40%" stop-color="#f0f4f7"/>
+      <stop offset="80%" stop-color="#cdd6dc"/>
+      <stop offset="100%" stop-color="#9aa4aa"/>
+    </linearGradient>
 
-  <!-- aletas centrales -->
-  <path class="metal" d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z"/>
-  <path d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z"/>
-  <path d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+    <!-- Aletas traseras (cara cóncava interior en sombra) -->
+    <linearGradient id="fin-silver-int" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#697277"/>
+      <stop offset="100%" stop-color="#495055"/>
+    </linearGradient>
 
-  <!-- cuerpo -->
-  <path class="metalL" d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z"/>
-  <path d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <path class="hi" d="M13 12 L15 12 L15 48.6 L13 48.6 Z" opacity=".55"/>
-  <path d="M11.6 20 L20.4 20 M11.6 36 L20.4 36" stroke="#3d4232" stroke-width=".5" opacity=".45"/>
+    <!-- Tubo de popa verde oliva oscuro -->
+    <linearGradient id="ataka-tail-tube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#242d1b"/>
+      <stop offset="30%" stop-color="#4e5e3c"/>
+      <stop offset="70%" stop-color="#38442a"/>
+      <stop offset="100%" stop-color="#192013"/>
+    </linearGradient>
+  </defs>
 
-  <!-- cabeza buscadora laser -->
-  <path class="metalS" d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z"/>
-  <path d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <circle class="glass" cx="16" cy="8" r="1.7"/>
-  <circle class="glassL" cx="15.3" cy="7.3" r=".6"/>
+  <!-- ================= ALETAS TRASERAS DE COLA (ALUMINIO CURVO / TIPO TEJA) ================= -->
+  <!-- Aleta trasera izquierda: cara interior cóncava en sombra -->
+  <path d="M 14.3 49 C 11.2 49, 9.2 50.8, 9.2 54 L 11.5 54.8 C 11.5 52.2, 13 51, 14.3 50.8 Z" 
+        fill="url(#fin-silver-int)" 
+        stroke="#454c50" 
+        stroke-width="0.2"/>
+  <!-- Aleta trasera izquierda: pala exterior curvada reflectante -->
+  <path d="M 9.2 54 C 9.2 51.2, 11 49.2, 14.3 49.2 L 14.3 53.5 C 12.2 53.5, 10.8 54.8, 10.8 56.8 L 9.2 54 Z" 
+        fill="url(#fin-silver-ext)" 
+        stroke="#5a6368" 
+        stroke-width="0.2" 
+        stroke-linejoin="round"/>
+
+  <!-- Aleta trasera derecha: simétrica curva exterior -->
+  <path d="M 17.7 49 C 20.8 49, 22.8 50.8, 22.8 54 L 20.5 54.8 C 20.5 52.2, 19 51, 17.7 50.8 Z" 
+        fill="url(#fin-silver-int)" 
+        stroke="#454c50" 
+        stroke-width="0.2"/>
+  <path d="M 22.8 54 C 22.8 51.2, 21 49.2, 17.7 49.2 L 17.7 53.5 C 19.8 53.5, 21.2 54.8, 21.2 56.8 L 22.8 54 Z" 
+        fill="url(#fin-silver-ext)" 
+        stroke="#5a6368" 
+        stroke-width="0.2" 
+        stroke-linejoin="round"/>
+
+  <!-- ================= CANARDS DELANTEROS PEQUEÑOS Y OSCUROS ================= -->
+  <!-- Canard izquierdo tipo trapecio afilado -->
+  <polygon points="14.3,16 11.8,17.2 12.2,19.2 14.3,18.5" 
+           fill="url(#canard-dark)" 
+           stroke="#0b0d0c" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard derecho -->
+  <polygon points="17.7,16 20.2,17.2 19.8,19.2 17.7,18.5" 
+           fill="url(#canard-dark)" 
+           stroke="#0b0d0c" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- 1. Ojiva cónica puntiaguda -->
+  <polygon points="14.3,10 17.7,10 16,3" 
+           fill="url(#ataka-green)" 
+           stroke="#212918" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- Anillo/junta en la base del cono frontal -->
+  <line x1="14.3" y1="7.2" x2="17.7" y2="7.2" stroke="#2a351f" stroke-width="0.2"/>
+
+  <!-- 2. Tubo cilíndrico principal (verde oliva continuo) -->
+  <rect x="14.3" y="10" width="3.4" height="37.5" fill="url(#ataka-green)"/>
+
+  <!-- 3. Collar de separación posterior oscuro -->
+  <rect x="14.3" y="46.8" width="3.4" height="2" fill="#20241b" stroke="#12150f" stroke-width="0.18"/>
+
+  <!-- 4. Sección cilíndrica de cola / soporte de aletas -->
+  <rect x="14.6" y="48.8" width="2.8" height="11" fill="url(#ataka-tail-tube)" stroke="#192013" stroke-width="0.2"/>
+
+  <!-- Brillo longitudinal en todo el fuselaje -->
+  <rect x="14.3" y="3.2" width="3.4" height="56" fill="url(#ataka-shine)"/>
+
+  <!-- ================= DETALLES Y ESTÉNCIL DE FÁBRICA ================= -->
+  <!-- Marca/etiqueta técnica rojiza junto a los canards -->
+  <rect x="15.2" y="17.2" width="1.6" height="1.8" rx="0.2" fill="#8f3124" opacity="0.85"/>
+  <line x1="15.4" y1="17.8" x2="16.6" y2="17.8" stroke="#ffffff" stroke-width="0.2" opacity="0.8"/>
+  <line x1="15.4" y1="18.4" x2="16.4" y2="18.4" stroke="#ffffff" stroke-width="0.2" opacity="0.8"/>
+
+  <!-- Juntas de sección del fuselaje -->
+  <line x1="14.3" y1="10" x2="17.7" y2="10" stroke="#28331d" stroke-width="0.2"/>
+  <line x1="14.3" y1="20" x2="17.7" y2="20" stroke="#28331d" stroke-width="0.2"/>
+  <line x1="14.3" y1="24.5" x2="17.7" y2="24.5" stroke="#28331d" stroke-width="0.2"/>
+
+  <!-- Puertos de sujeción / orificios en la sección de popa -->
+  <circle cx="15.2" cy="57" r="0.3" fill="#10140c"/>
+  <circle cx="16.8" cy="57" r="0.3" fill="#10140c"/>
+
+  <!-- ================= PALETA CENTRAL DE COLA (VISTA FRONTAL) ================= -->
+  <!-- Hoja curva dorsal vista de frente sobre el tubo de cola -->
+  <path d="M 14.6,50 C 14.6,48.5, 17.4,48.5, 17.4,50 L 17.4,54.8 C 17.4,53.5, 14.6,53.5, 14.6,54.8 Z" 
+        fill="url(#fin-silver-ext)" 
+        stroke="#454c50" 
+        stroke-width="0.2"/>
+
+  <!-- Extremo de popa y lente del enlace receptor óptico/radio -->
+  <ellipse cx="16" cy="59.8" rx="1.4" ry="0.35" fill="#11140e"/>
+  <circle cx="16" cy="59.8" r="0.4" fill="#691a13"/>
 </svg>
+

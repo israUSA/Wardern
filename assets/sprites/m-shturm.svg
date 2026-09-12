@@ -1,46 +1,134 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- 9M114 Shturm (id del arma: shturm)
-       anticarro radio · 5 km
-       Silueta heredada de la familia "anticarro ligero": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- Misil Hellfire compacto, vista lateral vertical, punta hacia arriba.
-       El motor puede rotarlo hacia el objetivo. Colores fijos (proyectil neutro). -->
-  <defs><style>
-    .metal{fill:#6f767c}.metalS{fill:#54595e}.metalL{fill:#939aa0}
-    .glass{fill:#3e607a}.glassL{fill:#7fa3ba}
-    .dark{fill:#3d4232}.rubber{fill:#2b2e28}
-  </style></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- 9M114 Shturm (AT-6 Spiral)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Detalles específicos de la referencia:
+       - Ojiva ojival redondeada en verde oliva con banda metálica plateada/aluminio ancha en la base
+       - Aletas canard delanteras replegadas en ranuras longitudinales con marca roja/naranja
+       - Fuselaje largo y cilíndrico en verde oliva militar mate
+       - Collar de acople trasero oscuro/metálico
+       - 4 aletas traseras curvas flexibles de color negro/grafito muy oscuro
+       - Popa cilíndrica redondeada en verde con puerto/sensor lateral -->
+  <defs>
+    <!-- Gradiente cilíndrico del cuerpo en verde oliva militar -->
+    <linearGradient id="shturm-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#344326"/>
+      <stop offset="28%" stop-color="#5f7547"/>
+      <stop offset="68%" stop-color="#465833"/>
+      <stop offset="100%" stop-color="#24301a"/>
+    </linearGradient>
 
-  <!-- llama del cohete -->
-  <path d="M13 52.5 L19 52.5 C20.5 56 19 60 16 62.5 C13 60 11.5 56 13 52.5 Z" fill="#e8a33d" opacity=".9"/>
-  <path d="M14.2 52.5 L17.8 52.5 C18.6 55.5 17.8 58.3 16 60 C14.2 58.3 13.4 55.5 14.2 52.5 Z" fill="#f6d47c"/>
+    <!-- Resplandor longitudinal para volumen 3D -->
+    <linearGradient id="shturm-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
 
-  <!-- tobera -->
-  <path class="rubber" d="M11.6 49 L20.4 49 L19.4 52.5 L12.6 52.5 Z"/>
+    <!-- Banda plateada / aluminio pulido en la base de la ojiva -->
+    <linearGradient id="silver-ring" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9aa4a8"/>
+      <stop offset="30%" stop-color="#f2f5f7"/>
+      <stop offset="70%" stop-color="#c6cfd4"/>
+      <stop offset="100%" stop-color="#768085"/>
+    </linearGradient>
 
-  <!-- aletas de cola -->
-  <path class="metal" d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z"/>
-  <path d="M11.6 43 L3 47.5 L3 52 L11.6 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z"/>
-  <path d="M20.4 43 L29 47.5 L29 52 L20.4 48 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+    <!-- Aletas traseras curvas negras / grafito oscuro (cara exterior reflectante) -->
+    <linearGradient id="fin-black-ext" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#252a2b"/>
+      <stop offset="40%" stop-color="#4e585c"/>
+      <stop offset="80%" stop-color="#2b3236"/>
+      <stop offset="100%" stop-color="#121516"/>
+    </linearGradient>
 
-  <!-- aletas centrales -->
-  <path class="metal" d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z"/>
-  <path d="M11.6 22 L4.5 24.5 L4.5 28.5 L11.6 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
-  <path class="metalS" d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z"/>
-  <path d="M20.4 22 L27.5 24.5 L27.5 28.5 L20.4 26 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".7"/>
+    <!-- Aletas traseras (cara interior cóncava en sombra) -->
+    <linearGradient id="fin-black-int" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#181c1d"/>
+      <stop offset="100%" stop-color="#0a0c0d"/>
+    </linearGradient>
 
-  <!-- cuerpo -->
-  <path class="metalL" d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z"/>
-  <path d="M11.6 11.5 L20.4 11.5 L20.4 49 L11.6 49 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <path class="hi" d="M13 12 L15 12 L15 48.6 L13 48.6 Z" opacity=".55"/>
-  <path d="M11.6 20 L20.4 20 M11.6 36 L20.4 36" stroke="#3d4232" stroke-width=".5" opacity=".45"/>
+    <!-- Tubo de popa cilíndrico -->
+    <linearGradient id="shturm-tail-tube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2c3920"/>
+      <stop offset="30%" stop-color="#55693f"/>
+      <stop offset="70%" stop-color="#3d4c2d"/>
+      <stop offset="100%" stop-color="#1e2715"/>
+    </linearGradient>
+  </defs>
 
-  <!-- cabeza buscadora laser -->
-  <path class="metalS" d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z"/>
-  <path d="M16 3.5 C13.2 5.6 11.6 8.4 11.6 11.5 L20.4 11.5 C20.4 8.4 18.8 5.6 16 3.5 Z" fill-opacity="0" stroke="#3d4232" stroke-width=".8"/>
-  <circle class="glass" cx="16" cy="8" r="1.7"/>
-  <circle class="glassL" cx="15.3" cy="7.3" r=".6"/>
+  <!-- ================= ALETAS TRASERAS CURVAS (NEGRAS / GRAFITO OSCURO) ================= -->
+  <!-- Aleta trasera izquierda: cara interior cóncava -->
+  <path d="M 14.2 49 C 11.2 49, 9.2 50.8, 9.2 54 L 11.5 54.8 C 11.5 52.2, 13 51, 14.2 50.8 Z" 
+        fill="url(#fin-black-int)" 
+        stroke="#0b0d0e" 
+        stroke-width="0.2"/>
+  <!-- Aleta trasera izquierda: lámina curva exterior -->
+  <path d="M 9.2 54 C 9.2 51.2, 11 49.2, 14.2 49.2 L 14.2 53.5 C 12.2 53.5, 10.8 54.8, 10.8 56.8 L 9.2 54 Z" 
+        fill="url(#fin-black-ext)" 
+        stroke="#1a1f21" 
+        stroke-width="0.2" 
+        stroke-linejoin="round"/>
+
+  <!-- Aleta trasera derecha: cara interior cóncava -->
+  <path d="M 17.8 49 C 20.8 49, 22.8 50.8, 22.8 54 L 20.5 54.8 C 20.5 52.2, 19 51, 17.8 50.8 Z" 
+        fill="url(#fin-black-int)" 
+        stroke="#0b0d0e" 
+        stroke-width="0.2"/>
+  <!-- Aleta trasera derecha: lámina curva exterior -->
+  <path d="M 22.8 54 C 22.8 51.2, 21 49.2, 17.8 49.2 L 17.8 53.5 C 19.8 53.5, 21.2 54.8, 21.2 56.8 L 22.8 54 Z" 
+        fill="url(#fin-black-ext)" 
+        stroke="#1a1f21" 
+        stroke-width="0.2" 
+        stroke-linejoin="round"/>
+
+  <!-- ================= CUERPO PRINCIPAL DEL MISIL ================= -->
+  <!-- 1. Ojiva frontal ojival cónica redondeada -->
+  <path d="M 14.2 8.5 
+           C 14.2 5.5, 15.1 2.8, 16 2.8 
+           C 16.9 2.8, 17.8 5.5, 17.8 8.5 
+           Z" 
+        fill="url(#shturm-body)"/>
+
+  <!-- 2. Banda ancha plateada de aluminio reflectante -->
+  <rect x="14.2" y="8.5" width="3.6" height="2.8" fill="url(#silver-ring)" stroke="#5f696e" stroke-width="0.18"/>
+
+  <!-- 3. Fuselaje cilíndrico principal verde oliva -->
+  <rect x="14.2" y="11.3" width="3.6" height="36.2" fill="url(#shturm-body)"/>
+
+  <!-- 4. Collar de transición de popa en metal oscuro -->
+  <rect x="14.2" y="47.5" width="3.6" height="1.8" fill="#20261e" stroke="#121610" stroke-width="0.18"/>
+
+  <!-- 5. Cilindro posterior porta-aletas y de tobera -->
+  <rect x="14.5" y="49.3" width="3" height="10.2" rx="0.4" fill="url(#shturm-tail-tube)" stroke="#161c10" stroke-width="0.2"/>
+
+  <!-- Brillo longitudinal completo para dar relieve 3D -->
+  <rect x="14.2" y="3" width="3.6" height="56.5" fill="url(#shturm-shine)"/>
+
+  <!-- ================= DETALLES DEL FUSELAJE Y CANARDS REPLEGADOS ================= -->
+  <!-- Ranura longitudinal donde se pliega el canard delantero -->
+  <line x1="14.9" y1="18.5" x2="14.9" y2="22.8" stroke="#182012" stroke-width="0.32" stroke-linecap="round"/>
+  <!-- Pivote / base del canard en la ranura -->
+  <circle cx="14.9" cy="19.2" r="0.28" fill="#12170e"/>
+
+  <!-- Esténcil / marca técnica roja-anaranjada delantera -->
+  <line x1="15.8" y1="17.2" x2="16.9" y2="17.2" stroke="#b03423" stroke-width="0.32"/>
+  <line x1="16.1" y1="18" x2="16.9" y2="18" stroke="#b03423" stroke-width="0.22"/>
+
+  <!-- Juntas de ensamblaje entre secciones -->
+  <line x1="14.2" y1="8.5" x2="17.8" y2="8.5" stroke="#5f696e" stroke-width="0.2"/>
+  <line x1="14.2" y1="11.3" x2="17.8" y2="11.3" stroke="#2b381f" stroke-width="0.2"/>
+  <line x1="14.2" y1="27.5" x2="17.8" y2="27.5" stroke="#2b381f" stroke-width="0.2"/>
+
+  <!-- Puerto / sensor lateral en la sección de popa -->
+  <circle cx="16.7" cy="56.2" r="0.25" fill="#11160d"/>
+
+  <!-- ================= LÁMINA TRASERA CENTRAL (VISTA EN EJE DORSAL) ================= -->
+  <path d="M 14.5,50 C 14.5,48.5, 17.5,48.5, 17.5,50 L 17.5,54.8 C 17.5,53.5, 14.5,53.5, 14.5,54.8 Z" 
+        fill="url(#fin-black-ext)" 
+        stroke="#1a1f21" 
+        stroke-width="0.2"/>
+
+  <!-- Extremo de popa y lente del receptor de mando por radio SACLOS -->
+  <ellipse cx="16" cy="59.5" rx="1.5" ry="0.4" fill="#10140c"/>
+  <circle cx="16" cy="59.5" r="0.38" fill="#751b14"/>
 </svg>
+
