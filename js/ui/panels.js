@@ -19,7 +19,6 @@ import {
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
 import { formationSummary, domainOf, mergeBlocker, MAX_MEMBERS } from "../engine/formations.js";
 import { airRangeKm, canOverfly } from "../engine/movement.js";
-import { roleOf, tagsFor } from "../data/roles-data.js";
 import { buildingCost, canAfford } from "../engine/economy.js";
 import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
@@ -812,18 +811,6 @@ export function updateUnitPanel(state, ui) {
     </div>
     <div class="up-status ${estadoCls}">${estado}</div>
     <div class="up-where">Posición: <b>${provName(u.pos)}</b></div>`;
-
-  // Papel de la unidad: etiquetas de un vistazo y una frase de para qué sirve.
-  // Va lo primero de la ficha, antes que los números: quien abre el panel casi
-  // siempre quiere saber QUÉ es esto, no cuántos puntos de defensa tiene.
-  const R = roleOf(T);
-  if (R) {
-    html += `<div class="up-role">
-      <div class="up-role-head">${R.papel}</div>
-      <div class="up-tags">${tagsFor(T).map(([t, tono]) => `<span class="tag tag-${tono}">${t}</span>`).join("")}</div>
-      <div class="up-role-desc">${R.desc}</div>
-    </div>`;
-  }
 
   // Pertenece a una formación: se dice arriba del todo, porque cambia el sentido
   // de todo lo que viene debajo (las órdenes van a la columna entera).

@@ -452,13 +452,14 @@ export class MapRenderer {
           const k = u.formation ? u.owner + "|F|" + u.formation : u.owner + "|" + u.type;
           let g = byType.get(k);
           if (!g) {
-            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), hpMax: 0, aboard: 0, deck: 0, formation: u.formation || null }));
+            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), hpMax: 0, aboard: 0, deck: 0, patrulla: false, formation: u.formation || null }));
           }
           if (u.formation && leadRank(u.type) < leadRank(g.type)) g.type = u.type;
           g.ids.push(u.id);
           g.n++;
           g.hp += u.hp;
           g.hpMax += unitDef(u.type)?.hp || 100;
+          if (u.task?.kind === "patrol") g.patrulla = true;
           g.level = Math.max(g.level, vetLevel(u));
           // Portaviones: plazas y aparatos de TODA la pila, que es lo que se dibuja
           const cap = CARRIER_CAPACITY[u.type] || 0;
@@ -505,7 +506,13 @@ export class MapRenderer {
         // entonces los aparcados se quedan junto al centro, como antes.
         const pista = this.airstrip.get(pid);
         air.slice(0, 4).forEach((g, i) => {
+          // "En base" = posado en pista. Un aparato CON MISIÓN de patrulla no lo
+          // está aunque la provincia tenga aeródromo: está dando vueltas encima.
+          // Sin el segundo término, mandar a patrullar tu propia base aceptaba la
+          // orden —la cuenta atrás corría— pero el mapa lo dibujaba aparcado, así
+          // que parecía que la orden no hubiera hecho nada.
           const enBase =
+            !g.patrulla &&
             psProv && controller(psProv) === g.owner && (psProv.buildings?.aerobase || 0) >= 1;
           let bx, by, tang;
           if (enBase && pista) {

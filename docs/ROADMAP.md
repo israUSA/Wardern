@@ -344,3 +344,14 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       HP, la suma bruta no compara nada
 - [x] docs/NAVAL.md con la tabla de duelos regenerada y el histórico de configuraciones
       medidas, para que nadie vuelva a tocar el margen a ojo
+
+### v1.8.1 — Retirada de las etiquetas y patrulla sobre base propia
+
+- [x] **Quitado el bloque de etiquetas de la ficha** (js/data/roles-data.js, el bloque del
+      panel y sus estilos). Las píldoras de colores no encajaban con el resto de la
+      interfaz. La información sigue en las matrices y en los documentos
+- [x] **Los aparatos con misión de patrulla ya orbitan aunque estén sobre su propio
+      aeródromo.** La regla de dibujo solo miraba el suelo —"¿hay pista aquí?"— y nunca
+      si el aparato tenía misión, así que mandar un dron a patrullar su propia base
+      aceptaba la orden (la cuenta atrás corría) pero el mapa lo pintaba aparcado, y
+      parecía que el botón no hubiera hecho nada. Venía de la v1.4
