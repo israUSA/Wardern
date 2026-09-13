@@ -404,3 +404,80 @@ toda provincia dentro del radio de reconocimiento, **sin mirar de quién es**. U
 dron parado en territorio propio ve unidades enemigas al otro lado de la frontera
 sin entrar y sin declarar nada. Detalle completo, incluido el reconocimiento
 terrestre, en [RECONOCIMIENTO.md](RECONOCIMIENTO.md).
+
+## 12. Atacar buques y la defensa antiaérea naval
+
+Hasta aquí **un avión no podía atacar a un barco en absoluto**: ningún arma
+aire-suelo llevaba categorías navales en su lista de blancos. Ahora sí, y cada
+buque se defiende solo.
+
+### Qué arma hunde qué
+
+| Arma | Alcanza |
+|---|---|
+| GBU-31 JDAM · KAB-500S | todos los buques |
+| AGM-65 Maverick · Kh-25ML | todos los buques |
+| Hellfire · 9M120 Ataka | corbeta y transporte |
+| BGM-71 TOW · 9M114 Shturm | solo corbeta |
+
+El anticarro ligero de helicóptero no hunde un destructor, que es lo razonable.
+
+### La defensa del buque: cuatro cifras
+
+| | Qué hace |
+|---|---|
+| `km` | alcance al que engancha al avión atacante |
+| `pk` | probabilidad de tocarlo con su misil de zona |
+| `ciws` | probabilidad de **derribar un misil que ya viene** — Phalanx, Kashtan, ESSM |
+| `antiStealth` | cuánto anula la furtividad del atacante |
+
+Valores t2 occidentales:
+
+| Clase | Alcance | Acierto | Intercepta |
+|---|---|---|---|
+| Destructor | 126 km | 52 % | 66 % |
+| Fragata | 50 km | 37 % | 48 % |
+| Portaviones | 23 km | 23 % | 60 % |
+| Corbeta | 6 km | 18 % | 25 % |
+| Transporte | 7 km | 11 % | 14 % |
+| **Submarino** | **0** | **0** | **0** |
+
+**El portaviones se defiende poco solo** (23 km) y **el submarino nada en
+absoluto**. No son errores: son las dos lecciones que el sistema tiene que
+enseñar. Un portaviones sin escolta es un blanco enorme, y un submarino
+descubierto por la aviación no tiene respuesta.
+
+### La furtividad es la llave
+
+El `pk` se recorta con la firma radar del atacante, igual que en los radares
+terrestres. Probabilidad de que un destructor t2 toque a cada aparato:
+
+| Aparato | Le acierta |
+|---|---|
+| B-52G | 52 % |
+| F/A-18E | 44 % |
+| F-35A | 14 % |
+| F-22 Raptor | 13 % |
+| B-2 Spirit | 12 % |
+| B-21 Raider | 9 % |
+| RQ-190 | 5 % |
+
+Ahí está el motivo de existir del bombardero furtivo: cruza un grupo de combate
+que derribaría a cualquier otra cosa.
+
+### Doctrina
+
+Occidente acierta más (Aegis y enlace de datos entre buques: `pk` ×1,15,
+`ciws` ×1,2); Oriente llega más lejos (S-300F: `km` ×1,25). Distinto carácter, no
+"uno mejor".
+
+### Interceptar el misil
+
+Al llegar el misil al buque, el CIWS tira **antes** de la tirada de impacto. El
+parte distingue las dos cosas: "DERRIBA el AGM-65 con su defensa de punto" no es
+lo mismo que "AGM-65 FALLA".
+
+Los antirradar (HARM, Kh-31P) son un 40 % más difíciles de interceptar: vienen
+rápidos y bajos, y el buque tiene que elegir entre apagar el radar o seguir
+viéndolos.
+

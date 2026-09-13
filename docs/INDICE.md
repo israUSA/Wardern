@@ -67,6 +67,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Probabilidad de derribo | `AIR-COMBAT.md` | 4. Resolución del disparo |
 | Furtividad, RCS | `AIR-COMBAT.md` | 9. Furtividad |
 | Portaviones y apontaje | `AIR-COMBAT.md` | 10. Aviación embarcada |
+| Atacar barcos desde el aire | `AIR-COMBAT.md` | 12. Atacar buques |
+| Defensa antiaérea de un buque, CIWS | `AIR-COMBAT.md` | 12. Atacar buques |
 | **Radio de acción, sobrevuelo de neutrales** | `AIR-COMBAT.md` | **11. Espacio aéreo libre y radio de acción** |
 | Patrulla aérea | `AIR-COMBAT.md` | 11 (patrullar el mar) |
 | Visión de los drones | `RECONOCIMIENTO.md` | Radios |
@@ -79,6 +81,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Categorías de buque | `NAVAL.md` | Categorías y roles |
 | Balance naval verificado | `NAVAL.md` | Contrarreloj naval |
 | Reglas de movimiento marítimo | `NAVAL.md` | Mecánicas para el motor |
+| Puntos de vida de un buque | `NAVAL.md` | Puntos de vida por buque |
+| Antiaéreo e intercepción de misiles | `AIR-COMBAT.md` | 12. Atacar buques |
 
 ### Formaciones
 
@@ -127,4 +131,5 @@ Si añades o renombras un documento, actualiza este índice.
 | IA de los bots | `js/engine/ai.js` | `GDD.md` §7 |
 | Constantes de reloj y balance | `js/data/constants.js` | `GDD.md` §9 |
 | Dibujo del mapa | `js/render/renderer.js` | `ARCHITECTURE.md` |
+| Etiquetas y papel de cada unidad | `js/data/roles-data.js` | — |
 | Paneles de interfaz | `js/ui/panels.js` | — |

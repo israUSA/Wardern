@@ -14,11 +14,12 @@ import { strikeWeaponsFor } from "../engine/missiles.js";
 import {
   airLoadout, airWeapons, radarContacts, groundContacts, pkFor, weaponCanTarget,
   rearmStatus, radarRangeKm, bearingDeg, effRange, rcsOf,
-  isCarrier, carrierCapacity, aircraftAboard, landingOptions,
+  isCarrier, carrierCapacity, aircraftAboard, landingOptions, navalAA,
 } from "../engine/air-combat.js";
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
 import { formationSummary, domainOf, mergeBlocker, MAX_MEMBERS } from "../engine/formations.js";
 import { airRangeKm, canOverfly } from "../engine/movement.js";
+import { roleOf, tagsFor } from "../data/roles-data.js";
 import { buildingCost, canAfford } from "../engine/economy.js";
 import { drawUnitSymbol } from "../render/symbols.js";
 import { ANNEX_COST } from "../data/constants.js";
@@ -812,6 +813,18 @@ export function updateUnitPanel(state, ui) {
     <div class="up-status ${estadoCls}">${estado}</div>
     <div class="up-where">Posición: <b>${provName(u.pos)}</b></div>`;
 
+  // Papel de la unidad: etiquetas de un vistazo y una frase de para qué sirve.
+  // Va lo primero de la ficha, antes que los números: quien abre el panel casi
+  // siempre quiere saber QUÉ es esto, no cuántos puntos de defensa tiene.
+  const R = roleOf(T);
+  if (R) {
+    html += `<div class="up-role">
+      <div class="up-role-head">${R.papel}</div>
+      <div class="up-tags">${tagsFor(T).map(([t, tono]) => `<span class="tag tag-${tono}">${t}</span>`).join("")}</div>
+      <div class="up-role-desc">${R.desc}</div>
+    </div>`;
+  }
+
   // Pertenece a una formación: se dice arriba del todo, porque cambia el sentido
   // de todo lo que viene debajo (las órdenes van a la columna entera).
   const fNombre = u.formation && formationSummary(state, u.formation)?.name;
@@ -837,6 +850,8 @@ export function updateUnitPanel(state, ui) {
       <div><span>Velocidad</span><b>${velReal ? velReal.toLocaleString("es-ES") + " km/h" : T.speed + " km/h"}</b></div>
       ${velReal ? `<div title="El mapa no está a escala de vuelo: este es el ritmo con el que cruza provincias"><span>Ritmo en mapa</span><b>${T.speed}</b></div>` : ""}
       <div><span>Captura provincias</span><b>${T.captures ? "sí" : "no"}</b></div>
+      ${navalAA(u.type) ? `<div title="Alcance al que su misil de zona engancha a un avión atacante. La cifra es la probabilidad de tocarlo; la furtividad del atacante la recorta"><span>Antiaéreo propio</span><b>${navalAA(u.type).km} km · ${Math.round(navalAA(u.type).pk * 100)} %</b></div>
+      <div title="Probabilidad de DERRIBAR un misil que ya viene hacia el buque. Es la última barrera: Phalanx, Kashtan, ESSM"><span>Intercepta misiles</span><b>${Math.round(navalAA(u.type).ciws * 100)} %</b></div>` : isNaval(u.type) ? `<div title="Un submarino no dispara a aeronaves ni sumergido ni en superficie: es su gran vulnerabilidad"><span>Antiaéreo propio</span><b>ninguno</b></div>` : ""}
       ${!airLoadout(u.type) && scoutRangeKm(u.type) ? `<div title="Descubre unidades enemigas a esta distancia aunque el territorio no sea tuyo. El círculo verde del mapa lo enseña"><span>Reconocimiento</span><b>${scoutRangeKm(u.type)} km</b></div>` : ""}
       ${airRangeKm(u.type) ? `<div title="Distancia máxima en línea recta desde su base (aeródromo propio o portaviones). El disco del mapa la enseña centrada en la base"><span>Radio de acción</span><b>${airRangeKm(u.type).toLocaleString("es-ES")} km</b></div>
       <div title="${canOverfly(u.type) ? "Entra en espacio aéreo y aguas ajenas sin que cuente como declaración de guerra" : "Entrar en espacio aéreo neutral exige declarar la guerra: solo los drones y los furtivos pasan sin más"}"><span>Sobrevuelo sin guerra</span><b>${canOverfly(u.type) ? "sí" : "no"}</b></div>` : ""}

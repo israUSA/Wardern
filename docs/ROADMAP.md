@@ -304,3 +304,24 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [ ] **Pendiente**: no hay banco de pruebas NAVAL. El contrarreloj de docs/NAVAL.md
       quedó marcado como no revalidado, y el +10 % del portaviones es el número a
       vigilar — en tierra se midió que un 10 % de vida decide el 100 % de los combates
+
+## v1.7 — Guerra aeronaval y fichas con papel (2026-09-12)
+
+- [x] **Los aviones ya pueden atacar buques**: hasta ahora NINGÚN arma aire-suelo
+      llevaba categorías navales en su lista de blancos, así que era literalmente
+      imposible. Las bombas pesadas y los Maverick alcanzan cualquier casco; el
+      anticarro ligero de helicóptero, solo corbetas y transportes
+- [x] **Defensa antiaérea propia de cada buque** (NAVAL_AA): alcance, probabilidad de
+      acierto, intercepción de misiles y anulación de furtividad, por clase, doctrina y
+      tier. Destructor t2 occidental: 126 km, 52 % de acierto, 66 % de intercepción.
+      El portaviones se defiende poco solo (23 km) y el submarino NADA en absoluto
+- [x] **La furtividad es la llave del grupo de combate**: un destructor t2 toca a un
+      B-52 el 52 % de las veces y a un B-21 el 9 %. Ese es el motivo de existir del
+      bombardero furtivo
+- [x] **CIWS**: los misiles que van hacia un buque pueden ser derribados antes de la
+      tirada de impacto. Los antirradar son un 40 % más difíciles de interceptar
+- [x] **Etiquetas y papel por unidad** (js/data/roles-data.js): cada ficha abre con su
+      papel, una fila de etiquetas de colores (verde lo que destaca, rojo su
+      vulnerabilidad, azul lo que solo ella hace) y una frase de para qué sirve en
+      batalla. Se deriva de la categoría, no se escribe unidad por unidad: con 96
+      variantes, mantener 96 textos a mano se habría desfasado al primer reajuste
