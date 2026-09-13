@@ -325,3 +325,22 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       vulnerabilidad, azul lo que solo ella hace) y una frase de para qué sirve en
       batalla. Se deriva de la categoría, no se escribe unidad por unidad: con 96
       variantes, mantener 96 textos a mano se habría desfasado al primer reajuste
+
+## v1.8 — Banco de pruebas naval (2026-09-12)
+
+- [x] **tools/test-naval.mjs**: 32 aserciones que cubren el schema de las 36 variantes,
+      el escalado de vida por tier, el triángulo naval, la competitividad entre
+      doctrinas, la defensa antiaérea de los buques y el ataque aéreo contra ellos.
+      Era la deuda más clara del sistema naval y al saldarla apareció un problema real
+- [x] **Corregido el desequilibrio naval que nadie veía**: con el +1 de ataque antibuque
+      oriental intacto, ORIENTE ganaba el 98 % de las batallas de flota — lo contrario de
+      lo que se había pedido. Se le quita ese +1 a la superficie oriental y el margen de
+      vida occidental baja del 10 % al 2 %. Reparto final: la superficie es de Occidente
+      (gana las 5 clases), el submarino es de Oriente (+8 % de vida y conserva su +1).
+      Flota contra flota: Oriente gana el 24 %, dentro de la banda sana
+- [x] **Triángulo naval verificado**: destructor > submarino > portaviones > superficie >
+      destructor. Ninguna clase gana a todas
+- [x] **La vida final se mide en PORCENTAJE**, no en puntos: con un abanico de 90 a 528
+      HP, la suma bruta no compara nada
+- [x] docs/NAVAL.md con la tabla de duelos regenerada y el histórico de configuraciones
+      medidas, para que nadie vuelva a tocar el margen a ojo

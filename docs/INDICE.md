@@ -80,6 +80,8 @@ Si añades o renombras un documento, actualiza este índice.
 |---|---|---|
 | Categorías de buque | `NAVAL.md` | Categorías y roles |
 | Balance naval verificado | `NAVAL.md` | Contrarreloj naval |
+| Triángulo naval (quién gana a quién) | `NAVAL.md` | Contrarreloj naval |
+| Bancos de pruebas | `../README.md` | Verificaciones |
 | Reglas de movimiento marítimo | `NAVAL.md` | Mecánicas para el motor |
 | Puntos de vida de un buque | `NAVAL.md` | Puntos de vida por buque |
 | Antiaéreo e intercepción de misiles | `AIR-COMBAT.md` | 12. Atacar buques |

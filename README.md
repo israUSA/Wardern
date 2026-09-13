@@ -31,7 +31,7 @@ python serve.py            # servidor estático SIN caché, puerto 8099
 - Navegador moderno (Chrome/Edge/Firefox). Nada más para jugar.
 - Python 3 (solo como servidor estático; vale cualquier servidor sin caché).
 - Node ≥ 22 SOLO para las herramientas: regenerar el mapa (`tools/build-map.mjs`)
-  y correr los tests de balance (`tools/test-variants.mjs`).
+  y correr los bancos de balance (`tools/test-variants.mjs`, `tools/test-naval.mjs`).
 
 ### La partida se guarda sola
 Autoguardado en `localStorage` del navegador cada 2 min + botones **Guardar /
@@ -60,7 +60,7 @@ misma partida.
   fijo (comprar sale caro a propósito). La barra superior muestra ⚔ y la bandera de cada
   país con el que estás en guerra; clic en la bandera te lleva a su capital.
 - **Aviones** orbitan su base en patrulla visual; los **drones** (MQ-9, Orlan…) revelan
-  un círculo de visión (120/200/300 km según tier).
+  un círculo de visión (700/1100/1500 km según tier, ver docs/RECONOCIMIENTO.md).
 - **Marina:** el transporte **Embarca** hasta 3 unidades desde costa con puerto,
   cruza el mar celda a celda y **Desembarca** para invadir costas.
 - **Misiles (botón 🚀 Misil):** destructores (Tomahawk, 1.200 km), fragatas T3
@@ -109,16 +109,18 @@ js/engine/          motor: sim (tick 250 ms), state, combat, movement, economy,
 js/render/          renderer canvas, symbols OTAN (fallback), sprite-cache con tinte
 js/ui/              paneles, pantalla de inicio, registro
 tools/              build-map.mjs (Natural Earth → 270 provincias) y
-                    test-variants.mjs (97 aserciones de balance)
+                    test-variants.mjs (97 aserciones) y test-naval.mjs (32)
 docs/               GDD, arquitectura, roadmap, arte, inventario de assets…
 serve.py            servidor estático sin caché (puerto 8099)
+tools/serve.mjs     el mismo servidor en Node, para máquinas sin Python
 start.bat           arranque de un clic en Windows
 ```
 
 ## Verificaciones
 
 ```bash
-node tools/test-variants.mjs   # 97 aserciones de balance (deben pasar 97/97)
+node tools/test-variants.mjs   # 97 aserciones de balance terrestre y aéreo
+node tools/test-naval.mjs      # 32 aserciones de balance naval
 ```
 
 ## Documentación
