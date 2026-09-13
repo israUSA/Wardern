@@ -401,3 +401,15 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [x] Vale para los drones de cubierta (RQ-190, Orion), no solo para los cazas
 - [x] Verificado que el reconocimiento **NO es persistente**: al alejarse el dron, las
       provincias vuelven a ocultarse. `intelFor` se recalcula entera cada tick
+
+### v1.8.5 — Las fichas de pila en porcentaje, y un banco que fallaba al azar
+
+- [x] **Las fichas de una pila muestran el % de vida, no los puntos.** Con HP por unidad,
+      un "95" suelto no se puede comparar con nada: puede ser 95/100 o 95/115, y en una
+      pila naval convivirían un 92 de corbeta con un 459 de portaviones. Los puntos
+      exactos siguen en el tooltip
+- [x] **Arreglado un falso fallo intermitente del banco naval.** La aserción de flota
+      competitiva medía con 120 muestras y el valor real está en el 29 %, cerca del
+      límite inferior de la banda (20 %). Tandas consecutivas daban entre 26 % y 37 %, y
+      de vez en cuando cruzaba. Subido a 400 muestras: seis ejecuciones seguidas dan
+      26-30 % y ninguna falla. Un banco que falla al azar enseña a ignorarlo

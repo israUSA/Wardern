@@ -250,7 +250,11 @@ section("[4] Competitividad entre doctrinas");
   // doctrina gana siempre, no hay partida naval. La flota lleva submarino a
   // propósito — sin él se mide solo la superficie, que es el terreno occidental.
   const flota = (p) => [id(p, 2, "destructor"), id(p, 2, "destructor"), id(p, 2, "fragata"), id(p, 2, "submarino"), id(p, 2, "portaviones")];
-  const f = mc(flota("occ"), flota("ori"), 120);
+  // 400 muestras, no 120. Con 120 la estimación oscilaba entre el 26 % y el 37 %
+  // en tandas consecutivas —medido— y de vez en cuando cruzaba el límite inferior
+  // de la banda, así que el banco fallaba sin que nada hubiera cambiado. Un banco
+  // que falla al azar es peor que no tenerlo: enseña a ignorarlo.
+  const f = mc(flota("occ"), flota("ori"), 400);
   const oriPct = Math.round((f.wB / f.n) * 100);
   check("flota mixta competitiva (oriental gana entre el 20 % y el 80 %)",
     oriPct >= 20 && oriPct <= 80, `oriental gana ${oriPct}% (occ ${f.wA}, empates ${f.draw})`);

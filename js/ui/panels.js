@@ -629,6 +629,19 @@ function provName(pid) {
 // dominio (tierra, aire o mar nunca se mezclan), quietas y libres. Se ofrece una
 // por una, igual que se desacopla una por una, y con un botón para meterlas
 // todas de golpe cuando ya se sabe lo que se quiere.
+// Ficha compacta de una unidad dentro de una pila o formación. Enseña el % de
+// vida, NO los puntos: desde que cada unidad tiene su propio máximo, un "95"
+// suelto no se puede comparar con nada — puede ser 95/100 (sano) o 95/115
+// (tocado), y en una pila naval convivirían un 92 de corbeta con un 459 de
+// portaviones. El número absoluto sigue estando en el tooltip.
+function unitChip(o, activa) {
+  const max = maxHp(o.type);
+  const pct = Math.round((o.hp / max) * 100);
+  const nombre = unitDef(o.type)?.name ?? o.type;
+  return `<button class="up-chip${activa ? " active" : ""}" data-up-pick="${o.id}"
+    title="${nombre} · ${Math.round(o.hp)} de ${max} HP">${pct}%</button>`;
+}
+
 function formarSection(state, u) {
   const dom = domainOf(u.type);
   const cand = state.units.filter(
@@ -905,7 +918,7 @@ export function updateUnitPanel(state, ui) {
       <div class="up-chips">`;
     for (const o of F.members) {
       const act = o.id === u.id ? " active" : "";
-      html += `<button class="up-chip${act}" data-up-pick="${o.id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
+      html += unitChip(o, o.id === u.id);
     }
     html += `</div>`;
     if (mine) {
@@ -921,11 +934,11 @@ export function updateUnitPanel(state, ui) {
     const stack = (ui.selStackIds || []).filter((id) => id !== u.id);
     if (stack.length) {
       html += `<div class="up-stack"><span class="up-mlabel">Pila (${stack.length + 1})</span><div class="up-chips">`;
-      html += `<button class="up-chip active" data-up-pick="${u.id}" title="${T.name} · ${Math.round(hp)} HP">${Math.round(hp)}</button>`;
+      html += unitChip(u, true);
       for (const id of stack) {
         const o = state.units.find((x) => x.id === id && !x.dead);
         if (!o) continue;
-        html += `<button class="up-chip" data-up-pick="${id}" title="${unitDef(o.type)?.name} · ${Math.round(o.hp)} HP">${Math.round(o.hp)}</button>`;
+        html += unitChip(o, false);
       }
       html += `</div>`;
       if (mine) html += `<button class="btn small" id="up-move-all">Mover toda la pila (${stack.length + 1})</button>`;
