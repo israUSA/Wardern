@@ -210,12 +210,17 @@ export function findPath(state, unit, targetId) {
 // Vive aquí, y no en air-combat.js, porque es una regla de DESTINO: sin ella el
 // pathfinding rechazaba cualquier sector de mar para un avión y la aviación
 // embarcada era inalcanzable (el avión nunca podía volar hasta el buque).
+// Antes se exigía además que el buque estuviera PARADO (!c.edgeLeft). Se quitó:
+// un portaviones recoge aviación navegando, eso es lo normal, y la regla dejaba
+// sin poder volver a casa a todo el ala embarcada en cuanto el buque zarpaba.
+// De que el aparato no se quede volando hacia donde el buque YA NO ESTÁ se
+// encarga la tarea "board" (orderBoard / tickBoard).
 export function carrierBerths(state, unit, pid) {
   if (!unit || unit.embarked || !CARRIER_CAPABLE.has(unit.type)) return [];
   return state.units.filter(
     (c) =>
       !c.dead && !c.embarked && c.owner === unit.owner && CARRIER_CAPACITY[c.type] &&
-      c.pos === pid && !c.edgeLeft &&
+      c.pos === pid &&
       state.units.filter((x) => !x.dead && x.embarked === c.id).length < CARRIER_CAPACITY[c.type]
   );
 }
@@ -389,6 +394,58 @@ export function orderAttack(state, unit, target) {
 // Persecución. Solo actúa con la unidad PARADA: replantear la ruta a medio salto
 // reiniciaría el tramo en curso (orderMove recalcula desde unit.pos) y la unidad
 // se quedaría dando tumbos sin avanzar nunca.
+
+// Ir a apontar en un portaviones CONCRETO y seguirlo hasta conseguirlo.
+//
+// Sin esto, mandar un avión a un buque que está navegando lo dejaba volando hacia
+// el sector del que el portaviones ya había zarpado: llegaba, no encontraba
+// cubierta y se quedaba flotando sobre el mar. Es la misma idea que la caza de
+// una unidad enemiga (tickHunt), solo que el desenlace es apontar y no disparar.
+export function orderBoard(state, unit, carrier) {
+  if (!carrier || carrier.dead || !CARRIER_CAPABLE.has(unit.type)) return false;
+  if (carrier.owner !== unit.owner) return false;
+  if (unit.pos === carrier.pos) {
+    landIfCarrier(state, unit);
+    return !!unit.embarked;
+  }
+  if (!orderMoveAereo(state, unit, carrier.pos)) return false;
+  unit.task = { kind: "board", carrierId: carrier.id };
+  return true;
+}
+
+// Reencamina hacia la posición ACTUAL del buque en cada tick, igual que tickHunt.
+export function tickBoard(state) {
+  for (const u of state.units) {
+    if (u.dead || u.embarked) continue;
+    if (u.task?.kind !== "board") continue;
+    const c = state.units.find((x) => x.id === u.task.carrierId && !x.dead);
+    if (!c || c.embarked) {
+      log(state, `${unitDef(u.type)?.name} pierde su portaviones: vuelve a base`, "info");
+      u.task = null;
+      orderReturnToBase(state, u);
+      continue;
+    }
+    if (u.edgeLeft || u.path.length) continue; // reencaminar a medio salto lo reiniciaría
+    if (u.pos === c.pos) {
+      landIfCarrier(state, u);
+      if (u.embarked) continue;
+      // Misma celda pero sin plaza: la cubierta se llenó mientras volaba.
+      log(state, `${unitDef(u.type)?.name} llega al ${unitDef(c.type)?.name} y no queda plaza`, "info");
+      u.task = null;
+      continue;
+    }
+    // orderMoveAereo BORRA la tarea (es una orden nueva), así que hay que devolverla.
+    const tarea = u.task;
+    if (orderMoveAereo(state, u, c.pos)) {
+      u.task = tarea;
+    } else {
+      log(state, `${unitDef(u.type)?.name} no alcanza a su portaviones: vuelve a base`, "info");
+      u.task = null;
+      orderReturnToBase(state, u);
+    }
+  }
+}
+
 export function tickHunt(state) {
   for (const u of state.units) {
     if (u.dead || u.embarked) continue;

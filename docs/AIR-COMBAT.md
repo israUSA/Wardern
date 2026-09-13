@@ -412,6 +412,29 @@ cubierta (`CARRIER_CAPABLE`) puede apontar, y el buque tiene que tener plaza.
 Medido: un F/A-18E con 1.400 km de radio llega a un portaviones propio a
 **12.492 km**. Un B-2, que no es de cubierta, se rechaza igual que siempre.
 
+
+#### Apontar en un portaviones que navega
+
+Un portaviones recoge aviación **estando en marcha**: eso es lo normal en la
+realidad. Antes se exigía que el buque estuviera parado, y la regla dejaba a todo
+el ala embarcada sin poder volver a casa en cuanto el grupo zarpaba.
+
+Ahora la orden de ir a un portaviones propio crea una tarea **`board`**, que lo
+persigue: cada tick reencamina hacia la posición actual del buque y aponta al
+coincidir. Es la misma mecánica que la caza de una unidad enemiga (`tickHunt`),
+solo que el desenlace es tomar cubierta en vez de disparar.
+
+Sin esa tarea, mandar un avión a un buque navegando lo dejaba volando hacia el
+sector del que el portaviones ya había zarpado: llegaba, no encontraba cubierta y
+se quedaba flotando sobre el mar.
+
+Si por el camino el buque se hunde, o la cubierta se llena mientras el aparato
+vuela, el aviso lo dice y el avión **vuelve solo a base** en lugar de quedarse
+dando vueltas sobre el agua.
+
+Vale para toda la aviación de cubierta, drones incluidos: el RQ-190 y el Orion
+están en `CARRIER_CAPABLE`.
+
 ### Qué cuenta como base
 
 `airBaseFor()` devuelve la más cercana entre:

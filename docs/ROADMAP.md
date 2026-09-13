@@ -386,3 +386,18 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [x] **Mejor aviso al mover dentro de la propia provincia.** Decía "esa unidad ya está
       ahí" sin explicar nada; ahora nombra la provincia y dice la regla — las unidades se
       mueven entre provincias enteras, no a un punto dentro de una
+
+### v1.8.4 — Apontar en un portaviones en movimiento
+
+- [x] **Un portaviones ya recoge aviación navegando.** Se exigía que estuviera parado, y
+      eso dejaba a todo el ala embarcada sin poder volver a casa en cuanto el grupo
+      zarpaba
+- [x] **Tarea `board`**: la orden de ir a un portaviones propio lo PERSIGUE — reencamina
+      cada tick hacia su posición actual y aponta al coincidir. Sin ella, el avión volaba
+      al sector del que el buque ya había zarpado y se quedaba flotando sobre el mar.
+      Misma mecánica que `tickHunt`, con apontaje en vez de disparo
+- [x] Si el buque se hunde o la cubierta se llena durante el vuelo, el aparato **vuelve
+      solo a base** en vez de quedarse sobre el agua
+- [x] Vale para los drones de cubierta (RQ-190, Orion), no solo para los cazas
+- [x] Verificado que el reconocimiento **NO es persistente**: al alejarse el dron, las
+      provincias vuelven a ocultarse. `intelFor` se recalcula entera cada tick

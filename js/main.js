@@ -1,7 +1,7 @@
 // Arranque, bucle principal e interacción (pan/zoom/selección/órdenes).
 import { initStatic, newGame, S, atWar, declareWar, makePeace, gameDay, unitDef , migrateHp } from "./engine/state.js";
 import { tick } from "./engine/sim.js";
-import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack, airRangeInfo, canOverfly } from "./engine/movement.js";
+import { orderMove, orderStop, neutralBlocker, orderReturnToBase, carrierBerths, orderPatrol, orderAttack, airRangeInfo, canOverfly, orderBoard } from "./engine/movement.js";
 import { mergeUnits, mergeBlocker, detachUnit, dissolveFormation, formationMembers, formationLead, formationName } from "./engine/formations.js";
 import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandUnit } from "./engine/economy.js";
 import { embark, disembark } from "./engine/naval.js";
@@ -696,7 +696,14 @@ function issueMove(ids, pid) {
   let ok = 0;
   for (const id of ids) {
     const u = state.units.find((x) => x.id === id && !x.dead);
-    if (u && pid !== u.pos && orderMove(state, u, pid)) ok++;
+    if (!u) continue;
+    // Destino con portaviones propio: se ordena APONTAR en ese buque, no ir a un
+    // sector de mar. La diferencia importa cuando el buque está navegando: con
+    // orderMove el avión volaría al sector del que ya zarpó y se quedaría
+    // flotando; con orderBoard lo sigue hasta tomar cubierta.
+    const buqueDestino = carrierBerths(state, u, pid)[0];
+    if (buqueDestino) { if (orderBoard(state, u, buqueDestino)) ok++; continue; }
+    if (pid !== u.pos && orderMove(state, u, pid)) ok++;
   }
   // Rumbo a un portaviones: el apontaje es automático al llegar, conviene decirlo
   const buque = ok && S.provinces.get(pid)?.isSea
