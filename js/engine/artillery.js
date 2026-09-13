@@ -8,14 +8,20 @@
 // El alcance es propio de cada variante (`rangoKm` en js/data/units-data.js):
 // un D-30 no bate lo mismo que un 2S35. El ritmo, el daño y el coste salen de
 // las constantes ARTY_* y escalan por tier de la pieza.
-import { S, unitDef, distKm, atWar, log, visibleProvinces } from "./state.js";
+import { S, unitDef, distKm, atWar, log, visibleProvinces, hpFrac } from "./state.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
 
-// Alcance de tiro en km de mapa, 0 si la unidad no es artillería
+// Alcance de tiro en km de mapa, 0 si la unidad no bate a distancia.
+//
+// La condición es tener `rangoKm`, NO ser de la categoría artillería. Hoy solo
+// la artillería lo trae (lo pone units-data.js al construir las variantes), pero
+// dejarlo abierto significa que el día que otra unidad terrestre reciba un
+// `rangoKm` —un lanzacohetes, una batería costera— el tiro a distancia le
+// funciona sin tocar nada más, y sobre todo que la regla del juego es una sola:
+// dispara desde lejos quien tiene alcance, y nadie más.
 export function artilleryRange(type) {
-  const T = unitDef(type);
-  return T?.category === "artilleria" ? T.rangoKm || 0 : 0;
+  return unitDef(type)?.rangoKm || 0;
 }
 
 export function canShell(type) {
@@ -66,7 +72,9 @@ export function shellUnit(state, u, target) {
     // arty: el proyectil NO persigue. Cae donde se apuntó, así que si el blanco
     // se mueve durante el vuelo, el impacto lo reparte quien quede en la celda.
     arty: true, targetUnitId: target.id,
-    danio: C.ARTY_DAMAGE[tier] || 9, minutesLeft: minutes, total: minutes,
+    // La salva vale lo que quede de batería: media batería, media salva. Mismo
+    // criterio que el combate en provincia, que ya escalaba por HP.
+    danio: (C.ARTY_DAMAGE[tier] || 9) * hpFrac(u), minutesLeft: minutes, total: minutes,
   });
   const donde = S.provinces.get(target.pos);
   log(state, `${S.countries[u.owner].name} abre fuego de artillería sobre ${donde?.isSea ? "alta mar" : donde?.name}`, "war");

@@ -5,19 +5,26 @@ export const TICK_MS = 250;               // duración real de un tick
 // Minutos de juego por tick a 1×. ESTE es el mando del ritmo de todo el juego:
 //
 //   minutos de juego por minuto real = (60000 / TICK_MS) × MINUTES_PER_TICK_BASE
-//   con 0.1:  (60000/250) × 0.1 = 24   →  1 hora real = 1 día de juego
+//   con 0.4:  (60000/250) × 0.4 = 96   →  1 día de juego = 15 minutos reales
 //
-// Con 6 (el valor anterior) un día de juego pasaba en UN MINUTO real: una
-// patrulla aérea de 8 h duraba 20 segundos y una industria militar se levantaba
-// en 3 minutos, así que ninguna decisión de construcción pesaba. A 0.1 el mismo
-// día tarda una hora real: patrulla 20 min, industria 3 h, base aérea 4 h.
+// Historia del valor: con 6 un día de juego pasaba en UN MINUTO real y ninguna
+// decisión de construcción pesaba. Se bajó a 0.1, que dejaba el día de juego en
+// una hora real entera: demasiado lento para una sesión corta. 0.4 es el punto
+// medio, cuatro días de juego por hora real.
+//
+// A este ritmo (contando ya BUILD_TIME_MULT, que parte por la mitad las obras):
+//   industria militar  36 h de juego → 22,5 min reales
+//   base aérea         48 h de juego → 30 min reales
+//   patrulla aérea      8 h de juego →  5 min reales
+//
 // No hay que retocar ninguna duración — están todas en días/horas de JUEGO y se
-// estiran solas. Los botones 2× y 4× multiplican esto.
+// estiran solas. Los botones 2× y 4× multiplican esto: a 4×, el día de juego
+// baja a 3 min 45 s reales.
 //
-// Requisito para que esto funcione (ver js/main.js): con el reloj lento, el
-// mundo tiene que avanzar también con la pestaña CERRADA, o no se terminaría
-// nunca una construcción. De eso se encarga la recuperación offline al cargar.
-export const MINUTES_PER_TICK_BASE = 0.1;
+// Requisito para que esto funcione (ver js/main.js): el mundo tiene que avanzar
+// también con la pestaña CERRADA, o no se terminaría nunca una construcción. De
+// eso se encarga la recuperación offline al cargar.
+export const MINUTES_PER_TICK_BASE = 0.4;
 
 // Minutos de juego por tick con los que está CALIBRADO el combate. El daño se
 // escala por dt/este valor, así que cambiar el reloj de arriba no altera lo que
@@ -182,9 +189,57 @@ export const MOVE_SPEED_MULT = 1.5;
 
 // Patrulla aérea (docs/AIR-COMBAT.md): tiempo que un avión aguanta dando vueltas
 // sobre el punto elegido antes de volver solo a base. 8 h de juego: a 1× con el
-// reloj actual (24 min de juego por segundo real, ver MINUTES_PER_TICK_BASE) son
-// 20 s reales de margen para reaccionar antes de que se retire por su cuenta.
+// reloj actual (96 min de juego por minuto real, ver MINUTES_PER_TICK_BASE) son
+// 5 min reales de margen para reaccionar antes de que se retire por su cuenta.
 export const AIR_PATROL_MINUTES = 8 * 60;
+
+// Radio de acción aéreo, en km, medido en línea recta desde la base de la que
+// sale el aparato (aeródromo propio con pista, o portaviones propio para la
+// aviación embarcada). Es lo que sustituye a la vieja regla de "el espacio aéreo
+// neutral está cerrado": un avión ya puede sobrevolar a quien le dé la gana —eso
+// es lo que hace la aviación de verdad— pero no puede plantarse en la otra punta
+// del continente porque el combustible no da. La frontera deja de ser política y
+// pasa a ser física, que es mucho más interesante de jugar: para llegar más
+// lejos hay que construir aeródromos más adelantados o mover un portaviones.
+//
+// Orden deliberado drone > bombardero > caza > helicóptero. El dron manda porque
+// su papel es ser los ojos del jugador muy por delante del frente, y con un radio
+// de caza no llegaría a ver nada que no viera ya la inteligencia de frontera. El
+// helicóptero cierra la tabla: es apoyo de la tropa, no un aparato de alcance.
+export const AIR_RANGE_KM = {
+  drone:       { 1: 2400, 2: 4400, 3: 6400 },
+  bombardero:  { 1: 2000, 2: 2800, 3: 3600 },
+  caza:        { 1: 1000, 2: 1400, 3: 1800 },
+  helicoptero: { 1:  500, 2:  700, 3:  900 },
+};
+
+// Excepciones por tipo: aparatos cuyo alcance no lo explica su categoría.
+//
+// Los tres bombarderos de abajo son los únicos de la plantilla que de verdad son
+// estratégicos —pensados para cruzar un océano, soltar y volver— y por eso pasan
+// por encima incluso del dron de T3. Los demás bombarderos del juego (B-52G,
+// Tu-22M2, Tu-22M3) se quedan con la cifra de su categoría: el Backfire es un
+// bombardero de teatro, no intercontinental, y el B-52 solo alcanza lo que dicen
+// sus cifras reales con reabastecimiento en vuelo, que aquí no se modela.
+//
+// El RQ-190 va desarmado a propósito (ver air-combat-data.js) y a cambio llega
+// donde no llega nada más que tenga tripulación.
+export const AIR_RANGE_KM_BY_TYPE = {
+  "occ-3-drone-rq190": 8400, // RQ-190 — penetración profunda, sin armas
+  "occ-2-bombardero": 9000,  // B-2 Spirit
+  "occ-3-bombardero": 9600,  // B-21 Raider
+  "ori-3-bombardero": 9000,  // Tu-160M — el único ruso que lo merece
+};
+
+// A partir de qué `rcs` un aparato puede meterse en espacio aéreo ajeno sin que
+// eso sea una declaración de guerra. La idea: nadie declara la guerra por algo
+// que no ha visto. Los drones pueden SIEMPRE, sea cual sea su firma, porque su
+// perfil de vuelo (lento, pequeño, alto) y su condición de no tripulado es
+// justo lo que en la realidad permite negarlo. Los tripulados necesitan ser
+// furtivos de verdad: 0,6 deja dentro al B-2 (0,82), al B-21 (0,88), al F-22
+// (0,80) y al F-35 (0,78), y deja fuera al Tu-160M (0,15), que es enorme en el
+// radar por mucho alcance que tenga.
+export const STEALTH_OVERFLIGHT_RCS = 0.6;
 
 // Dificultad (se elige en la pantalla de inicio y viaja en state.difficulty).
 // Solo toca a los bots: producción bruta de sus provincias y ganas de declarar

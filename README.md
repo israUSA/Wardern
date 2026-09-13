@@ -31,7 +31,7 @@ python serve.py            # servidor estático SIN caché, puerto 8099
 - Navegador moderno (Chrome/Edge/Firefox). Nada más para jugar.
 - Python 3 (solo como servidor estático; vale cualquier servidor sin caché).
 - Node ≥ 22 SOLO para las herramientas: regenerar el mapa (`tools/build-map.mjs`)
-  y correr los tests de balance (`tools/test-variants.mjs`).
+  y correr los bancos de balance (`tools/test-variants.mjs`, `tools/test-naval.mjs`).
 
 ### La partida se guarda sola
 Autoguardado en `localStorage` del navegador cada 2 min + botones **Guardar /
@@ -60,7 +60,7 @@ misma partida.
   fijo (comprar sale caro a propósito). La barra superior muestra ⚔ y la bandera de cada
   país con el que estás en guerra; clic en la bandera te lleva a su capital.
 - **Aviones** orbitan su base en patrulla visual; los **drones** (MQ-9, Orlan…) revelan
-  un círculo de visión (120/200/300 km según tier).
+  un círculo de visión (700/1100/1500 km según tier, ver docs/RECONOCIMIENTO.md).
 - **Marina:** el transporte **Embarca** hasta 3 unidades desde costa con puerto,
   cruza el mar celda a celda y **Desembarca** para invadir costas.
 - **Misiles (botón 🚀 Misil):** destructores (Tomahawk, 1.200 km), fragatas T3
@@ -109,26 +109,35 @@ js/engine/          motor: sim (tick 250 ms), state, combat, movement, economy,
 js/render/          renderer canvas, symbols OTAN (fallback), sprite-cache con tinte
 js/ui/              paneles, pantalla de inicio, registro
 tools/              build-map.mjs (Natural Earth → 270 provincias) y
-                    test-variants.mjs (97 aserciones de balance)
+                    test-variants.mjs (97 aserciones) y test-naval.mjs (32)
 docs/               GDD, arquitectura, roadmap, arte, inventario de assets…
 serve.py            servidor estático sin caché (puerto 8099)
+tools/serve.mjs     el mismo servidor en Node, para máquinas sin Python
 start.bat           arranque de un clic en Windows
 ```
 
 ## Verificaciones
 
 ```bash
-node tools/test-variants.mjs   # 97 aserciones de balance (deben pasar 97/97)
+node tools/test-variants.mjs   # 97 aserciones de balance terrestre y aéreo
+node tools/test-naval.mjs      # 32 aserciones de balance naval
 ```
 
 ## Documentación
 
+**Empieza por el índice: [docs/INDICE.md](docs/INDICE.md)** — qué contiene cada
+documento y en qué sección está cada tema, para no tener que releerlos todos.
+
+- [docs/INDICE.md](docs/INDICE.md) — índice de toda la documentación por tema
 - [docs/GDD.md](docs/GDD.md) — diseño de juego (alcance, economía, combate, IA)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura y contratos de datos
 - [docs/ROADMAP.md](docs/ROADMAP.md) — fases y estado
 - [docs/UNITS.md](docs/UNITS.md) — roster y rationale de balance
 - [docs/NAVAL.md](docs/NAVAL.md) — sistema naval
 - [docs/MISSILES.md](docs/MISSILES.md) — misiles y drones de reconocimiento
+- [docs/AIR-COMBAT.md](docs/AIR-COMBAT.md) — radar, aviación embarcada, radio de acción
+- [docs/FORMACIONES.md](docs/FORMACIONES.md) — unir tropas en pelotones, compañías y regimientos
+- [docs/RECONOCIMIENTO.md](docs/RECONOCIMIENTO.md) — niebla de guerra, drones y exploración terrestre
 - [docs/ARTE.md](docs/ARTE.md) — guía de estilo de sprites
 - [docs/ASSETS-SPRITES.md](docs/ASSETS-SPRITES.md) — inventario completo de assets
 - [docs/DATA-NOTES.md](docs/DATA-NOTES.md) — pipeline de datos del mapa

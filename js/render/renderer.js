@@ -1,5 +1,5 @@
 // Render del mapa en canvas: proyección Mercator, provincias, unidades, órdenes y batallas.
-import { S, atWar, visibleProvinces, intel, unitDef, controller } from "../engine/state.js";
+import { S, atWar, visibleProvinces, intel, unitDef, controller, scoutRangeKm } from "../engine/state.js";
 import { DRONE_VISION_KM } from "../data/missiles-data.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import { radarRangeKm } from "../engine/air-combat.js";
@@ -9,6 +9,8 @@ import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
 import { buildingReady, flatReady } from "./sprite-cache.js";
 import { SPRITES } from "../data/sprites.js";
 import { BUILDINGS, FX_MINUTES } from "../data/constants.js";
+import { airRangeKm, airBaseFor } from "../engine/movement.js";
+import { leadRank } from "../engine/formations.js";
 
 export class MapRenderer {
   constructor(canvas) {
@@ -88,6 +90,15 @@ export class MapRenderer {
   unitIconSize() {
     const ratio = this.view.scale / (this.baseScale || this.view.scale);
     return Math.max(16, Math.min(46, 27 * Math.sqrt(ratio)));
+  }
+
+  // Tamaño de la ficha ajustado por categoría. Todas se dibujaban al mismo
+  // tamaño, así que un B-52 y un Orlan-10 ocupaban lo mismo en el mapa y no se
+  // distinguían de un caza sin mirar el sprite de cerca. El ajuste es
+  // deliberadamente suave: da jerarquía de un vistazo sin romper la retícula ni
+  // el radio clicable, que sigue saliendo del tamaño base.
+  unitIconSizeFor(type) {
+    return this.unitIconSize() * (CATEGORY_ICON_SCALE[unitDef(type)?.category] || 1);
   }
 
   w2s(x, y) {
@@ -341,6 +352,18 @@ export class MapRenderer {
         }
       }
 
+      // Radio de acción del aparato seleccionado: disco semitransparente centrado
+      // en SU BASE, no en él. Lo que limita a un avión es la distancia a la pista
+      // de la que despega, así que el círculo tiene que quedarse quieto mientras
+      // el aparato se mueve por dentro; si siguiera a la ficha el jugador no
+      // podría ver nunca hasta dónde le da.
+      this.drawAirRange(ctx, state, ui);
+
+      // Alcance de tiro de la unidad seleccionada (artillería y cualquier otra
+      // que bata a distancia). Este SÍ va centrado en la pieza, no en una base:
+      // lo que limita a un obús es dónde está plantado.
+      this.drawShellRange(ctx, state, ui);
+
       // Círculos de visión de drones propios y anillo de alcance del misil seleccionado
       for (const u of state.units) {
         if (u.dead || u.embarked) continue;
@@ -354,6 +377,13 @@ export class MapRenderer {
         } else if (u.owner === state.player && T?.category === "drone") {
           rDeg = DRONE_VISION_KM[T.tier ?? 1] / 111;
           color = "rgba(140,200,255,0.4)";
+        } else if (u.owner === state.player && ui.selStackIds?.includes(u.id) && scoutRangeKm(u.type)) {
+          // Exploración terrestre: solo con la unidad SELECCIONADA. Los drones
+          // enseñan su burbuja siempre porque son pocos y es su razón de ser;
+          // pintar la de cada vehículo motorizado del frente llenaría el mapa de
+          // círculos y no se vería nada.
+          rDeg = scoutRangeKm(u.type) / 111;
+          color = "rgba(150,225,180,0.45)";
         } else if (ui.strike?.unitId === u.id) {
           const sw = strikeWeaponsFor(u.type).find((x) => x.weapon.id === ui.strike.weaponId);
           rDeg = sw ? sw.rangoKm / 111 : 0;
@@ -416,14 +446,19 @@ export class MapRenderer {
         const byType = new Map();
         for (const u of units) {
           const T = unitDef(u.type);
-          const k = u.owner + "|" + u.type;
+          // Una formación es UNA ficha aunque lleve tipos distintos dentro, y el
+          // sprite que enseña es el del miembro que manda (el carro por delante
+          // de la infantería que lo acompaña, ver formations.js).
+          const k = u.formation ? u.owner + "|F|" + u.formation : u.owner + "|" + u.type;
           let g = byType.get(k);
           if (!g) {
-            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), aboard: 0, deck: 0 }));
+            byType.set(k, (g = { owner: u.owner, type: u.type, n: 0, hp: 0, level: 0, ids: [], air: AIR_CATS.has(T?.category || u.type), hpMax: 0, aboard: 0, deck: 0, formation: u.formation || null }));
           }
+          if (u.formation && leadRank(u.type) < leadRank(g.type)) g.type = u.type;
           g.ids.push(u.id);
           g.n++;
           g.hp += u.hp;
+          g.hpMax += unitDef(u.type)?.hp || 100;
           g.level = Math.max(g.level, vetLevel(u));
           // Portaviones: plazas y aparatos de TODA la pila, que es lo que se dibuja
           const cap = CARRIER_CAPACITY[u.type] || 0;
@@ -503,7 +538,22 @@ export class MapRenderer {
 
       // Unidades en marcha: viajan interpoladas, ORIENTADAS hacia su rumbo,
       // con sombra y (las propias) etiqueta de llegada estilo CoN
+      // Formaciones en marcha: todos sus miembros comparten tramo y minutos, así
+      // que se dibujarían N sprites clavados en el mismo píxel. Solo pinta el que
+      // manda, y su ficha lleva el recuento entero.
+      const enMarchaPorForm = new Map();
       for (const u of movingUnits) {
+        if (!u.formation) continue;
+        const prev = enMarchaPorForm.get(u.formation);
+        if (!prev || leadRank(u.type) < leadRank(prev.type)) enMarchaPorForm.set(u.formation, u);
+      }
+      const nEnMarcha = new Map();
+      for (const u of movingUnits) {
+        if (u.formation) nEnMarcha.set(u.formation, (nEnMarcha.get(u.formation) || 0) + 1);
+      }
+
+      for (const u of movingUnits) {
+        if (u.formation && enMarchaPorForm.get(u.formation) !== u) continue;
         const from = S.provinces.get(u.pos);
         const to = S.provinces.get(u.edgeLeft.to);
         if (!from || !to) continue;
@@ -536,14 +586,21 @@ export class MapRenderer {
         // están dibujados en 3/4 de cámara: rotarlos los dejaba tumbados o boca
         // abajo. A esos el rumbo se les marca con una flecha por delante.
         if (!air) this.drawHeadingArrow(ctx, sx, sy, ang, unitSize);
-        drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), unitSize, this.countryColor(u.owner), {
-          hp: Math.max(0, Math.min(1, u.hp / 100)),
+        drawUnitSymbol(ctx, T?.icon || "infanteria", sx, sy - (air ? 7 : 0), this.unitIconSizeFor(u.type), this.countryColor(u.owner), {
+          hp: Math.max(0, Math.min(1, u.hp / (unitDef(u.type)?.hp || 100))),
           level: vetLevel(u),
           angle: air ? this.smoothHeading(u.id, ang + Math.PI / 2, dtMs) : undefined,
           variant: u.type,
         });
-        this.unitHits.push({ x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), ids: [u.id], pid: u.pos });
-        this.drawFlagBadge(ctx, sx + 12, sy - (air ? 7 : 0) + 8, this.countryColor(u.owner), u.cargo?.length ? "+" + u.cargo.length : null);
+        const nForm = u.formation ? nEnMarcha.get(u.formation) || 1 : 1;
+        this.unitHits.push({
+          x: sx, y: sy - (air ? 7 : 0), r: hitRadius(unitSize), pid: u.pos,
+          ids: u.formation ? movingUnits.filter((x) => x.formation === u.formation).map((x) => x.id) : [u.id],
+        });
+        this.drawFlagBadge(
+          ctx, sx + 12, sy - (air ? 7 : 0) + 8, this.countryColor(u.owner),
+          nForm > 1 ? "×" + nForm : u.cargo?.length ? "+" + u.cargo.length : null
+        );
         // El ala embarcada viaja con el buque: el recuento también, mientras navega
         const deck = CARRIER_CAPACITY[u.type] || 0;
         if (deck) {
@@ -778,8 +835,8 @@ export class MapRenderer {
       ctx.ellipse(x + 5, y + 9, 11, 5, 0, 0, Math.PI * 2);
       ctx.fill();
     }
-    drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, this.unitIconSize(), this.countryColor(g.owner), {
-      hp: Math.max(0, Math.min(1, g.hp / (g.n * 100))),
+    drawUnitSymbol(ctx, unitDef(g.type)?.icon || "infanteria", x, y - lift, this.unitIconSizeFor(g.type), this.countryColor(g.owner), {
+      hp: Math.max(0, Math.min(1, g.hpMax ? g.hp / g.hpMax : 0)),
       level: g.level,
       angle,
       variant: g.type, // sprite del vehículo real (F-16A, Abrams, Arleigh Burke...)
@@ -852,36 +909,174 @@ export class MapRenderer {
   }
 
   // Insignia pequeña con el color del país y un texto (recuento/carga)
-  drawFlagBadge(ctx, x, y, color, text) {
-    if (!text) return;
-    rrect(ctx, x - 11, y - 6, 22, 12, 3);
-    ctx.fillStyle = color;
+  // Insignia de recuento de la ficha ("×3" al apilar, "+2" de carga).
+  //
+  // Antes era una chapa de 22×12 con texto de 9 px RELLENA del color del país y
+  // letra oscura encima. Dos problemas: se perdía a simple vista, y la
+  // legibilidad dependía del país — sobre un país oscuro (azul marino, verde
+  // botella) el texto oscuro desaparecía del todo.
+  //
+  // Disco del alcance de tiro. Si lo seleccionado es una formación, se busca la
+  // pieza de MÁS alcance que lleve dentro: es la que dice hasta dónde puede
+  // castigar el grupo sin moverse, y así el jugador ve de un vistazo que meter
+  // un obús en una columna le sirve para algo.
+  drawShellRange(ctx, state, ui) {
+    const ids = ui.selStackIds?.length ? ui.selStackIds : ui.selUnit ? [ui.selUnit] : [];
+    let pieza = null;
+    for (const id of ids) {
+      const u = state.units.find((x) => x.id === id && !x.dead);
+      if (!u || u.owner !== state.player || u.embarked) continue;
+      const r = unitDef(u.type)?.rangoKm || 0;
+      if (r && (!pieza || r > (unitDef(pieza.type)?.rangoKm || 0))) pieza = u;
+    }
+    if (!pieza) return;
+    const km = unitDef(pieza.type).rangoKm;
+    const cel = S.provinces.get(pieza.pos);
+    if (!cel) return;
+
+    const [x, y] = this.w2s(cel.pcx, cel.pcy);
+    const [, yN] = this.w2s(cel.pcx, cel.pcy - km / 111);
+    const r = Math.abs(y - yN);
+    if (r < 4) return;
+
+    // Rojo: es un anillo de AMENAZA, no de movilidad. Se distingue a propósito
+    // de los discos aéreos, que son de alcance propio y van en frío.
+    const rgb = "255,110,90";
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${rgb},0.09)`;
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.85)";
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(${rgb},0.8)`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
     ctx.stroke();
-    ctx.fillStyle = "#0c1014";
-    ctx.font = "bold 9px monospace";
+    ctx.setLineDash([]);
+
+    const listo = !(pieza.artyCd > 0);
+    const txt = `${km} km${listo ? "" : " · recargando"}`;
+    ctx.font = "bold 12px system-ui, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(text, x, y + 3.5);
+    ctx.textBaseline = "middle";
+    const w = ctx.measureText(txt).width + 14;
+    // Círculo grande: la etiqueta cabe por dentro, pegada al borde de arriba.
+    // Círculo pequeño (un obús de 300 km con el mapa alejado): por dentro caería
+    // justo encima de la ficha y taparía la unidad, así que se saca por fuera.
+    const ty = labelY(y, r);
+    rrect(ctx, x - w / 2, ty - 10, w, 20, 6);
+    ctx.fillStyle = "rgba(10,14,18,0.85)";
+    ctx.fill();
+    ctx.strokeStyle = `rgba(${rgb},0.85)`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = listo ? "#ffffff" : "#ffbcae";
+    ctx.fillText(txt, x, ty + 1);
+    ctx.restore();
   }
 
-  // Contacto enemigo sin identificar: insignia "?" gris con el total
+  // Disco del radio de acción del aparato seleccionado. Un color por categoría
+  // para que no se confunda con los otros anillos que ya pinta el mapa (visión
+  // del dron, burbuja de radar, alcance del misil), y muy poca opacidad: tapa
+  // media pantalla, así que tiene que dejar leer el mapa que hay debajo.
+  drawAirRange(ctx, state, ui) {
+    const u = ui.selUnit && state.units.find((x) => x.id === ui.selUnit && !x.dead);
+    if (!u || u.owner !== state.player) return;
+    const radioKm = airRangeKm(u.type);
+    if (!radioKm) return;
+    const base = airBaseFor(state, u);
+    if (!base) return;
+    // airBaseFor trabaja en coordenadas geográficas (cx/cy, las que mide distKm);
+    // el mapa dibuja en las proyectadas (pcx/pcy). Hay que releer la provincia.
+    const cel = S.provinces.get(base.pid);
+    if (!cel) return;
+
+    const [bx, by] = this.w2s(cel.pcx, cel.pcy);
+    const [, byN] = this.w2s(cel.pcx, cel.pcy - radioKm / 111); // radio proyectado
+    const r = Math.abs(by - byN);
+    if (r < 4) return;
+
+    const col = AIR_RANGE_COLOR[unitDef(u.type)?.category] || [120, 190, 255];
+    const rgb = col.join(",");
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(bx, by, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${rgb},0.10)`;
+    ctx.fill();
+    ctx.strokeStyle = `rgba(${rgb},0.75)`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([9, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Marca de la base y cifra, arriba del disco: sin esto el jugador ve un
+    // círculo enorme sin saber de dónde sale ni cuánto mide.
+    ctx.beginPath();
+    ctx.arc(bx, by, 4, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${rgb},0.9)`;
+    ctx.fill();
+    ctx.font = "bold 12px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const txt = `${radioKm} km${base.carrier ? " · desde portaviones" : ""}`;
+    const w = ctx.measureText(txt).width + 14;
+    const ty = labelY(by, r);
+    rrect(ctx, bx - w / 2, ty - 10, w, 20, 6);
+    ctx.fillStyle = "rgba(10,14,18,0.85)";
+    ctx.fill();
+    ctx.strokeStyle = `rgba(${rgb},0.8)`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(txt, bx, ty + 1);
+    ctx.restore();
+  }
+
+  // Ahora: plato oscuro fijo, borde del color del país y texto BLANCO. El color
+  // sigue identificando al dueño pero ya no manda sobre el contraste, así que se
+  // lee igual de bien en los 29 países. Escala con el zoom como la chapa de
+  // cubierta, o con el mapa alejado la insignia sería más ancha que la ficha.
+  drawFlagBadge(ctx, x, y, color, text) {
+    if (!text) return;
+    const k = deckScale(this.unitIconSize());
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(k, k);
+
+    const w = 15 + text.length * 6;
+    rrect(ctx, -w / 2, -10, w, 20, 6);
+    ctx.fillStyle = "rgba(10,14,18,0.92)";
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 14px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, 0, 1);
+    ctx.restore();
+  }
+
+  // Contacto enemigo sin identificar: chapa "?" gris con el total.
+  // El recuento iba DENTRO de la chapa a 9 px y se perdía. Ahora cuelga como
+  // insignia propia en la esquina, con el mismo tamaño y contraste que el
+  // recuento de las fichas propias (drawFlagBadge): un "×3" tiene que leerse
+  // igual de bien sea tuyo o del enemigo.
   drawUnknownContact(ctx, x, y, total) {
-    rrect(ctx, x - 12, y - 10, 24, 20, 5);
-    ctx.fillStyle = "rgba(28,34,42,0.85)";
+    rrect(ctx, x - 12, y - 12, 24, 24, 6);
+    ctx.fillStyle = "rgba(28,34,42,0.88)";
     ctx.fill();
     ctx.strokeStyle = "rgba(159,176,192,0.8)";
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.4;
     ctx.stroke();
     ctx.fillStyle = "#cfd9e4";
-    ctx.font = "bold 13px monospace";
+    ctx.font = "bold 16px system-ui, sans-serif";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.fillText("?", x, y + 1);
-    if (total > 1) {
-      ctx.font = "bold 9px monospace";
-      ctx.fillText("×" + total, x, y + 9);
-    }
+    ctx.textBaseline = "alphabetic";
+    if (total > 1) this.drawFlagBadge(ctx, x + 13, y + 13, "rgba(159,176,192,0.9)", "×" + total);
   }
 
   drawOverflowChip(ctx, x, y, n) {
@@ -923,6 +1118,33 @@ function projectileSprite(m) {
 
 // Tamaño de la chapa de cubierta respecto al de la ficha, con topes: ni ilegible
 // con el mapa alejado ni desproporcionada encima del barco con el mapa cerca.
+// Escala de la ficha por categoría (ver unitIconSizeFor). Un bombardero es un
+// avión enorme y un drone de reconocimiento es pequeño: que se note en el mapa
+// sin tener que acercarse a mirar el sprite. Se toca solo el AIRE, donde las
+// cuatro categorías comparten silueta y se confundían entre sí; en tierra y mar
+// la silueta ya las separa sola.
+// Dónde poner la cifra de un disco de alcance: por dentro del borde superior si
+// el círculo es grande, por fuera si es pequeño —si no, taparía la propia ficha
+// que está en el centro—.
+function labelY(cy, r) {
+  return r > 46 ? cy - r + 14 : cy - r - 13;
+}
+
+// Color del disco de radio de acción, por categoría (ver drawAirRange). En RGB
+// suelto porque el disco y su borde usan la misma tinta con dos opacidades.
+const AIR_RANGE_COLOR = {
+  drone:       [120, 190, 255], // azul: el mismo idioma que su círculo de visión
+  caza:        [110, 230, 170], // verde
+  bombardero:  [255, 165,  90], // naranja
+  helicoptero: [235, 215, 110], // amarillo
+};
+
+const CATEGORY_ICON_SCALE = {
+  bombardero: 1.22,
+  drone: 0.78,
+  helicoptero: 0.92,
+};
+
 function deckScale(size) {
   return Math.max(0.72, Math.min(1.1, size / 27));
 }

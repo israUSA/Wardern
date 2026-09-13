@@ -217,3 +217,130 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       que se reiniciaba a las 2 en punto (el `innerHTML` completo cada 250 ms recreaba el
       elemento y reiniciaba la animación CSS → armazón estable), aviones demasiado rápidos
       y girando sobre su propio eje
+
+## v1.5 — Formaciones, espacio aéreo y ritmo (2026-09-12)
+
+- [x] **Formaciones** (docs/FORMACIONES.md): unir tropas en una sola ficha, heterogénea y
+      persistente. Tres dominios que no se mezclan (tierra / aire / mar), nombre derivado
+      de la composición (Regimiento Acorazado, Grupo Táctico, Manada de Submarinos…),
+      escalones por número, sprite del miembro que manda, velocidad del más lento, tope de
+      16 y desacople de una en una. NO suma ataque ni defensa: es un envoltorio de mando.
+      Sustituye a la pila implícita de `stackFor()`, que solo agrupaba el MISMO tipo
+- [x] **Espacio aéreo libre** (revierte la decisión de v1.4): los aéreos vuelven a
+      sobrevolar territorio neutral sin declarar la guerra. La frontera del avión pasa a
+      ser física en vez de política
+- [x] **Radio de acción aéreo**: cada aparato solo alcanza cierta distancia de su base
+      (aeródromo propio o portaviones). Drone 1200/2200/3200 km · bombardero 1000/1400/1800 ·
+      caza 500/700/900 · helicóptero 250/350/450 · RQ-190 4200. Disco semitransparente en
+      el mapa centrado EN LA BASE al seleccionar el aparato. Sin ninguna base propia el
+      límite no se aplica
+- [x] **Patrulla sobre el mar**: un avión ya puede patrullar un sector marítimo sin
+      portaviones debajo y revelar barcos enemigos; al agotarse la patrulla vuelve a base.
+      Quedarse en el mar sigue exigiendo portaviones
+- [x] **Reloj a 15 min reales = 1 día de juego**: `MINUTES_PER_TICK_BASE` 0.1 → 0.4
+- [x] **Botones que necesitaban varias pulsaciones** (y parpadeo al pasar por encima): los
+      paneles se reescribían enteros con `innerHTML` cada 250 ms, así que el `mousedown` y
+      el `mouseup` caían en nodos distintos y el `click` nunca se emitía. `setPanelHTML`
+      solo reescribe si el contenido cambió, y nunca mientras el puntero está sobre un botón
+- [x] **Iconos del mapa**: insignia de recuento legible (plato oscuro, borde del país, texto
+      blanco de 14 px, escala con el zoom) y tamaño por categoría aérea — bombardero ×1.22,
+      helicóptero ×0.92, drone ×0.78
+- [x] **docs/INDICE.md**: índice de toda la documentación por tema, para no releerla entera
+
+### v1.5.1 — Ajustes sobre la marcha
+
+- [x] **Alcance aéreo duplicado** y bombarderos estratégicos aparte: B-21 9600 km, B-2 y
+      Tu-160M 9000, RQ-190 8400. Los tres pasan por encima del dron de T3
+- [x] **Sobrevuelo restringido a quien no se ve**: drones siempre, tripulados solo con
+      `rcs ≥ 0.6` (B-2, B-21, F-22, F-35, Su-57). El Tu-160M queda fuera pese a su alcance:
+      en el radar es enorme. Un caza convencional vuelve a necesitar declarar la guerra
+- [x] **Anillo de alcance de tiro** en el mapa para artillería y cualquier unidad con
+      `rangoKm`, centrado en la pieza. Rojo, para distinguirlo de los discos aéreos
+- [x] **Tiro a distancia dentro de una formación**: las piezas con alcance abren fuego y el
+      resto de la columna mantiene posición, en vez de partirse en dos provincias
+- [x] **Reconocimiento terrestre**: la motorizada (380/470/560 km) y el cazatanques
+      (430/520/610 km) descubren enemigos en su radio, como los drones pero mucho más
+      cerca. Círculo verde solo con la unidad seleccionada. Documentado en
+      docs/RECONOCIMIENTO.md
+- [x] **Visión de los drones subida** a 700/1100/1500 km (era 120/200/300). Con las cifras
+      viejas no llegaban ni a la provincia vecina —la mediana entre vecinas son 324 km— y
+      un Bradley habría visto más que un MQ-9
+
+## v1.6 — Puntos de vida por unidad y doctrinas asimétricas (2026-09-12)
+
+- [x] **HP por unidad**: sale de `CATEGORY_HP × doctrina × tier` y el panel lo muestra
+      sobre el máximo real ("56 / 90", no "56 / 100"). Antes TODO tenía 100 y un
+      portaviones encajaba lo mismo que un pelotón de fusileros
+- [x] **Abanico naval abierto**: portaviones 450 · destructor 220 · transporte 160 ·
+      fragata 150 · submarino 120 · corbeta 90. Es donde estaba el problema que se
+      quería resolver y donde se pudo resolver
+- [x] **Abanico terrestre NO abierto, y medido**: `tools/test-variants.mjs` demostró que
+      el sistema de counters está calibrado con HP uniforme. Con infantería 87 y MBT 107
+      —un 23 % de diferencia— ya se rompe R7; con 63/126 se caen R2, R4, R6, R7 y R10.
+      El HP compone al cuadrado y desborda cualquier ventaja de ataque o terreno.
+      Abrirlo exige reescribir las matrices de ataque enteras: proyecto aparte
+- [x] **Doctrinas invertidas**: ORIENTE AGUANTA (+2-5 % HP), OCCIDENTE PEGA (+4-9 %
+      ataque). Antes era al revés y no se correspondía con nada reconocible. Los
+      márgenes son pequeños porque están MEDIDOS: un +10 % de vida con ataque igual
+      daba el 100 % de las batallas de stack. Equilibrio final: occ 4 · ori 6 duelos por
+      categoría, 68 % de victorias orientales en stack mixto
+- [x] **Unidades nuevas a vida completa**: nacían con 50 HP y tardaban 200 horas de
+      juego en curarse. Se pagaban 350.000 por un portaviones y salía a mitad de vida
+- [x] **El daño escala con la vida en los tres caminos a distancia**: ya lo hacía el
+      combate por provincia, pero el tiro de artillería y la probabilidad de acierto de
+      los misiles aire-aire lo ignoraban — un caza con 5 HP disparaba igual que uno
+      intacto
+- [x] **Reglas derivadas pasadas a porcentaje**: retirada (30 % del máximo, no 30
+      puntos), desgaste, regeneración y caída de moral
+- [x] **Migración de guardados** (`migrateHp`): conserva el porcentaje exacto y es
+      idempotente
+- [x] **Banco de pruebas actualizado** para replicar el motor nuevo (HP por unidad,
+      daño por fracción, retirada y HP final en porcentaje): **97 PASS · 0 FAIL**
+- [x] **Ventaja naval occidental**: en el mar aguanta más Occidente, al revés que en
+      tierra. Portaviones +10 %, destructor +5 %, fragata +4 %, corbeta y transporte
+      +3 %. El submarino es la única clase donde manda Oriente (−2 %): es su arma naval
+      fuerte de verdad. El contrapeso occidental sigue siendo el +1 de ataque antibuque
+      oriental que ya estaba en los datos
+- [ ] **Pendiente**: no hay banco de pruebas NAVAL. El contrarreloj de docs/NAVAL.md
+      quedó marcado como no revalidado, y el +10 % del portaviones es el número a
+      vigilar — en tierra se midió que un 10 % de vida decide el 100 % de los combates
+
+## v1.7 — Guerra aeronaval y fichas con papel (2026-09-12)
+
+- [x] **Los aviones ya pueden atacar buques**: hasta ahora NINGÚN arma aire-suelo
+      llevaba categorías navales en su lista de blancos, así que era literalmente
+      imposible. Las bombas pesadas y los Maverick alcanzan cualquier casco; el
+      anticarro ligero de helicóptero, solo corbetas y transportes
+- [x] **Defensa antiaérea propia de cada buque** (NAVAL_AA): alcance, probabilidad de
+      acierto, intercepción de misiles y anulación de furtividad, por clase, doctrina y
+      tier. Destructor t2 occidental: 126 km, 52 % de acierto, 66 % de intercepción.
+      El portaviones se defiende poco solo (23 km) y el submarino NADA en absoluto
+- [x] **La furtividad es la llave del grupo de combate**: un destructor t2 toca a un
+      B-52 el 52 % de las veces y a un B-21 el 9 %. Ese es el motivo de existir del
+      bombardero furtivo
+- [x] **CIWS**: los misiles que van hacia un buque pueden ser derribados antes de la
+      tirada de impacto. Los antirradar son un 40 % más difíciles de interceptar
+- [x] **Etiquetas y papel por unidad** (js/data/roles-data.js): cada ficha abre con su
+      papel, una fila de etiquetas de colores (verde lo que destaca, rojo su
+      vulnerabilidad, azul lo que solo ella hace) y una frase de para qué sirve en
+      batalla. Se deriva de la categoría, no se escribe unidad por unidad: con 96
+      variantes, mantener 96 textos a mano se habría desfasado al primer reajuste
+
+## v1.8 — Banco de pruebas naval (2026-09-12)
+
+- [x] **tools/test-naval.mjs**: 32 aserciones que cubren el schema de las 36 variantes,
+      el escalado de vida por tier, el triángulo naval, la competitividad entre
+      doctrinas, la defensa antiaérea de los buques y el ataque aéreo contra ellos.
+      Era la deuda más clara del sistema naval y al saldarla apareció un problema real
+- [x] **Corregido el desequilibrio naval que nadie veía**: con el +1 de ataque antibuque
+      oriental intacto, ORIENTE ganaba el 98 % de las batallas de flota — lo contrario de
+      lo que se había pedido. Se le quita ese +1 a la superficie oriental y el margen de
+      vida occidental baja del 10 % al 2 %. Reparto final: la superficie es de Occidente
+      (gana las 5 clases), el submarino es de Oriente (+8 % de vida y conserva su +1).
+      Flota contra flota: Oriente gana el 24 %, dentro de la banda sana
+- [x] **Triángulo naval verificado**: destructor > submarino > portaviones > superficie >
+      destructor. Ninguna clase gana a todas
+- [x] **La vida final se mide en PORCENTAJE**, no en puntos: con un abanico de 90 a 528
+      HP, la suma bruta no compara nada
+- [x] docs/NAVAL.md con la tabla de duelos regenerada y el histórico de configuraciones
+      medidas, para que nadie vuelva a tocar el margen a ojo

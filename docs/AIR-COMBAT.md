@@ -282,3 +282,202 @@ desincronicen, y los guardados viejos no necesitan campo nuevo.
 así que las partidas guardadas antes de esta versión cargan con la dotación
 completa sin migración. `spawnUnit` no se tocó, para no meter datos de combate
 dentro de `state.js`.
+
+## 11. Espacio aéreo libre y radio de acción
+
+Antes, entrar en territorio de un país neutral exigía declararle la guerra, y la
+regla valía igual para tanques que para aviones. Era una frontera política
+aplicada a algo que en la realidad no la respeta: el reconocimiento aéreo entra
+donde le hace falta.
+
+Ahora la regla es física en vez de diplomática.
+
+### Sobrevuelo libre
+
+No lo tiene toda la aviación, solo la que **no se ve**. La regla es: nadie
+declara la guerra por algo que no ha detectado.
+
+Lo decide `canOverfly()` en `movement.js`:
+
+- **Todos los drones**, sea cual sea su firma. Su perfil de vuelo —lento,
+  pequeño, alto— y su condición de no tripulado es justo lo que en la realidad
+  permite negar la incursión.
+- **Los tripulados furtivos**, con `rcs ≥ 0.6` (`STEALTH_OVERFLIGHT_RCS`).
+
+| Aparato | `rcs` | ¿Sobrevuela sin guerra? |
+|---|---|---|
+| B-21 Raider | 0.88 | sí |
+| B-2 Spirit | 0.82 | sí |
+| F-22 Raptor | 0.80 | sí |
+| F-35A | 0.78 | sí |
+| Su-57 | — | sí |
+| Drones (todos) | — | sí |
+| Tu-160M | 0.15 | **no** |
+| B-52G, Tu-22M2/M3, cazas convencionales, helicópteros | 0-0.15 | **no** |
+
+El Tu-160M es el caso que mejor explica la regla: tiene el mayor alcance del
+juego y aun así no puede colarse, porque en el radar es enorme.
+
+`neutralBlocker()` acepta un parámetro `aereo` y devuelve `null` cuando **toda**
+la selección puede sobrevolar; basta con un caza convencional en el grupo para
+que el aviso diplomático vuelva a aparecer.
+
+Atacar a una unidad de un país con el que no estás en guerra **sigue siendo** una
+declaración de guerra, furtivo o no: lo que dejó de serlo es pasar por encima de
+su territorio y mirar.
+
+### Radio de acción
+
+Lo que sustituye a la frontera cerrada. Cada aparato solo puede plantarse a
+cierta distancia **de su base**, medida en línea recta.
+
+| Categoría | T1 | T2 | T3 |
+|---|---|---|---|
+| Drone | 2400 km | 4400 km | 6400 km |
+| Bombardero | 2000 km | 2800 km | 3600 km |
+| Caza | 1000 km | 1400 km | 1800 km |
+| Helicóptero | 500 km | 700 km | 900 km |
+
+El orden drone > bombardero > caza > helicóptero es deliberado. El dron manda
+porque su papel es ser los ojos del jugador muy por delante del frente: con un
+radio de caza no vería nada que no viera ya la inteligencia de frontera. El
+helicóptero cierra la tabla porque es apoyo de la tropa, no un aparato de
+alcance.
+
+#### Excepciones por tipo
+
+Aparatos cuyo alcance no lo explica su categoría (`AIR_RANGE_KM_BY_TYPE`):
+
+| Aparato | Alcance | Por qué |
+|---|---|---|
+| B-21 Raider | 9600 km | Bombardero estratégico furtivo |
+| B-2 Spirit | 9000 km | Bombardero estratégico furtivo |
+| Tu-160M | 9000 km | El único ruso de la plantilla que de verdad es intercontinental |
+| RQ-190 | 8400 km | Penetración profunda, desarmado a propósito |
+
+Los tres bombarderos pasan por encima incluso del dron de T3: son los únicos
+pensados para cruzar un océano, soltar y volver. El resto —B-52G, Tu-22M2,
+Tu-22M3— se queda con la cifra de su categoría: el Backfire es un bombardero de
+teatro, y el B-52 solo alcanza sus cifras reales con reabastecimiento en vuelo,
+que aquí no se modela.
+
+Las cifras están en `AIR_RANGE_KM` y `AIR_RANGE_KM_BY_TYPE` (`constants.js`).
+
+### Qué cuenta como base
+
+`airBaseFor()` devuelve la más cercana entre:
+
+- provincias propias con **aeródromo** (`buildings.aerobase ≥ 1`)
+- **portaviones** propios, para la aviación embarcada o capaz de apontar
+
+Un aparato ya embarcado no busca nada: su base es el buque que lo lleva, y el
+radio le viaja con él. Es justo para lo que sirve un portaviones — y, junto con
+construir aeródromos más adelantados, es la única forma de llegar más lejos.
+
+**Sin ninguna base propia el límite no se aplica.** Dejar a toda la aviación
+clavada en el sitio por no tener aeródromo sería castigar al jugador por algo que
+no puede arreglar en ese momento.
+
+### Patrullar el mar
+
+`orderPatrol()` admite un sector de mar aunque no haya portaviones debajo:
+patrullar es dar vueltas un rato y volverse a casa, no quedarse a vivir sobre el
+agua (la cuenta atrás termina en regreso a base). Eso permite barrer el mar en
+busca de barcos enemigos sin tener flota allí.
+
+Moverse a un sector de mar **para quedarse** sigue exigiendo un portaviones
+propio parado con plaza libre: eso no ha cambiado.
+
+### En el mapa
+
+Al seleccionar un aparato propio se dibuja un disco semitransparente con su radio
+de acción, centrado **en su base, no en él**. Si siguiera a la ficha, el jugador
+nunca podría ver hasta dónde le da. El color va por categoría —azul dron, verde
+caza, naranja bombardero, amarillo helicóptero— para no confundirlo con los otros
+anillos que ya pinta el mapa (visión del dron, burbuja de radar, alcance del
+misil). Lo dibuja `drawAirRange()` en `renderer.js`.
+
+### Ver sin entrar
+
+Independiente de todo lo anterior: `intelFor()` concede inteligencia **fuerte** a
+toda provincia dentro del radio de reconocimiento, **sin mirar de quién es**. Un
+dron parado en territorio propio ve unidades enemigas al otro lado de la frontera
+sin entrar y sin declarar nada. Detalle completo, incluido el reconocimiento
+terrestre, en [RECONOCIMIENTO.md](RECONOCIMIENTO.md).
+
+## 12. Atacar buques y la defensa antiaérea naval
+
+Hasta aquí **un avión no podía atacar a un barco en absoluto**: ningún arma
+aire-suelo llevaba categorías navales en su lista de blancos. Ahora sí, y cada
+buque se defiende solo.
+
+### Qué arma hunde qué
+
+| Arma | Alcanza |
+|---|---|
+| GBU-31 JDAM · KAB-500S | todos los buques |
+| AGM-65 Maverick · Kh-25ML | todos los buques |
+| Hellfire · 9M120 Ataka | corbeta y transporte |
+| BGM-71 TOW · 9M114 Shturm | solo corbeta |
+
+El anticarro ligero de helicóptero no hunde un destructor, que es lo razonable.
+
+### La defensa del buque: cuatro cifras
+
+| | Qué hace |
+|---|---|
+| `km` | alcance al que engancha al avión atacante |
+| `pk` | probabilidad de tocarlo con su misil de zona |
+| `ciws` | probabilidad de **derribar un misil que ya viene** — Phalanx, Kashtan, ESSM |
+| `antiStealth` | cuánto anula la furtividad del atacante |
+
+Valores t2 occidentales:
+
+| Clase | Alcance | Acierto | Intercepta |
+|---|---|---|---|
+| Destructor | 126 km | 52 % | 66 % |
+| Fragata | 50 km | 37 % | 48 % |
+| Portaviones | 23 km | 23 % | 60 % |
+| Corbeta | 6 km | 18 % | 25 % |
+| Transporte | 7 km | 11 % | 14 % |
+| **Submarino** | **0** | **0** | **0** |
+
+**El portaviones se defiende poco solo** (23 km) y **el submarino nada en
+absoluto**. No son errores: son las dos lecciones que el sistema tiene que
+enseñar. Un portaviones sin escolta es un blanco enorme, y un submarino
+descubierto por la aviación no tiene respuesta.
+
+### La furtividad es la llave
+
+El `pk` se recorta con la firma radar del atacante, igual que en los radares
+terrestres. Probabilidad de que un destructor t2 toque a cada aparato:
+
+| Aparato | Le acierta |
+|---|---|
+| B-52G | 52 % |
+| F/A-18E | 44 % |
+| F-35A | 14 % |
+| F-22 Raptor | 13 % |
+| B-2 Spirit | 12 % |
+| B-21 Raider | 9 % |
+| RQ-190 | 5 % |
+
+Ahí está el motivo de existir del bombardero furtivo: cruza un grupo de combate
+que derribaría a cualquier otra cosa.
+
+### Doctrina
+
+Occidente acierta más (Aegis y enlace de datos entre buques: `pk` ×1,15,
+`ciws` ×1,2); Oriente llega más lejos (S-300F: `km` ×1,25). Distinto carácter, no
+"uno mejor".
+
+### Interceptar el misil
+
+Al llegar el misil al buque, el CIWS tira **antes** de la tirada de impacto. El
+parte distingue las dos cosas: "DERRIBA el AGM-65 con su defensa de punto" no es
+lo mismo que "AGM-65 FALLA".
+
+Los antirradar (HARM, Kh-31P) son un 40 % más difíciles de interceptar: vienen
+rápidos y bajos, y el buque tiene que elegir entre apagar el radar o seguir
+viéndolos.
+

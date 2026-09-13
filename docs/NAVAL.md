@@ -41,42 +41,105 @@
 | **Portaviones** | USS Nimitz / Kuznetsov | Dominio de superficie + proyección aérea | Fragata, corbeta, destructor, transporte (1v1) | Submarino, enjambres | 350k | 52/49 | 120 |
 | **Transporte** | USS Whidbey Island / Ivan Rogov | Mueve 3 terrestres por mar (`capacity: 3`) | Nada | Todo (huye o va escoltado) | 60k | 47/44 | 60 |
 
-## Contrarreloj naval (verificado, duelo 1v1 t2 occidental vs oriental)
 
-El triángulo: **destructor > submarino > portaviones > superficie** y
-**fragata > corbeta > submarino(por coste)**.
+## Puntos de vida por buque (v1.6)
 
-| Duelo 1v1 (t2) | Ganador | HP final | Duración |
+Hasta v1.5 todos los buques tenían 100 HP. Ahora van por desplazamiento, y el
+abanico está abierto de verdad porque los barcos solo se baten entre ellos (en
+tierra no se pudo, ver la sección "Puntos de vida" de docs/UNITS.md).
+
+| Clase | Occidente t1/t2/t3 | Oriente t1/t2/t3 | Ventaja occ. |
 |---|---|---|---|
-| Destructor vs Submarino | Destructor | 88 | 13,0 h |
-| Destructor vs Corbeta | Destructor | 90 | 13,8 h |
-| Destructor vs Fragata | Destructor | 66 | 31,5 h |
-| Portaviones vs Destructor | Portaviones | 51 | 32,0 h |
-| Portaviones vs Fragata | Portaviones | 83 | 15,5 h |
-| Portaviones vs Corbeta | Portaviones | 90 | 17,5 h |
-| Submarino vs Portaviones | Submarino | 90 | 10,3 h |
-| Submarino vs Fragata | Submarino | 73 | 16,8 h |
-| Fragata vs Corbeta | Fragata | 77 | 22,3 h |
-| Corbeta vs Submarino | Corbeta | 66 | 25,8 h |
-| Combatiente vs Transporte | el combatiente | 83–95 | 11,5–28,5 h |
+| Portaviones | 413/459/528 | 405/450/518 | +2 % |
+| Destructor | 202/224/258 | 198/220/253 | +2 % |
+| Fragata | 138/153/176 | 135/150/173 | +2 % |
+| Corbeta | 83/92/106 | 81/90/103 | +2 % |
+| Transporte | 147/163/188 | 144/160/184 | +2 % |
+| Submarino | 108/120/138 | 117/130/149 | **−8 %** |
 
-Verificado en los 4 emparejamientos de doctrina (occ/occ, occ/ori, ori/occ, ori/ori) y
-en t1 y t3 (mismo triángulo). Duraciones 10–32 h: batallas navales de medio día a día y
-medio de juego, dentro del objetivo del GDD (1–2 días).
+**En el mar aguanta más Occidente, al revés que en tierra.** La marina occidental se
+construyó alrededor de cascos grandes y supervivientes.
 
-### Economía del combate naval (stacks verificados)
+El margen es de solo un **2 %** y no es poco: medido, por encima del 4 % la flota
+occidental gana el 100 % de las batallas. Parece minúsculo porque va acompañado de
+otra cosa — a Oriente se le quitó el +1 de ataque contra buques de superficie que
+tenía, y con eso el reparto queda: **la superficie es de Occidente, el submarino es
+de Oriente**.
 
-- **El enjambre vence al gigante** (regla del motor: el daño escala con `hp/100` y el
-  foco de fuego cae sobre un objetivo a la vez — igual que 2 infanterías > 1 MBT en
-  tierra): **2 fragatas (140k) > 1 portaviones (350k)**. Los grandes navegan SIEMPRE
-  con escolta.
-- **La corbeta es EL counter barato del submarino**: 2 corbetas (80k) > 1 submarino
-  (130k). El submarino gana 1v1 a la fragata pero el enemigo responde con corbetas
-  o destructores, no con fragatas.
-- **El portaviones se contrata con submarinos o destructores**: 1 sub > 1 CV 1v1
-  (torpedos vs hangar indefenso) y 3 destructores (330k) > 1 CV (350k).
-- Un portaviones aislado barre 1v1 a todo salvo submarinos, pero nunca navega solo:
-  2 fragatas lo fuerza a retirar.
+El submarino oriental conserva las dos ventajas a la vez: **+8 % de vida Y el +1 de
+ataque antibuque**. Es su arma naval fuerte de verdad —Akula, Alfa, hoy los Yasen—
+y es la que hunde portaviones.
+
+`hp` y `defense` dicen cosas distintas: **defense es cuánto cuesta acertarte, hp es
+cuánto bulto tienes.** El transporte lo separa bien — mucho casco, ninguna
+protección.
+
+> Verificado por `node tools/test-naval.mjs` (32 aserciones). El margen de vida
+> occidental está asertado a un máximo del 4 %: por encima, la flota occidental
+> gana el 100 % de las batallas.
+
+## Contrarreloj naval (verificado con `node tools/test-naval.mjs`)
+
+El triángulo, ahora medido y asertado por el banco:
+
+**destructor > submarino > portaviones > superficie > destructor**
+
+Cada arma tiene a quien la mata. El destructor barre la superficie pero el
+portaviones lo supera; al portaviones lo hunde el submarino; y al submarino lo
+caza el destructor. Ninguna clase gana a todas.
+
+| Duelo 1v1 (t2 occidental) | Ganador | Vida final | Duración |
+|---|---|---|---|
+| Destructor vs Submarino | Destructor | 95 % | 6,0 h |
+| Destructor vs Corbeta | Destructor | 97 % | 5,0 h |
+| Destructor vs Fragata | Destructor | 81 % | 17,6 h |
+| Destructor vs Transporte | Destructor | 96 % | 9,6 h |
+| Portaviones vs Destructor | Portaviones | 82 % | 23,1 h |
+| Portaviones vs Fragata | Portaviones | 95 % | 8,9 h |
+| Portaviones vs Corbeta | Portaviones | 98 % | 6,2 h |
+| Submarino vs Portaviones | Submarino | 52 % | 26,4 h |
+| Submarino vs Fragata | Submarino | 63 % | 11,8 h |
+| Fragata vs Corbeta | Fragata | 89 % | 7,7 h |
+| Corbeta vs Submarino | Corbeta | 58 % | 13,7 h |
+
+La **vida final va en porcentaje**, no en puntos. Con un abanico de 90 a 495 HP
+la suma bruta no compara nada: "gana con el 60 %" sí significa lo mismo para una
+corbeta que para un portaviones.
+
+Los dos duelos más largos —Portaviones vs Destructor (23 h) y Submarino vs
+Portaviones (26 h)— son los que deciden una campaña naval, y los dos acaban con
+el ganador maltrecho. Es lo que se busca: hundir un portaviones tiene que costar.
+
+### Reparto de doctrina
+
+| | Occidente | Oriente |
+|---|---|---|
+| Superficie | **gana las 5 clases** | — |
+| Submarino | — | **gana** |
+| Antiaéreo naval | acierta más (Aegis) | llega más lejos (S-300F) |
+| Vida | +2 % en superficie | +8 % en submarino |
+
+**Flota completa contra flota completa: Oriente gana el 24 %.** Dentro de la banda
+que el banco exige (20-80 %), así que hay partida.
+
+Ese equilibrio costó encontrarlo y conviene no romperlo a ojo. Medido:
+
+| Configuración | Resultado |
+|---|---|
+| Oriente con su +1 antibuque original | Oriente gana el **98 %** de las flotas |
+| Occidente +6 % de vida, +1 oriental intacto | Oriente gana el **97 %** |
+| Sin el +1 oriental, Occidente +6 % | Occidente gana el **100 %** |
+| **Sin el +1 oriental, Occidente +2 %** | **Oriente gana el 24 %** ✓ |
+
+Dos lecciones que el banco dejó por escrito:
+
+1. **El margen de vida no puede pasar del 4 %.** Por encima, la flota occidental
+   gana el 100 % de las batallas y deja de haber juego. El banco lo asierta.
+2. **Un +1 de ataque pesa más que un +2 % de vida** en el mar, al revés que en
+   tierra (ver docs/UNITS.md). El motivo es que los ataques navales son grandes
+   —12 a 18 puntos— así que un +1 es un +6 a +8 %, mientras que en tierra los
+   ataques base son la mitad y la vida compone más.
+
 
 ## Tabla de costes (idéntica para ambas doctrinas)
 

@@ -1,6 +1,6 @@
 // Combate: batallas por provincia, daño, moral, veteranía, retiradas, captura y eliminación.
 import * as C from "../data/constants.js";
-import { S, unitDef, controller, atWar, log, checkElimination } from "./state.js";
+import { S, unitDef, controller, atWar, log, checkElimination, hpFrac, maxHp } from "./state.js";
 import { edgeMinutes } from "./movement.js";
 import { MISSILES } from "../data/missiles-data.js";
 
@@ -122,7 +122,7 @@ export function tickCombat(state, dt) {
       }
       let dmg =
         atkVal *
-        (u.hp / 100) *
+        hpFrac(u) *
         u.morale *
         atkPen *
         prep *
@@ -160,7 +160,11 @@ export function tickCombat(state, dt) {
 
     for (const [u, dmg] of dmgMap) {
       u.hp -= dmg;
-      u.morale = Math.max(0, u.morale - dmg * C.MORALE_HIT);
+      // La moral cae por PORCENTAJE de vida perdida, no por puntos: 50 de daño
+      // es el 125 % de un pelotón de infantería y el 11 % de un portaviones. Con
+      // puntos absolutos el buque se desmoralizaría igual que el pelotón. El ×100
+      // conserva la calibración previa, cuando todo el mundo tenía 100 HP.
+      u.morale = Math.max(0, u.morale - (dmg / maxHp(u.type)) * 100 * C.MORALE_HIT);
       if (u.hp <= 0 && !dead.has(u.id)) {
         dead.add(u.id);
         state.stats.lost[u.owner] = (state.stats.lost[u.owner] || 0) + 1;
@@ -178,7 +182,11 @@ export function tickCombat(state, dt) {
         (e) => e.owner !== u.owner && atWar(state, u.owner, e.owner) && !dead.has(e.id)
       );
       if (!stillFighting) continue;
-      if (u.hp < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) {
+      // RETREAT_HP es un PORCENTAJE del máximo, no un número absoluto: con HP
+      // por unidad, "retirarse por debajo de 30" dejaría a un portaviones de 450
+      // peleando hasta el 7 % de su casco y mataría a la infantería de 40 casi
+      // nada más empezar.
+      if (hpFrac(u) * 100 < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) {
         const dest = retreatDest(state, u, pid);
         if (dest) {
           const e = (S.edges.get(pid) || []).find((x) => x.to === dest);

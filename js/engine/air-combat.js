@@ -5,7 +5,7 @@
 // PROVINCIA con munición infinita y cooldown; este gasta misiles de una carga
 // finita y apunta a una unidad. Los vuelos se meten en el MISMO `state.missiles`
 // (marcados con `air: true`) para que el render y el tick de vuelo sean únicos.
-import { S, unitDef, controller, atWar, distKm, log, visibleProvinces } from "./state.js";
+import { S, unitDef, controller, atWar, distKm, log, visibleProvinces , hpFrac , maxHp } from "./state.js";
 import { vetLevel } from "./combat.js";
 import { canAfford, pay } from "./economy.js";
 import { carrierBerths } from "./movement.js";
@@ -13,7 +13,7 @@ import * as C from "../data/constants.js";
 import {
   AIR_WEAPONS, AIR_LOADOUTS, GROUND_EVASION, SAM_RANGE_KM, SAM_PK, SAM_DAMAGE,
   PK_RANGE_CURVE, PK_VET_BONUS, REARM_MIN_AEROBASE, AIR_RANGE_SCALE,
-  SAM_RADAR, CARRIER_CAPACITY, CARRIER_CAPABLE,
+  SAM_RADAR, CARRIER_CAPACITY, CARRIER_CAPABLE, NAVAL_AA, NAVAL_AA_DAMAGE,
 } from "../data/air-combat-data.js";
 
 // ---------- Escala y distancias ----------
@@ -196,7 +196,13 @@ export function pkFor(w, shooter, target, km) {
     }
   }
   const vet = vetLevel(shooter) * PK_VET_BONUS;
-  return Math.max(0.05, Math.min(0.95, w.pk * mult * (1 - targetEvasion(target)) + vet));
+  // Un escuadrón maltrecho acierta menos. Se degrada la PROBABILIDAD, no el
+  // daño: el misil explota igual de fuerte, lo que falla es el aparato dañado
+  // colocándose para tirar. Hasta ahora un caza con 5 HP disparaba exactamente
+  // igual que uno intacto, que era el único sitio del motor donde el estado de
+  // la unidad no contaba para nada.
+  const est = hpFrac(shooter);
+  return Math.max(0.05, Math.min(0.95, (w.pk * mult * (1 - targetEvasion(target)) + vet) * est));
 }
 
 // ¿Puede esta arma atacar a ese blanco? Devuelve el motivo si no.
@@ -276,37 +282,90 @@ export function fireAirWeapon(state, unitId, weaponId, targetUnitId) {
   };
 }
 
+// Defensa antiaérea de un buque, o null si no la tiene (submarinos) o no es nave.
+export function navalAA(type) {
+  const aa = NAVAL_AA[type];
+  return aa && aa.km > 0 ? aa : null;
+}
+
+// Probabilidad REAL de que ese buque toque a ESTE avión, ya descontada su
+// furtividad. Es la misma regla que usan los radares terrestres: el furtivo no
+// anula el arma, anula que le vean venir. Por eso un B-2 cruza un grupo de
+// combate y un B-52 no.
+export function navalAAPk(ship, aircraft) {
+  const aa = navalAA(ship.type);
+  if (!aa) return 0;
+  const rcs = rcsOf(aircraft);
+  return Math.max(0, aa.pk * (1 - rcs * (1 - aa.antiStealth)));
+}
+
+// ¿Derriban el misil que viene hacia el buque? La última barrera, y depende del
+// buque: un destructor moderno para más de la mitad, un transporte casi nada.
+// Los antirradar son más difíciles de interceptar —vienen rápidos y bajos, y el
+// buque tiene que elegir entre apagar el radar o seguir viéndolos—, así que se
+// les aplica un descuento.
+export function ciwsIntercept(state, ship, weaponId) {
+  const aa = NAVAL_AA[ship.type];
+  if (!aa || !aa.ciws) return false;
+  const w = AIR_WEAPONS[weaponId];
+  const dificil = w?.guia === "antirradar" ? 0.6 : 1;
+  return Math.random() < aa.ciws * dificil;
+}
+
 // El antiaéreo enemigo que cubre al avión atacante le dispara de vuelta. Es el
 // motivo de existir de los antirradar (HARM / Kh-31P): callar las baterías antes
 // de meter la aviación de ataque.
+//
+// Dispara la batería TERRESTRE y también cualquier BUQUE con defensa propia.
+// Entre todos los que llegan se elige al que más probabilidad tiene de acertar,
+// que es como funciona de verdad: el enlace de datos reparte el blanco al que
+// mejor tiro tiene, no al primero de la lista.
 function samReaction(state, shooter) {
   const from = S.provinces.get(shooter.pos);
   if (!from) return null;
+  let mejor = null;
   for (const e of state.units) {
     if (e.dead || e.embarked || e.owner === shooter.owner) continue;
-    if ((unitDef(e.type)?.category || e.type) !== "antiaereo") continue;
     if (!atWar(state, shooter.owner, e.owner)) continue;
     const p = S.provinces.get(e.pos);
     if (!p) continue;
-    const R = (SAM_RANGE_KM[e.type] ?? SAM_RANGE_KM.antiaereo) * AIR_RANGE_SCALE;
-    if (tacticalKm(from, p) > R) continue;
-    if (Math.random() >= SAM_PK) {
-      log(state, `Antiaéreo de ${S.countries[e.owner].name} falla contra el atacante`, "war");
-      return "el antiaéreo enemigo falló el disparo de respuesta";
+    const cat = unitDef(e.type)?.category || e.type;
+    let R, pk, dmg;
+    if (cat === "antiaereo") {
+      R = (SAM_RANGE_KM[e.type] ?? SAM_RANGE_KM.antiaereo) * AIR_RANGE_SCALE;
+      const rad = SAM_RADAR[e.type] || SAM_RADAR.antiaereo;
+      pk = SAM_PK * (1 - rcsOf(shooter) * (1 - (rad?.antiStealth || 0)));
+      dmg = SAM_DAMAGE;
+    } else {
+      const aa = navalAA(e.type);
+      if (!aa) continue;
+      R = aa.km * AIR_RANGE_SCALE;
+      pk = navalAAPk(e, shooter);
+      dmg = NAVAL_AA_DAMAGE;
     }
-    shooter.hp -= SAM_DAMAGE;
-    shooter.morale = Math.max(0, shooter.morale - SAM_DAMAGE * C.MORALE_HIT);
-    const sn = unitDef(shooter.type)?.name || shooter.type;
-    if (shooter.hp <= 0) {
-      shooter.dead = true;
-      state.stats.lost[shooter.owner] = (state.stats.lost[shooter.owner] || 0) + 1;
-      log(state, `${sn} DERRIBADO por el antiaéreo de ${S.countries[e.owner].name}`, "war");
-      return "¡tu avión fue derribado por el antiaéreo!";
-    }
-    log(state, `${sn} alcanzado por el antiaéreo enemigo (−${SAM_DAMAGE} HP)`, "war");
-    return `tu avión recibió ${SAM_DAMAGE} HP del antiaéreo`;
+    if (!pk || tacticalKm(from, p) > R) continue;
+    if (!mejor || pk > mejor.pk) mejor = { unidad: e, pk, dmg, naval: cat !== "antiaereo" };
   }
-  return null;
+  if (!mejor) return null;
+
+  const quien = mejor.naval
+    ? `${unitDef(mejor.unidad.type)?.name} de ${S.countries[mejor.unidad.owner].name}`
+    : `Antiaéreo de ${S.countries[mejor.unidad.owner].name}`;
+  if (Math.random() >= mejor.pk) {
+    log(state, `${quien} falla contra el atacante`, "war");
+    return `${mejor.naval ? "la defensa del buque" : "el antiaéreo enemigo"} falló el disparo de respuesta`;
+  }
+  shooter.hp -= mejor.dmg;
+  shooter.morale = Math.max(0, shooter.morale - (mejor.dmg / maxHp(shooter.type)) * 100 * C.MORALE_HIT);
+  const sn = unitDef(shooter.type)?.name || shooter.type;
+  if (shooter.hp <= 0) {
+    shooter.dead = true;
+    state.stats.lost[shooter.owner] = (state.stats.lost[shooter.owner] || 0) + 1;
+    log(state, `${sn} DERRIBADO por ${quien}`, "war");
+    return `¡tu avión fue derribado por ${mejor.naval ? "la defensa del buque" : "el antiaéreo"}!`;
+  }
+  log(state, `${sn} alcanzado por ${quien} (−${mejor.dmg} HP)`, "war");
+  return `tu avión recibió ${mejor.dmg} HP de ${mejor.naval ? "la defensa del buque" : "el antiaéreo"}`;
 }
 
 // ---------- Impacto ----------
@@ -329,13 +388,23 @@ export function resolveAirImpact(state, m) {
     return;
   }
 
+  // Última barrera del buque: el CIWS intenta derribar el misil en el tramo
+  // final. Va DESPUÉS de comprobar el enganche y ANTES de la tirada de impacto,
+  // porque interceptar y fallar son cosas distintas y el parte debe distinguirlas.
+  if (ciwsIntercept(state, t, m.weaponId)) {
+    log(state, `${tn} DERRIBA el ${w.nombre} con su defensa de punto`, "war");
+    return;
+  }
+
   if (Math.random() >= m.pk) {
     log(state, `${w.nombre} FALLA contra ${tn}`, "war");
     return;
   }
 
   t.hp -= w.danio;
-  t.morale = Math.max(0, t.morale - w.danio * C.MORALE_HIT);
+  // Porcentaje de vida perdida, no puntos: 45 de daño es media infantería y un
+  // arañazo para un portaviones de 495.
+  t.morale = Math.max(0, t.morale - (w.danio / maxHp(t.type)) * 100 * C.MORALE_HIT);
   if (t.hp <= 0) {
     t.dead = true;
     state.stats.lost[t.owner] = (state.stats.lost[t.owner] || 0) + 1;

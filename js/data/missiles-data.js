@@ -41,5 +41,15 @@ export const MISSILES = {
   },
 };
 
-// Radio de visión de los drones de reconocimiento por tier (km)
-export const DRONE_VISION_KM = { 1: 120, 2: 200, 3: 300 };
+// Radio de visión de los drones de reconocimiento por tier (km).
+//
+// Subido de 120/200/300 al añadir el reconocimiento terrestre (`scoutRangeKm` en
+// state.js). Con las cifras viejas un dron no llegaba ni a la provincia de al
+// lado —la distancia mediana entre vecinas son 324 km— y un Bradley de
+// exploración habría visto más que un MQ-9, que es absurdo. Estas dejan al dron
+// en torno al doble y medio de lo que ve el mejor vehículo terrestre (610 km).
+//
+// Medido desde Arizona, contando solo provincias de TIERRA ajenas: 700 km asoma
+// a 2, 1100 km a 4 y 1500 km a 8. El radio barre además los sectores de mar que
+// abarca, que es lo que permite descubrir barcos sin tener flota cerca.
+export const DRONE_VISION_KM = { 1: 700, 2: 1100, 3: 1500 };

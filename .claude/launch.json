@@ -3,14 +3,14 @@
   "configurations": [
     {
       "name": "wardern",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["serve.py"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/serve.mjs"],
       "port": 8099
     },
     {
       "name": "wardern-alt",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["serve.py", "--port", "8098"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/serve.mjs", "--port", "8098"],
       "port": 8098
     }
   ]

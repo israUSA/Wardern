@@ -2,7 +2,10 @@
 // Reglas por clase de unidad: terrestre solo tierra · naval solo mar · aéreo todo (vuelo).
 import * as C from "../data/constants.js";
 import { S, unitDef, isNaval, controller, atWar, log } from "./state.js";
-import { CARRIER_CAPACITY, CARRIER_CAPABLE } from "../data/air-combat-data.js";
+// AIR_LOADOUTS se toma del módulo de DATOS, no de air-combat.js: ese importa
+// movement.js y la dependencia circular dejaría la tabla sin inicializar.
+import { CARRIER_CAPACITY, CARRIER_CAPABLE, AIR_LOADOUTS } from "../data/air-combat-data.js";
+import { formationSpeedType } from "./formations.js";
 
 export function edgeMinutes(unitType, fromP, toP, strait) {
   const d = distKm([fromP.cx, fromP.cy], [toP.cx, toP.cy]);
@@ -32,23 +35,104 @@ function edgeInfo(fromId, toId) {
 function canEnter(state, unit, pid) {
   const cell = S.provinces.get(pid);
   if (isNaval(unit.type)) return !!cell?.isSea;              // barcos: solo mar
-  if (cell?.isSea) return !!unitDef(unit.type)?.air;         // el mar no tiene dueño
-  // Territorio de otro país: hay que ser su dueño o estar en guerra. Antes los
-  // aéreos tenían sobrevuelo LIBRE y podías pasear un caza por un país neutral
-  // sin consecuencia diplomática ninguna; ahora el espacio aéreo también se
-  // respeta y entrar exige declarar la guerra (la UI lo ofrece al intentarlo).
+  const def = unitDef(unit.type);
+  if (cell?.isSea) return !!def?.air;                        // el mar abierto no tiene dueño
+  // Territorio de otro país. Los aparatos que pueden sobrevolar —drones y
+  // furtivos, ver canOverfly— entran sin permiso: nadie declara la guerra por
+  // algo que no ha visto. Todo lo demás, tropa o aviación convencional,
+  // necesita ser el dueño o estar ya en guerra.
+  if (def?.air && canOverfly(unit.type)) return true;
   const ctrl = controller(state.provinces[pid]);
   return ctrl === unit.owner || atWar(state, unit.owner, ctrl);
 }
 
+// ¿Puede este aparato meterse en espacio aéreo (o aguas) de otro sin que cuente
+// como declaración de guerra? Drones siempre; tripulados solo si su firma de
+// radar está por debajo del umbral furtivo. Atacar sigue siendo guerra en todos
+// los casos: esto es entrar y mirar, no disparar.
+export function canOverfly(type) {
+  const def = unitDef(type);
+  if (!def?.air) return false;
+  if (def.category === "drone") return true;
+  return (AIR_LOADOUTS[type]?.rcs ?? 0) >= C.STEALTH_OVERFLIGHT_RCS;
+}
+
 // País neutral que impide entrar en `pid`, o null si se puede. Lo usa la interfaz
-// para ofrecer la declaración de guerra en vez de un "sin ruta" seco.
-export function neutralBlocker(state, iso, pid) {
+// para ofrecer la declaración de guerra en vez de un "sin ruta" seco. Solo aplica
+// a fuerzas de superficie: `aereo` a true significa que no hay nada que declarar.
+export function neutralBlocker(state, iso, pid, aereo = false) {
+  if (aereo) return null;
   const cell = S.provinces.get(pid);
   if (!cell || cell.isSea) return null;
   const ctrl = controller(state.provinces[pid]);
   if (!ctrl || ctrl === iso || atWar(state, iso, ctrl)) return null;
   return ctrl;
+}
+
+// ---------------------------------------------------------------------------
+// Radio de acción aéreo
+// ---------------------------------------------------------------------------
+
+// Radio de acción de ESTE aparato, en km. null si no es aéreo.
+export function airRangeKm(unitType) {
+  const def = unitDef(unitType);
+  if (!def?.air) return null;
+  return C.AIR_RANGE_KM_BY_TYPE[unitType]
+    ?? C.AIR_RANGE_KM[def.category]?.[def.tier ?? 1]
+    ?? null;
+}
+
+// Base de la que depende un aparato: el aeródromo propio (pista ≥ 1) o el
+// portaviones propio más cercano. Es el centro del círculo de alcance que pinta
+// el mapa y contra el que se mide cada orden. Devuelve { pid, cx, cy, carrier }.
+//
+// El aparato embarcado no busca nada: su base es el buque que lo lleva, y el
+// radio le viaja con él. Es justo para lo que sirve un portaviones.
+export function airBaseFor(state, unit) {
+  const def = unitDef(unit.type);
+  if (!def?.air) return null;
+  if (unit.embarked) {
+    const buque = state.units.find((x) => x.id === unit.embarked && !x.dead);
+    const cel = buque && S.provinces.get(buque.pos);
+    return cel ? { pid: buque.pos, cx: cel.cx, cy: cel.cy, carrier: buque.id } : null;
+  }
+  const from = S.provinces.get(unit.pos);
+  if (!from) return null;
+  let mejor = null;
+  const probar = (pid, cx, cy, carrier) => {
+    const km = distKm([from.cx, from.cy], [cx, cy]);
+    if (!mejor || km < mejor.km) mejor = { pid, cx, cy, km, carrier };
+  };
+  for (const p of S.provinceList) {
+    if (p.isSea) continue;
+    const ps = state.provinces[p.id];
+    if (!ps || controller(ps) !== unit.owner) continue;
+    if ((ps.buildings?.aerobase || 0) < 1) continue;
+    probar(p.id, p.cx, p.cy, null);
+  }
+  if (CARRIER_CAPABLE.has(unit.type)) {
+    for (const c of state.units) {
+      if (c.dead || c.embarked || c.owner !== unit.owner || !CARRIER_CAPACITY[c.type]) continue;
+      const cel = S.provinces.get(c.pos);
+      if (cel) probar(c.pos, cel.cx, cel.cy, c.id);
+    }
+  }
+  return mejor;
+}
+
+// ¿Le da el combustible para plantarse en `pid`? Sin ninguna base propia el
+// límite no se aplica: dejar a toda la aviación clavada en el sitio por no tener
+// aeródromo sería castigar al jugador por algo que no puede arreglar en el
+// momento. `airRangeInfo` devuelve el detalle para que la interfaz pueda decir
+// cuánto se pasa en vez de un "no" seco.
+export function airRangeInfo(state, unit, pid) {
+  const radioKm = airRangeKm(unit.type);
+  const destino = S.provinces.get(pid);
+  if (radioKm == null || !destino) return { ok: true };
+  const base = airBaseFor(state, unit);
+  if (!base) return { ok: true, sinBase: true, radioKm };
+  const km = distKm([base.cx, base.cy], [destino.cx, destino.cy]);
+  return { ok: km <= radioKm, km: Math.round(km), radioKm, base };
 }
 
 export function findPath(state, unit, targetId) {
@@ -110,6 +194,7 @@ export function orderMove(state, unit, targetId) {
   // es "quedarse sobre el agua", es ir a aterrizar.
   if (cell?.isSea && !isNaval(unit.type) && !carrierBerths(state, unit, targetId).length) return false;
   if (!cell?.isSea && isNaval(unit.type)) return false;
+  if (!airRangeInfo(state, unit, targetId).ok) return false;
   const path = findPath(state, unit, targetId);
   if (!path || !path.length) return false;
   unit.path = path;
@@ -118,9 +203,14 @@ export function orderMove(state, unit, targetId) {
   return true;
 }
 
+// Una formación avanza a la velocidad de su miembro MÁS LENTO. No es solo una
+// regla de equilibrio: si cada unidad calculase su propio tramo, el carro
+// llegaría antes que la infantería y la formación se desparramaría por media
+// docena de provincias. Usando el mismo tipo para todos, llegan juntos.
 function startEdgeFor(state, unit, toId) {
   const e = edgeInfo(unit.pos, toId);
-  const total = edgeMinutes(unit.type, S.provinces.get(unit.pos), S.provinces.get(toId), !!e?.strait);
+  const tipo = (unit.formation && formationSpeedType(state, unit.formation)) || unit.type;
+  const total = edgeMinutes(tipo, S.provinces.get(unit.pos), S.provinces.get(toId), !!e?.strait);
   return { to: toId, strait: !!e?.strait, minutesLeft: total, total };
 }
 
@@ -209,11 +299,28 @@ function enemyPresent(state, unit) {
 // orbita cualquier aeronave parada fuera de su base — ver renderer.js) durante
 // AIR_PATROL_MINUTES; al agotarse, tickAirPatrol la manda sola de vuelta.
 // Si ya está exactamente en `pid` y sin nada pendiente, patrulla in situ.
+// Patrullar. A diferencia de moverse, aquí SÍ vale un sector de mar aunque no
+// haya portaviones debajo: patrullar es dar vueltas un rato y volverse a casa, no
+// quedarse a vivir sobre el agua —la cuenta atrás acaba en regreso a base—. Es lo
+// que permite barrer el mar buscando barcos enemigos sin tener flota allí.
 export function orderPatrol(state, unit, pid) {
   if (!unitDef(unit.type)?.air || unit.embarked) return false;
   const yaAhi = pid === unit.pos && !unit.edgeLeft && !unit.path.length;
-  if (!yaAhi && !orderMove(state, unit, pid)) return false;
+  if (!yaAhi && !orderMoveAereo(state, unit, pid)) return false;
   unit.task = { kind: "patrol", minutesLeft: C.AIR_PATROL_MINUTES };
+  return true;
+}
+
+// orderMove sin la regla de "sobre el mar no hay dónde posarse", solo para la ida
+// de una patrulla. El radio de acción sí se sigue respetando.
+function orderMoveAereo(state, unit, targetId) {
+  if (!S.provinces.get(targetId)) return false;
+  if (!airRangeInfo(state, unit, targetId).ok) return false;
+  const path = findPath(state, unit, targetId);
+  if (!path || !path.length) return false;
+  unit.path = path;
+  unit.edgeLeft = startEdgeFor(state, unit, path[0]);
+  unit.task = null;
   return true;
 }
 

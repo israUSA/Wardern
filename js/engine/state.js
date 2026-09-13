@@ -445,7 +445,46 @@ export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
   return state;
 }
 
-export function spawnUnit(state, iso, type, pos, hp = 100) {
+// HP máximo de un tipo de unidad. Única fuente de verdad: todo lo que antes
+// dividía entre 100 a pelo tiene que pasar por aquí, o una unidad de 450 HP
+// pegaría 4,5 veces más que una de 100 (ver combat.js).
+export function maxHp(type) {
+  return unitDef(type)?.hp || 100;
+}
+
+// Fracción de vida, de 0 a 1. Es lo que escala el daño que HACE una unidad: un
+// escuadrón a media vida pega la mitad.
+export function hpFrac(u) {
+  const m = maxHp(u.type);
+  return m > 0 ? Math.max(0, Math.min(1, u.hp / m)) : 0;
+}
+
+// Migración de guardados anteriores al HP por unidad.
+//
+// Hasta esta versión TODA unidad tenía 100 HP máximos, así que el `hp` guardado
+// es directamente un porcentaje. Se reescala al máximo nuevo del tipo para que
+// una partida en curso no cambie de estado: un carro al 60 % sigue al 60 %, con
+// 96 HP de 160 en vez de 60 de 100.
+//
+// El marcador `hpScaled` evita repetir la conversión si el guardado se vuelve a
+// cargar; sin él, cada carga volvería a multiplicar y las unidades se curarían
+// solas. Se aplica a la partida entera, no unidad por unidad, porque el estado
+// viejo es coherente: o todo estaba en la escala vieja o nada lo estaba.
+export function migrateHp(state) {
+  if (!state || state.hpScaled) return state;
+  for (const u of state.units || []) {
+    const frac = Math.max(0, Math.min(1, (u.hp ?? 100) / 100));
+    u.hp = Math.max(1, Math.round(maxHp(u.type) * frac));
+  }
+  state.hpScaled = true;
+  return state;
+}
+
+// `hp` por defecto = el máximo del tipo. Antes toda unidad construida nacía con
+// 50 (economy.js la pasaba a mano) y tardaba 200 horas de juego en curarse: se
+// pagaban 350.000 por un portaviones y salía a mitad de vida.
+export function spawnUnit(state, iso, type, pos, hp = null) {
+  hp = hp ?? maxHp(type);
   const u = {
     id: state.nextUnitId++,
     owner: iso,
@@ -473,7 +512,7 @@ export function armyPower(state, iso) {
   let power = 0;
   for (const u of state.units) {
     if (u.owner !== iso) continue;
-    power += (u.hp / 100) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
+    power += hpFrac(u) * ((unitDef(u.type)?.cost.money || 5000) / 5000);
   }
   return power;
 }
@@ -513,14 +552,16 @@ export function intelFor(state, iso) {
     if (u.dead || u.owner !== iso || u.embarked) continue;
     strong.add(u.pos);
   }
-  // Drones de reconocimiento (docs/MISSILES.md §4): círculo = inteligencia fuerte
+  // Reconocimiento: drones (docs/MISSILES.md §4) y vehículos de exploración
+  // terrestres. Los dos hacen lo mismo —convertir en inteligencia FUERTE todo lo
+  // que cae en su radio— y el radio es lo único que los separa. Una columna
+  // motorizada ve lo que tiene delante, no medio continente.
   for (const u of state.units) {
     if (u.dead || u.owner !== iso || u.embarked) continue;
-    const T = unitDef(u.type);
-    if (T?.category !== "drone") continue;
+    const R = scoutRangeKm(u.type);
+    if (!R) continue;
     const from = S.provinces.get(u.pos);
     if (!from) continue;
-    const R = DRONE_VISION_KM[T.tier ?? 1];
     for (const p of S.provinceList) {
       if (distKm([from.cx, from.cy], [p.cx, p.cy]) <= R) strong.add(p.id);
     }
@@ -534,6 +575,31 @@ export function intelFor(state, iso) {
   porPais.set(iso, out);
   return out;
 }
+
+// Radio de descubrimiento de una unidad, en km. 0 si no explora.
+//
+// El dron manda de largo, que para eso es su único trabajo. Debajo están los
+// vehículos que en la realidad hacen reconocimiento: la motorizada, que va por
+// delante de la columna, y el cazatanques, que en ambas doctrinas es literalmente
+// un vehículo de caballería (M3 Bradley, BRDM-2). El resto de la tropa no explora
+// nada: ve su provincia y las de al lado, como siempre.
+export function scoutRangeKm(type) {
+  const T = unitDef(type);
+  if (!T) return 0;
+  if (T.category === "drone") return DRONE_VISION_KM[T.tier ?? 1] || 0;
+  return SCOUT_VISION_KM[T.category]?.[T.tier ?? 1] || 0;
+}
+
+// Las cifras están atadas a la ESCALA DEL MAPA, no a la óptica real del vehículo.
+// La distancia mediana entre dos provincias terrestres vecinas son 324 km (p25
+// 206, p75 544), así que un radio "realista" de 30 km no llegaría ni a la
+// provincia de al lado y el reconocimiento no existiría. 380 km asoma justo al
+// otro lado de la frontera; 560 km ve la segunda línea. Es el mismo ajuste de
+// teatro que ya se hizo con los alcances de misil (docs/AIR-COMBAT.md §1).
+const SCOUT_VISION_KM = {
+  motorizada:  { 1: 380, 2: 470, 3: 560 },
+  cazatanques: { 1: 430, 2: 520, 3: 610 },
+};
 
 export function intel(state) {
   return intelFor(state, state.player);

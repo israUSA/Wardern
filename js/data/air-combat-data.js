@@ -106,7 +106,7 @@ export const AIR_WEAPONS = {
   agm65: {
     id: "agm65", nombre: "AGM-65 Maverick", tipo: "as", guia: "electroóptica",
     rangoKm: 25, pk: 0.8, danio: 45, velocidadKmH: 1150,
-    clases: ["mbt", "cazatanques", "motorizada", "artilleria"],
+    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "corbeta", "fragata", "destructor", "portaviones", "transporte", "submarino"],
     coste: { money: 2500, supplies: 250 }, rearmeMin: 20,
   },
   agm88: {
@@ -118,19 +118,19 @@ export const AIR_WEAPONS = {
   gbu: {
     id: "gbu", nombre: "GBU-31 JDAM", tipo: "as", guia: "GPS",
     rangoKm: 25, pk: 0.85, danio: 35, velocidadKmH: 900,
-    clases: ["infanteria", "motorizada", "artilleria", "antiaereo"],
+    clases: ["infanteria", "motorizada", "artilleria", "antiaereo", "corbeta", "fragata", "destructor", "portaviones", "transporte", "submarino"],
     coste: { money: 800, supplies: 160 }, rearmeMin: 12,
   },
   hellfireL: {
     id: "hellfireL", nombre: "AGM-114 Hellfire", tipo: "as", guia: "láser",
     rangoKm: 8, pk: 0.85, danio: 40, velocidadKmH: 1600,
-    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "infanteria"],
+    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "infanteria", "corbeta", "transporte"],
     coste: { money: 1500, supplies: 150 }, rearmeMin: 8,
   },
   tow: {
     id: "tow", nombre: "BGM-71 TOW", tipo: "as", guia: "alámbrica",
     rangoKm: 4, pk: 0.75, danio: 35, velocidadKmH: 1100,
-    clases: ["mbt", "cazatanques", "motorizada"],
+    clases: ["mbt", "cazatanques", "motorizada", "corbeta"],
     coste: { money: 900, supplies: 90 }, rearmeMin: 8,
   },
 
@@ -138,7 +138,7 @@ export const AIR_WEAPONS = {
   kh25: {
     id: "kh25", nombre: "Kh-25ML", tipo: "as", guia: "láser",
     rangoKm: 20, pk: 0.75, danio: 45, velocidadKmH: 1300,
-    clases: ["mbt", "cazatanques", "motorizada", "artilleria"],
+    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "corbeta", "fragata", "destructor", "portaviones", "transporte", "submarino"],
     coste: { money: 2200, supplies: 220 }, rearmeMin: 20,
   },
   kh31p: {
@@ -150,19 +150,19 @@ export const AIR_WEAPONS = {
   kab: {
     id: "kab", nombre: "KAB-500S", tipo: "as", guia: "GPS",
     rangoKm: 20, pk: 0.8, danio: 35, velocidadKmH: 900,
-    clases: ["infanteria", "motorizada", "artilleria", "antiaereo"],
+    clases: ["infanteria", "motorizada", "artilleria", "antiaereo", "corbeta", "fragata", "destructor", "portaviones", "transporte", "submarino"],
     coste: { money: 700, supplies: 140 }, rearmeMin: 12,
   },
   ataka: {
     id: "ataka", nombre: "9M120 Ataka", tipo: "as", guia: "radiocomando",
     rangoKm: 8, pk: 0.85, danio: 40, velocidadKmH: 1700,
-    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "infanteria"],
+    clases: ["mbt", "cazatanques", "motorizada", "artilleria", "infanteria", "corbeta", "transporte"],
     coste: { money: 1400, supplies: 140 }, rearmeMin: 8,
   },
   shturm: {
     id: "shturm", nombre: "9M114 Shturm", tipo: "as", guia: "radiocomando",
     rangoKm: 5, pk: 0.7, danio: 35, velocidadKmH: 1300,
-    clases: ["mbt", "cazatanques", "motorizada"],
+    clases: ["mbt", "cazatanques", "motorizada", "corbeta"],
     coste: { money: 800, supplies: 80 }, rearmeMin: 8,
   },
 };
@@ -332,6 +332,82 @@ export const SAM_RADAR = {
   "ori-3-antiaereo": { km: 350, antiStealth: 0.15 }, // S-400 con acompañamiento métrico
   antiaereo: { km: 30, antiStealth: 0 }, // alias legacy
 };
+
+// ---- Defensa antiaérea de los BUQUES ----
+//
+// Hasta aquí el único que reaccionaba al avión era el `antiaereo` terrestre, y
+// además ningún arma aérea llevaba categorías navales en su lista de blancos: un
+// avión sencillamente NO podía atacar a un barco. Ahora sí, y cada buque se
+// defiende solo, con su propio nivel.
+//
+// Cuatro cifras por buque, y cada una hace un trabajo distinto:
+//   km          alcance al que engancha al avión atacante.
+//   pk          probabilidad de tocarlo. Es su misil de zona.
+//   ciws        probabilidad de DERRIBAR un misil que ya viene hacia él. Es la
+//               última barrera: Phalanx, Kashtan, ESSM. Un destructor moderno
+//               intercepta más de la mitad de lo que le lanzan; un transporte,
+//               casi nada.
+//   antiStealth cuánto anula la furtividad del atacante. Casi todos van a 0, que
+//               es lo que hace del B-2 y del F-35 las llaves para abrir un grupo
+//               de combate: el buque no los ve venir y no dispara.
+//
+// El reparto por clase es el de la realidad, no una escala plana:
+//   · DESTRUCTOR: el arma antiaérea de la flota. Aegis occidental contra S-300F
+//     oriental — Occidente acierta más, Oriente llega más lejos.
+//   · FRAGATA: escolta de zona, la mitad de todo.
+//   · CORBETA: solo autodefensa de punto, pero su CIWS no es malo.
+//   · PORTAVIONES: se defiende POCO por sí mismo (alcance 25 km) y mucho con
+//     CIWS. No es un error: un portaviones sin escolta es carne, y esa es
+//     exactamente la lección que tiene que enseñar el juego.
+//   · TRANSPORTE: casi indefenso.
+//   · SUBMARINO: CERO. Sumergido no dispara a aviones, y en superficie tampoco.
+//     Es su gran vulnerabilidad y el motivo de que la aviación antisubmarina
+//     exista.
+const NAVAL_AA_BASE = {
+  destructor:  { km: 140, pk: 0.45, ciws: 0.55, antiStealth: 0.06 },
+  fragata:     { km: 55,  pk: 0.32, ciws: 0.40, antiStealth: 0.02 },
+  corbeta:     { km: 18,  pk: 0.22, ciws: 0.35, antiStealth: 0 },
+  portaviones: { km: 25,  pk: 0.20, ciws: 0.50, antiStealth: 0.03 },
+  transporte:  { km: 8,   pk: 0.10, ciws: 0.12, antiStealth: 0 },
+  submarino:   { km: 0,   pk: 0,    ciws: 0,    antiStealth: 0 },
+};
+
+// Occidente acierta más (Aegis y el enlace de datos entre buques); Oriente llega
+// más lejos (S-300F). Es el mismo idioma que ya usa el roster naval: distinto
+// carácter, no "uno mejor".
+const NAVAL_AA_DOCTRINE = {
+  occidental: { km: 0.9, pk: 1.15, ciws: 1.2 },
+  oriental:   { km: 1.25, pk: 0.95, ciws: 0.9 },
+};
+
+// Un Shilka de los 80 no es un PAC-3. El alcance es lo que más salta por tier
+// porque es lo que más cambió de verdad entre generaciones.
+const NAVAL_AA_TIER = {
+  1: { km: 0.35, pk: 0.7, ciws: 0.6 },
+  2: { km: 1, pk: 1, ciws: 1 },
+  3: { km: 1.7, pk: 1.2, ciws: 1.25 },
+};
+
+export const NAVAL_AA = {};
+for (const doc of ["occidental", "oriental"]) {
+  for (let t = 1; t <= 3; t++) {
+    for (const [cat, b] of Object.entries(NAVAL_AA_BASE)) {
+      const d = NAVAL_AA_DOCTRINE[doc];
+      const s = NAVAL_AA_TIER[t];
+      NAVAL_AA[`${doc === "occidental" ? "occ" : "ori"}-${t}-${cat}`] = {
+        km: Math.round(b.km * d.km * s.km),
+        pk: Math.min(0.85, +(b.pk * d.pk * s.pk).toFixed(3)),
+        ciws: Math.min(0.85, +(b.ciws * d.ciws * s.ciws).toFixed(3)),
+        antiStealth: b.antiStealth,
+      };
+    }
+  }
+}
+
+// Daño que le hace al avión el misil de un buque. Menos que el del antiaéreo
+// terrestre dedicado (SAM_DAMAGE 45): el barco tiene que repartir entre defensa
+// aérea, antibuque y antisubmarina, y su misil de zona no es un Patriot.
+export const NAVAL_AA_DAMAGE = 38;
 
 // ---- Aviación embarcada ----
 // Plazas de aeronave por portaviones. La asimetría es real: los portaviones

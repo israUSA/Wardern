@@ -1,36 +1,142 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64">
-  <!-- KAB-500S (id del arma: kab)
-       bomba GPS · 20 km
-       Silueta heredada de la familia "bomba guiada": todavia NO es su arte propio.
-       Sustituyelo cuando quieras: el motor solo exige que el archivo
-       exista con este nombre, no depende de ninguna forma concreta.
-       CONVENCION: morro hacia ARRIBA (norte); el render lo gira al rumbo. -->
-  <!-- FAMILIA: BOMBA GUIADA (GBU-31 JDAM / KAB-500S). La silueta más distinta
-       de todas: NO tiene motor (sin llama), cuerpo de bomba en gota, cola con
-       kit de guiado cuadrado y estabilizadores laterales largos. Cae, no vuela.
-       Morro hacia ARRIBA (norte). Dibujo base: mejóralo encima. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 64" width="100%" height="100%">
+  <!-- KAB-500S-E (Bomba Guiada por Satélite GLONASS)
+       Orientación: Punta hacia ARRIBA (Norte)
+       Ajuste: Canards delanteros en ángulo diagonal / flecha pronunciada
+       con corte de bisel como se observa en la cara cónica del cono frontal -->
   <defs>
-    <linearGradient id="bg-body" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#cfd6db"/>
-      <stop offset="0.45" stop-color="#8b949c"/>
-      <stop offset="1" stop-color="#4a5257"/>
+    <!-- Gradiente cilíndrico del cuerpo en gris naval satinado -->
+    <linearGradient id="kab-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#808c94"/>
+      <stop offset="28%" stop-color="#c8d2d9"/>
+      <stop offset="68%" stop-color="#a2adb5"/>
+      <stop offset="100%" stop-color="#646f77"/>
+    </linearGradient>
+
+    <!-- Resplandor volumétrico longitudinal -->
+    <linearGradient id="kab-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.38"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Ojiva cónica frontal pulida -->
+    <linearGradient id="kab-cone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#737f87"/>
+      <stop offset="32%" stop-color="#d9e3ea"/>
+      <stop offset="70%" stop-color="#939ea6"/>
+      <stop offset="100%" stop-color="#556067"/>
+    </linearGradient>
+
+    <!-- Aletas en sombra y luz -->
+    <linearGradient id="fin-left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a9b4bc"/>
+      <stop offset="100%" stop-color="#7d8890"/>
+    </linearGradient>
+    <linearGradient id="fin-right" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#86929a"/>
+      <stop offset="100%" stop-color="#5d676e"/>
     </linearGradient>
   </defs>
 
-  <!-- estabilizadores laterales largos (las "strakes" del kit JDAM) -->
-  <rect x="10.8" y="20" width="1.8" height="24" rx="0.7" fill="#6c757c"/>
-  <rect x="19.4" y="20" width="1.8" height="24" rx="0.7" fill="#6c757c"/>
+  <!-- ================= ALETAS TRASERAS DE COLA (CRUCIFORMES) ================= -->
+  <!-- Aleta de cola izquierda -->
+  <polygon points="13,47.5 4.5,50 4.5,56.5 13.5,54.5" 
+           fill="url(#fin-left)" 
+           stroke="#3d454b" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+  <!-- Flaperón rojo de la aleta trasera izquierda -->
+  <polygon points="4.5,50 4.5,52.5 6.5,52 6.5,50" fill="#b8261b"/>
 
-  <!-- cola: caja de guiado con aletas rectas, no en punta -->
-  <path d="M11.5 44 L20.5 44 L20.5 56 L11.5 56 Z" fill="#4a5257"/>
-  <path d="M11.5 46 L5.5 50 L5.5 55 L11.5 53 Z" fill="#5b646b"/>
-  <path d="M20.5 46 L26.5 50 L26.5 55 L20.5 53 Z" fill="#5b646b"/>
-  <rect x="12.6" y="46.5" width="6.8" height="7" rx="0.8" fill="#39424a"/>
-  <circle cx="16" cy="50" r="1.4" fill="#7fd08a" opacity="0.8"/>
+  <!-- Aleta de cola derecha -->
+  <polygon points="19,47.5 27.5,50 27.5,56.5 18.5,54.5" 
+           fill="url(#fin-right)" 
+           stroke="#31383d" 
+           stroke-width="0.25" 
+           stroke-linejoin="round"/>
+  <!-- Flaperón rojo de la aleta trasera derecha -->
+  <polygon points="27.5,50 27.5,52.5 25.5,52 25.5,50" fill="#b8261b"/>
 
-  <!-- cuerpo de bomba en gota: ancho arriba, se estrecha hacia la cola -->
-  <path d="M16 2 C19.2 6 21 12 21 20 L21 44 L11 44 L11 20 C11 12 12.8 6 16 2 Z" fill="url(#bg-body)"/>
-  <rect x="11" y="24" width="10" height="2.6" fill="#c9a22f"/>
-  <rect x="11" y="29" width="10" height="1.4" fill="#c9432f"/>
-  <path d="M12.6 8 C13.6 6 14.8 4.2 16 3 L16 20 L12.6 20 Z" fill="#ffffff" opacity="0.28"/>
+  <!-- ================= CANARDS DELANTEROS DIAGONALES EN FLECHA ================= -->
+  <!-- Canard izquierdo inclinado diagonalmente siguiendo la línea del cono -->
+  <polygon points="13.8,17 7.5,23.8 9.5,25.6 13,20.8" 
+           fill="url(#fin-left)" 
+           stroke="#3d454b" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard derecho inclinado diagonalmente -->
+  <polygon points="18.2,17 24.5,23.8 22.5,25.6 19,20.8" 
+           fill="url(#fin-right)" 
+           stroke="#31383d" 
+           stroke-width="0.22" 
+           stroke-linejoin="round"/>
+
+  <!-- Canard dorsal visible sobre la cara superior en diagonal -->
+  <polygon points="15.5,16.5 14.8,21.5 16.5,22.2 16.5,17" 
+           fill="#c2ccd3" 
+           stroke="#3d454b" 
+           stroke-width="0.18"/>
+
+  <!-- ================= CUERPO PRINCIPAL DE LA BOMBA ================= -->
+  <!-- Ojiva cónica frontal afilada -->
+  <polygon points="13,15.5 19,15.5 16,3" 
+           fill="url(#kab-cone)" 
+           stroke="#444d53" 
+           stroke-width="0.2" 
+           stroke-linejoin="round"/>
+
+  <!-- Fuselaje cilíndrico central -->
+  <rect x="13" y="15.5" width="6" height="34" fill="url(#kab-body)"/>
+
+  <!-- Cono posterior de popa -->
+  <polygon points="13,49.5 19,49.5 17.5,56.5 14.5,56.5" 
+           fill="url(#kab-body)" 
+           stroke="#444d53" 
+           stroke-width="0.2"/>
+
+  <!-- Brillo cilíndrico continuo para relieve volumétrico -->
+  <rect x="13" y="3.5" width="6" height="52" fill="url(#kab-shine)"/>
+
+  <!-- ================= DETALLES DORSALES (ANTENA GLONASS Y ACCESORIOS) ================= -->
+  <!-- Antena satelital circular GLONASS -->
+  <ellipse cx="16" cy="18.5" rx="1.2" ry="0.6" fill="#3c454a" stroke="#1e2326" stroke-width="0.18"/>
+  <ellipse cx="16" cy="18.5" rx="0.7" ry="0.35" fill="#88959e"/>
+
+  <!-- Tapón técnico / conector rojo en el lomo -->
+  <rect x="15.2" y="21" width="1.6" height="1.4" rx="0.3" fill="#b8261b" stroke="#66140d" stroke-width="0.18"/>
+
+  <!-- Cáncamos de sujeción -->
+  <path d="M 15.3,27 C 15.3,25.8 16.7,25.8 16.7,27" fill="none" stroke="#485359" stroke-width="0.5"/>
+  <path d="M 15.3,31 C 15.3,29.8 16.7,29.8 16.7,31" fill="none" stroke="#485359" stroke-width="0.5"/>
+
+  <!-- Placa de datos técnica blanca -->
+  <rect x="13.5" y="34.5" width="1.2" height="1.8" rx="0.15" fill="#eef2f5" stroke="#75828a" stroke-width="0.15"/>
+
+  <!-- Esténcil técnico en el fuselaje -->
+  <line x1="15.2" y1="24.5" x2="17.2" y2="24.5" stroke="#3b444a" stroke-width="0.2" opacity="0.75"/>
+  <line x1="14.8" y1="36.5" x2="17.5" y2="36.5" stroke="#3b444a" stroke-width="0.22" opacity="0.8"/>
+  <line x1="15" y1="38" x2="17.2" y2="38" stroke="#3b444a" stroke-width="0.2" opacity="0.8"/>
+
+  <!-- ================= LÍNEAS DE PANEL Y REMACHES ================= -->
+  <!-- Unión entre cono frontal y cuerpo cilíndrico -->
+  <line x1="13" y1="15.5" x2="19" y2="15.5" stroke="#5d6970" stroke-width="0.22"/>
+
+  <!-- Puertos estáticos en el cono -->
+  <circle cx="15" cy="14" r="0.22" fill="#2d353a"/>
+  <circle cx="17" cy="14" r="0.22" fill="#2d353a"/>
+
+  <!-- Juntas circunferenciales del cuerpo -->
+  <line x1="13" y1="28.5" x2="19" y2="28.5" stroke="#68757d" stroke-width="0.2"/>
+  <line x1="13" y1="42.5" x2="19" y2="42.5" stroke="#68757d" stroke-width="0.2"/>
+  <line x1="13" y1="49.5" x2="19" y2="49.5" stroke="#68757d" stroke-width="0.22"/>
+
+  <!-- Remaches técnicos -->
+  <line x1="13.5" y1="26.5" x2="18.5" y2="26.5" stroke="#4f5960" stroke-width="0.18" stroke-dasharray="0.35 0.35"/>
+  <line x1="13.5" y1="45.5" x2="18.5" y2="45.5" stroke="#4f5960" stroke-width="0.18" stroke-dasharray="0.35 0.35"/>
+
+  <!-- ================= EXTREMO DE COLA ================= -->
+  <ellipse cx="16" cy="56.5" rx="1.5" ry="0.4" fill="#242b30" stroke="#121618" stroke-width="0.2"/>
+  <circle cx="16" cy="56.5" r="0.5" fill="#4d575e"/>
 </svg>
+
