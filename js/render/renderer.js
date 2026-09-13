@@ -391,8 +391,22 @@ export class MapRenderer {
         if (!rDeg) continue;
         const p = S.provinces.get(u.pos);
         if (!p) continue;
-        const [cx0, cy0] = this.w2s(p.pcx, p.pcy);
-        const [, cy1] = this.w2s(p.pcx, p.pcy - rDeg); // punto al norte: radio proyectado
+        // El círculo viaja CON la unidad: mientras vuela, `u.pos` sigue siendo la
+        // provincia de la que salió, así que dibujarlo ahí dejaría la burbuja
+        // clavada en el aeródromo mientras la ficha se aleja. Misma interpolación
+        // que usa el motor para la inteligencia (unitGeoPos en state.js), aquí en
+        // coordenadas proyectadas.
+        let wx = p.pcx, wy = p.pcy;
+        if (u.edgeLeft) {
+          const hacia = S.provinces.get(u.edgeLeft.to);
+          if (hacia) {
+            const t = Math.max(0, Math.min(1, 1 - u.edgeLeft.minutesLeft / (u.edgeLeft.total || 1)));
+            wx = p.pcx + (hacia.pcx - p.pcx) * t;
+            wy = p.pcy + (hacia.pcy - p.pcy) * t;
+          }
+        }
+        const [cx0, cy0] = this.w2s(wx, wy);
+        const [, cy1] = this.w2s(wx, wy - rDeg); // punto al norte: radio proyectado
         ctx.strokeStyle = color;
         ctx.lineWidth = 1.5;
         ctx.setLineDash([5, 4]);

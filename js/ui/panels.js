@@ -861,12 +861,21 @@ export function updateUnitPanel(state, ui) {
     const moving = !!u.edgeLeft || !!u.path?.length;
     const transport = (T.capacity || 0) > 0;
     const puedePatrullar = airLoadout(u.type) && !u.embarked;
+    // Los drones NO entran en el combate de provincia (combat.js los salta), así
+    // que la orden de atacar no haría nada: el aparato volaría hasta el enemigo y
+    // se quedaría ahí mirando. Los armados sí disparan, pero desde el panel de
+    // radar, no con este botón.
+    const esDron = T.category === "drone";
     html += `<div class="up-actions">
       <button class="btn small primary" data-up-move="${u.id}" ${u.embarked ? 'disabled title="Está embarcada: desembárcala primero"' : ""}>Mover</button>
-      <button class="btn small danger" data-up-attack="${u.id}" ${u.embarked ? "disabled" : ""}
-        title="${canShell(u.type)
-          ? `Elige una ficha enemiga en el mapa: si está a menos de ${artilleryRange(u.type)} km le dispara SIN moverse. Si está más lejos, avanza hacia ella.`
-          : "Elige una ficha enemiga en el mapa: esta unidad irá a por ella y la seguirá si se mueve"}">${canShell(u.type) ? `⚔ Atacar (${artilleryRange(u.type)} km)` : "⚔ Atacar"}</button>
+      <button class="btn small danger" data-up-attack="${u.id}" ${u.embarked || esDron ? "disabled" : ""}
+        title="${esDron
+          ? (Object.keys(airLoadout(u.type)?.armas || {}).length
+              ? "Los drones no entran en el combate de provincia. Este va ARMADO: dispara desde el panel de radar, eligiendo arma y contacto."
+              : "Este dron va DESARMADO: es un sensor, no un cazador. Su trabajo es descubrir enemigos con su radio de reconocimiento.")
+          : canShell(u.type)
+            ? `Elige una ficha enemiga en el mapa: si está a menos de ${artilleryRange(u.type)} km le dispara SIN moverse. Si está más lejos, avanza hacia ella.`
+            : "Elige una ficha enemiga en el mapa: esta unidad irá a por ella y la seguirá si se mueve"}">${canShell(u.type) ? `⚔ Atacar (${artilleryRange(u.type)} km)` : "⚔ Atacar"}</button>
       ${puedePatrullar ? `<button class="btn small" data-up-patrol="${u.id}"
         title="Vuela a la provincia elegida y patrulla ahí durante ${Math.round(C.AIR_PATROL_MINUTES / 60)} h de juego; al agotarse vuelve sola a base">🎯 Patrullar</button>` : ""}
       <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}

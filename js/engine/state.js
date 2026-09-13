@@ -556,14 +556,21 @@ export function intelFor(state, iso) {
   // terrestres. Los dos hacen lo mismo —convertir en inteligencia FUERTE todo lo
   // que cae en su radio— y el radio es lo único que los separa. Una columna
   // motorizada ve lo que tiene delante, no medio continente.
+  //
+  // El círculo se centra en la posición INTERPOLADA, no en `u.pos`. Mientras una
+  // unidad viaja, `u.pos` sigue siendo la provincia de ORIGEN hasta que llega, así
+  // que un dron cruzando medio continente no revelaba nada por el camino: su
+  // burbuja se quedaba clavada en el aeródromo del que salió y solo daba el salto
+  // al aterrizar. Un aparato de reconocimiento tiene que ir descubriendo mientras
+  // vuela, que es su único trabajo.
   for (const u of state.units) {
     if (u.dead || u.owner !== iso || u.embarked) continue;
     const R = scoutRangeKm(u.type);
     if (!R) continue;
-    const from = S.provinces.get(u.pos);
-    if (!from) continue;
+    const at = unitGeoPos(u);
+    if (!at) continue;
     for (const p of S.provinceList) {
-      if (distKm([from.cx, from.cy], [p.cx, p.cy]) <= R) strong.add(p.id);
+      if (distKm(at, [p.cx, p.cy]) <= R) strong.add(p.id);
     }
   }
   const union = new Set(strong);
@@ -574,6 +581,24 @@ export function intelFor(state, iso) {
   const out = { time: state.time, strong, weak, union };
   porPais.set(iso, out);
   return out;
+}
+
+// Dónde está REALMENTE una unidad ahora mismo, en coordenadas geográficas.
+//
+// `u.pos` es la provincia de origen hasta que el viaje termina, así que para
+// cualquier cosa que dependa de dónde está de verdad —el reconocimiento, sin ir
+// más lejos— hay que interpolar el tramo en curso. Es la misma fórmula con la que
+// el mapa dibuja la ficha viajando (`renderer.js`), solo que allí en coordenadas
+// proyectadas y aquí en las geográficas, que son las que mide distKm.
+export function unitGeoPos(u) {
+  const from = S.provinces.get(u.pos);
+  if (!from) return null;
+  const e = u.edgeLeft;
+  if (!e) return [from.cx, from.cy];
+  const to = S.provinces.get(e.to);
+  if (!to) return [from.cx, from.cy];
+  const t = Math.max(0, Math.min(1, 1 - e.minutesLeft / (e.total || 1)));
+  return [from.cx + (to.cx - from.cx) * t, from.cy + (to.cy - from.cy) * t];
 }
 
 // Radio de descubrimiento de una unidad, en km. 0 si no explora.

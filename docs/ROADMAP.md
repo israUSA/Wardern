@@ -368,3 +368,21 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       en base**, en vez de un "fuera de alcance" seco
 - [x] El mapa pinta los dos: disco relleno = donde puede combatir · anillo exterior
       tenue = hasta dónde puede mudarse
+
+### v1.8.3 — El dron descubre mientras vuela, y otros arreglos
+
+- [x] **El reconocimiento sigue a la unidad en movimiento.** La inteligencia se calculaba
+      desde `u.pos`, que es la provincia de ORIGEN hasta que el viaje termina, así que un
+      dron cruzando medio continente no revelaba nada por el camino: su burbuja se
+      quedaba clavada en el aeródromo del que salió y solo daba el salto al aterrizar.
+      Ahora se interpola el tramo en curso (`unitGeoPos`), en el motor y en el mapa
+- [x] **El botón ⚔ Atacar se desactiva en los drones.** `combat.js` los excluye del
+      combate de provincia, así que la orden no hacía nada: el aparato volaba hasta el
+      enemigo y se quedaba mirando. El RQ-2 Pioneer llegaba a ofrecer atacar sin llevar
+      un solo arma. Los drones armados sí disparan, pero desde el panel de radar
+- [x] **Apontar en portaviones propio queda exento del radio de acción.** Un portaviones
+      está en mitad del océano; si el avión no puede llegar, el ala embarcada es
+      inservible. Solo la aviación de cubierta y solo con plaza libre
+- [x] **Mejor aviso al mover dentro de la propia provincia.** Decía "esa unidad ya está
+      ahí" sin explicar nada; ahora nombra la provincia y dice la regla — las unidades se
+      mueven entre provincias enteras, no a un punto dentro de una

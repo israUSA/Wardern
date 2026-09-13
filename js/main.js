@@ -663,7 +663,15 @@ function checkEnd() {
 // portaviones propio, parado y con plaza libre.
 function moveFailMsg(ids, pid) {
   const u = state.units.find((x) => x.id === ids[0] && !x.dead);
-  if (u && pid === u.pos) return "Esa unidad ya está ahí";
+  // Clic dentro de la provincia donde ya está. Pasa mucho al querer "acercarse a
+  // la frontera": las provincias son ATÓMICAS, no hay posiciones dentro de una, y
+  // la que toca esa frontera suele ser justo en la que estás. Decir solo "ya está
+  // ahí" no lo explicaba, así que se nombra la provincia y la regla.
+  if (u && pid === u.pos) {
+    return `Ya estás en ${S.provinces.get(pid)?.name ?? "esa provincia"}.
+            Las unidades se mueven entre provincias enteras, no a un punto dentro de una:
+            para acercarte a la frontera, muévete a la provincia del otro lado.`;
+  }
   // Fuera de radio: el motivo más frecuente desde que el espacio aéreo es libre,
   // y el que más despista si se resume como "sin ruta". Se dice cuánto falta.
   const r = u && airRangeInfo(state, u, pid);

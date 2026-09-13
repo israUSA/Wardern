@@ -151,6 +151,15 @@ export function airRangeInfo(state, unit, pid) {
   const radioKm = airRangeKm(unit.type);
   const destino = S.provinces.get(pid);
   if (radioKm == null || !destino) return { ok: true };
+
+  // Apontar en un portaviones propio NO tiene límite de alcance. Un portaviones
+  // es una base que se mueve, y suele estar en mitad de un océano lejísimos de
+  // cualquier aeródromo: si el avión no pudiera llegar nunca hasta él, el ala
+  // embarcada sería inservible y el buque, un adorno carísimo. El freno ya está
+  // en otro sitio —solo la aviación de cubierta (CARRIER_CAPABLE) puede, y el
+  // buque tiene que tener plaza libre—, así que no hace falta uno más.
+  if (carrierBerths(state, unit, pid).length) return { ok: true, apontaje: true, radioKm };
+
   const base = airBaseFor(state, unit);
   if (!base) return { ok: true, sinBase: true, radioKm };
   const km = distKm([base.cx, base.cy], [destino.cx, destino.cy]);

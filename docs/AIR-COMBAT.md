@@ -397,6 +397,21 @@ anillo exterior tenue y punteado hasta dónde puede **mudarse**. El segundo va s
 relleno a propósito — con el mismo peso visual se leería como el doble de alcance
 operativo, que es justo lo contrario de lo que significa.
 
+
+#### Apontar no tiene límite
+
+Volar a un **portaviones propio con plaza libre** está exento del radio de acción,
+sea cual sea la distancia. Un portaviones es una base que se mueve y suele estar
+en mitad de un océano lejísimos de cualquier aeródromo: si el avión no pudiera
+llegar nunca hasta él, el ala embarcada sería inservible y el buque un adorno
+carísimo.
+
+El freno ya está en otro sitio y no hace falta uno más: solo la aviación de
+cubierta (`CARRIER_CAPABLE`) puede apontar, y el buque tiene que tener plaza.
+
+Medido: un F/A-18E con 1.400 km de radio llega a un portaviones propio a
+**12.492 km**. Un B-2, que no es de cubierta, se rechaza igual que siempre.
+
 ### Qué cuenta como base
 
 `airBaseFor()` devuelve la más cercana entre:
