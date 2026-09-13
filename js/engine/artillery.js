@@ -8,7 +8,7 @@
 // El alcance es propio de cada variante (`rangoKm` en js/data/units-data.js):
 // un D-30 no bate lo mismo que un 2S35. El ritmo, el daño y el coste salen de
 // las constantes ARTY_* y escalan por tier de la pieza.
-import { S, unitDef, distKm, atWar, log, visibleProvinces, hpFrac } from "./state.js";
+import { S, unitDef, distKmToProvince, atWar, log, visibleProvinces, hpFrac } from "./state.js";
 import * as C from "../data/constants.js";
 import { canAfford, pay } from "./economy.js";
 
@@ -28,12 +28,16 @@ export function canShell(type) {
   return artilleryRange(type) > 0;
 }
 
-// Distancia de la pieza a una provincia, en km de mapa
+// Distancia de la pieza a una provincia, en km de mapa: del centroide de la
+// pieza al punto MÁS CERCANO del contorno del blanco, no a su centroide (la
+// razón, con las cifras medidas, está en distKmToProvince de state.js). Es lo
+// que hace que una batería en su propia provincia bata de verdad a la vecina en
+// vez de tener que entrar a pelear cuerpo a cuerpo para ponerse a tiro.
 export function shellDistance(state, u, pid) {
   const from = S.provinces.get(u.pos);
   const to = S.provinces.get(pid);
   if (!from || !to) return Infinity;
-  return distKm([from.cx, from.cy], [to.cx, to.cy]);
+  return distKmToProvince([from.cx, from.cy], to);
 }
 
 // Salva contra una ficha concreta. Devuelve { ok, msg } igual que launchMissile.

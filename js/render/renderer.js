@@ -941,6 +941,11 @@ export class MapRenderer {
   // pieza de MÁS alcance que lleve dentro: es la que dice hasta dónde puede
   // castigar el grupo sin moverse, y así el jugador ve de un vistazo que meter
   // un obús en una columna le sirve para algo.
+  //
+  // El radio es el alcance real en km, pero el tiro se mide al BORDE de la
+  // provincia enemiga (docs/UNITS.md), así que la regla de lectura es: si el
+  // contorno de una provincia TOCA el anillo, esa provincia está a tiro aunque
+  // su centro quede fuera.
   drawShellRange(ctx, state, ui) {
     const ids = ui.selStackIds?.length ? ui.selStackIds : ui.selUnit ? [ui.selUnit] : [];
     let pieza = null;

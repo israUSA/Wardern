@@ -212,6 +212,69 @@ los doce counters. Es un proyecto aparte, no un ajuste de tabla.
   tardaban 200 horas de juego en curarse.
 - Los guardados anteriores se migran conservando el porcentaje (`migrateHp`).
 
+## Tiro a distancia: alcance al borde y escudo de retaguardia (v1.9)
+
+El problema que resuelve: la artillería no servía de nada porque para llegar a la
+provincia enemiga había que **meterse dentro** y pelear cuerpo a cuerpo. Dos causas
+distintas, cada una con su arreglo.
+
+### 1. El alcance se mide al BORDE de la provincia, no a su centroide
+
+Medido sobre los 678 pares de provincias vecinas del mapa:
+
+| Alcance | Cubría (centroide a centroide) | Cubre ahora (centroide a borde) |
+|---|---|---|
+| 300 km (t1) | 47 % | **84 %** |
+| 420 km (t2) | 63 % | **92 %** |
+| 620 km (t3) | 82 % | **97 %** |
+
+La mediana de distancia entre vecinas es 319 km de centroide a centroide y 140 km de
+centroide a borde. Con el criterio viejo un obús t1 no batía ni la mitad de sus vecinas
+y la orden de atacar lo mandaba a pie. La lectura física también mejora: la batería
+bate la **línea de contacto** del vecino, no su capital.
+
+Código: `distKmToProvince` en `js/engine/state.js`, usada por `shellDistance`. El disco
+rojo del mapa sigue siendo el radio real en km: si el contorno de una provincia toca el
+anillo, esa provincia está a tiro.
+
+### 2. Escudo de retaguardia (`REAR_COVER_DMG` = 0,25)
+
+Mientras a un **país** le quede una sola unidad de primera línea en pie, su apoyo
+—artillería y antiaéreos— solo encaja el 25 % del **fuego terrestre** que le cae encima.
+Cuatro veces más duro estando a cubierto.
+
+Sin esto la batería que entra en una provincia dejaba de ser artillería: pegaba 9,1 HP/h
+a la infantería y recibía 5,7, cuando su salva a distancia rinde 17,3 HP/h.
+
+Se reduce el daño, **no se reasigna el blanco**. Probado con reasignación (la retaguardia
+deja de ser blanco elegible y el fuego se reparte entre el frente): la pila mixta
+occidental contra oriental se iba al **99 % oriental**, porque concentrar todo el fuego en
+menos blancos acorta la batalla y la ventaja de HP de la doctrina oriental compone por
+Lanchester. Barrido de 300 batallas por valor:
+
+| Daño que llega al apoyo | Oriental gana | Apoyo vivo al final |
+|---|---|---|
+| sin escudo | 63 % | 0,00 de 4 |
+| 0 (inmune) | 99 % | 1,92 de 4 |
+| 0,15 | 69 % | 1,00 de 4 |
+| **0,25** | **51 %** | **0,59 de 4** |
+| 0,35 | 48 % | 0,02 de 4 |
+| 0,50 | 51 % | 0,00 de 4 |
+
+Tres límites deliberados:
+
+- Se mira **por país**, no por bando: la infantería de un aliado no tapa los obuses de
+  otro país que ha entrado por su cuenta.
+- Al bando que **solo** tiene retaguardia no lo tapa nadie: una pila de puros obuses se
+  bate igual que antes.
+- El escudo **no vale contra el aire, contra el fuego naval ni contra una salva de
+  artillería** (esa va por `missiles.js` y no pasa por el combate de provincia). El
+  bombardero y el contrabatería van justo a por la retaguardia: son la respuesta.
+
+Verificado en `tools/test-variants.mjs` §5b (6 aserciones): clasificación, el obús
+encuadrado aguanta 221 ticks contra 185, el ritmo de daño a cubierto es exactamente 0,25
+del descubierto, la pila de solo apoyo no cambia, y el fuego aéreo lo ignora.
+
 ## Counters (duelos 1v1 en llanura, sin fortaleza, verificados por doctrina y tier)
 
 - **Triángulo terrestre**: MBT > Infantería > Cazatanques > MBT.

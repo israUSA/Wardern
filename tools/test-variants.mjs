@@ -24,6 +24,7 @@ import { UNITS, GROUND_VARIANTS, LEGACY_UNITS, UNIT_CATEGORIES } from "../js/dat
 import { DOCTRINES, TIERS } from "../js/data/doctrines-data.js";
 import { S, unitDef, availableVariants } from "../js/engine/state.js";
 import { recruitBlocker } from "../js/engine/economy.js";
+import { esRetaguardia } from "../js/engine/combat.js";
 
 const KEYS = ["infanteria", "motorizada", "mbt", "cazatanques", "artilleria", "antiaereo", "caza", "bombardero", "helicoptero", "drone"];
 const TERRAINS = ["llanura", "bosque", "selva", "montaña", "desierto", "tundra", "urbano"];
@@ -83,6 +84,11 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
       if (dead.has(u.id)) continue;
       const enemies = fighting.filter((e) => e.owner !== u.owner && !dead.has(e.id));
       if (!enemies.length) continue;
+      // Escudo de retaguardia: réplica de combat.js. El banco es solo terrestre y
+      // aéreo, así que la excepción naval no puede darse aquí.
+      const tapaFrente = !u.def.air
+        ? new Set(enemies.filter((e) => !esRetaguardia(e.type)).map((e) => e.owner))
+        : null;
       // selección de objetivo: 65% mayor ataque bruto (empate → primero vivo), 35% azar
       // (réplica exacta de combat.js: las matrices se indexan por CATEGORÍA de la unidad)
       let target;
@@ -103,12 +109,19 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
       const atkVal = A.attack[T.category] || 0;
       let dmg = atkVal * (u.hp / u.hpMax) * u.morale * atkPen * prep * overstack * vetA * C.COMBAT_SCALE;
       dmg *= C.DEF_SOFTENER / (C.DEF_SOFTENER + defVal);
+      // spec.sinEscudo es un interruptor SOLO del banco: permite medir la misma
+      // batalla con y sin escudo y comprobar que el escudo hace algo.
+      if (tapaFrente?.has(target.owner) && esRetaguardia(target.type)) {
+        dmg *= spec.sinEscudo ? 1 : C.REAR_COVER_DMG;
+      }
       if (u.hp > 0) u.exp = Math.min(C.VET_EXP_MAX, (u.exp || 0) + dmg * C.VET_EXP_PER_DAMAGE);
       dmgMap.set(target, (dmgMap.get(target) || 0) + dmg);
       dmgDealt[u.owner] += dmg;
     }
     for (const [u, dmg] of dmgMap) {
       u.hp -= dmg;
+      u.recibido = (u.recibido || 0) + dmg; // solo para medir el escudo de retaguardia
+      if (u.hp <= 0 && u.outTick == null) u.outTick = ticks;
       u.morale = Math.max(0, u.morale - (dmg / u.hpMax) * 100 * C.MORALE_HIT);
       if (u.hp <= 0 && !dead.has(u.id)) dead.add(u.id);
     }
@@ -117,7 +130,10 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
       if (dead.has(u.id) || u.edgeLeft) continue;
       const stillFighting = fighting.some((e) => e.owner !== u.owner && !dead.has(e.id));
       if (!stillFighting) continue;
-      if ((u.hp / u.hpMax) * 100 < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) u.edgeLeft = "retirada";
+      if ((u.hp / u.hpMax) * 100 < C.RETREAT_HP || u.morale < C.RETREAT_MORALE) {
+        u.edgeLeft = "retirada";
+        if (u.outTick == null) u.outTick = ticks;
+      }
     }
   }
 
@@ -126,7 +142,12 @@ function battle(spec, rng = Math.random, maxTicks = 4000) {
   const hpB = alive("B").reduce((s, u) => s + u.hp, 0);
   const winner = hpA > 0 && hpB <= 0 ? "A" : hpB > 0 && hpA <= 0 ? "B" : "draw";
   const survivors = (side) => alive(side).length;
-  return { winner, hpA, hpB, ticks, dmgA: dmgDealt.A, dmgB: dmgDealt.B, survivorsA: survivors("A"), survivorsB: survivors("B"), maxed: ticks > maxTicks };
+  // Incluye a las que se RETIRARON: para el escudo de retaguardia, salir de la
+  // batalla con casco es justo el desenlace bueno, no una baja.
+  const catsA = units
+    .filter((u) => u.owner === "A")
+    .map((u) => ({ cat: u.def.category, frac: u.hp / u.hpMax, recibido: u.recibido || 0, outTick: u.outTick ?? ticks }));
+  return { winner, hpA, hpB, ticks, dmgA: dmgDealt.A, dmgB: dmgDealt.B, survivorsA: survivors("A"), survivorsB: survivors("B"), catsA, maxed: ticks > maxTicks };
 }
 
 // Duelo 1v1 (determinista en la práctica; se corre N veces por seguridad)
@@ -424,6 +445,75 @@ section("[5] Occidental t2 vs Oriental t2: sin barrido de doctrina y contadores 
   const ms = mcBattle({ sideA: stack("occ"), sideB: stack("ori") });
   const oriRate = ms.wB / ms.n;
   check("stack mixto occ vs ori competitivo (oriental gana 25-75%)", oriRate >= 0.25 && oriRate <= 0.75, `oriental gana ${Math.round(oriRate * 100)}% (occ ${ms.wA}, empates ${ms.draw})`);
+
+  // ---- Escudo de retaguardia (REAR_COVER_DMG) ----
+  section("[5b] Escudo de retaguardia");
+  check("clasificación: artillería y antiaéreo son apoyo; infantería, mbt y caza no",
+    esRetaguardia(id("occ", 2, "artilleria")) && esRetaguardia(id("ori", 2, "antiaereo")) &&
+    !esRetaguardia(id("occ", 2, "infanteria")) && !esRetaguardia(id("occ", 2, "mbt")) &&
+    !esRetaguardia(id("occ", 2, "caza")), "");
+  check("REAR_COVER_DMG reduce pero no anula (0 < x < 1)", C.REAR_COVER_DMG > 0 && C.REAR_COVER_DMG < 1, `= ${C.REAR_COVER_DMG}`);
+
+  // Un obús ENCUADRADO con infantería tiene que sobrevivir más a menudo que el
+  // mismo obús en la misma batalla sin escudo. Es el punto entero del cambio.
+  const conFrente = [id("occ", 2, "infanteria"), id("occ", 2, "infanteria"), id("occ", 2, "infanteria"), id("occ", 2, "artilleria")];
+  const rival = [id("ori", 2, "infanteria"), id("ori", 2, "infanteria"), id("ori", 2, "mbt"), id("ori", 2, "mbt")];
+  // Métrica: TICKS que aguanta el obús de A antes de morir o de retirarse (si
+  // llega vivo al final, los ticks enteros de la batalla). Se descartaron tres
+  // métricas peores: la supervivencia pelada satura en 100 % o en 0 % según el
+  // rival; la vida restante se pega al umbral de retirada (RETREAT_HP = 30); y
+  // el daño total recibido también, porque encajar 70 HP ES el umbral. Lo que
+  // cambia el escudo es el TIEMPO que tarda en encajarlos.
+  const aguanteObus = (spec, n = 200) => {
+    let s = 0;
+    for (let i = 0; i < n; i++) {
+      const r = battle(spec, Math.random);
+      s += r.catsA.find((x) => x.cat === "artilleria")?.outTick ?? 0;
+    }
+    return s / n;
+  };
+  const conEscudo = aguanteObus({ sideA: conFrente, sideB: rival });
+  const sinEscudo = aguanteObus({ sideA: conFrente, sideB: rival, sinEscudo: true });
+  // El margen es del 15 % y no del 75 % que haría pensar REAR_COVER_DMG = 0,25
+  // porque el techo lo pone la BATALLA: se acaba antes de que al obús le toque
+  // encajar todo lo que podría. El ritmo de daño, que se comprueba justo debajo,
+  // sí baja al cuarto. Medido, esto es muy estable: 220-221 contra 185 ticks.
+  check("el obús encuadrado aguanta al menos un 15% más con escudo",
+    conEscudo > sinEscudo * 1.15, `${conEscudo.toFixed(0)} ticks con escudo, ${sinEscudo.toFixed(0)} sin él`);
+
+  // Comprobación directa de REAR_COVER_DMG: el RITMO de daño que encaja el obús
+  // MIENTRAS SIGUE TAPADO tiene que ser el del factor. Se corta la batalla a 40
+  // ticks a propósito: más allá, el frente de A ya ha caído, el obús queda al
+  // descubierto y encaja a ritmo entero, que es justo como debe ser. Sin ese
+  // corte el cociente sale 0,84 y no mide el escudo, mide su caducidad.
+  const ritmoObus = (spec, n = 200) => {
+    let s = 0;
+    for (let i = 0; i < n; i++) {
+      const o = battle(spec, Math.random, 40).catsA.find((x) => x.cat === "artilleria");
+      if (o?.outTick) s += o.recibido / Math.min(o.outTick, 40);
+    }
+    return s / n;
+  };
+  const rCon = ritmoObus({ sideA: conFrente, sideB: rival });
+  const rSin = ritmoObus({ sideA: conFrente, sideB: rival, sinEscudo: true });
+  const cociente = rCon / rSin;
+  check("a cubierto el obús encaja al ritmo de REAR_COVER_DMG (±0,1)",
+    Math.abs(cociente - C.REAR_COVER_DMG) < 0.1, `cociente ${cociente.toFixed(2)} contra ${C.REAR_COVER_DMG}`);
+
+  // Una pila de SOLO apoyo no la tapa nadie: el escudo no debe cambiar nada.
+  const soloApoyo = [id("occ", 2, "artilleria"), id("occ", 2, "artilleria"), id("occ", 2, "artilleria"), id("occ", 2, "antiaereo")];
+  const pilaCon = aguanteObus({ sideA: soloApoyo, sideB: rival });
+  const pilaSin = aguanteObus({ sideA: soloApoyo, sideB: rival, sinEscudo: true });
+  check("una pila de solo apoyo no está tapada por nadie",
+    Math.abs(pilaCon - pilaSin) < pilaSin * 0.15, `${pilaCon.toFixed(0)} vs ${pilaSin.toFixed(0)} ticks`);
+
+  // El aire ignora el escudo: un bombardero contra el mismo obús encuadrado
+  // rinde igual con escudo y sin él. Es el contador que mantiene el equilibrio.
+  const aire = [id("ori", 2, "bombardero"), id("ori", 2, "bombardero")];
+  const aereoCon = aguanteObus({ sideA: conFrente, sideB: aire });
+  const aereoSin = aguanteObus({ sideA: conFrente, sideB: aire, sinEscudo: true });
+  check("el fuego aéreo ignora el escudo (aguanta lo mismo con y sin él)",
+    Math.abs(aereoCon - aereoSin) < aereoSin * 0.15, `${aereoCon.toFixed(0)} vs ${aereoSin.toFixed(0)} ticks`);
 }
 
 // ---------- [6] Reclutamiento e investigación (assert f, código REAL del motor) ----------

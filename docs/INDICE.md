@@ -14,7 +14,7 @@ Si añades o renombras un documento, actualiza este índice.
 | [`../README.md`](../README.md) | Puesta en marcha, cómo jugar, estructura de carpetas, verificaciones | Al empezar, o para levantar el servidor |
 | [`GDD.md`](GDD.md) | Documento de diseño: visión, alcance, economía, victoria, ritmo | Para entender **por qué** el juego es como es |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Stack, estructura de módulos, contratos de datos, modelo de simulación, render, guardado | Antes de tocar código nuevo |
-| [`UNITS.md`](UNITS.md) | Unidades terrestres y aéreas: ids, doctrinas, tiers, balance, counters, costes | Para tocar balance o añadir una unidad |
+| [`UNITS.md`](UNITS.md) | Unidades terrestres y aéreas: ids, doctrinas, tiers, balance, counters, costes, **tiro a distancia y escudo de retaguardia** | Para tocar balance o añadir una unidad |
 | [`NAVAL.md`](NAVAL.md) | Marina: categorías, roles, costes, roster de 36 variantes, mecánicas marítimas | Cualquier cosa de barcos |
 | [`AIR-COMBAT.md`](AIR-COMBAT.md) | Radar, cargas de misiles, disparo guiado, furtividad, aviación embarcada, **espacio aéreo y radio de acción** | Cualquier cosa de aviones |
 | [`MISSILES.md`](MISSILES.md) | Arsenal de misiles, golpe manual, arma en batalla, drones de reconocimiento | Misiles y drones |
@@ -40,7 +40,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Niebla de guerra e inteligencia | `RECONOCIMIENTO.md` · `GDD.md` | todo · 6. Niebla de guerra |
 | Radio de visión de una unidad | `RECONOCIMIENTO.md` | Radios |
 | Ver al enemigo sin declarar la guerra | `RECONOCIMIENTO.md` | Las cuatro fuentes |
-| Alcance de tiro de la artillería | `UNITS.md` · `FORMACIONES.md` | Roster · Reglas mecánicas §4 |
+| Alcance de tiro de la artillería | `UNITS.md` · `FORMACIONES.md` | Tiro a distancia · Reglas mecánicas §4 |
+| Por qué la artillería no muere en primera línea | `UNITS.md` | Tiro a distancia §2 (escudo de retaguardia) |
 | Combate terrestre | `GDD.md` · `UNITS.md` | 6. Combate · Counters |
 | IA de los bots | `GDD.md` · `MISSILES.md` · `AIR-COMBAT.md` | cada uno tiene su sección de IA |
 | Capturar provincias | `FORMACIONES.md` | Reglas mecánicas §4 |

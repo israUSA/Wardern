@@ -9,7 +9,7 @@ import {
   S, unitDef, isNaval, controller, unitsIn, atWar, visibleProvinces, intel,
   availableVariants, doctrineVariants, scoutRangeKm, maxHp, TIERS, DOCTRINES,
 } from "../engine/state.js";
-import { vetLevel } from "../engine/combat.js";
+import { vetLevel, esRetaguardia } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import {
   airLoadout, airWeapons, radarContacts, groundContacts, pkFor, weaponCanTarget,
@@ -700,7 +700,21 @@ function battleSection(state, u) {
     </div>`;
   };
 
+  // Escudo de retaguardia (docs/UNITS.md): al jugador hay que DECIRLE por qué su
+  // obús encaja poco, o no entiende qué le protege ni cuándo deja de hacerlo.
+  let cobertura = "";
+  if (esRetaguardia(u.type)) {
+    const frente = enLaCelda.some((x) => x.owner === u.owner && !esRetaguardia(x.type));
+    cobertura = frente
+      ? `<div class="bt-line">🛡 <b>A cubierto</b>: es apoyo y tiene primera línea delante, así que
+         encaja solo el ${Math.round(C.REAR_COVER_DMG * 100)} % del fuego terrestre. El fuego aéreo y las
+         salvas de artillería sí le llegan enteros.</div>`
+      : `<div class="bt-line">⚠ <b>Sin frente delante</b>: es apoyo peleando al descubierto y encaja el
+         fuego terrestre entero. Métele una unidad de línea en la provincia.</div>`;
+  }
+
   return `<div class="pp-section bt-sec"><h4>⚔ Combate en ${provName(u.pos)}</h4>
+    ${cobertura}
     <div class="bt-line">Lleva <b>${etaText(u.battleMinutes || 0)}</b> de pelea.
       El daño es continuo: no hay turnos, las dos partes se desgastan a la vez.</div>
     <div class="bt-line">Esta unidad recibe <b>${Math.round(u.dmgInPerH || 0)} HP/h</b>

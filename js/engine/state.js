@@ -92,6 +92,44 @@ export function distKm(a, b) {
   return 2 * R * Math.asin(Math.sqrt(s));
 }
 
+// Distancia en km del punto `a` al punto MÁS CERCANO del contorno de una
+// provincia (0 no se devuelve nunca: si `a` cae dentro, sale la distancia a su
+// propio borde, que es lo que hace falta).
+//
+// El tiro a distancia mide con esto y NO de centroide a centroide. Medido sobre
+// los 678 pares de provincias vecinas del mapa: de centroide a centroide la
+// mediana es 319 km, así que un obús de 300 km no batía ni la mitad de sus
+// vecinas y la orden de atacar lo mandaba a pie a pelear cuerpo a cuerpo. De
+// centroide a borde la mediana es 140 km y el mismo obús cubre el 84 %. La
+// lectura física también es mejor: la batería bate la línea de contacto del
+// vecino, no su capital.
+//
+// La proyección es local: se escala la longitud por el coseno de la latitud del
+// tirador antes de proyectar sobre el segmento, porque un grado de longitud en
+// Alaska mide la mitad que en Panamá y sin corregir se elegía el vértice
+// equivocado.
+export function distKmToProvince(a, prov) {
+  const rings = prov?.rings;
+  if (!rings?.length) return Infinity;
+  const k = Math.cos(toRad(a[1])) || 1e-6;
+  const px = a[0] * k, py = a[1];
+  let best = Infinity, bx = null, by = null;
+  for (const ring of rings) {
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const x1 = ring[j][0] * k, y1 = ring[j][1];
+      const x2 = ring[i][0] * k, y2 = ring[i][1];
+      const dx = x2 - x1, dy = y2 - y1;
+      const len2 = dx * dx + dy * dy;
+      let t = len2 ? ((px - x1) * dx + (py - y1) * dy) / len2 : 0;
+      t = Math.max(0, Math.min(1, t));
+      const qx = x1 + t * dx, qy = y1 + t * dy;
+      const d = Math.hypot(px - qx, py - qy);
+      if (d < best) { best = d; bx = qx / k; by = qy; }
+    }
+  }
+  return bx === null ? Infinity : distKm(a, [bx, by]);
+}
+
 // Proyección Mercator simple; Y se niega para que el norte quede arriba en pantalla
 export function mercY(lat) {
   const l = Math.max(-85, Math.min(85, lat));

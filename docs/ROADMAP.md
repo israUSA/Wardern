@@ -413,3 +413,21 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       límite inferior de la banda (20 %). Tandas consecutivas daban entre 26 % y 37 %, y
       de vez en cuando cruzaba. Subido a 400 muestras: seis ejecuciones seguidas dan
       26-30 % y ninguna falla. Un banco que falla al azar enseña a ignorarlo
+
+### v1.9 — La artillería por fin pelea a distancia
+
+- [x] **El alcance de tiro se mide al BORDE de la provincia enemiga, no a su centroide.**
+      Medido sobre los 678 pares de vecinas: la mediana pasa de 319 km a 140 km, y un
+      obús t1 de 300 km pasa de batir el 47 % de sus vecinas al 84 %. Antes, atacar a la
+      provincia de al lado mandaba la batería a pie a pelear cuerpo a cuerpo
+- [x] **Escudo de retaguardia** (`REAR_COVER_DMG` = 0,25): mientras a un país le quede
+      una unidad de primera línea en pie, su artillería y sus antiaéreos encajan solo el
+      25 % del fuego terrestre. Cuatro veces más duros estando encuadrados
+- [x] Se reduce el daño y **no** se reasigna el blanco: con inmunidad total la pila mixta
+      se iba al 99 % oriental (concentrar el fuego acorta la batalla y la ventaja de HP
+      compone por Lanchester). Con 0,25 la competitividad queda en 51 % y el apoyo
+      sobrevive de verdad
+- [x] El escudo **no** vale contra el aire, contra el fuego naval ni contra una salva de
+      artillería: el bombardero y el contrabatería siguen siendo la respuesta
+- [x] 6 aserciones nuevas en `tools/test-variants.mjs` §5b. Banco terrestre 103 PASS,
+      banco naval 32 PASS

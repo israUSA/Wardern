@@ -4,6 +4,13 @@ import { S, unitDef, controller, atWar, log, checkElimination, hpFrac, maxHp } f
 import { edgeMinutes } from "./movement.js";
 import { MISSILES } from "../data/missiles-data.js";
 
+// Categorías de APOYO: no forman la línea de contacto. Ver el escudo de
+// retaguardia en tickCombat y docs/UNITS.md.
+const RETAGUARDIA = new Set(["artilleria", "antiaereo"]);
+export function esRetaguardia(type) {
+  return RETAGUARDIA.has(unitDef(type)?.category);
+}
+
 // Nivel de veteranía 0-3 según la experiencia acumulada
 export function vetLevel(u) {
   let lv = 0;
@@ -76,8 +83,34 @@ export function tickCombat(state, dt) {
     const outMap = new Map();  // daño INFLIGIDO por unidad en este paso
     for (const u of fighting) {
       if (dead.has(u.id)) continue;
-      const enemies = fighting.filter((e) => e.owner !== u.owner && atWar(state, u.owner, e.owner) && !dead.has(e.id));
+      let enemies = fighting.filter((e) => e.owner !== u.owner && atWar(state, u.owner, e.owner) && !dead.has(e.id));
       if (!enemies.length) continue;
+
+      const A = unitDef(u.type);
+      // ESCUDO DE RETAGUARDIA. Mientras a un país le quede UNA sola unidad de
+      // primera línea en pie, su apoyo —artillería y antiaéreos— solo recibe la
+      // parte REAR_COVER_DMG del fuego terrestre que le cae encima: está detrás
+      // de la línea y el fusil no llega. Sin esto la batería que entra en una
+      // provincia deja de ser artillería y pasa a ser un tanque malo (pegaba 9
+      // HP/h a la infantería y recibía 5,7, cuando su salva a distancia rinde
+      // 17,3), y no había forma de pelear "a distancia y a seguridad".
+      //
+      // Se reduce el daño, NO se reasigna el blanco: probado con reasignación,
+      // el fuego se concentraba entero en el frente y la pila oriental pasaba a
+      // ganar el 99 % (las cifras, en REAR_COVER_DMG de constants.js).
+      //
+      // Tres límites deliberados:
+      //   · se mira POR PAÍS, no por bando: la infantería de un aliado no tapa
+      //     los obuses de otro país que ha entrado por su cuenta;
+      //   · al bando que solo tiene retaguardia no lo tapa nadie, así que una
+      //     pila de puros obuses se bate exactamente igual que antes;
+      //   · el escudo NO vale contra el aire, contra el fuego naval ni contra
+      //     una salva de artillería (esa va por missiles.js y no pasa por aquí).
+      //     El bombardero y el contrabatería van justo a por la retaguardia, y
+      //     esos dos contadores se mantienen enteros.
+      const tapaFrente = !A.air && !isNaval(u.type)
+        ? new Set(enemies.filter((e) => !esRetaguardia(e.type)).map((e) => e.owner))
+        : null;
 
       let target;
       // Las matrices attack/defense están indexadas por CATEGORÍA (10 terrestres/aéreas
@@ -96,7 +129,6 @@ export function tickCombat(state, dt) {
         target = enemies[Math.floor(Math.random() * enemies.length)];
       }
 
-      const A = unitDef(u.type);
       const T = unitDef(target.type);
       const atkKey = A.category || u.type;
       const tgtKey = T.category || target.type;
@@ -130,6 +162,7 @@ export function tickCombat(state, dt) {
         vetA *
         C.COMBAT_SCALE;
       dmg *= C.DEF_SOFTENER / (C.DEF_SOFTENER + defVal);
+      if (tapaFrente?.has(target.owner) && esRetaguardia(target.type)) dmg *= C.REAR_COVER_DMG;
       // El daño va por TIEMPO DE JUEGO, no por tick. Antes era por tick: el
       // combate corría a 4 rondas por segundo real pasara lo que pasara con el
       // reloj, así que cada vez que se tocaba MINUTES_PER_TICK_BASE el combate

@@ -147,6 +147,19 @@ export const ANNEX_DAYS = 5 * 24 * 60;
 export const ANNEX_COST = (pop) => Math.round(pop / 2000) + 2000;
 
 // Combate
+// Escudo de retaguardia: parte del daño de FUEGO TERRESTRE que llega a una
+// pieza de apoyo (artillería, antiaéreo) mientras su bando conserve alguna
+// unidad de primera línea en pie. 0,25 = cuatro veces más dura estando a cubierto.
+//
+// El valor está medido, no elegido a ojo. Con inmunidad total (0) la pila mixta
+// occidental contra oriental se iba a 99 % oriental: al no poder tocar el apoyo,
+// todo el fuego se concentra en el frente, la batalla se acorta y la ventaja de
+// HP de la doctrina oriental compone por Lanchester. Barrido de 300 batallas por
+// valor: 0 → 99 %, 0,15 → 69 %, 0,25 → 51 %, 0,35 → 48 %, 0,5 → 51 %, sin escudo
+// 63 %. 0,25 es el punto donde el apoyo sobrevive de verdad (0,59 piezas de 4 al
+// final, contra 0,00 sin escudo) y la competitividad entre doctrinas se mantiene.
+export const REAR_COVER_DMG = 0.25;
+
 export const COMBAT_SCALE = 0.08;          // daño base por tick
 export const DEF_SOFTENER = 20;            // dmg ×= DEF_SOFTENER/(DEF_SOFTENER+defTotal)
 export const FORT_DEF_PER_LEVEL = 0.2;     // +20% defensa por nivel de fortaleza
