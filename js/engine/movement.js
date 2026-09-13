@@ -120,11 +120,33 @@ export function airBaseFor(state, unit) {
   return mejor;
 }
 
+// ¿Es `pid` una base propia donde este aparato puede quedarse? Un aeródromo
+// propio con pista, o un portaviones propio con plaza libre si es de cubierta.
+function esBasePropia(state, unit, pid) {
+  const cel = S.provinces.get(pid);
+  if (!cel) return false;
+  if (cel.isSea) return carrierBerths(state, unit, pid).length > 0;
+  const ps = state.provinces[pid];
+  return !!ps && controller(ps) === unit.owner && (ps.buildings?.aerobase || 0) >= 1;
+}
+
 // ¿Le da el combustible para plantarse en `pid`? Sin ninguna base propia el
 // límite no se aplica: dejar a toda la aviación clavada en el sitio por no tener
 // aeródromo sería castigar al jugador por algo que no puede arreglar en el
-// momento. `airRangeInfo` devuelve el detalle para que la interfaz pueda decir
-// cuánto se pasa en vez de un "no" seco.
+// momento. Devuelve el detalle para que la interfaz diga cuánto se pasa en vez
+// de un "no" seco.
+//
+// Hay DOS límites, y la diferencia es la que separa una misión de una mudanza:
+//
+//   · RADIO DE COMBATE (airRangeKm) para cualquier destino normal. Es ida Y
+//     vuelta: el aparato tiene que poder volver a casa.
+//   · RADIO DE TRASLADO (×FERRY_MULT) cuando el destino es OTRA BASE PROPIA.
+//     Ahí no vuelve —se queda a vivir allí— así que el mismo depósito le cunde
+//     el doble. Es lo que en aviación se llama un vuelo de ferry.
+//
+// Sin esta distinción, llevar un escuadrón al aeródromo que acabas de construir
+// al otro lado del país era imposible, aunque fuera exactamente para eso para lo
+// que lo habías construido.
 export function airRangeInfo(state, unit, pid) {
   const radioKm = airRangeKm(unit.type);
   const destino = S.provinces.get(pid);
@@ -132,7 +154,9 @@ export function airRangeInfo(state, unit, pid) {
   const base = airBaseFor(state, unit);
   if (!base) return { ok: true, sinBase: true, radioKm };
   const km = distKm([base.cx, base.cy], [destino.cx, destino.cy]);
-  return { ok: km <= radioKm, km: Math.round(km), radioKm, base };
+  const traslado = esBasePropia(state, unit, pid);
+  const tope = traslado ? radioKm * C.FERRY_MULT : radioKm;
+  return { ok: km <= tope, km: Math.round(km), radioKm, tope: Math.round(tope), traslado, base };
 }
 
 export function findPath(state, unit, targetId) {

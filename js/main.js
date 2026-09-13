@@ -668,8 +668,13 @@ function moveFailMsg(ids, pid) {
   // y el que más despista si se resume como "sin ruta". Se dice cuánto falta.
   const r = u && airRangeInfo(state, u, pid);
   if (r && !r.ok) {
-    return `Fuera de alcance: ${r.km} km hasta ahí y el radio de acción es de ${r.radioKm} km.
-            Acerca un aeródromo o un portaviones.`;
+    // Un traslado a base propia ya se mide con el radio doble (vuelo de ida),
+    // así que si aun así no llega, el consejo útil es encadenar saltos.
+    return r.traslado
+      ? `Ese aeródromo está a ${r.km} km y el traslado llega a ${r.tope} km.
+         Muévelo por etapas, saltando de base en base.`
+      : `Fuera de alcance: ${r.km} km hasta ahí y el radio de combate es de ${r.radioKm} km.
+         A otra base propia sí llegaría, hasta ${Math.round(r.radioKm * C.FERRY_MULT)} km.`;
   }
   if (!S.provinces.get(pid)?.isSea || !u || !unitDef(u.type)?.air) {
     return "Sin ruta hasta esa provincia";

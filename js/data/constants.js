@@ -206,6 +206,13 @@ export const AIR_PATROL_MINUTES = 8 * 60;
 // su papel es ser los ojos del jugador muy por delante del frente, y con un radio
 // de caza no llegaría a ver nada que no viera ya la inteligencia de frontera. El
 // helicóptero cierra la tabla: es apoyo de la tropa, no un aparato de alcance.
+// Un vuelo de TRASLADO entre bases propias es solo de ida: el aparato no vuelve,
+// se queda en el aeródromo nuevo. Sin viaje de vuelta el mismo depósito cunde el
+// doble, así que el radio de combate se multiplica por esto cuando el destino es
+// una base propia (ver airRangeInfo en movement.js). ×2 es la cifra física: la
+// mitad del combustible que te guardabas para volver ahora es autonomía.
+export const FERRY_MULT = 2;
+
 export const AIR_RANGE_KM = {
   drone:       { 1: 2400, 2: 4400, 3: 6400 },
   bombardero:  { 1: 2000, 2: 2800, 3: 3600 },

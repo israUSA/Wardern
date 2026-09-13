@@ -8,7 +8,7 @@ import { vetLevel } from "../engine/combat.js";
 import { drawUnitSymbol, drawBattleMarker, drawOrderPath } from "./symbols.js";
 import { buildingReady, flatReady } from "./sprite-cache.js";
 import { SPRITES } from "../data/sprites.js";
-import { BUILDINGS, FX_MINUTES } from "../data/constants.js";
+import { BUILDINGS, FX_MINUTES, FERRY_MULT } from "../data/constants.js";
 import { airRangeKm, airBaseFor } from "../engine/movement.js";
 import { leadRank } from "../engine/formations.js";
 
@@ -1014,6 +1014,22 @@ export class MapRenderer {
     ctx.setLineDash([9, 6]);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Anillo exterior: hasta dónde llega un TRASLADO a otra base propia. Como es
+    // solo de ida, el depósito cunde el doble (FERRY_MULT). Va muy tenue y sin
+    // relleno a propósito: no es donde puede COMBATIR, solo hasta dónde puede
+    // mudarse. Con el mismo peso visual que el disco de combate se leería como el
+    // doble de alcance operativo, que es justo lo contrario de lo que significa.
+    const rFerry = r * FERRY_MULT;
+    if (rFerry < Math.max(this.w, this.h) * 3) {
+      ctx.beginPath();
+      ctx.arc(bx, by, rFerry, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${rgb},0.3)`;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 7]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
 
     // Marca de la base y cifra, arriba del disco: sin esto el jugador ve un
     // círculo enorme sin saber de dónde sale ni cuánto mide.

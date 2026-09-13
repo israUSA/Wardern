@@ -355,3 +355,16 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       si el aparato tenía misión, así que mandar un dron a patrullar su propia base
       aceptaba la orden (la cuenta atrás corría) pero el mapa lo pintaba aparcado, y
       parecía que el botón no hubiera hecho nada. Venía de la v1.4
+
+### v1.8.2 — Traslado de aviación entre bases
+
+- [x] **Mover un aparato a otro aeródromo propio ya no lo frena el radio de combate.**
+      Un traslado es solo de ida —el avión se queda en la base nueva— así que el
+      depósito cunde el doble: `FERRY_MULT = 2`. Antes, llevar un escuadrón al
+      aeródromo recién construido al otro lado del país era imposible, aunque fuera
+      exactamente para eso para lo que se había construido
+- [x] Vale también para apontar en un portaviones propio con plaza libre
+- [x] Si ni el radio doble llega, el aviso propone mover **por etapas, saltando de base
+      en base**, en vez de un "fuera de alcance" seco
+- [x] El mapa pinta los dos: disco relleno = donde puede combatir · anillo exterior
+      tenue = hasta dónde puede mudarse

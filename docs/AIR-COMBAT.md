@@ -363,6 +363,40 @@ que aquí no se modela.
 
 Las cifras están en `AIR_RANGE_KM` y `AIR_RANGE_KM_BY_TYPE` (`constants.js`).
 
+
+### Traslado entre bases: el radio de ida
+
+Hay **dos** límites, y la diferencia es la que separa una misión de una mudanza:
+
+| | Límite | Cuándo |
+|---|---|---|
+| **Radio de combate** | `AIR_RANGE_KM` | cualquier destino normal — es ida **y vuelta** |
+| **Radio de traslado** | ×2 (`FERRY_MULT`) | el destino es **otra base propia** — solo ida |
+
+Cuando el aparato se muda a otro aeródromo propio (o a un portaviones propio con
+plaza) no tiene que volver: se queda a vivir allí. Sin viaje de vuelta, la mitad
+del depósito que se guardaba para regresar pasa a ser autonomía, así que el
+alcance se dobla. Es el vuelo de ferry de la aviación real.
+
+Ejemplo medido, F-16A con 1.000 km de radio de combate, destino a 1.506 km:
+
+| Destino | Permitido | Tope aplicado |
+|---|---|---|
+| Provincia propia **con aeródromo** | sí | 2.000 km |
+| La misma provincia **sin aeródromo** | no | 1.000 km |
+
+Al llegar, el aparato pasa a medir su alcance desde la base nueva: `airBaseFor`
+devuelve siempre el aeródromo propio más cercano, así que la mudanza es efectiva
+sin guardar nada en la unidad.
+
+Si ni el radio de traslado llega, el aviso propone lo correcto: **mover por
+etapas, saltando de base en base**.
+
+En el mapa se ven los dos: el disco relleno es donde puede **combatir**, y el
+anillo exterior tenue y punteado hasta dónde puede **mudarse**. El segundo va sin
+relleno a propósito — con el mismo peso visual se leería como el doble de alcance
+operativo, que es justo lo contrario de lo que significa.
+
 ### Qué cuenta como base
 
 `airBaseFor()` devuelve la más cercana entre:
