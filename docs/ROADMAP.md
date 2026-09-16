@@ -55,7 +55,7 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
 - [x] Desbandar unidades (ficha de unidad, con confirmación; sin reembolso; no en combate)
 - [x] Dificultad seleccionable (Fácil / Normal / Difícil) en la ficha de país: escala la
       producción bruta y la agresividad de los bots (`DIFFICULTIES` en constants.js).
-      Personalidades IA diferenciadas → pendiente
+      Personalidades IA diferenciadas → hecho en v1.10
 - [x] "Mover todas (N)" en la guarnición e indicador ⚔ de guerras abiertas en la barra
       superior (clic en la bandera = ir a la capital enemiga)
 - [x] **Niebla de guerra para los bots** (2026-09-10): `intelFor(state, iso)` generaliza la
@@ -431,3 +431,28 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       artillería: el bombardero y el contrabatería siguen siendo la respuesta
 - [x] 6 aserciones nuevas en `tools/test-variants.mjs` §5b. Banco terrestre 103 PASS,
       banco naval 32 PASS
+
+### v1.10 — Personalidades de los bots, al azar (2026-09-16)
+
+- [x] Cada bot sortea un carácter al empezar la partida: ⚖ Equilibrado (28 %),
+      ⚔ Conquistador, 🛡 Tortuga, 🏭 Industrial y 🦊 Oportunista (18 % cada uno).
+      No va atado a la bandera: cambia de una partida a otra (`js/data/personalities-data.js`)
+- [x] Los pesos gobiernan las seis decisiones de la IA: agresión, ratio para declarar
+      guerra, superioridad para asaltar, tamaño del ejército en paz y en guerra, niveles de
+      industria y fortaleza, colchón para investigar, contramedidas, umbrales de paz y
+      reparto de tropas por categoría
+- [x] El oportunista ve más débil al vecino que ya está en otra guerra; la tortuga
+      fortifica la frontera también en paz; el industrial sube la industria a nivel 3
+- [x] El carácter se ve en el panel de Diplomacia de cualquier provincia extranjera
+- [x] Guardados antiguos: se sortea al cargar. Se deja de leer el `aggression` fijo por
+      país de `countries-data.js`; `AI_WAR_RATIO`, `AI_ATTACK_RATIO` y
+      `AI_COUNTER_CHANCE` pasan a ser pesos del perfil
+- [x] **Los bots ahorran**: si no pueden pagar la tropa elegida, la guardan para el
+      chequeo siguiente (`AI_SAVE_CHECKS` = 12). Sin esto todos los caracteres reclutaban
+      un 64–80 % de infantería y el reparto por carácter no se notaba
+- [x] Arreglado: un avión elegido en una provincia sin pista cortaba el reclutamiento
+      del chequeo entero
+- [x] Banco `tools/bench-ia.mjs`, cifras en docs/IA.md: guerras de 6 (tortuga) a 20
+      (conquistador), carros de 3 % a 11 %, aviación de 5 % a 13 %
+- [ ] Carácter naval: pendiente de que los bots recluten barcos (docs/IA.md)
+

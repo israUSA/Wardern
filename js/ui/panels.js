@@ -7,7 +7,7 @@ import { UNIT_CATEGORIES } from "../data/units-data.js";
 import { NAVAL_CATEGORIES } from "../data/naval-data.js";
 import {
   S, unitDef, isNaval, controller, unitsIn, atWar, visibleProvinces, intel,
-  availableVariants, doctrineVariants, scoutRangeKm, maxHp, TIERS, DOCTRINES,
+  availableVariants, doctrineVariants, scoutRangeKm, maxHp, TIERS, DOCTRINES, personalityOf,
 } from "../engine/state.js";
 import { vetLevel, esRetaguardia } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
@@ -538,7 +538,13 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   // Diplomacia con el controlador extranjero
   if (ctrl !== state.player) {
     const war = atWar(state, state.player, ctrl);
+    // El carácter se enseña: es su postura pública (discursos, desfiles,
+    // presupuesto), no un secreto militar. Saber quién tienes al lado es parte
+    // de la partida.
+    const P = personalityOf(state, ctrl);
     html += `<div class="pp-section"><h4>Diplomacia — ${S.countries[ctrl].name}</h4>
+      <div class="diplo-pers" title="${P.desc}"><span class="diplo-pers-ico">${P.icon}</span> <b>${P.name}</b>
+        <div class="diplo-pers-desc">${P.desc}</div></div>
       <div class="diplo-row">
         ${war
           ? `<button class="btn small" id="pp-peace">Proponer paz</button>`

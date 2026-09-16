@@ -1,5 +1,6 @@
 // Estado del juego: índice estático del mapa + creación/consulta de partidas.
 import * as C from "../data/constants.js";
+import { PERSONALITIES, DEFAULT_PERSONALITY, rollPersonality } from "../data/personalities-data.js";
 import { UNITS as GROUND_UNITS } from "../data/units-data.js";
 import { DOCTRINES, TIERS } from "../data/doctrines-data.js";
 import { NAVAL_UNITS, NAVAL_CATEGORIES } from "../data/naval-data.js";
@@ -451,6 +452,9 @@ export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
       wars: [],
       peaceUntil: {},
       eliminated: false,
+      // Carácter del bot, sorteado en cada partida (js/data/personalities-data.js).
+      // El jugador no tiene: sus decisiones las toma él.
+      personality: iso === playerISO ? null : rollPersonality(),
     };
   }
 
@@ -670,4 +674,17 @@ export function intel(state) {
 
 export function visibleProvinces(state) {
   return intel(state).union;
+}
+
+// Perfil de personalidad de un bot. Las partidas guardadas antes de que
+// existieran no traen ninguno: se sortea al primer uso y se queda guardado, igual
+// que en una partida nueva.
+export function personalityOf(state, iso) {
+  const c = state.countries[iso];
+  if (!c) return PERSONALITIES[DEFAULT_PERSONALITY];
+  if (!c.personality || !PERSONALITIES[c.personality]) {
+    if (iso === state.player) return PERSONALITIES[DEFAULT_PERSONALITY];
+    c.personality = rollPersonality();
+  }
+  return PERSONALITIES[c.personality];
 }

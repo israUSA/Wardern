@@ -135,7 +135,8 @@ Heurística por centroide (cajas en el script), prioridad
   mano, distintos entre vecinos (COL #e0c040 vs BRA #d9b036 y ECU #d0a030 vs
   COL son los pares más próximos, valores fijados por diseño).
 - `aggression`: fija para USA 0.6, MEX 0.35, VEN 0.7, BRA 0.45, CUB 0.6;
-  resto 0.2 + hash(nombre)×0.5.
+  resto 0.2 + hash(nombre)×0.5. **Sin uso desde v1.10**: la IA ya no lo lee, el
+  carácter de cada bot se sortea en cada partida (docs/IA.md).
 - `capital`: id de provincia-capital (p.ej. `usa-district-of-columbia`,
   `bra-distrito-federal`, `bol-la-paz` — La Paz, sede de gobierno).
 

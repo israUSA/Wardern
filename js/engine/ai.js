@@ -1,7 +1,7 @@
 // IA de países bot: economía, operaciones militares y diplomacia.
 import * as C from "../data/constants.js";
 import { UNITS } from "../data/units-data.js";
-import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor, hpFrac } from "./state.js";
+import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor, hpFrac, personalityOf } from "./state.js";
 import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford } from "./economy.js";
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
@@ -32,6 +32,7 @@ export function aiTickAll(state) {
 function aiEconomy(state, iso, vis) {
   const c = state.countries[iso];
   const r = c.resources;
+  const P = personalityOf(state, iso);
   // (las celdas de mar están en provinceList pero no tienen entrada en
   // state.provinces: sin este filtro la IA completa moría en el try/catch)
   const own = S.provinceList.filter((p) => {
@@ -60,13 +61,21 @@ function aiEconomy(state, iso, vis) {
     if (r.manpower < 800 && ps.buildings.reclutamiento < C.BUILDINGS.reclutamiento.max) {
       if (startBuilding(state, p.id, "reclutamiento")) continue;
     }
+    // El industrial sube industria antes que nada que no sea urgente
+    if (P.industry > 1 && ps.buildings.industria < P.industry && r.money > 25000) {
+      if (startBuilding(state, p.id, "industria")) continue;
+    }
     if (!hasAir && ps.buildings.industria >= 1 && r.money > 30000 && ps.buildings.aerobase < 1) {
       if (startBuilding(state, p.id, "aerobase")) { hasAir = true; continue; }
     }
     if (coastal && ps.buildings.puerto < 1 && r.money > 60000 && units.length > own.length * 1.5) {
       if (startBuilding(state, p.id, "puerto")) continue;
     }
-    if (c.wars.length && isBorder(state, p.id, iso, false) && ps.buildings.fortaleza < 2) {
+    if (c.wars.length && isBorder(state, p.id, iso, false) && ps.buildings.fortaleza < P.fortWar) {
+      if (startBuilding(state, p.id, "fortaleza")) continue;
+    }
+    // La tortuga fortifica la raya también en paz: no espera a que le ataquen
+    if (P.fortPeace && ps.buildings.fortaleza < P.fortPeace && foreignBorder(state, p.id, iso)) {
       if (startBuilding(state, p.id, "fortaleza")) continue;
     }
     if (ps.buildings.industria < 1) {
@@ -91,20 +100,41 @@ function aiEconomy(state, iso, vis) {
   // Se reclutan varias unidades por chequeo, en varias provincias a la vez: con
   // una sola por país, un bot de 30 provincias reclutaba igual que uno de 1 y el
   // jugador (que sí recluta en todas) lo desbordaba sin esfuerzo.
-  const target = own.length * 2 + (c.wars.length ? 6 : 0);
+  const target = Math.round(
+    c.wars.length ? (own.length * 2 + 6) * P.armyWar : own.length * 2 * P.armyPeace
+  );
   const queued = own.reduce((n, p) => n + (state.provinces[p.id].recruits?.length || 0), 0);
   let slots = Math.min(C.AI_RECRUITS_PER_CHECK(own.length), target - units.length - queued);
   if (slots > 0) {
-    const cands = own
-      .filter((p) => (state.provinces[p.id].recruits?.length || 0) < C.RECRUIT_SLOTS)
-      .sort(
-        (a, b) =>
-          (b.capital ? 1 : 0) - (a.capital ? 1 : 0) || (b.prod.manpower || 0) - (a.prod.manpower || 0)
-      );
-    for (const p of cands) {
-      if (slots <= 0) break;
-      if (startRecruitCategory(state, p.id, chooseUnitType(state, iso, vis))) slots--;
-      else break; // sin recursos para más esta vez
+    const cands = own.sort(
+      (a, b) =>
+        (b.capital ? 1 : 0) - (a.capital ? 1 : 0) || (b.prod.manpower || 0) - (a.prod.manpower || 0)
+    );
+    const libre = (p) => (state.provinces[p.id].recruits?.length || 0) < C.RECRUIT_SLOTS;
+    // Primero la categoría, luego DÓNDE puede hacerse. Antes era al revés: se
+    // tomaba la provincia de la lista y, si la categoría era aérea y esa
+    // provincia no tenía pista, el fallo cortaba el reclutamiento del chequeo
+    // entero aunque sobrara dinero. Eso castigaba justo al bot que más
+    // aviación pide. Ahora solo corta la falta de recursos.
+    //
+    // Y si lo elegido no se puede pagar, el bot AHORRA para eso en vez de
+    // gastarse el dinero en lo barato. Sin ahorro, un carro (56k) no salía casi
+    // nunca: antes de juntar para él ya se había ido todo en infantería (14k), y
+    // el reparto real acababa en un 80 % de fusileros dijera lo que dijera el
+    // carácter. El ahorro caduca a los AI_SAVE_CHECKS chequeos para que una
+    // elección imposible —sin combustible, sin pista del nivel— no le congele.
+    for (; slots > 0; slots--) {
+      const guardado = c.aiSaving && c.aiSaving.until > state.time ? c.aiSaving.cat : null;
+      const cat = guardado || chooseUnitType(state, iso, vis);
+      const aereo = AIR_TYPES.includes(cat);
+      const donde = cands.find((p) => libre(p) && (!aereo || state.provinces[p.id].buildings.aerobase > 0));
+      if (!donde) { c.aiSaving = null; break; } // gradas llenas o sin pista: no hay nada que ahorrar
+      if (startRecruitCategory(state, donde.id, cat)) {
+        c.aiSaving = null;
+        continue;
+      }
+      if (!guardado) c.aiSaving = { cat, until: state.time + C.AI_SAVE_CHECKS * C.AI_CHECK_HOURS * 60 };
+      break; // sin recursos para más esta vez
     }
   }
 }
@@ -115,7 +145,8 @@ function aiResearch(state, iso) {
   if (c.researchQueue || (c.researchedTier ?? 1) >= 3) return;
   const next = TIERS.find((t) => t.id === (c.researchedTier ?? 1) + 1);
   if (!next) return;
-  if (c.resources.money > next.researchCost.money * 1.3) startResearch(state, iso, next.id);
+  const colchon = personalityOf(state, iso).research;
+  if (c.resources.money > next.researchCost.money * colchon) startResearch(state, iso, next.id);
 }
 
 const AIR_TYPES = ["caza", "bombardero", "helicoptero", "drone"];
@@ -126,15 +157,25 @@ function chooseUnitType(state, iso, vis) {
   const hasAir = S.provinceList.some(
     (p) => state.provinces[p.id]?.owner === iso && state.provinces[p.id].buildings.aerobase > 0
   );
-  // Sin base aérea no puede reclutar aéreos
-  const ok = (pairs) => pairs.filter(([t]) => hasAir || !AIR_TYPES.includes(t));
+  // Sin base aérea no puede reclutar aéreos. Encima del reparto de cada
+  // situación, el carácter del bot tira de unas categorías y aparta otras; se
+  // renormaliza para que los pesos vuelvan a sumar 1 (antes, al quitar los
+  // aéreos, la probabilidad sobrante caía siempre en la primera entrada).
+  const P = personalityOf(state, iso);
+  const ok = (pairs) => {
+    const out = pairs
+      .filter(([t]) => hasAir || !AIR_TYPES.includes(t))
+      .map(([t, w]) => [t, w * (P.mix[t] ?? 1)]);
+    const total = out.reduce((a, [, w]) => a + w, 0) || 1;
+    return out.map(([t, w]) => [t, w / total]);
+  };
 
   // Contramedidas por la OBRA vista. Los edificios no se ocultan —son obra
   // pública, visible por satélite y por prensa— así que es lo único del enemigo
   // que un bot conoce sin haberlo pisado. Reacciona con un dado, no siempre: si
   // respondiera al 100 % sería un espejo de lo que construyes y te bastaría con
   // fintar una base aérea para vaciarle la fábrica de tanques.
-  if (c.wars.length && Math.random() < C.AI_COUNTER_CHANCE) {
+  if (c.wars.length && Math.random() < P.counter) {
     const obra = enemyBuildings(state, iso);
     if (obra.aerobase >= 2) {
       return weighted(ok([["antiaereo", 0.45], ["caza", 0.2], ["infanteria", 0.25], ["mbt", 0.1]]));
@@ -215,6 +256,16 @@ function isBorder(state, pid, iso, includeStraits = true) {
   return false;
 }
 
+// Provincia que toca a otro país, esté o no en guerra con él
+function foreignBorder(state, pid, iso) {
+  for (const e of S.edges.get(pid) || []) {
+    if (e.strait) continue;
+    const ctrl = controller(state.provinces[e.to]);
+    if (ctrl && ctrl !== iso) return true;
+  }
+  return false;
+}
+
 function inBattle(u, battles) {
   return battles.has(u.pos);
 }
@@ -222,6 +273,7 @@ function inBattle(u, battles) {
 function aiMilitary(state, iso, battles) {
   const c = state.countries[iso];
   if (!c.wars.length) return;
+  const P = personalityOf(state, iso);
 
   const myUnits = state.units.filter((u) => u.owner === iso);
 
@@ -276,7 +328,7 @@ function aiMilitary(state, iso, battles) {
 
     let send = 0;
     if (!defenders.length) send = 1; // provincia vacía: ocuparla
-    else if (atkPower > defPower * C.AI_ATTACK_RATIO) send = Math.min(4, ready.length);
+    else if (atkPower > defPower * P.attackRatio) send = Math.min(4, ready.length);
     if (!send) continue;
 
     ready.sort((a, b) => (b.hp - a.hp));
@@ -383,6 +435,7 @@ function aiMissiles(state, iso, vis) {
 function aiDiplomacy(state, iso, vis) {
   const c = state.countries[iso];
   const day = gameDay(state);
+  const P = personalityOf(state, iso);
 
   // Buscar paz si la guerra va mal
   for (const enemy of [...c.wars]) {
@@ -392,9 +445,9 @@ function aiDiplomacy(state, iso, vis) {
     const enemyPower = guessPower(state, iso, enemy, vis);
     const startControlled = c.warControlStart?.[enemy] ?? controlledCount(state, iso);
     const losing =
-      myPower < enemyPower * 0.5 || controlledCount(state, iso) < startControlled * 0.6;
+      myPower < enemyPower * P.peacePower || controlledCount(state, iso) < startControlled * P.peaceLand;
     const warDays = day - (c.warStartDay?.[enemy] ?? day);
-    const longWar = warDays > 7;
+    const longWar = warDays > P.longWarDays;
     // Una guerra tiene que durar algo antes de que el débil pida la paz: sin este
     // mínimo, el bot declaraba la guerra al vecino pequeño y ese vecino firmaba la
     // paz en el chequeo siguiente (6 h), sin que nadie llegara a moverse.
@@ -409,11 +462,9 @@ function aiDiplomacy(state, iso, vis) {
     }
   }
 
-  // Declarar guerra al vecino más débil. La agresión vive en los datos ESTÁTICOS
-  // del país (S.countries), no en el estado dinámico: leerla de `c` daba
-  // undefined → NaN, y `Math.random() < NaN` es siempre falso, así que ningún bot
-  // declaró jamás una guerra. La dificultad la escala.
-  const aggression = (S.countries[iso]?.aggression ?? 0.4) * difficulty(state).aiAggression;
+  // Declarar guerra al vecino más débil. La agresión la pone el carácter
+  // sorteado (personalities-data.js) y la dificultad la escala.
+  const aggression = P.aggression * difficulty(state).aiAggression;
   if (c.wars.length === 0 && day >= Math.max(C.AI_MIN_WAR_DAY, c.nextWarDay ?? 0)) {
     if (Math.random() < aggression * 0.12) {
       const neighbors = neighborCountries(state, iso, false);
@@ -422,8 +473,11 @@ function aiDiplomacy(state, iso, vis) {
         const nbc = state.countries[nb];
         if (!nbc || nbc.eliminated) continue;
         if ((nbc.peaceUntil?.[iso] ?? 0) > day) continue;
-        const ratio = armyPower(state, iso) / Math.max(1, guessPower(state, iso, nb, vis));
-        if (ratio >= C.AI_WAR_RATIO && ratio > bestRatio) { best = nb; bestRatio = ratio; }
+        let ratio = armyPower(state, iso) / Math.max(1, guessPower(state, iso, nb, vis));
+        // El oportunista ve más débil al que ya está peleando con otro. Las
+        // guerras de los demás son públicas: no pasa por la niebla.
+        if (nbc.wars.length) ratio *= P.preyOnWar;
+        if (ratio >= P.warRatio && ratio > bestRatio) { best = nb; bestRatio = ratio; }
       }
       if (best) {
         declareWar(state, iso, best); // anota inicio y territorio de ambos bandos
@@ -491,7 +545,12 @@ export function aiRespondPeace(state, aiIso) {
   const c = state.countries[aiIso];
   const day = gameDay(state);
   const startControlled = c.warControlStart?.[state.player] ?? controlledCount(state, aiIso);
-  const losing = controlledCount(state, aiIso) < startControlled * 0.7 || myPower < playerPower * 0.7;
-  const longWar = day - (c.warStartDay?.[state.player] ?? 0) > 7;
+  // Mismos umbrales que cuando es él quien pide la paz, con un poco más de
+  // margen: aceptar lo que te ofrecen cuesta menos que pedirlo.
+  const P = personalityOf(state, aiIso);
+  const losing =
+    controlledCount(state, aiIso) < startControlled * Math.min(0.95, P.peaceLand + 0.1) ||
+    myPower < playerPower * Math.min(0.95, P.peacePower + 0.2);
+  const longWar = day - (c.warStartDay?.[state.player] ?? 0) > P.longWarDays;
   return losing || longWar;
 }

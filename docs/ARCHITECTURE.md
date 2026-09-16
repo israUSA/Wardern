@@ -63,7 +63,7 @@ export const MAP = {
 // js/data/countries-data.js
 export const COUNTRIES = {
   USA: { name: "Estados Unidos", color: "#3f6fb5", capital: "usa-distrito-columbia",
-         aggression: 0.5 }   // 0..1 personalidad IA
+         aggression: 0.5 }   // SIN USO desde v1.10: el carácter se sortea (docs/IA.md)
 };
 
 // js/data/units-data.js — 60 variantes doctrine×tier (ids "occ/ori-{tier}-{cat}")
