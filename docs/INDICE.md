@@ -19,7 +19,7 @@ Si añades o renombras un documento, actualiza este índice.
 | [`AIR-COMBAT.md`](AIR-COMBAT.md) | Radar, cargas de misiles, disparo guiado, furtividad, aviación embarcada, **espacio aéreo y radio de acción** | Cualquier cosa de aviones |
 | [`MISSILES.md`](MISSILES.md) | Arsenal de misiles, golpe manual, arma en batalla, drones de reconocimiento | Misiles y drones |
 | [`FORMACIONES.md`](FORMACIONES.md) | Unir tropas: dominios, nombres por composición, reglas de mando, tiro a distancia en grupo | Formaciones y pilas |
-| [`IA.md`](IA.md) | Cómo deciden los bots: el ciclo de seis pasos y las **personalidades al azar** | Tocar la IA o entender por qué un vecino juega así |
+| [`IA.md`](IA.md) | Cómo deciden los bots: el ciclo de seis pasos, las **personalidades al azar** y la **marina** | Tocar la IA o entender por qué un vecino juega así |
 | [`RECONOCIMIENTO.md`](RECONOCIMIENTO.md) | Quién ve qué: inteligencia fuerte y débil, radios de drones y de vehículos de exploración, por qué las cifras son grandes | Niebla de guerra, visión, descubrir enemigos |
 | [`DATA-NOTES.md`](DATA-NOTES.md) | Pipeline del mapa: provincias, vecinos, terreno, población, VP, países | Datos del mapa |
 | [`ARTE.md`](ARTE.md) | Guía de estilo de los sprites: paleta, tinte por país, legibilidad, cámaras | Antes de dibujar nada |

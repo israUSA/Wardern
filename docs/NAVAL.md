@@ -230,9 +230,11 @@ Proy. 11711) para que el nombre sea legible en UI.
 7. **Mantenimiento**: mismas constantes que cualquier unidad (0,6% del coste en
    suministros/día). Un portaviones t2 quema ~2.100 suministros/día: caro de
    mantener a propósito; la flota es un activo de países con costa y economía.
-8. **IA (fase 2)**: los bots pueden construir un puerto en su mejor provincia costera
-   y transportes para desembarcos cuando no hay frontera terrestre explotable;
-   escoltar transportes con la corbeta más barata disponible.
+8. **IA**: hecha en v1.11 (`js/engine/ai-naval.js`, docs/IA.md §Marina): puerto en
+   la base naval, reclutamiento con presupuesto propio y compra en el mercado,
+   caza de flotas visibles y aproximación a la costa enemiga con destructores.
+   **Pendiente (fase 2)**: transportes para desembarcos cuando no hay frontera
+   terrestre explotable, y escoltarlos.
 
 ## Perillas de reajuste (si el juego en vivo lo pide)
 

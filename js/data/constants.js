@@ -300,6 +300,20 @@ export const AI_WAR_COOLDOWN_DAYS = 3;
 // Chequeos que un bot aguarda ahorrando para la tropa que eligió y no pudo
 // pagar, antes de rendirse y elegir otra (js/engine/ai.js, aiEconomy).
 export const AI_SAVE_CHECKS = 12;
+// Marina de los bots (js/engine/ai-naval.js): a qué distancia buscan batalla
+// o costa enemiga, y cuántos barcos mandan juntos (el máximo sin penalización
+// de apilamiento, docs/NAVAL.md).
+export const AI_NAVAL_RANGE_KM = 3000;
+export const AI_NAVAL_GROUP = 8;
+// A partir de estas ganas de mar (P.navy) el puerto pasa delante de todas las
+// demás obras de la base naval.
+export const AI_NAVY_PRIORITY = 0.2;
+// Un bot solo compra en el mercado lo que le falta para un barco si le queda
+// este múltiplo del gasto total (compra + barco) en caja.
+export const AI_MARKET_MARGIN = 1.5;
+// Barcos que un bot compra de lo que pueda pagar antes de empezar a esperar
+// por la clase que de verdad quiere.
+export const AI_NAVY_STARTER = 2;
 export const AI_MIN_WAR_DAY = 2;           // día mínimo de partida para declarar guerra
 export const AI_PEACE_LOST_SHARE = 0.4;    // % provincias perdidas → busca paz
 

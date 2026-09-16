@@ -454,7 +454,7 @@ export function newGame(playerISO, difficultyId = C.DEFAULT_DIFFICULTY) {
       eliminated: false,
       // Carácter del bot, sorteado en cada partida (js/data/personalities-data.js).
       // El jugador no tiene: sus decisiones las toma él.
-      personality: iso === playerISO ? null : rollPersonality(),
+      personality: iso === playerISO ? null : rollPersonality(isCoastalCountry(iso)),
     };
   }
 
@@ -684,7 +684,15 @@ export function personalityOf(state, iso) {
   if (!c) return PERSONALITIES[DEFAULT_PERSONALITY];
   if (!c.personality || !PERSONALITIES[c.personality]) {
     if (iso === state.player) return PERSONALITIES[DEFAULT_PERSONALITY];
-    c.personality = rollPersonality();
+    c.personality = rollPersonality(isCoastalCountry(iso));
   }
   return PERSONALITIES[c.personality];
+}
+
+// ¿Tiene el país salida al mar en el mapa de partida? Se mira el territorio
+// ORIGINAL, no el actual: decide el carácter, que se sortea una vez al empezar.
+export function isCoastalCountry(iso) {
+  return S.provinceList.some(
+    (p) => p.country === iso && !p.isSea && (S.edges.get(p.id) || []).some((e) => S.provinces.get(e.to)?.isSea)
+  );
 }

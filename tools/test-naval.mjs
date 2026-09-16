@@ -18,6 +18,7 @@
 //   [4] Competitividad entre doctrinas
 //   [5] Defensa antiaérea de los buques (NAVAL_AA)
 //   [6] Los aviones contra los buques: furtividad e intercepción
+//   [7] IA naval: quién recluta barcos, el carácter Almirante y la maniobra
 // Sale con código 1 si alguna aserción obligatoria falla.
 // =====================================================================
 import * as C from "../js/data/constants.js";
@@ -352,6 +353,213 @@ section("[6] Los aviones contra los buques");
   const base = NAVAL_AA[buque.type].pk;
   check("sin furtividad, el buque dispara con su probabilidad íntegra",
     Math.abs(pk("occ-1-bombardero") - base) < 1e-9, `${pk("occ-1-bombardero").toFixed(3)} vs ${base}`);
+}
+
+// ---------------------------------------------------------------------
+section("[7] IA naval (js/engine/ai-naval.js, docs/IA.md §Marina)");
+{
+  const { MAP } = await import("../js/data/map-data.js");
+  const { COUNTRIES } = await import("../js/data/countries-data.js");
+  const { initStatic, newGame, spawnUnit, isCoastalCountry, declareWar, intelFor, S } =
+    await import("../js/engine/state.js");
+  const { PERSONALITIES, rollPersonality } = await import("../js/data/personalities-data.js");
+  const AN = await import("../js/engine/ai-naval.js");
+  const { battleSet } = await import("../js/engine/combat.js");
+  const { aiTickAll } = await import("../js/engine/ai.js");
+  initStatic(MAP, COUNTRIES);
+
+  // --- quién tiene costa ---
+  const sinCosta = Object.keys(COUNTRIES).filter((i) => !isCoastalCountry(i)).sort();
+  check("los países sin salida al mar son exactamente Bolivia y Paraguay",
+    sinCosta.join(",") === "BOL,PRY", sinCosta.join(","));
+
+  // --- el sorteo del carácter ---
+  let alm = 0;
+  for (let i = 0; i < 5000; i++) if (rollPersonality(false) === "almirante") alm++;
+  check("un país sin costa NUNCA saca el carácter Almirante (5.000 sorteos)", alm === 0, `${alm}`);
+  alm = 0;
+  for (let i = 0; i < 5000; i++) if (rollPersonality(true) === "almirante") alm++;
+  const esperado = PERSONALITIES.almirante.weight /
+    Object.values(PERSONALITIES).reduce((a, p) => a + p.weight, 0);
+  check("un país con costa lo saca en la proporción de su peso",
+    Math.abs(alm / 5000 - esperado) < 0.03,
+    `${(alm / 50).toFixed(1)} % (esperado ${(esperado * 100).toFixed(1)} %)`);
+  let malos = 0;
+  for (let g = 0; g < 30; g++) {
+    const st = newGame("GRL");
+    for (const i of sinCosta) if (st.countries[i].personality === "almirante") malos++;
+  }
+  check("en 30 partidas nuevas, Bolivia y Paraguay no son almirantes nunca", malos === 0, `${malos}`);
+
+  // --- reclutamiento ---
+  const rico = (st, iso) => Object.assign(st.countries[iso].resources,
+    { money: 2e6, supplies: 2e5, fuel: 2e5, manpower: 2e5 });
+  const conPuerto = (st, iso) => {
+    const p = AN.coastalProvinces(st, iso)[0];
+    st.provinces[p.id].buildings.puerto = 1;
+    return p;
+  };
+  // navy = 1: el intento de barco se hace en cada llamada, sin dado
+  const siempre = (base, extra = {}) => ({ ...base, navy: 1, ...extra });
+  const enGrada = (st) => Object.values(st.provinces).flatMap((p) => p.recruits || []).filter((r) => r.kind === "naval");
+  const celdaDe = (pid) => (S.edges.get(pid) || []).map((e) => e.to).find((t) => S.provinces.get(t)?.isSea);
+
+  {
+    const st = newGame("GRL");
+    rico(st, "BOL");
+    let n = 0;
+    for (let i = 0; i < 50; i++) if (AN.aiNavalRecruit(st, "BOL", siempre(PERSONALITIES.almirante), 10)) n++;
+    check("un país sin costa no recluta barcos aunque le sobre de todo",
+      n === 0 && AN.navalBase(st, "BOL") === null, `${n} barcos, base naval ${AN.navalBase(st, "BOL")}`);
+  }
+  {
+    const st = newGame("GRL");
+    rico(st, "MEX");
+    conPuerto(st, "MEX");
+    const ok = AN.aiNavalRecruit(st, "MEX", siempre(PERSONALITIES.almirante), 30);
+    check("un país con costa y puerto recluta barcos", ok && enGrada(st).length === 1,
+      `en grada: ${enGrada(st).map((r) => r.type).join(",")}`);
+    const sin = { ...PERSONALITIES.almirante, navy: 0 };
+    let n = 0;
+    for (let i = 0; i < 50; i++) if (AN.aiNavalRecruit(st, "MEX", sin, 30)) n++;
+    check("con navy = 0 no recluta ni un barco", n === 0, `${n}`);
+  }
+  {
+    const st = newGame("GRL");
+    rico(st, "MEX");
+    const p = conPuerto(st, "MEX");
+    // Con 2 provincias el tope es pequeño (4): así lo que frena es el tope y no
+    // los recursos, que además se reponen en cada vuelta.
+    const P = siempre(PERSONALITIES.equilibrado);
+    const tope = AN.fleetCap(st, "MEX", P, 2);
+    for (let i = 0; i < 200; i++) {
+      rico(st, "MEX");
+      if (!AN.aiNavalRecruit(st, "MEX", P, 2)) continue;
+      // se bota al momento y se vacía la grada: así solo frena el tope
+      for (const q of Object.values(st.provinces)) q.recruits = [];
+      spawnUnit(st, "MEX", "occ-1-corbeta", celdaDe(p.id));
+    }
+    check("la flota respeta su tope", AN.navalUnitsOf(st, "MEX").length === tope,
+      `${AN.navalUnitsOf(st, "MEX").length} barcos, tope ${tope}`);
+  }
+
+  // --- el mercado: comprar lo que falta para el barco elegido ---
+  const soloDestructor = siempre(PERSONALITIES.almirante,
+    { navyMix: { corbeta: 0, fragata: 0, submarino: 0, portaviones: 0 } });
+  {
+    const st = newGame("GRL");
+    const r = st.countries.MEX.resources;
+    Object.assign(r, { money: 600000, supplies: 20000, fuel: 0, manpower: 5000 });
+    conPuerto(st, "MEX");
+    const ok = AN.aiNavalRecruit(st, "MEX", soloDestructor, 30);
+    const tipo = enGrada(st)[0]?.type || "";
+    check("sin combustible pero con dinero, compra lo que falta y bota el destructor",
+      ok && tipo.endsWith("destructor") && r.money < 600000 - 77000,
+      `${tipo} · dinero ${Math.round(r.money)} · fuel ${Math.round(r.fuel)}`);
+  }
+  {
+    const st = newGame("GRL");
+    const r = st.countries.MEX.resources;
+    Object.assign(r, { money: 90000, supplies: 20000, fuel: 0, manpower: 5000 });
+    const p = conPuerto(st, "MEX");
+    spawnUnit(st, "MEX", "occ-1-corbeta", celdaDe(p.id));
+    spawnUnit(st, "MEX", "occ-1-corbeta", celdaDe(p.id));
+    const antes = { ...r };
+    const ok = AN.aiNavalRecruit(st, "MEX", soloDestructor, 30);
+    check("si ni comprando le llega y ya tiene flota, ESPERA: no gasta ni se conforma",
+      !ok && r.money === antes.money && r.fuel === antes.fuel && !enGrada(st).length,
+      `dinero ${r.money}, fuel ${r.fuel}, en grada ${enGrada(st).length}`);
+  }
+
+  {
+    // Con dinero y SIN suministros: su primer barco lo compra igual
+    const st = newGame("GRL");
+    const r = st.countries.MEX.resources;
+    Object.assign(r, { money: 300000, supplies: 0, fuel: 0, manpower: 5000 });
+    conPuerto(st, "MEX");
+    const ok = AN.aiNavalRecruit(st, "MEX", soloDestructor, 30);
+    check("sin suministros ni flota, compra lo necesario y bota su primer barco",
+      ok && enGrada(st).length === 1, `${enGrada(st)[0]?.type} · dinero ${Math.round(r.money)}`);
+  }
+  {
+    // Y el puerto: un almirante sin suministros los compra para la obra
+    const st = newGame("GRL");
+    for (const i in st.countries) if (i !== "GRL") st.countries[i].personality = "equilibrado";
+    st.countries.MEX.personality = "almirante";
+    Object.assign(st.countries.MEX.resources, { money: 500000, supplies: 0 });
+    const base = AN.navalBase(st, "MEX");
+    aiTickAll(st);
+    const obra = st.provinces[base.id].queue;
+    check("un almirante sin suministros los compra y empieza su puerto",
+      obra?.type === "puerto", `${base.id}: ${obra ? obra.type : "sin obra"}`);
+  }
+
+  // --- maniobra en guerra ---
+  // Celda de mar pegada a la costa mexicana y una vecina suya, también de mar
+  const costaMex = AN.coastalProvinces(newGame("GRL"), "MEX")[0].id;
+  const celdaA = celdaDe(costaMex);
+  const celdaB = (S.edges.get(celdaA) || []).map((e) => e.to)
+    .find((t) => S.provinces.get(t)?.isSea && t !== celdaA);
+  const P = PERSONALITIES.almirante;
+  {
+    const st = newGame("GRL");
+    declareWar(st, "MEX", "CUB");
+    const mios = [0, 1, 2].map(() => spawnUnit(st, "MEX", "occ-1-destructor", celdaA));
+    spawnUnit(st, "CUB", "ori-1-corbeta", celdaB);
+    AN.aiNaval(st, "MEX", intelFor(st, "MEX"), P, battleSet(st));
+    const van = mios.filter((u) => u.path.at(-1) === celdaB).length;
+    check("una flota más fuerte sale a por la flota enemiga que ve", van === 3, `${van} de 3 en ruta a ${celdaB}`);
+  }
+  {
+    const st = newGame("GRL");
+    declareWar(st, "MEX", "CUB");
+    const mio = spawnUnit(st, "MEX", "occ-1-corbeta", celdaA);
+    for (let i = 0; i < 4; i++) spawnUnit(st, "CUB", "ori-1-destructor", celdaB);
+    AN.aiNaval(st, "MEX", intelFor(st, "MEX"), P, battleSet(st));
+    check("ante una flota más fuerte, no se lanza", mio.path.length === 0, `ruta de ${mio.path.length} celdas`);
+  }
+  {
+    const st = newGame("GRL");
+    const mio = spawnUnit(st, "MEX", "occ-1-destructor", celdaA);
+    spawnUnit(st, "CUB", "ori-1-corbeta", celdaB);
+    AN.aiNaval(st, "MEX", intelFor(st, "MEX"), P, battleSet(st));
+    check("en paz, la flota no se mueve", mio.path.length === 0, `ruta de ${mio.path.length} celdas`);
+  }
+  {
+    // Destructores t2 (con misil de crucero) frente a Florida, en guerra con
+    // Venezuela: su costa está a 2.621 km, fuera del Tomahawk (1.200) pero
+    // dentro de AI_NAVAL_RANGE_KM. Sin barcos enemigos a la vista, se acercan.
+    const st = newGame("GRL");
+    declareWar(st, "USA", "VEN");
+    const florida = celdaDe("usa-florida");
+    const mios = [0, 1].map(() => spawnUnit(st, "USA", "occ-2-destructor", florida));
+    AN.aiNaval(st, "USA", intelFor(st, "USA"), P, battleSet(st));
+    const destino = mios[0].path.at(-1);
+    const junto = !!destino && (S.edges.get(destino) || []).some((e) => st.provinces[e.to]?.owner === "VEN");
+    check("sin flota a la vista, los destructores con misil se acercan a la costa enemiga",
+      junto && mios[1].path.at(-1) === destino, `destino ${destino}, pegado a Venezuela: ${junto}`);
+  }
+  {
+    // Y al revés: la costa enemiga más cercana, fuera de AI_NAVAL_RANGE_KM
+    // (México en el Pacífico contra Venezuela), no justifica cruzar el océano.
+    const st = newGame("GRL");
+    declareWar(st, "MEX", "VEN");
+    const mio = spawnUnit(st, "MEX", "occ-2-destructor", celdaA);
+    AN.aiNaval(st, "MEX", intelFor(st, "MEX"), P, battleSet(st));
+    check("una costa enemiga fuera de su radio de maniobra no le hace zarpar",
+      mio.path.length === 0, `desde ${costaMex}: ruta de ${mio.path.length} celdas`);
+  }
+  {
+    const st = newGame("GRL");
+    declareWar(st, "MEX", "GTM");
+    const barco = spawnUnit(st, "MEX", "occ-1-corbeta", celdaA);
+    const t0 = Date.now();
+    aiTickAll(st);
+    const ms = Date.now() - t0;
+    check("la guerra en tierra no asigna guarniciones a los barcos",
+      barco.task?.kind !== "defend" && barco.task?.kind !== "attack",
+      `tarea ${barco.task?.kind ?? "ninguna"} · turno completo de IA en ${ms} ms`);
+  }
 }
 
 // ---------------------------------------------------------------------

@@ -55,7 +55,7 @@ Estado: se actualiza al cerrar cada tarea. (v = versión jugable)
 - [x] Desbandar unidades (ficha de unidad, con confirmación; sin reembolso; no en combate)
 - [x] Dificultad seleccionable (Fácil / Normal / Difícil) en la ficha de país: escala la
       producción bruta y la agresividad de los bots (`DIFFICULTIES` en constants.js).
-      Personalidades IA diferenciadas → hecho en v1.10
+      Personalidades IA diferenciadas → hecho en v1.10 (y el carácter naval en v1.11)
 - [x] "Mover todas (N)" en la guarnición e indicador ⚔ de guerras abiertas en la barra
       superior (clic en la bandera = ir a la capital enemiga)
 - [x] **Niebla de guerra para los bots** (2026-09-10): `intelFor(state, iso)` generaliza la
@@ -454,5 +454,27 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
       del chequeo entero
 - [x] Banco `tools/bench-ia.mjs`, cifras en docs/IA.md: guerras de 6 (tortuga) a 20
       (conquistador), carros de 3 % a 11 %, aviación de 5 % a 13 %
-- [ ] Carácter naval: pendiente de que los bots recluten barcos (docs/IA.md)
+- [x] Carácter naval: hecho en v1.11
+
+### v1.11 — Los bots salen al mar, y el carácter Almirante (2026-09-16)
+
+- [x] **Los bots con costa reclutan barcos** (`js/engine/ai-naval.js`). Bolivia y
+      Paraguay, sin salida al mar, nunca
+- [x] Nuevo carácter ⚓ **Almirante**, que solo se sortea entre países con costa: puerto
+      nivel 3, flota grande de destructores y submarinos, portaviones si llega
+- [x] Puerto único en la base naval (capital costera o la costera más poblada); para el
+      Almirante va primero en la lista de obras
+- [x] Presupuesto naval propio, fuera de los turnos del ejército de tierra, con tope por
+      tamaño de país. El submarino pesa más en Oriente
+- [x] Compra en el mercado lo que falta para el barco elegido —y el almirante, para su
+      puerto—: los bots acumulan dinero y se quedan sin suministros. Sin esto el 96 % de
+      su flota eran corbetas y Venezuela, Chile y Perú no llegaban a tener puerto
+- [x] Maniobra en guerra: sale a por la flota enemiga que ve si puede con ella; si no ve
+      ninguna, los destructores con misil se acercan a la costa enemiga hasta tenerla a tiro
+- [x] `aiMilitary` deja fuera los barcos (un `findPath` fallido de barco a tierra
+      recorría las 25.000 celdas). Coste del turno de IA sin cambios: 71 ms frente a 72
+- [x] 18 aserciones nuevas en `tools/test-naval.mjs` §7 (banco naval: 50 PASS)
+- [x] Medido en los 9 países grandes con costa (docs/IA.md): el almirante saca 1,5–2× más
+      barcos. En 16 días la flota sigue siendo ligera (tier 1); portaviones, ninguno
+- [ ] Desembarcos y escoltas de la IA (docs/IA.md §Marina)
 

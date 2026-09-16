@@ -2,11 +2,12 @@
 import * as C from "../data/constants.js";
 import { UNITS } from "../data/units-data.js";
 import { S, unitDef, isNaval, controller, atWar, unitsIn, armyPower, controlledCount, declareWar, makePeace, gameDay, availableVariants, TIERS, distKm, difficulty, intelFor, hpFrac, personalityOf } from "./state.js";
-import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford } from "./economy.js";
+import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAfford, buildingCost } from "./economy.js";
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
 import { strikeWeaponsFor, launchMissile } from "./missiles.js";
 import { aiAirCombat } from "./air-combat.js";
+import { aiNaval, aiNavalRecruit, navalBase, wantedPortLevel, buyShortfall } from "./ai-naval.js";
 
 export function aiTickAll(state) {
   const battles = battleSet(state);
@@ -18,6 +19,7 @@ export function aiTickAll(state) {
       aiEconomy(state, iso, vis);
       aiResearch(state, iso);
       aiMilitary(state, iso, battles);
+      aiNaval(state, iso, vis, personalityOf(state, iso), battles); // docs/IA.md §Marina
       aiMissiles(state, iso, vis);
       aiAirCombat(state, iso); // docs/AIR-COMBAT.md: mismas reglas que el jugador
       aiDiplomacy(state, iso, vis);
@@ -51,10 +53,25 @@ function aiEconomy(state, iso, vis) {
     (p) => state.provinces[p.id]?.owner === iso && state.provinces[p.id].buildings.aerobase > 0
   );
 
+  const base = navalBase(state, iso);
+  const portLevel = wantedPortLevel(state, iso, P);
   for (const p of own) {
     const ps = state.provinces[p.id];
     if (ps.queue) continue;
     const coastal = (S.edges.get(p.id) || []).some((e) => S.provinces.get(e.to)?.isSea);
+    // Puerto: uno solo, en su base naval, al nivel que pida su carácter. Cuanto
+    // más marino, antes se lo permite (umbral de caja más bajo). Para el
+    // almirante va lo PRIMERO de la lista: su base suele ser la capital, que es
+    // la provincia con más obras, y detrás de la industria y la fortaleza el
+    // puerto no llegaba a empezarse (medido: 1 barco en 8 días).
+    const quierePuerto =
+      coastal && p.id === base?.id && ps.buildings.puerto < portLevel && r.money > 60000 * (1 - P.navy);
+    if (quierePuerto && P.navy >= C.AI_NAVY_PRIORITY) {
+      // El almirante compra los suministros que falten para la obra: sin
+      // puerto no hay marina, y es lo primero que se le acaba a un bot.
+      buyShortfall(state, iso, buildingCost("puerto", ps.buildings.puerto));
+      if (startBuilding(state, p.id, "puerto")) continue;
+    }
     if (r.supplies < upkeepPerH * 48 && ps.buildings.industria < C.BUILDINGS.industria.max) {
       if (startBuilding(state, p.id, "industria")) continue;
     }
@@ -68,7 +85,7 @@ function aiEconomy(state, iso, vis) {
     if (!hasAir && ps.buildings.industria >= 1 && r.money > 30000 && ps.buildings.aerobase < 1) {
       if (startBuilding(state, p.id, "aerobase")) { hasAir = true; continue; }
     }
-    if (coastal && ps.buildings.puerto < 1 && r.money > 60000 && units.length > own.length * 1.5) {
+    if (quierePuerto) {
       if (startBuilding(state, p.id, "puerto")) continue;
     }
     if (c.wars.length && isBorder(state, p.id, iso, false) && ps.buildings.fortaleza < P.fortWar) {
@@ -137,6 +154,11 @@ function aiEconomy(state, iso, vis) {
       break; // sin recursos para más esta vez
     }
   }
+
+  // La flota va aparte, con su propio tope: si compitiera por los mismos
+  // turnos, un bot que ya tiene el ejército de tierra que quiere no reclutaría
+  // nada, tampoco barcos (medido: EEUU almirante con 649k en caja y 0 barcos).
+  aiNavalRecruit(state, iso, P, own.length);
 }
 
 // La IA invierte en investigación cuando su economía sobra
@@ -275,7 +297,11 @@ function aiMilitary(state, iso, battles) {
   if (!c.wars.length) return;
   const P = personalityOf(state, iso);
 
-  const myUnits = state.units.filter((u) => u.owner === iso);
+  // Sin barcos: esto es la guerra en tierra. Además un findPath de un barco a
+  // una provincia de tierra falla, pero solo después de recorrer las 25.000
+  // celdas de mar; con flota, las guarniciones costarían segundos por turno.
+  // La flota la mueve aiNaval.
+  const myUnits = state.units.filter((u) => u.owner === iso && !isNaval(u.type));
 
   // Liberar tareas que ya no tienen sentido
   for (const u of myUnits) {
