@@ -233,8 +233,8 @@ Proy. 11711) para que el nombre sea legible en UI.
 8. **IA**: hecha en v1.11 (`js/engine/ai-naval.js`, docs/IA.md §Marina): puerto en
    la base naval, reclutamiento con presupuesto propio y compra en el mercado,
    caza de flotas visibles y aproximación a la costa enemiga con destructores.
-   **Pendiente (fase 2)**: transportes para desembarcos cuando no hay frontera
-   terrestre explotable, y escoltarlos.
+   Desembarcos con escolta hechos en v1.12 (`js/engine/ai-landing.js`, docs/IA.md
+   §Desembarcos).
 
 ## Perillas de reajuste (si el juego en vivo lo pide)
 

@@ -314,6 +314,20 @@ export const AI_MARKET_MARGIN = 1.5;
 // Barcos que un bot compra de lo que pueda pagar antes de empezar a esperar
 // por la clase que de verdad quiere.
 export const AI_NAVY_STARTER = 2;
+// Desembarcos (js/engine/ai-landing.js): fuerza mínima y máxima (el máximo son
+// dos transportes llenos), barcos de guerra que la escoltan, días que puede
+// durar la operación antes de cancelarse y espera hasta planear la siguiente.
+export const AI_LANDING_MIN = 2;
+export const AI_LANDING_MAX = 6;
+export const AI_LANDING_ESCORTS = 3;
+export const AI_LANDING_MAX_DAYS = 8;
+export const AI_LANDING_COOLDOWN_DAYS = 2;
+// Días que puede durar la fase de reunir (transportes y tropa al puerto): la
+// tropa reservada no pelea en tierra, así que no puede quedarse esperando.
+export const AI_LANDING_GATHER_DAYS = 3;
+// Horas máximas de travesía del puerto a la playa, por la ruta navegada real
+// (la línea recta engaña: un puerto en el otro océano da la vuelta al continente).
+export const AI_LANDING_SAIL_HOURS = 72;
 export const AI_MIN_WAR_DAY = 2;           // día mínimo de partida para declarar guerra
 export const AI_PEACE_LOST_SHARE = 0.4;    // % provincias perdidas → busca paz
 

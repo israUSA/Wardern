@@ -35,6 +35,9 @@
 //  portLevel    nivel de puerto al que aspira (limitado por su tier)
 //  navyMix      multiplicadores sobre el reparto de barcos por clase
 //  coastalOnly  el carácter solo se sortea entre países con salida al mar
+//  landings     probabilidad, por chequeo en guerra, de planear un desembarco
+//  flank        desembarca también contra quien tiene frontera con él
+//  seaWars      declara la guerra también a países costeros a su alcance por mar
 export const PERSONALITIES = {
   equilibrado: {
     name: "Equilibrado", icon: "⚖",
@@ -45,6 +48,7 @@ export const PERSONALITIES = {
     research: 1.3, counter: 0.5,
     peacePower: 0.5, peaceLand: 0.6, longWarDays: 7,
     navy: 0.1, portLevel: 1,
+    landings: 0.2, flank: false, seaWars: false,
     navyMix: {},
     mix: {},
   },
@@ -57,6 +61,7 @@ export const PERSONALITIES = {
     research: 1.7, counter: 0.35,
     peacePower: 0.3, peaceLand: 0.4, longWarDays: 14,
     navy: 0.06, portLevel: 1,
+    landings: 0.35, flank: false, seaWars: false,
     navyMix: { destructor: 1.3, corbeta: 0.7 },
     mix: { mbt: 1.6, motorizada: 1.3, artilleria: 1.2, bombardero: 1.2, antiaereo: 0.6, infanteria: 0.8 },
   },
@@ -69,6 +74,7 @@ export const PERSONALITIES = {
     research: 1.3, counter: 0.75,
     peacePower: 0.7, peaceLand: 0.8, longWarDays: 5,
     navy: 0.08, portLevel: 1,
+    landings: 0, flank: false, seaWars: false,
     navyMix: { corbeta: 1.5, submarino: 1.3, portaviones: 0.3 },
     mix: { antiaereo: 2, artilleria: 1.6, infanteria: 1.25, cazatanques: 1.2, mbt: 0.6, bombardero: 0.4, motorizada: 0.7 },
   },
@@ -81,6 +87,7 @@ export const PERSONALITIES = {
     research: 0.9, counter: 0.5,
     peacePower: 0.5, peaceLand: 0.6, longWarDays: 9,
     navy: 0.12, portLevel: 2,
+    landings: 0.15, flank: false, seaWars: false,
     navyMix: { portaviones: 1.8, destructor: 1.2 },
     mix: { caza: 1.6, bombardero: 1.5, drone: 1.6, helicoptero: 1.3, mbt: 1.15, infanteria: 0.7 },
   },
@@ -93,6 +100,7 @@ export const PERSONALITIES = {
     research: 1.3, counter: 0.5,
     peacePower: 0.65, peaceLand: 0.75, longWarDays: 5,
     navy: 0.08, portLevel: 1,
+    landings: 0.25, flank: false, seaWars: false,
     navyMix: { corbeta: 1.4, submarino: 1.2 },
     mix: { motorizada: 1.6, helicoptero: 1.6, cazatanques: 1.3, drone: 1.3, artilleria: 0.7, antiaereo: 0.7 },
   },
@@ -105,6 +113,7 @@ export const PERSONALITIES = {
     research: 1.1, counter: 0.5,
     peacePower: 0.5, peaceLand: 0.6, longWarDays: 9,
     navy: 0.4, portLevel: 3,
+    landings: 0.6, flank: true, seaWars: true,
     navyMix: { destructor: 1.6, submarino: 1.5, portaviones: 3, corbeta: 0.6 },
     mix: { antiaereo: 1.2, caza: 1.3, infanteria: 0.9 },
   },

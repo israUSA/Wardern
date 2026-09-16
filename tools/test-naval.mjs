@@ -19,6 +19,7 @@
 //   [5] Defensa antiaérea de los buques (NAVAL_AA)
 //   [6] Los aviones contra los buques: furtividad e intercepción
 //   [7] IA naval: quién recluta barcos, el carácter Almirante y la maniobra
+//   [8] Desembarcos de la IA: planear, reunir, embarcar, navegar, cancelar
 // Sale con código 1 si alguna aserción obligatoria falla.
 // =====================================================================
 import * as C from "../js/data/constants.js";
@@ -559,6 +560,156 @@ section("[7] IA naval (js/engine/ai-naval.js, docs/IA.md §Marina)");
     check("la guerra en tierra no asigna guarniciones a los barcos",
       barco.task?.kind !== "defend" && barco.task?.kind !== "attack",
       `tarea ${barco.task?.kind ?? "ninguna"} · turno completo de IA en ${ms} ms`);
+  }
+}
+
+// ---------------------------------------------------------------------
+section("[8] Desembarcos de la IA (js/engine/ai-landing.js, docs/IA.md §Desembarcos)");
+{
+  const { newGame, spawnUnit, declareWar, makePeace, intelFor, S, unitDef } =
+    await import("../js/engine/state.js");
+  const { PERSONALITIES } = await import("../js/data/personalities-data.js");
+  const AL = await import("../js/engine/ai-landing.js");
+  const { embark } = await import("../js/engine/naval.js");
+  const { battleSet } = await import("../js/engine/combat.js");
+  const { aiTickAll } = await import("../js/engine/ai.js");
+  const { tick } = await import("../js/engine/sim.js");
+
+  // Partida base: todos tortugas (no desembarcan ni buscan guerra) salvo EEUU
+  const base = (pers = "almirante") => {
+    const st = newGame("GRL");
+    for (const i in st.countries) if (i !== "GRL") st.countries[i].personality = "tortuga";
+    st.countries.USA.personality = pers;
+    Object.assign(st.countries.USA.resources, { money: 3e6, supplies: 3e5, fuel: 3e5, manpower: 3e5 });
+    return st;
+  };
+  const conFlorida = (st) => { st.provinces["usa-florida"].buildings.puerto = 1; return st; };
+  const plan = (st, pers) => AL.planLanding(st, "USA", intelFor(st, "USA"), PERSONALITIES[pers], battleSet(st));
+
+  // --- frontera ---
+  {
+    const st = newGame("GRL");
+    check("frontera: EEUU-Venezuela no, EEUU-México sí, EEUU-Cuba sí (estrecho)",
+      !AL.landBorderWith(st, "USA", "VEN") && AL.landBorderWith(st, "USA", "MEX") && AL.landBorderWith(st, "USA", "CUB"),
+      `VEN ${AL.landBorderWith(st, "USA", "VEN")} · MEX ${AL.landBorderWith(st, "USA", "MEX")} · CUB ${AL.landBorderWith(st, "USA", "CUB")}`);
+  }
+
+  // --- planear ---
+  {
+    const st = conFlorida(base());
+    declareWar(st, "USA", "VEN");
+    const op = plan(st, "almirante");
+    const ok = op && S.provinces.get(op.target)?.country === "VEN" && op.port === "usa-florida" &&
+      op.troops.length >= C.AI_LANDING_MIN && op.troops.length <= C.AI_LANDING_MAX &&
+      S.provinces.get(op.cell)?.isSea && (S.edges.get(op.cell) || []).some((e) => e.to === op.target);
+    check("contra un enemigo sin frontera, planea una playa suya desde el puerto que llega",
+      !!ok, op ? `${op.target} desde ${op.port}, ${op.troops.length} tropas, celda ${op.cell}` : "sin plan");
+  }
+  {
+    const st = base();
+    declareWar(st, "USA", "VEN");
+    check("sin puerto no hay desembarco", plan(st, "almirante") === null);
+  }
+  {
+    const st = conFlorida(base());
+    st.provinces["usa-alaska"].buildings.puerto = 3; // costera, pero en la otra punta
+    declareWar(st, "USA", "VEN");
+    const op = plan(st, "almirante");
+    check("elige el puerto que alcanza la playa, no el de más nivel",
+      op?.port === "usa-florida", `puerto ${op?.port}`);
+  }
+  {
+    const st = conFlorida(base("equilibrado"));
+    declareWar(st, "USA", "MEX");
+    const eq = plan(st, "equilibrado");
+    const al = plan(st, "almirante");
+    check("con frontera abierta solo desembarca el almirante (de flanco)",
+      eq === null && al !== null, `equilibrado ${eq ? eq.target : "no"} · almirante ${al ? al.target : "no"}`);
+  }
+  {
+    const st = conFlorida(base("tortuga"));
+    declareWar(st, "USA", "VEN");
+    for (let i = 0; i < 60; i++) AL.aiLanding(st, "USA", intelFor(st, "USA"), PERSONALITIES.tortuga, battleSet(st));
+    check("la tortuga no desembarca nunca", !st.countries.USA.aiLanding, `${st.countries.USA.aiLanding?.phase ?? "sin operación"}`);
+  }
+  {
+    const st = conFlorida(base());
+    check("el almirante con puerto ve como vecino por mar a Venezuela; sin puerto, a nadie",
+      AL.seaNeighbors(st, "USA").includes("VEN") && AL.seaNeighbors(base(), "USA").length === 0,
+      `${AL.seaNeighbors(st, "USA").length} países al alcance`);
+  }
+
+  // --- embarcar solo a la fuerza elegida ---
+  {
+    const st = conFlorida(base());
+    const celda = AL.seaCellOf("usa-florida");
+    const t = spawnUnit(st, "USA", "occ-1-transporte", celda);
+    const elegida = spawnUnit(st, "USA", "occ-1-mbt", "usa-florida");
+    const guarnicion = st.units.filter((u) => u.pos === "usa-florida" && u.owner === "USA" && u !== elegida);
+    spawnUnit(st, "USA", "occ-1-infanteria", "usa-florida");
+    embark(st, t.id, new Set([elegida.id]));
+    check("embarcar con lista solo sube a esas unidades, no a la guarnición",
+      t.cargo?.length === 1 && elegida.embarked === t.id && guarnicion.every((u) => !u.embarked),
+      `a bordo ${t.cargo?.length}`);
+  }
+
+  // --- la guerra en tierra no se lleva la fuerza reservada ---
+  {
+    const st = conFlorida(base());
+    declareWar(st, "USA", "VEN");
+    declareWar(st, "USA", "MEX"); // frente abierto que pide guarniciones
+    const op = plan(st, "almirante");
+    st.countries.USA.aiLanding = op;
+    aiTickAll(st);
+    const fuera = op.troops
+      .map((id) => st.units.find((u) => u.id === id))
+      .filter((u) => u && u.path.length && u.path.at(-1) !== op.port);
+    check("aiMilitary no desvía la fuerza reservada hacia el frente",
+      fuera.length === 0, `${fuera.length} de ${op.troops.length} con otra ruta`);
+  }
+
+  // --- de principio a fin ---
+  {
+    const st = conFlorida(base());
+    declareWar(st, "USA", "VEN");
+    const inicial = new Set(st.units.map((u) => u.id));
+    let horas = null;
+    let op0 = null;
+    for (let t = 0; t < 6 * 48 && horas === null; t++) {
+      tick(st, 30);
+      op0 = op0 || st.countries.USA.aiLanding;
+      if (st.units.some((u) => u.owner === "USA" && !u.embarked && S.provinces.get(u.pos)?.country === "VEN")) horas = (t + 1) / 2;
+    }
+    const enVen = st.units.filter((u) => u.owner === "USA" && !u.embarked && S.provinces.get(u.pos)?.country === "VEN");
+    check("EEUU contra Venezuela: construye transporte, embarca, navega y desembarca en menos de 6 días",
+      horas !== null && enVen.every((u) => op0.troops.includes(u.id)),
+      horas !== null ? `${enVen.length} unidades en ${enVen[0].pos} a las ${horas} h` : "no desembarcó");
+    const transportes = st.units.filter((u) => u.owner === "USA" && (unitDef(u.type)?.capacity || 0) > 0 && !inicial.has(u.id));
+    check("el transporte lo construyó para la operación", transportes.length >= 1, `${transportes.length} nuevo(s)`);
+  }
+
+  // --- cancelar con la tropa a bordo ---
+  {
+    const st = conFlorida(base());
+    declareWar(st, "USA", "VEN");
+    const celda = AL.seaCellOf("usa-florida");
+    const t = spawnUnit(st, "USA", "occ-1-transporte", celda);
+    const tropa = [spawnUnit(st, "USA", "occ-1-mbt", "usa-florida"), spawnUnit(st, "USA", "occ-1-mbt", "usa-florida")];
+    embark(st, t.id, new Set(tropa.map((u) => u.id)));
+    const destino = AL.seaCellOf("ven-zulia");
+    st.countries.USA.aiLanding = {
+      phase: "navegar", enemy: "VEN", target: "ven-zulia", cell: destino,
+      port: "usa-florida", portCell: celda, troops: tropa.map((u) => u.id), transports: [t.id], started: st.time,
+    };
+    tick(st, 30);
+    for (let i = 0; i < 20; i++) tick(st, 30); // ya en camino
+    makePeace(st, "USA", "VEN");
+    for (let i = 0; i < 6 * 48 && st.countries.USA.aiLanding; i++) tick(st, 30);
+    // Vuelve a la costa PROPIA más cercana, que no tiene por qué ser el puerto
+    // de salida (a medio camino de Venezuela suele ser Puerto Rico).
+    check("si llega la paz a medio camino, vuelve y desembarca en territorio propio",
+      !st.countries.USA.aiLanding && tropa.every((u) => !u.embarked && st.provinces[u.pos]?.owner === "USA"),
+      `operación ${st.countries.USA.aiLanding?.phase ?? "cerrada"} · tropa en ${tropa.map((u) => u.pos).join(",")}`);
   }
 }
 

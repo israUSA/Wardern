@@ -8,8 +8,10 @@ export function transportCapacity(u) {
   return unitDef(u.type)?.capacity || 3;
 }
 
-// Carga unidades terrestres del propio país desde una provincia costera adyacente con puerto
-export function embark(state, transportId) {
+// Carga unidades terrestres del propio país desde una provincia costera adyacente con puerto.
+// `soloIds` (opcional) restringe la carga a esas unidades: la IA de desembarco
+// reúne en el puerto una fuerza concreta y no debe llevarse la guarnición.
+export function embark(state, transportId, soloIds = null) {
   const t = state.units.find((u) => u.id === transportId);
   if (!t || !isTransport(t) || t.edgeLeft) return { ok: false, msg: "El transporte debe estar anclado" };
 
@@ -30,6 +32,7 @@ export function embark(state, transportId) {
   for (const p of candidates) {
     const troops = state.units.filter(
       (u) => u.pos === p.id && u.owner === t.owner && !u.embarked && !u.edgeLeft && !unitDef(u.type)?.air && !isTransport(u)
+        && (!soloIds || soloIds.has(u.id))
     );
     for (const g of troops) {
       if (loaded >= capacity) break;

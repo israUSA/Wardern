@@ -19,9 +19,11 @@ en este orden y siempre mirando por **su propia niebla de guerra**
 | 5 | `aiAirCombat` | disparos guiados de su aviación |
 | 6 | `aiDiplomacy` | declarar la guerra y pedir la paz |
 
-Entre el 3 y el 4 va `aiNaval` ([`js/engine/ai-naval.js`](../js/engine/ai-naval.js)),
+Entre el 2 y el 3 va `aiLanding` ([`js/engine/ai-landing.js`](../js/engine/ai-landing.js)),
+que avanza los desembarcos y reserva su tropa antes de que `aiMilitary` la
+reparta. Entre el 3 y el 4, `aiNaval` ([`js/engine/ai-naval.js`](../js/engine/ai-naval.js)),
 que mueve la flota; y al final de `aiEconomy`, `aiNavalRecruit`, que la recluta.
-Ver **Marina** más abajo.
+Ver **Marina** y **Desembarcos** más abajo.
 
 ## Personalidades
 
@@ -67,6 +69,9 @@ resto 18 %); para un país con costa, cada peso sobre 1,18 (Almirante ≈ 15 %).
 | `navy` | `aiNavalRecruit` | probabilidad de intentar un barco en cada chequeo; también fija el tope de flota |
 | `portLevel` | `aiEconomy` | nivel de puerto al que aspira (nunca por encima de su tier) |
 | `navyMix` | `pickNavalCategory` | multiplicadores sobre el reparto de barcos por clase |
+| `landings` | `aiLanding` | probabilidad, por chequeo en guerra, de planear un desembarco (tortuga 0, almirante 0,6) |
+| `flank` | `planLanding` | desembarca también contra quien tiene frontera con él (solo el almirante) |
+| `seaWars` | `aiDiplomacy` | declara la guerra también a países con costa al alcance de sus puertos (solo el almirante) |
 
 Los pesos de `equilibrado` son los valores fijos que usaba la IA antes. La
 única diferencia es la agresión, que antes era un número por país en
@@ -115,6 +120,28 @@ más pesadas (equilibrado: 220 → 203 tropas, carros 1 % → 7 %).
 De paso se arregló otro corte: si salía un avión y la primera provincia de la
 lista no tenía pista, se cancelaba el reclutamiento de todo el chequeo. Ahora se
 busca una provincia que sí la tenga.
+
+## Fuego
+
+Los bots disparan **antes** de gastar: el orden del turno es `aiMissiles` y
+`aiAirCombat` primero, `aiEconomy` después. Al revés, la economía dejaba los
+suministros a cero en cada turno y la salva de obús (que se paga en suministros)
+no salía casi nunca.
+
+- **Golpes** (`aiMissiles`): Tomahawk, Harpoon, salva de cohetes y crucero de
+  bombardero, contra lo que el bot ve (`vis.union`).
+- **Artillería a distancia** (`artilleryTarget` + `shellUnit`): la ficha enemiga de
+  tierra más valiosa que tenga **identificada** (`vis.strong`) y a tiro. Una pieza
+  con blanco no cuenta como ociosa: `aiMilitary` ni la manda a guarnecer ni al
+  asalto (antes hacía las dos cosas y la pieza, en marcha, no disparaba nunca).
+- **Aviación** (`aiAirCombat`): aire-aire por radar; aire-suelo solo contra lo que
+  su país ve. Antes `groundContacts` solo aplicaba la niebla al jugador y un bot
+  disparaba HARM a 400 km contra baterías que no había detectado.
+
+Probado en `tools/test-variants.mjs` §8. `tools/bench-fuego.mjs` cuenta los
+disparos de una partida por arma y cuántos fueron a ciegas (debe ser 0). Con el
+código previo al reordenado: 109 salvas de obús, 10 Maverick y 0 a ciegas en 16
+días; los Tomahawk no aparecen porque en ese plazo nadie llega a tier 2.
 
 ## Marina
 
@@ -198,9 +225,74 @@ sea su carácter: no les da la caja, y es lo razonable.
 
 ### Lo que no hace (todavía)
 
-- **Desembarcos.** Los transportes existen para el jugador; una invasión anfibia
-  bien hecha es otra IA entera.
-- **Escoltas y patrullas.** La flota va en bloque y en paz no sale de casa.
+- **Patrullas.** En paz la flota no sale de casa.
+
+## Desembarcos
+
+[`js/engine/ai-landing.js`](../js/engine/ai-landing.js). Un desembarco es una
+**operación** de varios días guardada en `c.aiLanding`; cada chequeo la avanza
+una fase.
+
+### Cuándo
+
+En guerra, con al menos un puerto, con transporte disponible o dinero para él,
+con probabilidad `landings` por chequeo, y
+solo contra un enemigo **sin ninguna provincia pegada** a su territorio. Pegada
+incluye los **estrechos**: el mapa une Cuba con EEUU, México y Haití, y la tropa
+los cruza andando, así que "no tener frontera" no es "ser isla" sino estar lejos
+(EEUU contra Venezuela, o un bot contra un jugador al otro lado del mar). El
+almirante (`flank`) lo intenta también con frontera abierta.
+
+El almirante además **declara la guerra por mar** (`seaWars`): a los candidatos de
+siempre —vecinos de tierra— suma los países con costa a menos de
+`AI_NAVAL_RANGE_KM` de alguno de sus puertos. Sin esto los bots solo guerrean con
+vecinos de tierra y un desembarco casi nunca tendría sentido.
+
+### Fases
+
+| Fase | Qué hace |
+|---|---|
+| **planear** | Para cada provincia costera enemiga, el puerto propio más cercano (se prueban todos: el de más nivel puede estar en la otra punta). Defensa: la que ve, o `AI_GUESS_PER_PROVINCE` fusileros si no la ve. Se elige la playa más floja y la fuerza mínima que la supere × `attackRatio`, entre `AI_LANDING_MIN` y `AI_LANDING_MAX` (2–6) unidades, **las más cercanas al puerto** y nunca de una provincia en el frente |
+| **reunir** | Transportes (uno por cada 3): reutiliza los libres y construye los que falten en el puerto, comprando en el mercado si hace falta. Todos a la celda del puerto; la fuerza, a la provincia del puerto. Cuando están todos, **embarca solo a la fuerza elegida** (`embark(…, soloIds)`), no a la guarnición |
+| **navegar** | Transportes a la celda de la playa, con hasta `AI_LANDING_ESCORTS` (3) barcos de guerra de escolta, que llegan antes porque son más rápidos. Al llegar, **desembarca**; el combate lo resuelve el motor |
+| **regresar** | Si llega la paz, se pasa de `AI_LANDING_MAX_DAYS` (8) o se queda sin tropa, la operación se cancela: lo que va a bordo vuelve al puerto y desembarca en casa |
+
+Al terminar, `AI_LANDING_COOLDOWN_DAYS` (2) días hasta planear otra. Si no
+encuentra playa, medio día sin volver a mirar.
+
+La fuerza reservada queda fuera de `aiMilitary`: si no, las guarniciones se la
+llevaban de vuelta al frente a medio reunir.
+
+### Medido
+
+Escenario de `tools/test-naval.mjs` §8: EEUU (almirante, puerto en Florida) en
+guerra con Venezuela. Planea a las 2 h, construye el transporte y reúne la fuerza
+a las 30 h (el transporte tarda 27), navega 48 h y **desembarca en Zulia a las
+78 h**.
+
+Partida mixta de 16 días (dos semillas, **antes** de los arreglos de abajo): 22
+guerras, 2 de ellas por mar; 3 desembarcos planeados y **ninguno terminado**. La
+traza (`tools/diag-desembarcos.mjs`) enseñó tres atascos, ya corregidos:
+
+- Países sin dinero para el transporte (Guatemala, Dominicana) esperaban días en
+  "reunir" con la tropa reservada → ahora solo se planea si el transporte se
+  puede pagar (comprando en el mercado si hace falta), y "reunir" caduca a los
+  `AI_LANDING_GATHER_DAYS` (3).
+- Puertos en el otro océano: la línea recta engañaba → ahora se mide la ruta
+  navegada real (`sailHours`, tope `AI_LANDING_SAIL_HOURS` = 72 h), solo para las
+  3 mejores playas.
+- La vuelta tras cancelar iba siempre al puerto de salida (EEUU tardó 7 días) →
+  ahora va a la costa propia más cercana.
+
+**Pendiente de medir tras los arreglos** (ver ROADMAP v1.13).
+
+### Lo que no hace (todavía)
+
+- **Una operación a la vez** por país, de 6 unidades como mucho.
+- **No refuerza la cabeza de playa.** Lo desembarcado pasa a `aiMilitary` como
+  cualquier tropa; si la playa cae, no manda una segunda oleada a propósito.
+- **No elige la playa por su valor** (capital, puntos de victoria): solo por lo
+  floja que está y lo cerca que queda.
 - **El carácter no cambia con la partida.** Un conquistador que pierde medio
   país sigue siendo conquistador; solo le frena `peacePower` / `peaceLand`.
 - **No forma coaliciones.** Eso es v2.

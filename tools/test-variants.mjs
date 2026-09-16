@@ -16,6 +16,8 @@
 //   [5] Competitividad occidental vs oriental                      (assert c)
 //   [6] Reclutamiento e investigación (recruitBlocker REAL)        (assert f)
 //   [7] Smoke E2E: mapa real + newGame + ticks del motor
+//   [8] Fuego a distancia de los bots, solo contra lo que ven
+//   [9] Encuentros en ruta: quien se cruza con el enemigo, pelea
 // Sale con código 1 si alguna aserción obligatoria falla.
 // Requiere Node >= 22 (detección de sintaxis ESM en .js sin package.json).
 // =====================================================================
@@ -579,6 +581,151 @@ try {
     unresolvable.length === 0 && nanHp.length === 0, `${state.units.length} unidades en juego, log ${state.log.length} eventos`);
 } catch (e) {
   check("smoke E2E lanza sin excepciones", false, e.message);
+}
+
+// ---------- [8] Fuego a distancia de los bots ----------
+section("[8] Fuego a distancia de los bots: artillería y aviación, solo contra lo que ven");
+try {
+  const { initStatic, newGame, spawnUnit, declareWar, S } = await import("../js/engine/state.js");
+  const { aiTickAll } = await import("../js/engine/ai.js");
+  const { groundContacts } = await import("../js/engine/air-combat.js");
+
+  // Tablero limpio: solo las fichas que pone cada prueba
+  const limpio = (...isos) => {
+    const st = newGame("GRL");
+    st.units = st.units.filter((u) => !isos.includes(u.owner));
+    for (const i in st.countries) if (i !== "GRL") st.countries[i].personality = "tortuga";
+    return st;
+  };
+  const vecinoDe = (st, pid, iso) => (S.edges.get(pid) || []).some((e) => st.provinces[e.to]?.owner === iso);
+
+  // --- artillería ---
+  const escena = (explorador) => {
+    const st = limpio("MEX", "GTM");
+    declareWar(st, "MEX", "GTM");
+    const pieza = spawnUnit(st, "MEX", "occ-1-artilleria", "mex-chiapas");
+    const blanco = spawnUnit(st, "GTM", "occ-1-infanteria", "gtm-alta-verapaz"); // vecina de Chiapas
+    if (explorador) spawnUnit(st, "MEX", "occ-1-motorizada", "mex-chiapas"); // explora: identifica
+    aiTickAll(st);
+    const salva = (st.missiles || []).find((m) => m.arty && m.owner === "MEX");
+    return { pieza, blanco, salva };
+  };
+  {
+    const { salva } = escena(false);
+    check("un obús bot NO dispara a una ficha que solo intuye (inteligencia débil)", !salva, `salva ${!!salva}`);
+  }
+  {
+    const { pieza, blanco, salva } = escena(true);
+    check("con la ficha identificada, el obús bot dispara sin moverse",
+      !!salva && salva.targetUnitId === blanco.id && pieza.path.length === 0 && pieza.pos === "mex-chiapas",
+      salva ? `salva a ${salva.toId}, pieza en ${pieza.pos}` : `no disparó; pieza en ${pieza.pos} con ruta ${pieza.path.join(">")}`);
+  }
+
+  // --- aviación: la niebla también vale para el bot ---
+  // Hace falta una batería B a tiro del HARM (400 km) que NADIE de EEUU vea:
+  // ni pegada a su territorio, ni a la provincia A sobre la que vuela el
+  // avión. Las provincias son grandes, así que se busca en todo el mapa una
+  // pareja A-B a dos saltos y, para saber si está a tiro, se pone un dron
+  // encima: con él la ve seguro.
+  {
+    let probado = null;
+    const usa = new Set(S.provinceList.filter((p) => p.country === "USA").map((p) => p.id));
+    const tocaUSA = (pid) => (S.edges.get(pid) || []).some((e) => usa.has(e.to));
+    for (const b of S.provinceList) {
+      if (probado || b.isSea || b.country === "USA" || tocaUSA(b.id)) continue;
+      const vecinasB = new Set((S.edges.get(b.id) || []).map((e) => e.to));
+      for (const m of vecinasB) {
+        if (probado) break;
+        for (const e of S.edges.get(m) || []) {
+          const a = S.provinces.get(e.to);
+          if (!a || a.isSea || a.id === b.id || vecinasB.has(a.id) || usa.has(a.id)) continue;
+          const st = limpio("USA", b.country, a.country);
+          declareWar(st, "USA", b.country);
+          if (a.country !== b.country) declareWar(st, "USA", a.country);
+          const avion = spawnUnit(st, "USA", "occ-2-caza", a.id); // F/A-18E: lleva HARM
+          const sam = spawnUnit(st, b.country, "occ-1-antiaereo", b.id);
+          const ojo = spawnUnit(st, "USA", "occ-1-drone", b.id);
+          const conVista = groundContacts(st, avion).some((c) => c.unit.id === sam.id);
+          if (!conVista) continue; // fuera de alcance: otra pareja
+          st.units = st.units.filter((u) => u !== ojo);
+          st.time += 0.01; // la visión va en caché por instante de juego
+          const sinVista = groundContacts(st, avion).some((c) => c.unit.id === sam.id);
+          probado = { a: a.id, b: b.id, sinVista };
+          break;
+        }
+      }
+    }
+    check("un avión bot solo apunta a blancos de tierra que su país ve",
+      probado && !probado.sinVista,
+      probado ? `avión en ${probado.a}, batería en ${probado.b}: con dron la ve, sin dron ${probado.sinVista ? "TAMBIÉN (fuga)" : "no"}` : "no hubo pareja de prueba");
+  }
+} catch (e) {
+  check("fuego a distancia de los bots sin excepciones", false, e.stack);
+}
+
+// ---------- [9] Encuentros: quien se cruza con el enemigo, pelea ----------
+section("[9] Encuentros en ruta: barcos y columnas que se cruzan acaban en batalla");
+try {
+  const { newGame, spawnUnit, declareWar, S } = await import("../js/engine/state.js");
+  const { orderMove, findPath, tickMovement } = await import("../js/engine/movement.js");
+  const { tickCombat } = await import("../js/engine/combat.js");
+  // Solo movimiento y combate: sin IA que reordene las fichas a mitad del cruce
+  const avanzar = (st, dt) => { st.time += dt; tickMovement(st, dt); tickCombat(st, dt); };
+  const limpio = () => { const st = newGame("GRL"); st.units = []; return st; };
+  const mar = (pid) => (S.edges.get(pid) || []).map((e) => e.to).find((t) => S.provinces.get(t)?.isSea);
+  const hayBatalla = (st) => st.units.some((u) => u.battleMinutes > 0);
+  const hasta = (st, n = 400) => { let t = 0; for (; t < n && !hayBatalla(st); t++) avanzar(st, 5); return t * 5; };
+
+  {
+    const st = limpio();
+    declareWar(st, "MEX", "CUB");
+    const a0 = mar("mex-yucatan"), b0 = mar("cub-cuba");
+    const A = spawnUnit(st, "MEX", "occ-1-destructor", a0);
+    const B = spawnUnit(st, "CUB", "ori-1-destructor", b0);
+    orderMove(st, A, b0);
+    orderMove(st, B, a0);
+    const min = hasta(st);
+    check("dos flotas enemigas que navegan de frente chocan y combaten",
+      hayBatalla(st) && A.pos === B.pos, `batalla a los ${min} min en ${A.pos}`);
+  }
+  {
+    const st = limpio();
+    declareWar(st, "MEX", "CUB");
+    const a0 = mar("mex-yucatan"), b0 = mar("cub-cuba");
+    const A = spawnUnit(st, "MEX", "occ-1-destructor", a0);
+    const ruta = findPath(st, A, b0);
+    const medio = ruta[Math.floor(ruta.length / 2)];
+    spawnUnit(st, "CUB", "ori-1-corbeta", medio);
+    orderMove(st, A, b0);
+    hasta(st);
+    check("un barco que se topa con una flota enemiga fondeada se detiene y combate",
+      hayBatalla(st) && A.pos === medio && A.path.length === 0, `se para en ${A.pos} (flota en ${medio})`);
+  }
+  {
+    const st = limpio();
+    declareWar(st, "MEX", "GTM");
+    const A = spawnUnit(st, "MEX", "occ-1-infanteria", "mex-chiapas");
+    const B = spawnUnit(st, "GTM", "occ-1-infanteria", "gtm-alta-verapaz");
+    orderMove(st, A, "gtm-alta-verapaz");
+    orderMove(st, B, "mex-chiapas");
+    const min = hasta(st);
+    check("dos columnas enemigas que se cruzan por la misma frontera combaten",
+      hayBatalla(st) && A.pos === B.pos, `batalla a los ${min} min en ${A.pos}`);
+  }
+  {
+    // Los aviones sobrevuelan: no chocan con nada
+    const st = limpio();
+    declareWar(st, "MEX", "GTM");
+    const A = spawnUnit(st, "MEX", "occ-1-caza", "mex-chiapas");
+    const B = spawnUnit(st, "GTM", "occ-1-infanteria", "gtm-alta-verapaz");
+    orderMove(st, A, "gtm-alta-verapaz");
+    orderMove(st, B, "mex-chiapas");
+    for (let i = 0; i < 400; i++) avanzar(st, 5);
+    check("un avión y una columna que se cruzan NO chocan (el avión sobrevuela)",
+      A.pos === "gtm-alta-verapaz" && B.pos === "mex-chiapas", `avión en ${A.pos}, columna en ${B.pos}`);
+  }
+} catch (e) {
+  check("encuentros en ruta sin excepciones", false, e.stack);
 }
 
 // ---------- Resumen ----------

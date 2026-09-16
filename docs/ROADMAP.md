@@ -476,5 +476,82 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [x] 18 aserciones nuevas en `tools/test-naval.mjs` §7 (banco naval: 50 PASS)
 - [x] Medido en los 9 países grandes con costa (docs/IA.md): el almirante saca 1,5–2× más
       barcos. En 16 días la flota sigue siendo ligera (tier 1); portaviones, ninguno
-- [ ] Desembarcos y escoltas de la IA (docs/IA.md §Marina)
+- [x] Desembarcos y escoltas de la IA: hechos en v1.12
+
+### v1.12 — Desembarcos de la IA (2026-09-16)
+
+- [x] Los bots desembarcan (`js/engine/ai-landing.js`): operación de varios días en
+      fases —planear, reunir, navegar— guardada en `c.aiLanding`
+- [x] Solo contra enemigos sin provincia pegada, contando los estrechos (el mapa une
+      Cuba con EEUU, México y Haití). El almirante desembarca también de flanco
+- [x] El almirante declara la guerra también a países con costa al alcance de sus puertos
+- [x] Playa: la más floja que conoce, desde el puerto propio más cercano. Fuerza: la
+      mínima que la supera, de 2 a 6 unidades, las más cercanas al puerto y nunca del frente
+- [x] Construye los transportes que falten; embarca solo a la fuerza elegida
+      (`embark` acepta lista de unidades); escolta de hasta 3 barcos de guerra
+- [x] Cancelación con la tropa a bordo: vuelve a puerto y desembarca en casa. Tope de
+      8 días por operación, 2 de espera entre una y otra
+- [x] `aiMilitary` deja fuera la tropa reservada y la embarcada
+- [x] 12 aserciones en `tools/test-naval.mjs` §8 (banco naval: 62 PASS), con el
+      escenario completo EEUU → Venezuela (desembarco en Zulia a las 78 h)
+- [ ] Segunda oleada y refuerzo de la cabeza de playa
+- [ ] Elegir la playa por su valor (capital, puntos de victoria)
+
+### v1.13 — Fuego de los bots y encuentros en ruta (2026-09-16) · RELEVO
+
+Sesión cortada a petición del usuario. Lo marcado `[x]` está hecho, probado y
+subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
+
+**Hecho**
+
+- [x] Desembarcos: solo se planean si el transporte se puede pagar; "reunir" caduca
+      a los 3 días; se mide la ruta navegada real (`sailHours`, tope 72 h); al
+      cancelar, vuelta a la costa propia más cercana (docs/IA.md §Desembarcos)
+- [x] Los bots usan el **tiro a distancia de la artillería** (antes solo la salva de
+      cohetes), contra fichas que tengan identificadas
+- [x] Una pieza bot con blanco a tiro no va a guarnecer ni al asalto
+- [x] **Fuga de niebla corregida**: los aviones bot solo atacan blancos de tierra que
+      su país ve (`groundContacts` usa `intelFor` para todos)
+- [x] Los bots **disparan antes de gastar** (orden del turno en `aiTickAll`)
+- [x] **Encuentros en ruta** (`js/engine/movement.js`): los barcos se detienen al
+      entrar en una celda con flota enemiga fondeada (antes la atravesaban), y dos
+      fuerzas enemigas que recorren el mismo tramo en sentidos opuestos chocan
+      (`chequearChoques`: se para la que menos ha avanzado). Los aviones siguen
+      sobrevolando
+- [x] Bancos: `tools/test-variants.mjs` 110 PASS (§8 fuego de los bots, §9
+      encuentros), `tools/test-naval.mjs` 62 PASS. Las pruebas de niebla y de
+      encuentros se verificaron reintroduciendo el fallo: fallan sin el arreglo
+- [x] Herramientas nuevas: `tools/bench-fuego.mjs`, `tools/diag-desembarcos.mjs`
+
+**Pendiente** (pedido por el usuario, sin empezar)
+
+- [ ] **Patrulla que se reanuda sola** (estilo CoN): al agotarse una patrulla el
+      aparato vuelve a base (`tickAirPatrol` → `orderReturnToBase`, movement.js); al
+      terminar de repostar debe volver a salir a la MISMA patrulla, y así en bucle,
+      hasta que el jugador dé otra orden. Idea: guardar `pid` en la tarea de
+      patrulla (hoy `orderPatrol` no lo guarda), al volver dejar
+      `u.standing = { kind: "patrol", pid, refuelLeft }` y un tick que, con el
+      aparato parado en su base, descuente el repostaje y relance `orderPatrol`.
+      Cualquier orden manual del jugador (main.js: mover, atacar, patrullar,
+      detener) y el botón "Volver a base" deben borrar `standing`. Mostrarlo en la
+      ficha ("🔁 reanuda la patrulla en X h")
+- [ ] **Fuego constante del jugador** (estilo CoN):
+      · artillería: ⚔ Atacar deja una orden permanente
+        (`u.standing = { kind: "fire", targetId }`) que vuelve a disparar
+        `shellUnit` cada vez que acaba la recarga, mientras el blanco viva, siga a
+        tiro, a la vista y en guerra; se cancela con cualquier otra orden.
+      · aviación: los aparatos del JUGADOR nunca disparan solos (`aiAirCombat` solo
+        corre para bots). Los que estén patrullando deberían atacar solos lo que
+        tengan a tiro, con la misma lógica (`mejorDisparo`) y la misma cadencia
+        (un misil por aparato por chequeo de IA)
+- [ ] Re-medir desembarcos con los arreglos (`tools/diag-desembarcos.mjs`) y fuego
+      con el reordenado (`tools/bench-fuego.mjs`), y poner las cifras en docs/IA.md
+- [ ] `AI_LANDING_GATHER_DAYS` = 3 puede ser corto: en la última traza EEUU canceló
+      con el transporte AÚN EN GRADA porque las dos gradas del puerto estaban
+      ocupadas con corbetas. Opciones: 4–5 días, o que el plazo empiece a contar
+      cuando el transporte ya esté encargado
+- [ ] Deuda vista de paso, sin tocar: en `aiMilitary` la tarea `defend` se pierde
+      siempre, porque `orderMove` borra `u.task` y se asigna antes de llamarlo
+      (`u.task = …; if (!orderMove(…))`). El bloque que "libera tareas" nunca ve una
+      `defend`. Igual que en `mandar` de ai-naval.js, habría que asignarla después
 

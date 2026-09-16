@@ -6,8 +6,10 @@ import { startBuilding, startRecruitCategory, startResearch, startAnnex, canAffo
 import { orderMove, findPath } from "./movement.js";
 import { battleSet } from "./combat.js";
 import { strikeWeaponsFor, launchMissile } from "./missiles.js";
+import { canShell, shellUnit, artilleryRange, shellDistance } from "./artillery.js";
 import { aiAirCombat } from "./air-combat.js";
 import { aiNaval, aiNavalRecruit, navalBase, wantedPortLevel, buyShortfall } from "./ai-naval.js";
+import { aiLanding, landingUnitIds, seaNeighbors } from "./ai-landing.js";
 
 export function aiTickAll(state) {
   const battles = battleSet(state);
@@ -16,12 +18,16 @@ export function aiTickAll(state) {
     if (iso === state.player || c.eliminated) continue;
     try {
       const vis = intelFor(state, iso); // su niebla de guerra, la misma que la tuya
-      aiEconomy(state, iso, vis);
-      aiResearch(state, iso);
-      aiMilitary(state, iso, battles);
-      aiNaval(state, iso, vis, personalityOf(state, iso), battles); // docs/IA.md §Marina
+      // Primero se dispara y luego se gasta. aiEconomy deja los suministros a
+      // cero en cada turno, y la salva de obús se paga en suministros: con el
+      // fuego detrás, la artillería de los bots no tenía munición casi nunca.
       aiMissiles(state, iso, vis);
       aiAirCombat(state, iso); // docs/AIR-COMBAT.md: mismas reglas que el jugador
+      aiEconomy(state, iso, vis);
+      aiResearch(state, iso);
+      aiLanding(state, iso, vis, personalityOf(state, iso), battles); // antes: marca su tropa
+      aiMilitary(state, iso, battles, vis);
+      aiNaval(state, iso, vis, personalityOf(state, iso), battles); // docs/IA.md §Marina
       aiDiplomacy(state, iso, vis);
     } catch (e) {
       console.error("IA error:", iso, e);
@@ -292,7 +298,7 @@ function inBattle(u, battles) {
   return battles.has(u.pos);
 }
 
-function aiMilitary(state, iso, battles) {
+function aiMilitary(state, iso, battles, vis) {
   const c = state.countries[iso];
   if (!c.wars.length) return;
   const P = personalityOf(state, iso);
@@ -301,7 +307,12 @@ function aiMilitary(state, iso, battles) {
   // una provincia de tierra falla, pero solo después de recorrer las 25.000
   // celdas de mar; con flota, las guarniciones costarían segundos por turno.
   // La flota la mueve aiNaval.
-  const myUnits = state.units.filter((u) => u.owner === iso && !isNaval(u.type));
+  // Tampoco la tropa embarcada ni la reservada para un desembarco en curso:
+  // si no, la guarnición se la llevaba de vuelta a la frontera a medio reunir.
+  const reservada = landingUnitIds(state, iso);
+  const myUnits = state.units.filter(
+    (u) => u.owner === iso && !isNaval(u.type) && !u.embarked && !reservada.has(u.id)
+  );
 
   // Liberar tareas que ya no tienen sentido
   for (const u of myUnits) {
@@ -313,7 +324,12 @@ function aiMilitary(state, iso, battles) {
     }
   }
 
-  const idle = myUnits.filter((u) => !u.edgeLeft && !u.path.length && !u.task && !inBattle(u, battles));
+  // Una pieza con un blanco a tiro está ocupada disparando (aiMissiles): ni
+  // guarnece otra provincia ni va al asalto. Si la guarnición la movía antes de
+  // que le tocara disparar, la artillería del bot no abría fuego nunca.
+  const idle = myUnits.filter(
+    (u) => !u.edgeLeft && !u.path.length && !u.task && !inBattle(u, battles) && !artilleryTarget(state, iso, u, vis)
+  );
 
   // Defensa: guarnecer mis provincias fronterizas con 2 unidades
   const myBorder = S.provinceList.filter(
@@ -341,7 +357,12 @@ function aiMilitary(state, iso, battles) {
       .filter((e) => controller(state.provinces[e.to]) === iso)
       .map((e) => e.to);
     if (!myAdj.length) continue;
-    const ready = idle.filter((u) => myAdj.includes(u.pos));
+    // La artillería con esa provincia a tiro no va al asalto: dispara desde donde
+    // está (aiMissiles). Antes el bot la mandaba a pelear cuerpo a cuerpo y la
+    // pieza, en marcha, ya no podía abrir fuego.
+    const ready = idle.filter(
+      (u) => myAdj.includes(u.pos) && !(canShell(u.type) && shellDistance(state, u, p.id) <= artilleryRange(u.type))
+    );
     if (ready.length) candidates.set(p.id, ready);
   }
 
@@ -423,6 +444,19 @@ function aiMissiles(state, iso, vis) {
     }
   }
 
+  // Tiro a distancia de la artillería (js/engine/artillery.js), el mismo que el
+  // jugador tiene en ⚔ Atacar. Hasta ahora los bots solo usaban la salva de
+  // cohetes: sus obuses no disparaban nunca a distancia y solo servían cuando el
+  // enemigo entraba en su provincia. Blanco: la ficha enemiga de tierra más
+  // valiosa que tenga IDENTIFICADA (inteligencia fuerte) y a tiro. Sin ver la
+  // ficha no se apunta a ella.
+  for (const u of state.units) {
+    if (u.dead || u.owner !== iso || u.edgeLeft || u.embarked) continue;
+    if ((u.artyCd || 0) > 0) continue;
+    const blanco = artilleryTarget(state, iso, u, vis);
+    if (blanco) shellUnit(state, u, blanco);
+  }
+
   // Drones ociosos en retaguardia: reubicarlos junto al frente con más tropas enemigas
   for (const u of state.units) {
     if (u.dead || u.owner !== iso || u.edgeLeft || u.path.length) continue;
@@ -454,6 +488,24 @@ function aiMissiles(state, iso, vis) {
     }
     if (target && target !== u.pos) orderMove(state, u, target);
   }
+}
+
+// Blanco de una pieza de artillería del bot, o null: la ficha enemiga de tierra
+// más valiosa que tenga identificada y a tiro. Aunque esté recargando, tener
+// blanco la mantiene en su sitio (aiMilitary no la mueve).
+function artilleryTarget(state, iso, u, vis) {
+  if (!canShell(u.type) || u.embarked) return null;
+  const alcance = artilleryRange(u.type);
+  let blanco = null;
+  let mejor = 0;
+  for (const e of state.units) {
+    if (e.dead || e.embarked || e.owner === iso || !vis.strong.has(e.pos)) continue;
+    if (unitDef(e.type)?.air || isNaval(e.type) || !atWar(state, iso, e.owner)) continue;
+    if (shellDistance(state, u, e.pos) > alcance) continue;
+    const valor = hpFrac(e) * (unitDef(e.type)?.cost.money || 5000);
+    if (valor > mejor) { mejor = valor; blanco = e; }
+  }
+  return blanco;
 }
 
 // ---------- Diplomacia ----------
@@ -493,7 +545,11 @@ function aiDiplomacy(state, iso, vis) {
   const aggression = P.aggression * difficulty(state).aiAggression;
   if (c.wars.length === 0 && day >= Math.max(C.AI_MIN_WAR_DAY, c.nextWarDay ?? 0)) {
     if (Math.random() < aggression * 0.12) {
-      const neighbors = neighborCountries(state, iso, false);
+      // El almirante mira también al otro lado del mar: países con costa a su
+      // alcance, a los que solo puede llegar desembarcando.
+      const neighbors = P.seaWars
+        ? [...new Set([...neighborCountries(state, iso, false), ...seaNeighbors(state, iso)])]
+        : neighborCountries(state, iso, false);
       let best = null, bestRatio = 0;
       for (const nb of neighbors) {
         const nbc = state.countries[nb];

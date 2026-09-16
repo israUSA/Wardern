@@ -476,7 +476,53 @@ export function tickHunt(state) {
   }
 }
 
+// ¿Pueden estas dos chocar? Solo lo que combate en superficie: ni aéreos (se
+// sobrevuelan) ni drones (no combaten), y barco con barco o tierra con tierra.
+function chocan(state, a, b) {
+  if (a.owner === b.owner || !atWar(state, a.owner, b.owner)) return false;
+  const A = unitDef(a.type);
+  const B = unitDef(b.type);
+  if (!A || !B || A.air || B.air) return false;
+  return isNaval(a.type) === isNaval(b.type);
+}
+
+// Choque de frente: dos fuerzas enemigas recorriendo el MISMO tramo en sentidos
+// opuestos. Sin esto se cruzaban sin verse —cada una estaba "en camino" y las
+// que viajan no combaten— e intercambiaban provincias como si nada. Se detiene
+// la que menos ha avanzado, que se queda en su provincia de origen; la otra
+// llega, la encuentra plantada y se para también (enemyPresent). Así el
+// encuentro acaba en batalla, que es lo que pasaría de verdad.
+function chequearChoques(state) {
+  const tramos = new Map();
+  for (const u of state.units) {
+    if (!u.edgeLeft || u.dead || u.embarked) continue;
+    const k = `${u.pos}>${u.edgeLeft.to}`;
+    if (!tramos.has(k)) tramos.set(k, []);
+    tramos.get(k).push(u);
+  }
+  for (const [k, ida] of tramos) {
+    const [a, b] = k.split(">");
+    const vuelta = tramos.get(`${b}>${a}`);
+    if (!vuelta || a > b) continue; // cada pareja de tramos, una sola vez
+    for (const u of ida) {
+      for (const e of vuelta) {
+        if (!u.edgeLeft || !e.edgeLeft || !chocan(state, u, e)) continue;
+        const avanceU = 1 - u.edgeLeft.minutesLeft / u.edgeLeft.total;
+        const avanceE = 1 - e.edgeLeft.minutesLeft / e.edgeLeft.total;
+        // Aún no se han encontrado: entre los dos no han cubierto el tramo
+        if (avanceU + avanceE < 1) continue;
+        const para = avanceU <= avanceE ? u : e;
+        para.edgeLeft = null;
+        para.path = [];
+        const donde = S.provinces.get(para.pos);
+        log(state, `Choque de frente: ${unitDef(u.type)?.name} y ${unitDef(e.type)?.name} se encuentran cerca de ${donde?.isSea ? "alta mar" : donde?.name}`, "war");
+      }
+    }
+  }
+}
+
 export function tickMovement(state, dt) {
+  chequearChoques(state);
   for (const u of state.units) {
     if (!u.edgeLeft) continue;
     u.edgeLeft.minutesLeft -= dt;
@@ -493,7 +539,13 @@ export function tickMovement(state, dt) {
 
     const cell = S.provinces.get(u.pos);
     if (cell?.isSea) {
-      // navegando: sin interacción con fronteras, pero encadena el siguiente tramo
+      // Navegando: el mar no tiene fronteras, pero SÍ flotas. Antes esta rama
+      // saltaba la comprobación de enemigos y un barco atravesaba una flota
+      // enemiga fondeada sin pegar un tiro. Ahora se detiene y combate.
+      if (!unitDef(u.type)?.air && enemyPresent(state, u)) {
+        u.path = [];
+        continue;
+      }
       if (u.path.length) u.edgeLeft = startEdgeFor(state, u, u.path[0]);
       else if (unitDef(u.type)?.air) landIfCarrier(state, u);
       continue;

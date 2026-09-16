@@ -5,7 +5,7 @@
 // PROVINCIA con munición infinita y cooldown; este gasta misiles de una carga
 // finita y apunta a una unidad. Los vuelos se meten en el MISMO `state.missiles`
 // (marcados con `air: true`) para que el render y el tick de vuelo sean únicos.
-import { S, unitDef, controller, atWar, distKm, log, visibleProvinces , hpFrac , maxHp } from "./state.js";
+import { S, unitDef, controller, atWar, distKm, log, visibleProvinces, hpFrac, maxHp, intelFor } from "./state.js";
 import { vetLevel } from "./combat.js";
 import { canAfford, pay } from "./economy.js";
 import { carrierBerths } from "./movement.js";
@@ -157,14 +157,18 @@ export function groundContacts(state, u) {
     .map((w) => effRange(w));
   if (!rangos.length) return [];
   const maxKm = Math.max(...rangos);
-  const fog = u.owner === state.player ? visibleProvinces(state) : null;
+  // Niebla para TODOS, no solo para el jugador. Antes un bot veía cualquier
+  // unidad de tierra dentro del alcance de sus armas —y un HARM llega a 400 km a
+  // escala de teatro—, así que disparaba a baterías que nunca había detectado.
+  // Las aeronaves no pasan por aquí: esas las ve el radar (radarContacts).
+  const fog = intelFor(state, u.owner).union;
 
   const out = [];
   for (const e of state.units) {
     if (e.dead || e.embarked || e.owner === u.owner) continue;
     if (AIR_LOADOUTS[e.type]) continue; // las aeronaves van por radar
     if (!atWar(state, u.owner, e.owner)) continue;
-    if (fog && !fog.has(e.pos)) continue;
+    if (!fog.has(e.pos)) continue;
     const p = S.provinces.get(e.pos);
     if (!p) continue;
     const km = tacticalKm(from, p);
