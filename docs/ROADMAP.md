@@ -626,3 +626,20 @@ cerraba en cuanto tocaban tierra. Ahora sigue viva.
       como debe
 - [x] `tools/test-naval.mjs` 69 PASS (5 aserciones nuevas), `test-variants.mjs` 121
       PASS. Verificado quitando el arreglo
+
+### v1.17 — El panel de provincia, por pestañas (2026-09-17)
+
+Todo iba en una tira: producción, diez edificios, sesenta variantes de recluta,
+la guarnición y la diplomacia. Para botar un barco había que rodar la rueda media
+pantalla. Ahora la caja manda sobre el contenido.
+
+- [x] **Cabecera fija** (nombre, dueño, terreno/población/VP y producción por hora
+      con sus iconos) + **pestañas**: Resumen · Obras · Reclutar · Tropas. Solo el
+      cuerpo se desliza, y la pestaña se recuerda mientras la provincia siga elegida
+- [x] **Reclutar, por categorías**: fichas (Infantería, MBT, ⚓ Fragata…) y se ve una
+      cada vez con sus tres tiers. De 50 filas y 4.200 px de rueda a **cero**
+- [x] Pestañas con aviso: ⏳ si hay obra, gradas x/2, número de fichas en la provincia
+- [x] Detalles: niveles de edificio en puntos (●●○○○), obras en curso como tarjeta con
+      barra, filas de unidad que no se salen de ancho, panel de 316 px (antes 300)
+- [x] Las obras de una provincia AJENA piden inteligencia fuerte: antes se veía la
+      grada de cualquiera sin haber mirado nunca

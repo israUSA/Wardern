@@ -257,6 +257,13 @@ function strikeButtonsFor(state, u) {
     .join("");
 }
 
+// Pestaña abierta del panel de provincia. Vive fuera de la función porque el
+// panel se repinta cuatro veces por segundo: si no, cada refresco te devolvería
+// al resumen mientras intentas reclutar.
+let ppTab = "resumen";
+let ppProv = null;
+let ppCat = null; // categoría abierta dentro de Reclutar (60 variantes no caben de una)
+
 export function updateProvincePanel(state, selId, moveUnitId) {
   const panel = $("province-panel");
   // las celdas de mar no tienen entrada dinámica, pero sí panel (flota anclada)
@@ -272,7 +279,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   if (p.isSea) {
     const units = unitsIn(state, selId).filter((u) => !u.embarked);
     let html = `<div class="pp-head"><span class="pp-name">⚓ Alta mar</span></div>`;
-    html += `<div class="pp-sub">Sector naval · las flotas viajan entre celdas de mar.</div>`;
+    html += `<div class="pp-body"><div class="pp-sub">Sector naval · las flotas viajan entre celdas de mar.</div>`;
     html += `<div class="pp-section"><h4>Flota (${units.length})</h4>`;
     if (!units.length) html += `<div class="garrison-note">Sin naves a la vista.</div>`;
     for (const u of units) {
@@ -291,7 +298,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
         <button class="btn small" data-disembark="${u.id}" ${u.cargo?.length ? "" : "disabled"}>Desembarcar</button>${strike}` : ""}
       </div>`;
     }
-    html += `</div>`;
+    html += `</div></div>`;
     if (!setPanelHTML(panel, `mar:${selId}:${moveUnitId}`, html)) return;
     drawPanelIcons(panel);
     panel.querySelectorAll("[data-move]").forEach((b) =>
@@ -323,25 +330,33 @@ export function updateProvincePanel(state, selId, moveUnitId) {
   const it = intel(state); // niveles: strong = identifica unidades, union = al menos las cuenta
   const strongIntel = it.strong.has(selId);
   const anyIntel = it.union.has(selId);
+  const ocupada = ps.occupier && ps.occupier !== ps.owner;
 
   const prod = {
-    money: Math.round((p.prod.money || 0) * (ps.occupier && ps.occupier !== ps.owner ? C.OCCUPY_SHARE : 1)),
-    supplies: Math.round(((p.prod.supplies || 0) + ps.buildings.industria * C.INDUSTRY_SUPPLIES) * (ps.occupier && ps.occupier !== ps.owner ? C.OCCUPY_SHARE : 1)),
-    fuel: Math.round((p.prod.fuel || 0) * (ps.occupier && ps.occupier !== ps.owner ? C.OCCUPY_SHARE : 1)),
-    manpower: Math.round(((p.prod.manpower || 0) + ps.buildings.reclutamiento * C.RECRUIT_MANPOWER) * (ps.occupier && ps.occupier !== ps.owner ? C.OCCUPY_SHARE : 1)),
+    money: Math.round((p.prod.money || 0) * (ocupada ? C.OCCUPY_SHARE : 1)),
+    supplies: Math.round(((p.prod.supplies || 0) + ps.buildings.industria * C.INDUSTRY_SUPPLIES) * (ocupada ? C.OCCUPY_SHARE : 1)),
+    fuel: Math.round((p.prod.fuel || 0) * (ocupada ? C.OCCUPY_SHARE : 1)),
+    manpower: Math.round(((p.prod.manpower || 0) + ps.buildings.reclutamiento * C.RECRUIT_MANPOWER) * (ocupada ? C.OCCUPY_SHARE : 1)),
   };
 
-  let html = `
+  // ---- Cabecera fija: lo que se quiere ver SIEMPRE, mires la pestaña que mires
+  const cabecera = `
     <div class="pp-head">
       <span class="pp-name">${p.name}</span>
       <span class="pp-owner" style="color:${ownerC.color}">${flagSpan(ps.owner, ownerC.color)}${ownerC.name}</span>
     </div>
-    <div class="pp-sub">
-      ${C.TERRAIN_NAMES[p.terrain] || p.terrain}${p.capital ? " · ★ Capital" : ""} ·
-      Pob. <b>${(p.pop / 1e6).toFixed(1)} M</b> · VP <b>${p.vp}</b><br>
-      Producción/h: <b>${prod.money}</b>$ · <b>${prod.supplies}</b> sumin · <b>${prod.fuel}</b> comb · <b>${prod.manpower}</b> MO
-      ${ps.occupier && ps.occupier !== ps.owner ? `<br><span style="color:var(--danger)">Ocupada por ${S.countries[ps.occupier].name} (25% producción)</span>` : ""}
-    </div>`;
+    <div class="pp-chips">
+      <span class="pp-chip">${C.TERRAIN_NAMES[p.terrain] || p.terrain}</span>
+      ${p.capital ? `<span class="pp-chip star">★ Capital</span>` : ""}
+      <span class="pp-chip">👥 ${(p.pop / 1e6).toFixed(1)} M</span>
+      <span class="pp-chip" title="Puntos de victoria">🏆 ${p.vp}</span>
+    </div>
+    <div class="pp-prod" title="Producción por hora de juego">
+      ${C.RES_INFO.map(({ key, name }) =>
+        `<div class="pp-res" title="${name} por hora">${ICONS[key] || ""}<b>${C.fmtInt(prod[key])}</b></div>`
+      ).join("")}
+    </div>
+    ${ocupada ? `<div class="pp-warn">Ocupada por ${S.countries[ps.occupier].name} · rinde el ${Math.round(C.OCCUPY_SHARE * 100)} %</div>` : ""}`;
 
   // Trabajos en curso. Son DOS colas independientes: la obra (un edificio o una
   // anexión) y las gradas de reclutamiento. Construir ya no bloquea reclutar.
@@ -357,25 +372,59 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     const thumb = esUnidad
       ? `<canvas width="42" height="34" data-symbol="${unitDef(q.type)?.icon}" data-variant="${q.type}" data-color="${S.countries[state.player].color}"></canvas>`
       : "";
-    return `<div class="queue-box" style="display:flex;align-items:center;gap:8px">${thumb}<div>${label} — ${etaText(q.minutesLeft)} restantes
+    return `<div class="queue-box">${thumb}<div>${label} — ${etaText(q.minutesLeft)} restantes
       <div class="progress"><div style="width:${pct}%"></div></div></div></div>`;
   };
-  if (ps.queue) html += trabajo(ps.queue);
-  for (const r of ps.recruits || []) html += trabajo(r);
+  // Lo que se está construyendo en una provincia AJENA no es pública: hace falta
+  // inteligencia fuerte (un dron, tropa al lado) para verla, igual que las
+  // unidades. Antes se enseñaba la grada de cualquiera sin haber mirado nunca.
+  const enObra = mine || occupiedByMe || strongIntel
+    ? [ps.queue, ...(ps.recruits || [])].filter(Boolean)
+    : [];
 
-  // Construcción y reclutamiento (solo en provincias propias controladas).
-  // La sección entera se muestra siempre: dentro, Construir se bloquea si hay
-  // obra en curso y Reclutar si las gradas están llenas, por separado.
+  // ---- Pestaña RESUMEN: en qué anda la provincia y qué hacer con el vecino
+  let resumen = "";
+  if (enObra.length) {
+    resumen += `<div class="pp-section"><h4>En marcha (${enObra.length})</h4>${enObra.map(trabajo).join("")}</div>`;
+  }
+  if (occupiedByMe && !ps.queue) {
+    const cost = ANNEX_COST(p.pop);
+    resumen += `<div class="pp-section"><h4>Integración</h4>
+      <div class="build-row"><div>Anexionar <span class="cost">${C.fmtInt(cost)}$ · 5 días</span></div>
+      <button class="btn small" id="pp-annex" ${state.countries[state.player].resources.money >= cost ? "" : "disabled"}>Anexionar</button></div></div>`;
+  }
+  // Diplomacia con el controlador extranjero
+  if (ctrl !== state.player) {
+    const war = atWar(state, state.player, ctrl);
+    // El carácter se enseña: es su postura pública (discursos, desfiles,
+    // presupuesto), no un secreto militar. Saber quién tienes al lado es parte
+    // de la partida.
+    const P = personalityOf(state, ctrl);
+    resumen += `<div class="pp-section"><h4>Diplomacia — ${S.countries[ctrl].name}</h4>
+      <div class="diplo-pers" title="${P.desc}"><span class="diplo-pers-ico">${P.icon}</span> <b>${P.name}</b>
+        <div class="diplo-pers-desc">${P.desc}</div></div>
+      <div class="diplo-row">
+        ${war
+          ? `<button class="btn small" id="pp-peace">Proponer paz</button>`
+          : `<button class="btn small danger" id="pp-war">Declarar guerra</button>`}
+      </div></div>`;
+  }
+  if (!resumen) {
+    resumen = `<div class="garrison-note">Provincia tranquila: sin obras, sin gradas ocupadas y en casa.</div>`;
+  }
+
+  // ---- Pestaña CONSTRUIR
+  let construir = "";
   if (mine) {
-    html += `<div class="pp-section"><h4>Construir</h4>`;
     const hasCoast = (S.edges.get(selId) || []).some((e) => S.provinces.get(e.to)?.isSea);
     for (const [key, b] of Object.entries(C.BUILDINGS)) {
+      const level = (ps.buildings[key] || 0);
+      const pips = `<span class="pp-pips" title="Nivel ${level} de ${b.max}">${"●".repeat(level)}${"○".repeat(b.max - level)}</span>`;
       if (key === "puerto" && !hasCoast) {
-        html += `<div class="build-row"><div>${b.name} <span class="cost">(nv 0/${b.max}) · requiere costa</span></div>
+        construir += `<div class="build-row"><div>${b.name} ${pips}<span class="cost">Requiere costa</span></div>
           <button class="btn small" disabled title="🔒 ${b.name}: esta provincia no tiene salida al mar">Construir</button></div>`;
         continue;
       }
-      const level = (ps.buildings[key] || 0);
       const maxed = level >= b.max;
       // El coste del SIGUIENTE nivel, con su `costGrowth`. Antes se pintaba el
       // coste base de nivel 0 para todo salvo la fortaleza (y a esa se le aplicaba
@@ -395,22 +444,37 @@ export function updateProvincePanel(state, selId, moveUnitId) {
         if (r.supplies < cost.supplies) falta.push(`${C.fmtInt(cost.supplies - r.supplies)} suministros`);
         why = "Recursos insuficientes: faltan " + falta.join(", ");
       }
-      html += `<div class="build-row"><div>${b.name} <span class="cost">(nv ${level}/${b.max}) · ${C.fmtInt(cost.money)}$${cost.supplies ? " + " + C.fmtInt(cost.supplies) + " sumin" : ""} · ${b.desc}</span></div>
+      construir += `<div class="build-row"><div>${b.name} ${pips}
+          <span class="cost">${maxed ? "nivel máximo" : `${C.fmtInt(cost.money)}$${cost.supplies ? " + " + C.fmtInt(cost.supplies) + " sum" : ""}`} · ${b.desc}</span></div>
         <button class="btn small" data-build="${key}" ${maxed || obraOcupada || !afford ? "disabled" : ""} ${why ? `title="${why}"` : ""}>${maxed ? "Máx" : "Construir"}</button></div>`;
     }
-    html += `</div>${recruitSection(state, selId, ps)}`;
+    if (ps.queue) construir = `<div class="pp-section">${trabajo(ps.queue)}</div>` + construir;
   }
+
+  const enGradas = ps.recruits?.length || 0;
 
   function recruitSection(state, selId, ps) {
     const iso = state.player;
     const r = state.countries[iso].resources;
     const researched = state.countries[iso].researchedTier ?? 1; // tier inicial de toda partida (newGame)
-    const enGradas = ps.recruits?.length || 0;
     const gradasLlenas = enGradas >= C.RECRUIT_SLOTS;
-    let html = `<div class="pp-section"><h4>Reclutar <span class="cost">gradas ${enGradas}/${C.RECRUIT_SLOTS}</span></h4>`;
+    let html = "";
+    if (enGradas) html += `<div class="pp-section">${(ps.recruits || []).map(trabajo).join("")}</div>`;
     if (gradasLlenas) {
       html += `<div class="garrison-note">Las ${C.RECRUIT_SLOTS} gradas están ocupadas. En cuanto salga una unidad se libera sitio.</div>`;
     }
+    // Las categorías, como fichas: 60 variantes de una tirada eran diez pantallas
+    // de rueda para llegar a los barcos. Se abre una y se ven sus tres tiers.
+    const coastalP = (S.edges.get(selId) || []).some((e) => S.provinces.get(e.to)?.isSea);
+    const cats = [
+      ...UNIT_CATEGORIES.map((c) => ({ ...c, label: c.name + (c.air ? " ✈" : "") })),
+      ...(coastalP ? NAVAL_CATEGORIES.map((c) => ({ ...c, label: "⚓ " + c.name })) : []),
+    ].filter((c) => doctrineVariants(state, iso, c.id).length);
+    if (!cats.some((c) => c.id === ppCat)) ppCat = cats[0]?.id ?? null;
+    html += `<div class="pp-cats">${cats.map((c) =>
+      `<button class="pp-catchip${c.id === ppCat ? " active" : ""}" data-ppcat="${c.id}">${c.label}</button>`
+    ).join("")}</div>`;
+
     const rowsFor = (variants) => {
       for (const u of variants) {
         const tier = u.tier ?? 1;
@@ -438,52 +502,35 @@ export function updateProvincePanel(state, selId, moveUnitId) {
           if (r.fuel < (u.cost.fuel || 0)) falta.push(`${C.fmtInt(u.cost.fuel - r.fuel)} combustible`);
           why.push("Recursos insuficientes: faltan " + falta.join(", "));
         }
-        html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sumin · ${C.fmtInt(u.cost.manpower)} MO · ${etaText(u.buildHours * 60 * C.BUILD_TIME_MULT)}${req}</span></div>
+        html += `<div class="build-row"><canvas width="42" height="34" style="flex-shrink:0" data-symbol="${u.icon}" data-variant="${u.id}" data-color="${state.countries[iso].color}"></canvas><div>${u.name} <span class="cost">T${tier} · ${C.fmtInt(u.cost.money)}$ · ${C.fmtInt(u.cost.supplies)} sum · ${C.fmtInt(u.cost.manpower)} MO · ${etaText(u.buildHours * 60 * C.BUILD_TIME_MULT)}${req}</span></div>
           <button class="btn small" data-recruit="${u.id}" ${lockedTier || lockedBase || lockedPort || gradasLlenas || !afford ? "disabled" : ""} ${why.length ? `title="${why.join("&#10;")}"` : ""}>Reclutar</button></div>`;
       }
     };
-    for (const cat of UNIT_CATEGORIES) {
-      const variants = doctrineVariants(state, iso, cat.id);
-      if (!variants.length) continue;
-      html += `<div class="cost" style="margin-top:6px"><b>${cat.name}${cat.air ? " ✈" : ""}</b></div>`;
-      rowsFor(variants);
+    const abierta = cats.find((c) => c.id === ppCat);
+    if (abierta) {
+      html += `<div class="pp-cat">${abierta.label}</div>`;
+      rowsFor(doctrineVariants(state, iso, abierta.id));
     }
-    const coastal = (S.edges.get(selId) || []).some((e) => S.provinces.get(e.to)?.isSea);
-    if (coastal) {
-      for (const cat of NAVAL_CATEGORIES) {
-        const variants = doctrineVariants(state, iso, cat.id);
-        if (!variants.length) continue;
-        html += `<div class="cost" style="margin-top:6px"><b>⚓ ${cat.name}</b></div>`;
-        rowsFor(variants);
-      }
-    }
-    html += `</div>`;
     return html;
   }
 
-  if (occupiedByMe && !ps.queue) {
-    const cost = ANNEX_COST(p.pop);
-    html += `<div class="pp-section"><h4>Integración</h4>
-      <div class="build-row"><div>Anexionar <span class="cost">${C.fmtInt(cost)}$ · 5 días</span></div>
-      <button class="btn small" id="pp-annex" ${state.countries[state.player].resources.money >= cost ? "" : "disabled"}>Anexionar</button></div></div>`;
-  }
-
+  // ---- Pestaña TROPAS: guarnición y mar de al lado
   // Guarnición con niveles de inteligencia (estilo CoN): con inteligencia fuerte
   // se ven las unidades exactas; débil (solo adyacencia) muestra contactos "?".
   const units = anyIntel ? unitsIn(state, selId).filter((u) => !u.embarked) : [];
   const shownUnits = strongIntel ? units : units.filter((u) => u.owner === state.player);
   const desconocidos = units.length - shownUnits.length;
-  html += `<div class="pp-section"><h4>Guarnición (${units.length})</h4>`;
+  let tropas = "";
   // Mover toda la guarnición propia de golpe (las paradas; las que viajan siguen su ruta)
   const movable = units.filter((u) => u.owner === state.player && !u.edgeLeft);
   if (movable.length > 1) {
-    html += `<button class="btn small" id="pp-move-all" style="margin-bottom:6px" title="Elige el destino para las ${movable.length} unidades paradas">Mover todas (${movable.length})</button>`;
+    tropas += `<button class="btn small" id="pp-move-all" style="margin-bottom:8px" title="Elige el destino para las ${movable.length} unidades paradas">Mover todas (${movable.length})</button>`;
   }
-  if (!anyIntel) html += `<div class="garrison-note">Sin inteligencia: provincia fuera de tu zona de visión.</div>`;
+  if (!anyIntel) tropas += `<div class="garrison-note">Sin inteligencia: provincia fuera de tu zona de visión.</div>`;
   else if (desconocidos > 0) {
-    html += `<div class="garrison-note">❓ Contactos sin identificar: ${desconocidos} unidad(es). Envía un dron o entra con tus tropas para identificarlas.</div>`;
+    tropas += `<div class="garrison-note">❓ Contactos sin identificar: ${desconocidos} unidad(es). Envía un dron o entra con tus tropas para identificarlas.</div>`;
   }
-  if (anyIntel && !units.length) html += `<div class="garrison-note">Sin unidades.</div>`;
+  if (anyIntel && !units.length) tropas += `<div class="garrison-note">Sin unidades.</div>`;
   for (const u of shownUnits) {
     const un = unitDef(u.type);
     if (!un) continue;
@@ -491,7 +538,7 @@ export function updateProvincePanel(state, selId, moveUnitId) {
     const color = S.countries[u.owner].color;
     const vet = vetLevel(u);
     const cargo = u.cargo?.length ? ` <span class="cost">[carga: ${u.cargo.length}]</span>` : "";
-    html += `<div class="unit-row" data-unit="${u.id}">
+    tropas += `<div class="unit-row" data-unit="${u.id}">
       <canvas width="56" height="45" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
       <div>${un.name}${vet ? ` <span style="color:#ffe9a0">${"▲".repeat(vet)}</span>` : ""}${isMine ? "" : ` <span style="color:${color}">(${S.countries[u.owner].name})</span>`}${cargo}
         <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
@@ -500,63 +547,79 @@ export function updateProvincePanel(state, selId, moveUnitId) {
       ${isMine && !u.edgeLeft ? `<button class="btn small" data-move="${u.id}" ${moveUnitId === u.id ? "disabled" : ""}>Mover</button>${strikeButtonsFor(state, u)}` : ""}
     </div>`;
   }
-  html += `</div>`;
 
   // Flota en las celdas de mar adyacentes. Los barcos se botan AL MAR, no dentro
   // de la provincia, así que sin esto construías un portaviones, mirabas el puerto
   // y no veías nada: el barco estaba en el océano de al lado, sin que nada lo dijera.
   const seaEdges = (S.edges.get(selId) || []).map((e) => e.to).filter((id) => S.provinces.get(id)?.isSea);
+  let flota = [];
   if (seaEdges.length) {
-    const fleet = [];
     for (const seaId of seaEdges) {
       for (const u of unitsIn(state, seaId)) {
         if (u.embarked) continue;
         if (u.owner !== state.player && !vis.has(seaId)) continue;
-        fleet.push(u);
+        flota.push(u);
       }
     }
-    if (fleet.length) {
-      html += `<div class="pp-section"><h4>Mar adyacente (${fleet.length})</h4>`;
-      for (const u of fleet) {
+    if (flota.length) {
+      tropas += `<div class="pp-section"><h4>Mar adyacente (${flota.length})</h4>`;
+      for (const u of flota) {
         const un = unitDef(u.type);
         if (!un) continue;
         const color = S.countries[u.owner].color;
         const mine2 = u.owner === state.player;
-        html += `<div class="unit-row" data-unit="${u.id}">
+        tropas += `<div class="unit-row" data-unit="${u.id}">
           <canvas width="56" height="45" style="flex-shrink:0" data-symbol="${un.icon}" data-variant="${u.type}" data-color="${color}"></canvas>
           <div>${un.name}${mine2 ? "" : ` <span style="color:${color}">(${S.countries[u.owner].name})</span>`}
-            <div class="cost">⚓ ${S.provinces.get(u.pos)?.isSea ? "fondeado en alta mar" : ""}</div>
+            <div class="cost">⚓ fondeado en alta mar</div>
             <div class="hpbar"><div style="width:${Math.max(0, u.hp)}%"></div></div>
           </div>
           <span class="uhp">${Math.round(u.hp)} HP</span>
         </div>`;
       }
-      html += `</div>`;
+      tropas += `</div>`;
     }
   }
 
-  // Diplomacia con el controlador extranjero
-  if (ctrl !== state.player) {
-    const war = atWar(state, state.player, ctrl);
-    // El carácter se enseña: es su postura pública (discursos, desfiles,
-    // presupuesto), no un secreto militar. Saber quién tienes al lado es parte
-    // de la partida.
-    const P = personalityOf(state, ctrl);
-    html += `<div class="pp-section"><h4>Diplomacia — ${S.countries[ctrl].name}</h4>
-      <div class="diplo-pers" title="${P.desc}"><span class="diplo-pers-ico">${P.icon}</span> <b>${P.name}</b>
-        <div class="diplo-pers-desc">${P.desc}</div></div>
-      <div class="diplo-row">
-        ${war
-          ? `<button class="btn small" id="pp-peace">Proponer paz</button>`
-          : `<button class="btn small danger" id="pp-war">Declarar guerra</button>`}
-      </div></div>`;
-  }
+  // ---- Pestañas. Antes iba todo en una tira: para reclutar un barco había que
+  // pasar por los diez edificios y las sesenta variantes de tierra. Cada cosa en
+  // la suya, y el panel no crece más que su caja.
+  const pestanas = [
+    { id: "resumen", ico: "📋", label: "Resumen", badge: enObra.length ? "⏳" : "" },
+    mine ? { id: "construir", ico: "🏗", label: "Obras", badge: ps.queue ? "⏳" : "" } : null,
+    mine ? { id: "reclutar", ico: "⚔", label: "Reclutar", badge: `${enGradas}/${C.RECRUIT_SLOTS}` } : null,
+    { id: "tropas", ico: "🛡", label: "Tropas", badge: units.length + flota.length || "" },
+  ].filter(Boolean);
+  if (ppProv !== selId) { ppTab = "resumen"; ppProv = selId; } // provincia nueva, pestaña de siempre
+  if (!pestanas.some((t) => t.id === ppTab)) ppTab = "resumen";
 
-  if (!setPanelHTML(panel, `prov:${selId}:${moveUnitId}`, html)) return;
+  const cuerpos = { resumen, construir, reclutar: mine ? recruitSection(state, selId, ps) : "", tropas };
+  const html = cabecera +
+    `<div class="pp-tabs">${pestanas.map((t) =>
+      `<button class="pp-tab${t.id === ppTab ? " active" : ""}" data-pptab="${t.id}" title="${t.label}">
+        <span class="pp-tab-ico">${t.ico}</span><span class="pp-tab-lab">${t.label}</span>${t.badge ? `<span class="pp-tab-badge">${t.badge}</span>` : ""}
+      </button>`).join("")}</div>` +
+    `<div class="pp-body">${cuerpos[ppTab] || ""}</div>`;
+
+  if (!setPanelHTML(panel, `prov:${selId}:${moveUnitId}:${ppTab}:${ppCat}`, html)) return;
 
   // Iconos de unidad en los canvas del panel
   drawPanelIcons(panel);
 
+  // La pestaña se recuerda mientras la provincia siga seleccionada, y el cambio
+  // se pinta al momento en vez de esperar al refresco del bucle.
+  panel.querySelectorAll("[data-pptab]").forEach((b) =>
+    b.addEventListener("click", () => {
+      ppTab = b.dataset.pptab;
+      updateProvincePanel(state, selId, moveUnitId);
+    })
+  );
+  panel.querySelectorAll("[data-ppcat]").forEach((b) =>
+    b.addEventListener("click", () => {
+      ppCat = b.dataset.ppcat;
+      updateProvincePanel(state, selId, moveUnitId);
+    })
+  );
   panel.querySelectorAll("[data-build]").forEach((b) =>
     b.addEventListener("click", () => hooks.onBuild(selId, b.dataset.build))
   );

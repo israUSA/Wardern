@@ -77,7 +77,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 
 /* ---- Paneles ---- */
 .panel { position: absolute; background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; backdrop-filter: blur(6px); z-index: 5; }
-#province-panel { left: 12px; top: 58px; width: 300px; max-height: calc(100% - 70px); overflow-y: auto; padding: 14px; }
+#province-panel { left: 12px; top: 58px; width: 316px; max-height: calc(100% - 70px); display: flex; flex-direction: column; overflow: hidden; padding: 0; }
 #event-log { right: 12px; top: 58px; width: 280px; max-height: 260px; overflow-y: auto; padding: 10px 12px; font-size: 12px; }
 .log-entry { padding: 3px 0; border-bottom: 1px solid #ffffff08; color: var(--text-dim); line-height: 1.4; }
 .log-entry .t { color: #5d6b7a; font-size: 10px; margin-right: 6px; }
@@ -86,19 +86,58 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 .log-entry.info { color: var(--accent); }
 
 /* ---- Panel de provincia ---- */
-.pp-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-.pp-name { font-size: 18px; font-weight: 700; }
-.pp-owner { font-size: 12px; }
+/* Cabecera: lo que no cambia de pestaña (quién manda aquí y qué produce) */
+.pp-head { display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 0; }
+.pp-name { font-size: 18px; font-weight: 700; line-height: 1.15; }
+.pp-owner { font-size: 12px; margin-left: auto; white-space: nowrap; }
+.pp-chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 14px 0; }
+.pp-chip { font-size: 11px; color: var(--text-dim); background: #ffffff0a; border: 1px solid #ffffff12; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.pp-chip.star { color: var(--accent); border-color: #d9a44140; background: #d9a44114; }
+.pp-prod { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 8px 14px 0; padding: 6px 4px; background: #0000002e; border: 1px solid #ffffff10; border-radius: 6px; }
+.pp-res { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: var(--text-dim); }
+.pp-res b { color: var(--text); font-weight: 600; }
+.pp-res svg { width: 13px; height: 13px; opacity: .85; }
+.pp-warn { margin: 8px 14px 0; font-size: 11px; color: var(--danger); background: #e0554514; border: 1px solid #e0554533; border-radius: 6px; padding: 4px 8px; }
+
+/* Pestañas: cada cosa en la suya, y el panel deja de ser una tira infinita */
+.pp-tabs { display: flex; gap: 2px; margin: 10px 10px 0; border-bottom: 1px solid var(--panel-border); }
+.pp-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; position: relative; background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--text-dim); font-family: var(--font); font-size: 10px; padding: 6px 2px 5px; cursor: pointer; border-radius: 5px 5px 0 0; }
+.pp-tab:hover { color: var(--text); background: #ffffff08; }
+.pp-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: #d9a4410f; }
+.pp-tab-ico { font-size: 14px; line-height: 1; }
+.pp-tab-lab { letter-spacing: .3px; }
+.pp-tab-badge { position: absolute; top: 2px; right: 4px; font-size: 9px; color: var(--text-dim); background: #ffffff14; border-radius: 999px; padding: 0 4px; }
+.pp-tab.active .pp-tab-badge { color: var(--accent); background: #d9a44124; }
+.pp-body { overflow-y: auto; overflow-x: hidden; padding: 10px 14px 14px; }
+.pp-body > .pp-section:first-child { margin-top: 0; }
+.pp-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin: 10px 0 2px; padding-top: 6px; border-top: 1px solid #ffffff10; }
+.pp-cat:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.pp-pips { font-size: 9px; letter-spacing: 1px; color: var(--accent); margin-left: 4px; }
+.pp-cats { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.pp-catchip { font-size: 11px; font-family: var(--font); color: var(--text-dim); background: #ffffff0a; border: 1px solid #ffffff14; border-radius: 999px; padding: 3px 9px; cursor: pointer; }
+.pp-catchip:hover { color: var(--text); background: #ffffff14; }
+.pp-catchip.active { color: #17202a; background: var(--accent); border-color: var(--accent); font-weight: 600; }
+
 .pp-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.6; }
 .pp-sub b { color: var(--text); }
 .pp-section { margin-top: 12px; }
 .pp-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 6px; }
-.build-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #ffffff08; font-size: 13px; }
-.build-row .cost { font-size: 11px; color: var(--text-dim); }
-.queue-box { margin-top: 8px; font-size: 12px; color: var(--accent); }
+.build-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #ffffff08; font-size: 13px; }
+.build-row:last-child { border-bottom: 0; }
+.build-row .cost { display: block; font-size: 11px; color: var(--text-dim); line-height: 1.35; margin-top: 1px; }
+.build-row .btn { flex-shrink: 0; }
+.queue-box { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--accent); background: #d9a4410f; border: 1px solid #d9a44126; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; }
 .progress { height: 5px; background: #0008; border-radius: 3px; margin-top: 4px; overflow: hidden; }
 .progress > div { height: 100%; background: var(--accent); }
-.unit-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid #ffffff08; font-size: 13px; }
+/* Las filas envuelven: con tres botones (mover, embarcar, desembarcar) no caben
+   en una línea de 316 px y el panel se iba de ancho. */
+.unit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 0; border-bottom: 1px solid #ffffff08; font-size: 13px; }
+.unit-row > div { min-width: 0; flex: 1 1 78px; }
+/* El sprite, un pelín más pequeño dentro del panel: con 56 px la fila de una
+   unidad propia (nombre + HP + Mover) no cabía de una línea y el botón bajaba
+   solo, gastando el doble de alto por ficha. */
+.unit-row canvas { width: 46px; height: 37px; }
+.unit-row .btn { flex-shrink: 0; }
 .unit-row canvas { background: #ffffff06; border-radius: 3px; }
 .unit-row .uhp { font-size: 11px; color: var(--text-dim); margin-left: auto; }
 .unit-row .hpbar { width: 40px; height: 4px; background: #0008; border-radius: 2px; overflow: hidden; }
