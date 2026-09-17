@@ -139,9 +139,21 @@ no salía casi nunca.
   disparaba HARM a 400 km contra baterías que no había detectado.
 
 Probado en `tools/test-variants.mjs` §8. `tools/bench-fuego.mjs` cuenta los
-disparos de una partida por arma y cuántos fueron a ciegas (debe ser 0). Con el
-código previo al reordenado: 109 salvas de obús, 10 Maverick y 0 a ciegas en 16
-días; los Tomahawk no aparecen porque en ese plazo nadie llega a tier 2.
+disparos de una partida por arma y cuántos fueron a ciegas (debe ser 0).
+
+### Medido
+
+| Partida de 16 días | Antes del reordenado | Ahora |
+|---|---|---|
+| Salvas de obús | 109 | **208** |
+| Maverick | 10 | 2 |
+| Disparos a ciegas | 0 | **0** |
+
+El obús casi dobla su fuego: disparar antes de gastar es toda la diferencia,
+porque la salva se paga en suministros y la economía los dejaba a cero. Los
+Tomahawk no aparecen en ninguna de las dos: en 16 días ningún bot llega a tier 2.
+El turno de IA al final de esa partida, con 457 unidades en juego, tiene una
+mediana de **216 ms**.
 
 ## Marina
 
@@ -272,7 +284,7 @@ a las 30 h (el transporte tarda 27), navega 48 h y **desembarca en Zulia a las
 
 Partida mixta de 16 días (dos semillas, **antes** de los arreglos de abajo): 22
 guerras, 2 de ellas por mar; 3 desembarcos planeados y **ninguno terminado**. La
-traza (`tools/diag-desembarcos.mjs`) enseñó tres atascos, ya corregidos:
+traza (`tools/diag-desembarcos.mjs`) enseñó cinco atascos, ya corregidos:
 
 - Países sin dinero para el transporte (Guatemala, Dominicana) esperaban días en
   "reunir" con la tropa reservada → ahora solo se planea si el transporte se
@@ -283,8 +295,30 @@ traza (`tools/diag-desembarcos.mjs`) enseñó tres atascos, ya corregidos:
   3 mejores playas.
 - La vuelta tras cancelar iba siempre al puerto de salida (EEUU tardó 7 días) →
   ahora va a la costa propia más cercana.
+- **Las gradas del puerto, ocupadas por el programa naval**: Colombia esperaba en
+  "reunir" con dos corbetas en grada y el transporte sin encargar, hasta caducar
+  → mientras una operación reúne, `aiNavalRecruit` no toca las gradas de SU
+  puerto (ai-naval.js). Es la razón de que en la medición siguiente el transporte
+  entre en grada a las pocas horas de planear.
+- **`AI_LANDING_GATHER_DAYS` = 3 se quedaba corto**: la operación caducaba con el
+  barco recién botado y la columna aún de camino → 5 días.
 
-**Pendiente de medir tras los arreglos** (ver ROADMAP v1.13).
+### Medido tras los arreglos
+
+Cuatro partidas de 16 días (`tools/diag-desembarcos.mjs`, mitad de los costeros
+forzados a Almirante): **3 operaciones planeadas, 2 zarparon, 1 desembarcó**, 1 se
+canceló al llegar la paz y 1 seguía en curso al acabar la partida. Ningún error de
+IA en las cuatro.
+
+La que salió bien, paso a paso: Venezuela planea sobre Jamaica a las **304 h**,
+encarga el transporte a las 312, embarca y zarpa a las **336** y **desembarca 3
+unidades en Jamaica a las 362 h** — 58 h de principio a fin. La que se canceló
+(Colombia sobre Galápagos) hizo lo que debía: firmada la paz a media travesía,
+dio media vuelta y desembarcó en casa.
+
+Que solo haya 3 operaciones en 64 días de juego es lo esperado, no un fallo: casi
+todas las guerras son con vecinos, y ahí la tropa llega andando. El desembarco es
+para el enemigo al que no se puede llegar de otra forma.
 
 ### Lo que no hace (todavía)
 

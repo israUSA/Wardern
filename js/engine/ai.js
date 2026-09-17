@@ -318,7 +318,10 @@ function aiMilitary(state, iso, battles, vis) {
   for (const u of myUnits) {
     if (!u.task) continue;
     if (u.task.kind === "defend" && !isBorder(state, u.task.pid, iso)) u.task = null;
-    if (u.task.kind === "attack") {
+    // else: la rama de arriba puede haber dejado la tarea en null. Antes nunca
+    // llegaba aquí una `defend` —se perdía al ordenar el movimiento— y el fallo
+    // no se veía; con la tarea ya viva, sin el else esto revienta el turno.
+    else if (u.task.kind === "attack") {
       const ctrl = controller(state.provinces[u.task.pid]);
       if (!atWar(state, iso, ctrl)) u.task = null;
     }
@@ -341,8 +344,11 @@ function aiMilitary(state, iso, battles, vis) {
     for (let k = 0; k < need; k++) {
       const u = nearestIdle(state, iso, idle, p.id);
       if (!u) break;
-      u.task = { kind: "defend", pid: p.id };
-      if (!orderMove(state, u, p.id)) u.task = null;
+      // La tarea se marca DESPUÉS de mover: orderMove borra u.task, así que
+      // asignarla antes la perdía siempre. Y como nearestIdle salta a las
+      // unidades con tarea, sin esto la misma ficha se repartía entre varias
+      // provincias en el mismo turno y solo valía el último destino.
+      if (orderMove(state, u, p.id)) u.task = { kind: "defend", pid: p.id };
     }
   }
 
@@ -379,11 +385,13 @@ function aiMilitary(state, iso, battles, vis) {
     if (!send) continue;
 
     ready.sort((a, b) => (b.hp - a.hp));
-    for (let i = 0; i < send; i++) {
-      const u = ready[i];
-      if (!u) break;
-      u.task = { kind: "attack", pid };
-      if (!orderMove(state, u, pid)) u.task = null;
+    let enviadas = 0;
+    for (const u of ready) {
+      if (enviadas >= send) break;
+      if (u.task) continue; // ya tiene destino de este turno (guarnición u otro asalto)
+      if (!orderMove(state, u, pid)) continue;
+      u.task = { kind: "attack", pid }; // después de mover, por lo mismo que arriba
+      enviadas++;
     }
   }
 }

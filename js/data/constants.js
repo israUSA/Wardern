@@ -332,7 +332,13 @@ export const AI_LANDING_MAX_DAYS = 8;
 export const AI_LANDING_COOLDOWN_DAYS = 2;
 // Días que puede durar la fase de reunir (transportes y tropa al puerto): la
 // tropa reservada no pelea en tierra, así que no puede quedarse esperando.
-export const AI_LANDING_GATHER_DAYS = 3;
+// 3 días se quedaban cortos: con el transporte en grada y la tropa aún de
+// camino al puerto, la operación caducaba justo antes de embarcar (medido: 16
+// días de partida, 1 operación planeada y 0 ejecutadas). Con 5 días —y con las
+// gradas del puerto reservadas para el transporte, ver ai-naval.js— da tiempo a
+// botar el barco y a que llegue la columna, sin dejar la tropa apartada de la
+// guerra en tierra media partida.
+export const AI_LANDING_GATHER_DAYS = 5;
 // Horas máximas de travesía del puerto a la playa, por la ruta navegada real
 // (la línea recta engaña: un puerto en el otro océano da la vuelta al continente).
 export const AI_LANDING_SAIL_HOURS = 72;

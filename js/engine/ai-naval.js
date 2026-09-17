@@ -89,7 +89,15 @@ function navalQueued(state, iso) {
 export function aiNavalRecruit(state, iso, P, ownCount) {
   if (!P.navy || Math.random() >= P.navy) return false;
   if (navalUnitsOf(state, iso).length + navalQueued(state, iso) >= fleetCap(state, iso, P, ownCount)) return false;
+  // Un desembarco en marcha manda sobre el programa naval: mientras reúne la
+  // fuerza, las gradas de SU puerto son para el transporte. Llenárselas de
+  // corbetas era lo que dejaba la operación sin barco hasta que caducaba
+  // (medido: 16 días, 1 operación planeada, 0 ejecutadas; Colombia esperando en
+  // el puerto con dos corbetas en grada).
+  const op = state.countries[iso].aiLanding;
+  const reservado = op?.phase === "reunir" ? op.port : null;
   const puerto = coastalProvinces(state, iso).find((p) => {
+    if (p.id === reservado) return false;
     const ps = state.provinces[p.id];
     return ps.buildings.puerto > 0 && (ps.recruits?.length || 0) < C.RECRUIT_SLOTS;
   });

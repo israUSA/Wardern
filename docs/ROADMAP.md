@@ -523,7 +523,7 @@ subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
       encuentros se verificaron reintroduciendo el fallo: fallan sin el arreglo
 - [x] Herramientas nuevas: `tools/bench-fuego.mjs`, `tools/diag-desembarcos.mjs`
 
-**Pendiente** (las dos primeras, hechas en v1.14)
+**Pendiente** (las dos primeras, hechas en v1.14; el resto, en v1.15)
 
 - [x] **Patrulla que se reanuda sola** (estilo CoN): al agotarse una patrulla el
       aparato vuelve a base (`tickAirPatrol` → `orderReturnToBase`, movement.js); al
@@ -544,13 +544,13 @@ subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
         corre para bots). Los que estén patrullando deberían atacar solos lo que
         tengan a tiro, con la misma lógica (`mejorDisparo`) y la misma cadencia
         (un misil por aparato por chequeo de IA)
-- [ ] Re-medir desembarcos con los arreglos (`tools/diag-desembarcos.mjs`) y fuego
+- [x] Re-medir desembarcos con los arreglos (`tools/diag-desembarcos.mjs`) y fuego
       con el reordenado (`tools/bench-fuego.mjs`), y poner las cifras en docs/IA.md
-- [ ] `AI_LANDING_GATHER_DAYS` = 3 puede ser corto: en la última traza EEUU canceló
+- [x] `AI_LANDING_GATHER_DAYS` = 3 puede ser corto: en la última traza EEUU canceló
       con el transporte AÚN EN GRADA porque las dos gradas del puerto estaban
       ocupadas con corbetas. Opciones: 4–5 días, o que el plazo empiece a contar
       cuando el transporte ya esté encargado
-- [ ] Deuda vista de paso, sin tocar: en `aiMilitary` la tarea `defend` se pierde
+- [x] Deuda vista de paso, sin tocar: en `aiMilitary` la tarea `defend` se pierde
       siempre, porque `orderMove` borra `u.task` y se asigna antes de llamarlo
       (`u.task = …; if (!orderMove(…))`). El bloque que "libera tareas" nunca ve una
       `defend`. Igual que en `mandar` de ai-naval.js, habría que asignarla después
@@ -581,3 +581,29 @@ en los dos casos: dar una **misión**, no un clic (`js/engine/standing.js`).
 **Sigue pendiente** del relevo: re-medir desembarcos y fuego con las cifras en
 docs/IA.md, revisar `AI_LANDING_GATHER_DAYS` = 3, y la deuda de la tarea `defend`
 en `aiMilitary` (detalle en v1.13).
+
+### v1.15 — Cierre del relevo: desembarcos que llegan a la playa (2026-09-17)
+
+Lo que quedaba de la lista de v1.13, medido y cerrado.
+
+- [x] **La tarea `defend` ya no se pierde**: se marca DESPUÉS de `orderMove` (que
+      borra `u.task`). No era solo cosmético: como `nearestIdle` salta a las fichas
+      con tarea, la misma unidad se repartía entre varias provincias en el mismo
+      turno y solo valía el último destino. Igual en el bloque de asalto
+- [x] **Fallo encontrado al arreglar lo anterior**: con la `defend` viva, el bucle
+      que caduca tareas leía `u.task.kind` después de haberla puesto a `null`, y
+      reventaba el turno de ese país (lo tapaba el `try/catch` de `aiTickAll`).
+      Arreglado con un `else if` y con prueba que espía `console.error`
+- [x] **Las gradas del puerto son de la operación** mientras reúne: el programa
+      naval no las ocupa (`aiNavalRecruit`). Era la causa real de que las
+      operaciones caducaran sin barco
+- [x] `AI_LANDING_GATHER_DAYS` 3 → **5 días**
+- [x] **Re-medido**: fuego, 208 salvas de obús en 16 días (antes 109) y 0 disparos a
+      ciegas; desembarcos, 4 partidas → 3 operaciones, 2 zarparon, **1 desembarcó**
+      (Venezuela sobre Jamaica, 58 h de principio a fin). Cifras en docs/IA.md
+- [x] `tools/test-variants.mjs` 121 PASS (§11 nueva), `tools/test-naval.mjs` 64 PASS.
+      Las tres pruebas nuevas se verificaron reintroduciendo el fallo
+- [x] `tools/diag-desembarcos.mjs` ahora dice cómo acabó cada operación y resume la
+      partida
+
+Con esto no queda nada pendiente del relevo de v1.13.

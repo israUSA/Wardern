@@ -550,6 +550,22 @@ section("[7] IA naval (js/engine/ai-naval.js, docs/IA.md §Marina)");
     check("una costa enemiga fuera de su radio de maniobra no le hace zarpar",
       mio.path.length === 0, `desde ${costaMex}: ruta de ${mio.path.length} celdas`);
   }
+  // --- un desembarco en marcha manda sobre el programa naval ---
+  {
+    const st = newGame("GRL");
+    rico(st, "MEX");
+    const p = conPuerto(st, "MEX"); // su único puerto
+    const P2 = siempre(PERSONALITIES.almirante);
+    st.countries.MEX.aiLanding = { phase: "reunir", port: p.id, troops: [], transports: [] };
+    let n = 0;
+    for (let i = 0; i < 20; i++) if (AN.aiNavalRecruit(st, "MEX", P2, 30)) n++;
+    check("mientras un desembarco reúne, no se ocupan las gradas de SU puerto",
+      n === 0 && enGrada(st).length === 0, `${n} barcos, ${enGrada(st).length} en grada`);
+    // Ya navegando, el puerto vuelve a ser suyo
+    st.countries.MEX.aiLanding.phase = "navegar";
+    check("con la operación ya navegando, el puerto vuelve al programa naval",
+      AN.aiNavalRecruit(st, "MEX", P2, 30), `en grada: ${enGrada(st).map((r) => r.type).join(",")}`);
+  }
   {
     const st = newGame("GRL");
     declareWar(st, "MEX", "GTM");

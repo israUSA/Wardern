@@ -19,6 +19,7 @@
 //   [8] Fuego a distancia de los bots, solo contra lo que ven
 //   [9] Encuentros en ruta: quien se cruza con el enemigo, pelea
 //  [10] Órdenes permanentes: patrulla en bucle y fuego constante
+//  [11] Órdenes de la IA en tierra: la tarea sobrevive a orderMove
 // Sale con código 1 si alguna aserción obligatoria falla.
 // Requiere Node >= 22 (detección de sintaxis ESM en .js sin package.json).
 // =====================================================================
@@ -876,6 +877,52 @@ try {
   }
 } catch (e) {
   check("órdenes permanentes sin excepciones", false, e.stack);
+}
+
+// ---------- [11] Órdenes de la IA en tierra ----------
+section("[11] Órdenes de la IA en tierra: la tarea sobrevive a la orden de movimiento");
+try {
+  const { newGame, spawnUnit, declareWar, S } = await import("../js/engine/state.js");
+  const { aiTickAll } = await import("../js/engine/ai.js");
+
+  // Un bot en guerra, con UNA sola ficha ociosa tierra adentro: la guarnición se
+  // la lleva a una frontera. Antes la tarea se asignaba ANTES de orderMove, que
+  // la borra, así que se perdía siempre... y la misma ficha podía repartirse
+  // entre varias provincias en el mismo turno, valiendo solo el último destino.
+  const st = newGame("GRL");
+  for (const i in st.countries) if (i !== "GRL") st.countries[i].personality = "tortuga";
+  st.units = st.units.filter((u) => u.owner !== "MEX" && u.owner !== "GTM");
+  declareWar(st, "MEX", "GTM");
+  const interior = S.provinceList.find(
+    (p) => !p.isSea && p.country === "MEX" &&
+      (S.edges.get(p.id) || []).every((e) => S.provinces.get(e.to)?.country === "MEX")
+  );
+  const u = spawnUnit(st, "MEX", "occ-1-infanteria", interior.id);
+  aiTickAll(st);
+  const destino = u.path.at(-1);
+  check("la ficha que sale a guarnecer conserva su tarea, y la tarea es su destino",
+    u.task?.kind === "defend" && !!destino && u.task.pid === destino,
+    `desde ${interior.id} · tarea ${u.task?.kind ?? "ninguna"} → ${u.task?.pid ?? "-"} · ruta a ${destino ?? "ninguna"}`);
+  // Una guarnición cuya provincia ya no es frontera caduca en el mismo bucle que
+  // revisa los asaltos. aiTickAll se traga las excepciones de cada país con un
+  // console.error, así que aquí se espían: un turno que revienta no debe pasar
+  // por verde.
+  {
+    const st2 = newGame("GRL");
+    for (const i in st2.countries) if (i !== "GRL") st2.countries[i].personality = "tortuga";
+    declareWar(st2, "MEX", "GTM");
+    const v = st2.units.find((x) => x.owner === "MEX" && !x.embarked);
+    v.task = { kind: "defend", pid: interior.id }; // tierra adentro: ya no es frontera
+    const errores = [];
+    const orig = console.error;
+    console.error = (...a) => errores.push(String(a[0]) + " " + String(a[1] ?? ""));
+    try { aiTickAll(st2); } finally { console.error = orig; }
+    check("una guarnición que ya no hace falta caduca sin reventar el turno de la IA",
+      errores.length === 0 && v.task?.kind !== "defend",
+      errores.length ? errores[0] : `tarea ${v.task?.kind ?? "ninguna"}`);
+  }
+} catch (e) {
+  check("órdenes de la IA en tierra sin excepciones", false, e.stack);
 }
 
 // ---------- Resumen ----------
