@@ -371,6 +371,18 @@ const hooks = {
     if (orderStop(state, u)) UI.toast("Orden cancelada: se detendrá al final del tramo actual");
     updateUI();
   },
+  // Cancelar la orden permanente sin mover la unidad ni perder su posición:
+  // el alto el fuego de una batería y el fin del bucle de una patrulla.
+  onCease(unitId) {
+    const u = state?.units.find((x) => x.id === unitId && !x.dead);
+    if (!u?.standing) return;
+    const patrulla = u.standing.kind === "patrol";
+    u.standing = null;
+    UI.toast(patrulla
+      ? "Patrulla permanente cancelada: al agotarse volverá a base y ahí se queda"
+      : "Alto el fuego: la pieza deja de batir el blanco");
+    updateUI();
+  },
   onCenter(pid) {
     renderer?.centerOn(pid);
   },
@@ -796,7 +808,14 @@ function issueAttack(ids, target) {
   for (const u of unidades) {
     if (!canShell(u.type)) { aPie.push(u); continue; }
     const r = shellUnit(state, u, target);
-    if (r.ok) salvas.push(u);
+    if (r.ok) {
+      salvas.push(u);
+      // Fuego constante: la pieza sigue batiendo al mismo blanco salva tras
+      // salva (js/engine/standing.js) hasta que se le dé otra orden, el blanco
+      // muera o se salga del alcance. Es lo que evita tener que pulsar
+      // "Atacar" cada vez que termina la recarga.
+      u.standing = { kind: "fire", targetId: target.id };
+    }
     else if (shellDistance(state, u, target.pos) > artilleryRange(u.type)) aPie.push(u); // lejos: que se acerque
     else fallos.push(r.msg); // en alcance pero no puede: recarga, munición, sin vista
   }
@@ -817,8 +836,8 @@ function issueAttack(ids, target) {
   if (salvas.length) {
     const km = Math.round(shellDistance(state, salvas[0], target.pos));
     partes.push(salvas.length > 1
-      ? `${salvas.length} piezas abren fuego sobre ${nombre}`
-      : `Fuego sobre ${nombre} a ${km} km, sin moverse`);
+      ? `${salvas.length} piezas baten a ${nombre} hasta nueva orden`
+      : `Fuego sobre ${nombre} a ${km} km, sin moverse · seguirá tirando`);
   }
   if (ok) partes.push(ok > 1 ? `${ok} unidades van a por él` : `Una unidad va a por él`);
   if (quietas.length) partes.push(`la formación mantiene posición`);

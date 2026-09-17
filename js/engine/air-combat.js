@@ -571,32 +571,46 @@ export function launchFromCarrier(state, aircraftId) {
 // blanco donde su mejor arma tiene más Pk y respeta munición, alcance y tránsito.
 export function aiAirCombat(state, iso) {
   for (const u of state.units) {
-    if (u.dead || u.owner !== iso || u.edgeLeft || u.embarked) continue;
-    const L = AIR_LOADOUTS[u.type];
-    if (!L) continue;
-    const ammo = ensureAmmo(u);
+    if (u.owner !== iso) continue;
+    autoEngage(state, u);
+  }
+}
 
-    // 1) Amenaza aérea primero: un caza enemigo cerca es lo más urgente.
-    // El alcance se calcula ANTES de escanear: un avión con los raíles vacíos no
-    // recorre la lista de unidades (barato ahora, imprescindible a 400 unidades).
-    const rAA = maxRange(L, ammo, "aa");
-    if (rAA > 0) {
-      const aire = radarContacts(state, u).filter((c) => c.km <= rAA);
-      const disparo = aire.length ? mejorDisparo(state, u, ammo, aire, "aa") : null;
-      if (disparo) {
-        fireAirWeapon(state, u.id, disparo.weaponId, disparo.targetId);
-        continue; // un misil por avión y por ciclo de IA
-      }
-    }
+// Un aparato elige blanco y dispara por su cuenta: UN misil por ciclo. Es el
+// corazón del combate aéreo automático, y lo comparten los bots (aiAirCombat) y
+// las patrullas del jugador (js/engine/standing.js): las reglas de detección,
+// alcance y munición son exactamente las mismas para los dos bandos.
+// Devuelve true si ha disparado.
+export function autoEngage(state, u) {
+  if (u.dead || u.edgeLeft || u.embarked) return false;
+  const L = AIR_LOADOUTS[u.type];
+  if (!L) return false;
+  const ammo = ensureAmmo(u);
 
-    // 2) Si no hay aire, castigar superficie
-    const rAS = maxRange(L, ammo, "as");
-    if (rAS > 0) {
-      const suelo = groundContacts(state, u).filter((c) => c.km <= rAS);
-      const disparo = suelo.length ? mejorDisparo(state, u, ammo, suelo, "as") : null;
-      if (disparo) fireAirWeapon(state, u.id, disparo.weaponId, disparo.targetId);
+  // 1) Amenaza aérea primero: un caza enemigo cerca es lo más urgente.
+  // El alcance se calcula ANTES de escanear: un avión con los raíles vacíos no
+  // recorre la lista de unidades (barato ahora, imprescindible a 400 unidades).
+  const rAA = maxRange(L, ammo, "aa");
+  if (rAA > 0) {
+    const aire = radarContacts(state, u).filter((c) => c.km <= rAA);
+    const disparo = aire.length ? mejorDisparo(state, u, ammo, aire, "aa") : null;
+    if (disparo) {
+      fireAirWeapon(state, u.id, disparo.weaponId, disparo.targetId);
+      return true; // un misil por avión y por ciclo
     }
   }
+
+  // 2) Si no hay aire, castigar superficie
+  const rAS = maxRange(L, ammo, "as");
+  if (rAS > 0) {
+    const suelo = groundContacts(state, u).filter((c) => c.km <= rAS);
+    const disparo = suelo.length ? mejorDisparo(state, u, ammo, suelo, "as") : null;
+    if (disparo) {
+      fireAirWeapon(state, u.id, disparo.weaponId, disparo.targetId);
+      return true;
+    }
+  }
+  return false;
 }
 
 function maxRange(L, ammo, tipo) {

@@ -275,6 +275,40 @@ Verificado en `tools/test-variants.mjs` §5b (6 aserciones): clasificación, el 
 encuadrado aguanta 221 ticks contra 185, el ritmo de daño a cubierto es exactamente 0,25
 del descubierto, la pila de solo apoyo no cambia, y el fuego aéreo lo ignora.
 
+## Órdenes permanentes: fuego constante (v1.14)
+
+Una salva no se pedía una vez, se pedía **cada 45 minutos de juego**. Batir una
+posición durante un día entero eran treinta clics en el mismo botón, y perder un
+duelo de artillería consistía casi siempre en haber mirado a otro lado. Esto es
+lo mismo que hace el fuego continuado de Conflict of Nations: se apunta una vez y
+la pieza sigue.
+
+`⚔ Atacar` con una pieza que tiene el blanco a tiro deja una **orden permanente**
+en `u.standing = { kind: "fire", targetId }` (`js/engine/standing.js`). A partir
+de ahí, cada vez que termina la recarga la pieza vuelve a disparar sobre el mismo
+blanco, sin tocar nada.
+
+El fuego se corta **solo** en cuatro casos, y los cuatro son el final natural de
+la misión, no un despiste:
+
+| Se para porque… | Qué pasa |
+|---|---|
+| El blanco muere o desaparece | Alto el fuego, con aviso en el registro |
+| El blanco sale del alcance | Alto el fuego, con aviso |
+| Llega la paz, o el blanco embarca | Alto el fuego |
+| La pieza se pone en marcha | Deja de estar en batería: el tiro se corta |
+
+Quedarse **sin munición o sin observación no cancela la orden**: son estados
+pasajeros. La pieza calla y vuelve a tirar en cuanto haya suministros o alguien
+que vea el blanco otra vez, que es exactamente lo que se espera de una batería.
+
+Cualquier orden nueva la borra (`orderMove`, `orderStop`, "Volver a base"), y el
+botón **✋ Alto el fuego** de la ficha la cancela sin mover la pieza del sitio. La
+ficha dice en todo momento a quién está batiendo.
+
+Verificado en `tools/test-variants.mjs` §10: cuatro salvas seguidas en 200 minutos
+sin volver a pulsar, una sola salva sin la orden, y los dos cortes automáticos.
+
 ## Counters (duelos 1v1 en llanura, sin fortaleza, verificados por doctrina y tier)
 
 - **Triángulo terrestre**: MBT > Infantería > Cazatanques > MBT.

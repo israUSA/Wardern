@@ -206,6 +206,14 @@ export const MOVE_SPEED_MULT = 1.5;
 // 5 min reales de margen para reaccionar antes de que se retire por su cuenta.
 export const AIR_PATROL_MINUTES = 8 * 60;
 
+// Escala en pista entre dos patrullas seguidas cuando el aparato lleva orden
+// permanente (js/engine/standing.js): repostar, revisar y volver a salir. 1 h de
+// juego es poco más de medio minuto real a 1x, lo justo para que se vea el ciclo
+// —el avión aparece posado en su base— sin que la cobertura se venga abajo.
+// Reponer los misiles gastados va aparte y suele tardar bastante más: el ciclo
+// no relanza la patrulla hasta tener los raíles llenos.
+export const PATROL_TURNAROUND_MIN = 60;
+
 // Radio de acción aéreo, en km, medido en línea recta desde la base de la que
 // sale el aparato (aeródromo propio con pista, o portaviones propio para la
 // aviación embarcada). Es lo que sustituye a la vieja regla de "el espacio aéreo

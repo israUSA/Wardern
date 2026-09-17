@@ -30,6 +30,7 @@ wardern/
 │   │   ├── movement.js    # Dijkstra sobre vecinos+estrechos, avance de unidades
 │   │   ├── combat.js      # batallas por tick, moral, retiradas, captura
 │   │   ├── ai.js          # bots de país
+│   │   ├── standing.js    # órdenes permanentes: patrulla en bucle, fuego constante
 │   │   └── sim.js         # orquesta el tick: tiempo→economía→movimiento→combate→IA
 │   ├── render/
 │   │   ├── renderer.js    # proyección Mercator, polígonos, unidades, órdenes

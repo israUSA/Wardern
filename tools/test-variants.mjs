@@ -18,6 +18,7 @@
 //   [7] Smoke E2E: mapa real + newGame + ticks del motor
 //   [8] Fuego a distancia de los bots, solo contra lo que ven
 //   [9] Encuentros en ruta: quien se cruza con el enemigo, pelea
+//  [10] Órdenes permanentes: patrulla en bucle y fuego constante
 // Sale con código 1 si alguna aserción obligatoria falla.
 // Requiere Node >= 22 (detección de sintaxis ESM en .js sin package.json).
 // =====================================================================
@@ -726,6 +727,155 @@ try {
   }
 } catch (e) {
   check("encuentros en ruta sin excepciones", false, e.stack);
+}
+
+// ---------- [10] Órdenes permanentes ----------
+section("[10] Órdenes permanentes: patrulla en bucle y fuego constante (js/engine/standing.js)");
+try {
+  const { newGame, spawnUnit, declareWar, S } = await import("../js/engine/state.js");
+  const { orderPatrol, orderMove, orderReturnToBase, tickMovement, tickAirPatrol } = await import("../js/engine/movement.js");
+  const { tickStanding, patrolAutoFire } = await import("../js/engine/standing.js");
+  const { tickMissiles } = await import("../js/engine/missiles.js");
+  const { tickRearm } = await import("../js/engine/air-combat.js");
+  const { shellUnit } = await import("../js/engine/artillery.js");
+
+  // Solo los ticks implicados: sin IA ni economía que muevan las fichas por su
+  // cuenta a mitad de la comprobación.
+  const avanzar = (st, dt) => {
+    st.time += dt;
+    tickMovement(st, dt);
+    tickAirPatrol(st, dt);
+    tickStanding(st, dt);
+    tickMissiles(st, dt);
+    tickRearm(st, dt);
+  };
+
+  // --- patrulla que se reanuda sola ---
+  const BASE = "mex-chiapas";
+  const DESTINO = (S.edges.get(BASE) || []).map((e) => e.to)
+    .find((t) => !S.provinces.get(t)?.isSea && S.provinces.get(t)?.country === "MEX");
+  const escenaAerea = () => {
+    const st = newGame("MEX"); // el jugador es México: valen sus reglas, no las del bot
+    st.units = st.units.filter((u) => u.owner !== "MEX");
+    Object.assign(st.countries.MEX.resources, { money: 1e6, supplies: 1e5, fuel: 1e5, manpower: 1e5 });
+    st.provinces[BASE].buildings.aerobase = 1;
+    return { st, caza: spawnUnit(st, "MEX", "occ-1-caza", BASE) };
+  };
+  {
+    const { st, caza } = escenaAerea();
+    const ok = orderPatrol(st, caza, DESTINO);
+    check("patrullar deja una orden permanente con el sector anotado",
+      ok && caza.standing?.kind === "patrol" && caza.standing.pid === DESTINO,
+      `standing ${JSON.stringify(caza.standing)}`);
+  }
+  {
+    // El regreso a repostar NO es una orden del jugador: la misión sobrevive
+    const { st, caza } = escenaAerea();
+    orderPatrol(st, caza, DESTINO);
+    let vuelta = false;
+    for (let i = 0; i < 400 && !vuelta; i++) {
+      avanzar(st, 5);
+      vuelta = !caza.task && (!!caza.edgeLeft || caza.path.length > 0); // volviendo sin misión
+    }
+    check("al agotarse la patrulla vuelve a base SIN perder la orden permanente",
+      vuelta && caza.standing?.kind === "patrol", `standing ${caza.standing?.kind ?? "ninguna"}`);
+  }
+  {
+    const { st, caza } = escenaAerea();
+    orderPatrol(st, caza, DESTINO);
+    let salidas = 0, aterrizajes = 0, prev = null;
+    for (let i = 0; i < 700; i++) { // 700 × 5 min ≈ 58 h de juego
+      avanzar(st, 5);
+      const ahora = caza.task?.kind === "patrol" ? "patrulla"
+        : (caza.edgeLeft || caza.path.length) ? "vuelo" : "parada";
+      if (ahora === "patrulla" && prev !== "patrulla") salidas++;
+      if (ahora === "parada" && prev === "vuelo" && caza.pos === BASE) aterrizajes++;
+      prev = ahora;
+    }
+    check("el ciclo se repite solo: sale, se agota, reposta en base y vuelve a salir",
+      salidas >= 2 && aterrizajes >= 1, `${salidas} salidas · ${aterrizajes} aterrizajes en 58 h`);
+  }
+  {
+    const { st, caza } = escenaAerea();
+    orderPatrol(st, caza, DESTINO);
+    orderMove(st, caza, DESTINO); // una orden de movimiento corriente, no de patrulla
+    const trasMover = caza.standing;
+    orderPatrol(st, caza, DESTINO);
+    orderReturnToBase(st, caza);
+    check("una orden nueva o 'Volver a base' cancelan la patrulla permanente",
+      !trasMover && !caza.standing, `mover ${!!trasMover} · volver ${!!caza.standing}`);
+  }
+
+  // --- fuego constante de la artillería ---
+  const escenaArty = () => {
+    const st = newGame("MEX");
+    st.units = st.units.filter((u) => u.owner !== "MEX" && u.owner !== "GTM");
+    declareWar(st, "MEX", "GTM");
+    Object.assign(st.countries.MEX.resources, { money: 1e6, supplies: 1e5 });
+    const pieza = spawnUnit(st, "MEX", "occ-1-artilleria", BASE);
+    spawnUnit(st, "MEX", "occ-1-motorizada", BASE); // ojos: sin observación no hay tiro
+    const blanco = spawnUnit(st, "GTM", "occ-1-infanteria", "gtm-alta-verapaz");
+    return { st, pieza, blanco };
+  };
+  // Cuenta las salvas por los saltos de la recarga: el proyectil desaparece al impactar
+  const tirar = (st, pieza, min, paso = 5) => {
+    let salvas = 0, prevCd = pieza.artyCd || 0;
+    for (let i = 0; i < min / paso; i++) {
+      avanzar(st, paso);
+      const cd = pieza.artyCd || 0;
+      if (cd > prevCd) salvas++;
+      prevCd = cd;
+    }
+    return salvas;
+  };
+  {
+    const { st, pieza, blanco } = escenaArty();
+    const r = shellUnit(st, pieza, blanco);
+    pieza.standing = { kind: "fire", targetId: blanco.id }; // lo que deja el botón ⚔ Atacar
+    const salvas = tirar(st, pieza, 200);
+    check("con fuego constante, la pieza repite salva cada recarga sin volver a pulsar nada",
+      r.ok && salvas >= 3, `primera ${r.ok} · ${salvas} salvas más en 200 min (recarga ${C.ARTY_COOLDOWN_MIN} min)`);
+  }
+  {
+    // Control: sin la orden permanente, una salva es UNA salva
+    const { st, pieza, blanco } = escenaArty();
+    shellUnit(st, pieza, blanco);
+    check("sin la orden permanente, dispara una sola vez", tirar(st, pieza, 200) === 0);
+  }
+  {
+    const { st, pieza, blanco } = escenaArty();
+    shellUnit(st, pieza, blanco);
+    pieza.standing = { kind: "fire", targetId: blanco.id };
+    blanco.dead = true;
+    tickStanding(st, 5);
+    check("si el blanco desaparece, el fuego se corta solo", !pieza.standing);
+  }
+  {
+    const { st, pieza, blanco } = escenaArty();
+    shellUnit(st, pieza, blanco);
+    pieza.standing = { kind: "fire", targetId: blanco.id };
+    blanco.pos = S.provinceList.find((p) => !p.isSea && p.country === "ARG").id;
+    tickStanding(st, 5);
+    check("si el blanco sale del alcance, el fuego se corta solo", !pieza.standing, `en ${blanco.pos}`);
+  }
+
+  // --- tus patrullas disparan solas ---
+  {
+    const st = newGame("MEX");
+    st.units = st.units.filter((u) => u.owner !== "MEX" && u.owner !== "GTM");
+    declareWar(st, "MEX", "GTM");
+    const caza = spawnUnit(st, "MEX", "occ-2-caza", BASE);
+    spawnUnit(st, "GTM", "occ-1-caza", "gtm-alta-verapaz");
+    patrolAutoFire(st);
+    const aparcado = (st.missiles || []).length;
+    caza.task = { kind: "patrol", minutesLeft: 400 };
+    patrolAutoFire(st);
+    const patrullando = (st.missiles || []).length;
+    check("tus cazas disparan solos SOLO con orden de patrulla, un misil por ciclo",
+      aparcado === 0 && patrullando === 1, `aparcado ${aparcado} · patrullando ${patrullando}`);
+  }
+} catch (e) {
+  check("órdenes permanentes sin excepciones", false, e.stack);
 }
 
 // ---------- Resumen ----------

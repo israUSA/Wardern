@@ -460,6 +460,41 @@ busca de barcos enemigos sin tener flota allí.
 Moverse a un sector de mar **para quedarse** sigue exigiendo un portaviones
 propio parado con plaza libre: eso no ha cambiado.
 
+### Patrulla permanente y fuego automático (v1.14)
+
+Una patrulla se agotaba, el aparato volvía a base **y ahí se quedaba**. Mantener
+un sector cubierto era acordarse de volver a darle la orden cada ocho horas de
+juego. Ahora la patrulla es una **misión**, no un viaje.
+
+`orderPatrol()` deja `u.standing = { kind: "patrol", pid }`, y
+`js/engine/standing.js` cierra el ciclo:
+
+1. El aparato patrulla sus `AIR_PATROL_MINUTES`.
+2. Al agotarse vuelve a base. **El regreso no cancela la misión**: `tickAirPatrol`
+   se guarda la orden permanente, porque repostar no es una orden del jugador.
+3. En pista espera `PATROL_TURNAROUND_MIN` (1 h de juego) **y a tener los raíles
+   llenos**: si gastó misiles, no sale hasta que `tickRearm` los repone. Salir sin
+   munición es regalar el aparato.
+4. Despega otra vez hacia el mismo sector, y vuelta a empezar.
+
+Se corta con cualquier orden nueva, con **🛬 Volver a base**, con el botón
+**✋ Fin de patrulla**, o si el aparato aponta en un portaviones (ha cambiado de
+casa). Si un día no puede llegar al sector —se perdió la base de partida, por
+ejemplo— la orden se cancela con aviso en vez de dejar al avión dando vueltas.
+
+**Tus patrullas disparan solas.** `patrolAutoFire()` pasa por las aeronaves del
+jugador que llevan orden de patrulla y les aplica `autoEngage()`, exactamente la
+misma función que usan los bots en `aiAirCombat()`: mismo radar, mismo alcance,
+misma munición, un misil por aparato y por ciclo de IA. No se pide confirmación
+porque patrullar ya es la orden.
+
+Lo que **no** dispara solo: un avión aparcado en su base (no gasta misiles por su
+cuenta), uno en tránsito, y uno que solo esté parado fuera de base sin orden de
+patrulla. Para eso está el panel de radar, que sigue siendo el disparo a mano.
+
+Verificado en `tools/test-variants.mjs` §10 (7 aserciones), incluida la que
+distingue el aparato aparcado del que patrulla.
+
 ### En el mapa
 
 Al seleccionar un aparato propio se dibuja un disco semitransparente con su radio

@@ -42,6 +42,9 @@ Si añades o renombras un documento, actualiza este índice.
 | Radio de visión de una unidad | `RECONOCIMIENTO.md` | Radios |
 | Ver al enemigo sin declarar la guerra | `RECONOCIMIENTO.md` | Las cuatro fuentes |
 | Alcance de tiro de la artillería | `UNITS.md` · `FORMACIONES.md` | Tiro a distancia · Reglas mecánicas §4 |
+| Fuego constante: seguir batiendo al mismo blanco | `UNITS.md` | Órdenes permanentes |
+| Patrulla que se relanza sola tras repostar | `AIR-COMBAT.md` | Patrulla permanente y fuego automático |
+| Por qué mis aviones disparan solos (y cuáles) | `AIR-COMBAT.md` | Patrulla permanente y fuego automático |
 | Por qué la artillería no muere en primera línea | `UNITS.md` | Tiro a distancia §2 (escudo de retaguardia) |
 | Combate terrestre | `GDD.md` · `UNITS.md` | 6. Combate · Counters |
 | IA de los bots | `GDD.md` · `MISSILES.md` · `AIR-COMBAT.md` | cada uno tiene su sección de IA |

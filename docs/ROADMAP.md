@@ -523,9 +523,9 @@ subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
       encuentros se verificaron reintroduciendo el fallo: fallan sin el arreglo
 - [x] Herramientas nuevas: `tools/bench-fuego.mjs`, `tools/diag-desembarcos.mjs`
 
-**Pendiente** (pedido por el usuario, sin empezar)
+**Pendiente** (las dos primeras, hechas en v1.14)
 
-- [ ] **Patrulla que se reanuda sola** (estilo CoN): al agotarse una patrulla el
+- [x] **Patrulla que se reanuda sola** (estilo CoN): al agotarse una patrulla el
       aparato vuelve a base (`tickAirPatrol` → `orderReturnToBase`, movement.js); al
       terminar de repostar debe volver a salir a la MISMA patrulla, y así en bucle,
       hasta que el jugador dé otra orden. Idea: guardar `pid` en la tarea de
@@ -535,7 +535,7 @@ subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
       Cualquier orden manual del jugador (main.js: mover, atacar, patrullar,
       detener) y el botón "Volver a base" deben borrar `standing`. Mostrarlo en la
       ficha ("🔁 reanuda la patrulla en X h")
-- [ ] **Fuego constante del jugador** (estilo CoN):
+- [x] **Fuego constante del jugador** (estilo CoN):
       · artillería: ⚔ Atacar deja una orden permanente
         (`u.standing = { kind: "fire", targetId }`) que vuelve a disparar
         `shellUnit` cada vez que acaba la recarga, mientras el blanco viva, siga a
@@ -555,3 +555,29 @@ subido. Lo `[ ]` es lo que queda, con el detalle para retomarlo sin contexto.
       (`u.task = …; if (!orderMove(…))`). El bloque que "libera tareas" nunca ve una
       `defend`. Igual que en `mandar` de ai-naval.js, habría que asignarla después
 
+### v1.14 — Órdenes permanentes: la patrulla y el fuego no se olvidan (2026-09-17)
+
+Lo que quedaba pendiente del relevo anterior, hecho y probado. La idea es la misma
+en los dos casos: dar una **misión**, no un clic (`js/engine/standing.js`).
+
+- [x] **Patrulla en bucle**: `orderPatrol` deja `u.standing = { kind: "patrol", pid }`.
+      Al agotarse, el aparato vuelve a base SIN perder la orden (`tickAirPatrol` se la
+      guarda antes de `orderReturnToBase`, que la borraría); en pista espera
+      `PATROL_TURNAROUND_MIN` (1 h) y a tener los raíles llenos, y vuelve a salir al
+      mismo sector
+- [x] **Fuego constante de la artillería**: `⚔ Atacar` deja
+      `u.standing = { kind: "fire", targetId }` y la pieza repite salva cada recarga.
+      Se corta sola si el blanco muere, sale del alcance, embarca o llega la paz; la
+      falta de munición o de observación NO la cancela, solo la calla
+- [x] **Tus patrullas disparan solas**: `patrolAutoFire` aplica a las aeronaves del
+      jugador con orden de patrulla la misma `autoEngage()` que usan los bots
+      (extraída de `aiAirCombat`), un misil por aparato y por chequeo de IA
+- [x] Cualquier orden nueva y "Volver a base" borran la orden permanente; botón
+      **✋ Alto el fuego / Fin de patrulla** y estado 🔁 en la ficha
+- [x] `tools/test-variants.mjs` §10 (9 aserciones) → 119 PASS; `test-naval.mjs` 62 PASS.
+      Verificado quitando el arreglo: las dos pruebas del ciclo de patrulla fallan.
+      Comprobado también en partida real (4 salvas encadenadas en 197 min de juego)
+
+**Sigue pendiente** del relevo: re-medir desembarcos y fuego con las cifras en
+docs/IA.md, revisar `AI_LANDING_GATHER_DAYS` = 3, y la deuda de la tarea `defend`
+en `aiMilitary` (detalle en v1.13).

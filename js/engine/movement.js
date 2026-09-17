@@ -238,6 +238,9 @@ export function orderMove(state, unit, targetId) {
   unit.path = path;
   unit.edgeLeft = startEdgeFor(state, unit, path[0]);
   unit.task = null;
+  // Una orden nueva manda sobre la permanente: si la unidad tenía fuego
+  // constante o patrulla en bucle (ver js/engine/standing.js), se acaba aquí.
+  unit.standing = null;
   return true;
 }
 
@@ -259,6 +262,7 @@ export function orderStop(state, unit) {
   if (!unit.edgeLeft && !unit.path.length) return false;
   unit.path = unit.edgeLeft ? [unit.edgeLeft.to] : [];
   unit.task = null;
+  unit.standing = null;
   return true;
 }
 
@@ -289,6 +293,7 @@ export function orderReturnToBase(state, unit) {
     unit.path = [];
     unit.edgeLeft = null;
     unit.task = null;
+    unit.standing = null;
     return unit.pos;
   }
   for (const b of bases.slice(0, 8)) {
@@ -346,6 +351,10 @@ export function orderPatrol(state, unit, pid) {
   const yaAhi = pid === unit.pos && !unit.edgeLeft && !unit.path.length;
   if (!yaAhi && !orderMoveAereo(state, unit, pid)) return false;
   unit.task = { kind: "patrol", minutesLeft: C.AIR_PATROL_MINUTES };
+  // La patrulla es una orden PERMANENTE: se anota a dónde, y cuando el aparato
+  // vuelva a base a repostar, standing.js lo devuelve al mismo sector. Se corta
+  // con cualquier orden nueva o con "Volver a base".
+  unit.standing = { kind: "patrol", pid };
   return true;
 }
 
@@ -372,9 +381,15 @@ export function tickAirPatrol(state, dt) {
     if (u.task?.kind !== "patrol") continue;
     u.task.minutesLeft -= dt;
     if (u.task.minutesLeft > 0) continue;
+    // El regreso a repostar no es una orden del jugador, así que la patrulla
+    // permanente sobrevive al viaje: orderReturnToBase la borraría, se guarda y
+    // se repone. standing.js la relanza cuando el aparato esté listo.
+    const permanente = u.standing;
     const dest = orderReturnToBase(state, u); // éxito → limpia el task por su cuenta
-    if (dest) log(state, `${unitDef(u.type)?.name} agota su patrulla y regresa a base`, "info");
-    else u.task = null; // sin base propia alcanzable: se queda, pero sin repetir el aviso cada tick
+    if (dest) {
+      u.standing = permanente;
+      log(state, `${unitDef(u.type)?.name} agota su patrulla y regresa a base`, "info");
+    } else u.task = null; // sin base propia alcanzable: se queda, pero sin repetir el aviso cada tick
   }
 }
 

@@ -830,6 +830,19 @@ export function updateUnitPanel(state, ui) {
     if (presa) estado += ` · ⚔ a por <b>${unitDef(presa.type)?.name}</b> en ${provName(presa.pos)}`;
   }
 
+  // Orden permanente (js/engine/standing.js): lo que la unidad va a seguir
+  // haciendo sola. Se dice SIEMPRE, también con el aparato posado en pista, que
+  // es justo cuando el jugador se pregunta por qué no hace nada.
+  if (u.standing?.kind === "patrol") {
+    const en = provName(u.standing.pid);
+    estado += u.task?.kind === "patrol"
+      ? " · 🔁 patrulla permanente"
+      : ` · 🔁 repostando: volverá a patrullar <b>${en}</b>`;
+  } else if (u.standing?.kind === "fire") {
+    const blanco = state.units.find((x) => x.id === u.standing.targetId && !x.dead);
+    if (blanco) estado += ` · 🔁 batiendo a <b>${unitDef(blanco.type)?.name}</b> hasta nueva orden`;
+  }
+
   const doc = T.doctrine ? DOCTRINES[T.doctrine]?.name.replace("Doctrina ", "") : null;
   const meta = [CAT_NAMES[T.category] || T.category, T.tier ? `T${T.tier}` : null, doc].filter(Boolean).join(" · ");
 
@@ -913,6 +926,10 @@ export function updateUnitPanel(state, ui) {
         title="Vuela a la provincia elegida y patrulla ahí durante ${Math.round(C.AIR_PATROL_MINUTES / 60)} h de juego; al agotarse vuelve sola a base">🎯 Patrullar</button>` : ""}
       <button class="btn small" data-up-stop="${u.id}" ${moving || airLoadout(u.type) ? "" : "disabled"}
         title="${airLoadout(u.type) ? "Cancela la misión y vuelve al aeródromo propio más cercano" : "Termina el tramo actual y se detiene"}">${airLoadout(u.type) ? "🛬 Volver a base" : "Detener"}</button>
+      ${u.standing ? `<button class="btn small" data-up-cease="${u.id}"
+        title="${u.standing.kind === "patrol"
+          ? "Deja de relanzar la patrulla: cuando vuelva a base se queda en pista"
+          : "La pieza deja de batir el blanco, sin moverse del sitio"}">✋ ${u.standing.kind === "patrol" ? "Fin de patrulla" : "Alto el fuego"}</button>` : ""}
       <button class="btn small" data-up-center="${u.pos}">Centrar</button>
       ${transport ? `<button class="btn small" data-up-embark="${u.id}">Embarcar</button>
       <button class="btn small" data-up-disembark="${u.id}" ${u.cargo?.length ? "" : "disabled"}>Desembarcar</button>` : ""}
@@ -986,6 +1003,9 @@ export function updateUnitPanel(state, ui) {
   );
   panel.querySelectorAll("[data-up-stop]").forEach((b) =>
     b.addEventListener("click", () => hooks.onStop(parseInt(b.dataset.upStop, 10)))
+  );
+  panel.querySelectorAll("[data-up-cease]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onCease(parseInt(b.dataset.upCease, 10)))
   );
   panel.querySelectorAll("[data-up-center]").forEach((b) =>
     b.addEventListener("click", () => hooks.onCenter(b.dataset.upCenter))

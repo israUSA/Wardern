@@ -3,6 +3,7 @@ import * as C from "../data/constants.js";
 import { S, countryVP, log } from "./state.js";
 import { economyHour, tickQueues, attritionTick, regenTick, tickResearch } from "./economy.js";
 import { tickMovement, tickAirPatrol, tickHunt, tickBoard } from "./movement.js";
+import { tickStanding, patrolAutoFire } from "./standing.js";
 import { tickCombat } from "./combat.js";
 import { tickMissiles } from "./missiles.js";
 import { tickRearm } from "./air-combat.js";
@@ -32,6 +33,7 @@ export function tick(state, dtOverride) {
   tickResearch(state, dt);
   tickMovement(state, dt);
   tickAirPatrol(state, dt);
+  tickStanding(state, dt); // órdenes permanentes: patrulla en bucle y fuego constante
   tickHunt(state);
   tickBoard(state);
   tickCombat(state, dt);
@@ -51,7 +53,11 @@ export function tick(state, dtOverride) {
   }
   if (state.units.some((u) => u.dead)) state.units = state.units.filter((u) => !u.dead);
 
-  if (Math.floor(state.time / (C.AI_CHECK_HOURS * 60)) !== prevAi) aiTickAll(state);
+  if (Math.floor(state.time / (C.AI_CHECK_HOURS * 60)) !== prevAi) {
+    aiTickAll(state);
+    // Tus patrullas tiran al mismo ritmo que las de los bots, ni más ni menos.
+    patrolAutoFire(state);
+  }
 
   const day = Math.floor(state.time / 1440);
   if (day !== prevDay && !state.gameOver) {
