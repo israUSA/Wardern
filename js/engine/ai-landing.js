@@ -10,6 +10,10 @@
 //             provincia del puerto. Cuando están todos, embarcar.
 //   navegar   transportes y escolta hacia la celda de la playa. Al llegar,
 //             desembarcar: el combate lo resuelve el motor como cualquier otro.
+//   cabeza    ya en tierra. La operación NO se cierra: vigila la cabeza de playa
+//             y, si la aprietan más de lo que aguanta, vuelve a "reunir" con una
+//             segunda oleada. Sin esto, un bot dejaba tres fichas en una isla y
+//             se olvidaba de ellas.
 //
 // Cuándo se plantea: solo en guerra, solo con puerto, y solo si el enemigo NO
 // tiene ninguna provincia pegada a su territorio —ni por tierra ni por
@@ -19,7 +23,7 @@
 // Una operación que no termina en AI_LANDING_MAX_DAYS se cancela: la fuerza
 // embarcada vuelve al puerto y desembarca en casa.
 import * as C from "../data/constants.js";
-import { S, unitDef, isNaval, controller, atWar, hpFrac, distKm } from "./state.js";
+import { S, unitDef, isNaval, controller, atWar, hpFrac, distKm, log } from "./state.js";
 import { orderMove, findPath, edgeMinutes } from "./movement.js";
 import { embark, disembark } from "./naval.js";
 import { startRecruitCategory, canAfford } from "./economy.js";
@@ -95,6 +99,20 @@ function puedeTransportes(state, iso, faltan) {
   return r.money >= dinero * C.AI_MARKET_MARGIN && r.manpower >= (cost.manpower || 0) * faltan;
 }
 
+// Tropa de tierra que se puede embarcar: ociosa, sin tarea, fuera de combate y
+// lejos del frente. Con `cerca`, la más próxima a esa provincia primero: la
+// operación tiene fecha de caducidad y una división en Alaska no llega a
+// embarcar en Florida.
+function fuerzaDisponible(state, iso, battles, cerca = null) {
+  const out = state.units.filter(
+    (u) =>
+      u.owner === iso && !u.embarked && !u.task && libre(u) && !isNaval(u.type) &&
+      !unitDef(u.type)?.air && !battles.has(u.pos) && !S.provinces.get(u.pos)?.isSea &&
+      !enFrente(state, iso, u.pos)
+  );
+  return cerca ? out.sort((a, b) => dist(a.pos, cerca) - dist(b.pos, cerca)) : out;
+}
+
 // Provincia propia con enemigo al lado: su tropa no se lleva a ninguna parte
 function enFrente(state, iso, pid) {
   for (const e of S.edges.get(pid) || []) {
@@ -112,13 +130,7 @@ export function planLanding(state, iso, vis, P, battles) {
   if (!puertos.length) return null;
 
   // Fuerza disponible: tropa de tierra ociosa y lejos del frente
-  const tropa = state.units
-    .filter(
-      (u) =>
-        u.owner === iso && !u.embarked && !u.task && libre(u) && !isNaval(u.type) &&
-        !unitDef(u.type)?.air && !battles.has(u.pos) && !S.provinces.get(u.pos)?.isSea &&
-        !enFrente(state, iso, u.pos)
-    );
+  const tropa = fuerzaDisponible(state, iso, battles);
   if (tropa.length < C.AI_LANDING_MIN) return null;
 
   const playas = [];
@@ -155,12 +167,8 @@ export function planLanding(state, iso, vis, P, battles) {
   let rutasProbadas = 0;
   for (const playa of playas) {
     // La fuerza mínima que supera la defensa con su margen de asalto, tomada
-    // de lo más CERCANO al puerto: la operación tiene fecha de caducidad y una
-    // división en Alaska no llega a embarcar en Florida.
-    const cercanas = tropa
-      .map((u) => [u, dist(u.pos, playa.puerto.id)])
-      .sort((a, b) => a[1] - b[1])
-      .map(([u]) => u);
+    // de lo más cercano al puerto.
+    const cercanas = [...tropa].sort((a, b) => dist(a.pos, playa.puerto.id) - dist(b.pos, playa.puerto.id));
     const fuerza = [];
     let poder = 0;
     for (const u of cercanas) {
@@ -186,6 +194,7 @@ export function planLanding(state, iso, vis, P, battles) {
       troops: fuerza.map((u) => u.id),
       transports: [],
       started: state.time,
+      wave: 1,
     };
   }
   return null;
@@ -215,17 +224,22 @@ export function aiLanding(state, iso, vis, P, battles) {
   op.troops = tropa.map((u) => u.id);
   op.transports = barcos.map((u) => u.id);
 
-  const tarde =
-    state.time - op.started > C.AI_LANDING_MAX_DAYS * 1440 ||
-    (op.phase === "reunir" && state.time - op.started > C.AI_LANDING_GATHER_DAYS * 1440);
+  // La cabeza de playa lleva su propio reloj —desde que se puso el pie en
+  // tierra— y no tiene tropa embarcada que valga: sus plazos son otros.
+  const tarde = op.phase === "cabeza"
+    ? state.time - op.beachAt > C.AI_BEACHHEAD_DAYS * 1440
+    : state.time - op.started > C.AI_LANDING_MAX_DAYS * 1440 ||
+      (op.phase === "reunir" && state.time - op.started > C.AI_LANDING_GATHER_DAYS * 1440);
   const sinGuerra = !atWar(state, iso, op.enemy);
-  if (op.phase !== "regresar" && (tarde || sinGuerra || !tropa.length)) {
+  const sinTropa = op.phase !== "cabeza" && !tropa.length;
+  if (op.phase !== "regresar" && (tarde || sinGuerra || sinTropa)) {
     abortar(state, iso, op, barcos);
     return;
   }
 
   if (op.phase === "reunir") reunir(state, iso, op, tropa, barcos);
   else if (op.phase === "navegar") navegar(state, iso, op, barcos);
+  else if (op.phase === "cabeza") cabeza(state, iso, op, vis, P, battles);
   else if (op.phase === "regresar") regresar(state, iso, op, barcos);
 }
 
@@ -311,7 +325,74 @@ function navegar(state, iso, op, barcos) {
     }
     if (valida) disembark(state, t.id, op.target);
   }
-  if (barcos.every((t) => !t.cargo?.length)) terminar(state, iso);
+  if (barcos.every((t) => !t.cargo?.length)) enTierra(state, iso, op);
+}
+
+// Tropa ya en la playa. La operación pasa a vigilarla en vez de cerrarse, salvo
+// que no quede nadie —no hay cabeza que reforzar— o que esa fuera la última
+// oleada permitida.
+function enTierra(state, iso, op) {
+  const vivos = op.troops
+    .map((id) => state.units.find((u) => u.id === id && !u.dead))
+    .filter((u) => u && !u.embarked);
+  if (!vivos.length || (op.wave || 1) >= C.AI_LANDING_WAVES) {
+    terminar(state, iso);
+    return;
+  }
+  op.phase = "cabeza";
+  op.landed = vivos.map((u) => u.id);
+  op.troops = []; // dejan de estar reservados: pelean como cualquier tropa (aiMilitary)
+  op.beachAt = state.time;
+}
+
+// Vigilancia de la cabeza de playa. Mientras aguante sola no se hace nada: la
+// segunda oleada sale cuando la aprietan de verdad, con la misma cuenta de
+// fuerzas que decide cualquier asalto (P.attackRatio).
+function cabeza(state, iso, op, vis, P, battles) {
+  const vivos = op.landed
+    .map((id) => state.units.find((u) => u.id === id && !u.dead))
+    .filter((u) => u && !u.embarked);
+  op.landed = vivos.map((u) => u.id);
+  if (!vivos.length) { // barrida del mapa: ya no hay nada que reforzar
+    terminar(state, iso);
+    return;
+  }
+  const mio = vivos.reduce((s, u) => s + potencia(u), 0);
+  if (amenaza(state, iso, op, vis, vivos) <= mio * P.attackRatio) return; // aguanta sola
+
+  const refuerzo = fuerzaDisponible(state, iso, battles, op.port).slice(0, C.AI_LANDING_MAX);
+  if (refuerzo.length < C.AI_LANDING_MIN) return; // hoy no hay tropa suelta: se mira luego
+  const libresT = op.transports
+    .map((id) => state.units.find((u) => u.id === id && !u.dead))
+    .filter((u) => u && !u.cargo?.length).length;
+  if (!puedeTransportes(state, iso, Math.ceil(refuerzo.length / 3) - libresT)) return;
+
+  op.wave = (op.wave || 1) + 1;
+  op.phase = "reunir";
+  op.started = state.time; // la oleada nueva estrena plazos
+  op.troops = refuerzo.map((u) => u.id);
+  delete op.landed;
+  log(state, `${S.countries[iso].name} manda una segunda oleada a ${S.provinces.get(op.target)?.name}`, "war");
+}
+
+// Lo que amenaza a la cabeza: fuerza enemiga en la playa, donde esté la tropa
+// desembarcada, y en todo lo que tengan pegado. Con la misma regla de niebla que
+// al planear: lo que no ve, lo supone.
+function amenaza(state, iso, op, vis, vivos) {
+  const zona = new Set([op.target, ...vivos.map((u) => u.pos)]);
+  for (const pid of [...zona]) {
+    for (const e of S.edges.get(pid) || []) if (!S.provinces.get(e.to)?.isSea) zona.add(e.to);
+  }
+  let total = 0;
+  for (const pid of zona) {
+    const ctrl = controller(state.provinces[pid]);
+    if (!ctrl || !atWar(state, iso, ctrl)) continue;
+    if (!vis.strong.has(pid)) { total += DEFENSA_SUPUESTA(); continue; }
+    total += state.units
+      .filter((u) => u.pos === pid && !u.dead && !u.embarked && atWar(state, iso, u.owner))
+      .reduce((s, u) => s + potencia(u), 0);
+  }
+  return total;
 }
 
 // Vuelta a casa: a la costa PROPIA más cercana, no necesariamente al puerto de

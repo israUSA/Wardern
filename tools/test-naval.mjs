@@ -693,7 +693,8 @@ section("[8] Desembarcos de la IA (js/engine/ai-landing.js, docs/IA.md §Desemba
     let op0 = null;
     for (let t = 0; t < 6 * 48 && horas === null; t++) {
       tick(st, 30);
-      op0 = op0 || st.countries.USA.aiLanding;
+      const viva = st.countries.USA.aiLanding;
+      if (!op0 && viva) op0 = { ...viva, troops: [...viva.troops] }; // foto: al desembarcar se vacía
       if (st.units.some((u) => u.owner === "USA" && !u.embarked && S.provinces.get(u.pos)?.country === "VEN")) horas = (t + 1) / 2;
     }
     const enVen = st.units.filter((u) => u.owner === "USA" && !u.embarked && S.provinces.get(u.pos)?.country === "VEN");
@@ -702,6 +703,82 @@ section("[8] Desembarcos de la IA (js/engine/ai-landing.js, docs/IA.md §Desemba
       horas !== null ? `${enVen.length} unidades en ${enVen[0].pos} a las ${horas} h` : "no desembarcó");
     const transportes = st.units.filter((u) => u.owner === "USA" && (unitDef(u.type)?.capacity || 0) > 0 && !inicial.has(u.id));
     check("el transporte lo construyó para la operación", transportes.length >= 1, `${transportes.length} nuevo(s)`);
+  }
+
+  // --- segunda oleada y cabeza de playa ---
+  // Jamaica es una isla de una sola provincia: la "zona" de la cabeza es esa y
+  // nada más, así que la cuenta de amenaza es exactamente lo que se ponga ahí.
+  const enJamaica = (pers = "almirante") => {
+    const st = conFlorida(base(pers));
+    declareWar(st, "USA", "JAM");
+    const celda = AL.seaCellOf("jam-jamaica");
+    const t = spawnUnit(st, "USA", "occ-1-transporte", AL.seaCellOf("usa-florida"));
+    const op = {
+      phase: "cabeza", enemy: "JAM", target: "jam-jamaica", cell: celda,
+      port: "usa-florida", portCell: AL.seaCellOf("usa-florida"),
+      troops: [], landed: [], transports: [t.id], started: st.time, beachAt: st.time, wave: 1,
+    };
+    st.countries.USA.aiLanding = op;
+    return { st, op };
+  };
+  const avanzar = (st) =>
+    AL.aiLanding(st, "USA", intelFor(st, "USA"), PERSONALITIES.almirante, battleSet(st));
+
+  {
+    const { st, op } = enJamaica();
+    op.landed = [0, 1, 2].map(() => spawnUnit(st, "USA", "occ-1-mbt", "jam-jamaica").id);
+    st.time += 1; // la inteligencia va cacheada por state.time
+    avanzar(st);
+    check("una cabeza de playa sin nadie que la apriete no pide refuerzos",
+      st.countries.USA.aiLanding?.phase === "cabeza" && !st.countries.USA.aiLanding.troops.length,
+      `fase ${st.countries.USA.aiLanding?.phase}`);
+  }
+  {
+    const { st, op } = enJamaica();
+    op.landed = [spawnUnit(st, "USA", "occ-1-infanteria", "jam-jamaica").id];
+    for (let i = 0; i < 6; i++) spawnUnit(st, "JAM", "occ-1-mbt", "jam-jamaica"); // la aprietan
+    st.time += 1;
+    avanzar(st);
+    const o = st.countries.USA.aiLanding;
+    check("si la cabeza no aguanta, sale una segunda oleada desde el puerto",
+      o?.phase === "reunir" && o.wave === 2 && o.troops.length >= C.AI_LANDING_MIN,
+      `fase ${o?.phase} · oleada ${o?.wave} · ${o?.troops.length ?? 0} unidades`);
+  }
+  {
+    const { st, op } = enJamaica();
+    op.landed = [999999]; // barridos del mapa
+    st.time += 1;
+    avanzar(st);
+    check("si barren la cabeza de playa, la operación se cierra", !st.countries.USA.aiLanding);
+  }
+  {
+    // Al desembarcar NO se cierra la operación: pasa a vigilar la cabeza
+    const { st, op } = enJamaica();
+    const tropa = [0, 1].map(() => spawnUnit(st, "USA", "occ-1-mbt", "usa-florida"));
+    const t = st.units.find((u) => u.id === op.transports[0]);
+    embark(st, t.id, new Set(tropa.map((u) => u.id)));
+    t.pos = op.cell; // travesía hecha: el barco ya está sobre la playa
+    Object.assign(op, { phase: "navegar", troops: tropa.map((u) => u.id), landed: undefined });
+    st.time += 1;
+    avanzar(st);
+    const o = st.countries.USA.aiLanding;
+    check("al pisar la playa la operación no se cierra: vigila la cabeza",
+      o?.phase === "cabeza" && o.landed.length === 2 && tropa.every((u) => u.pos === "jam-jamaica"),
+      `fase ${o?.phase ?? "cerrada"} · tropa en ${tropa.map((u) => u.pos).join(",")}`);
+  }
+  {
+    // Y con la última oleada permitida ya gastada, sí se cierra
+    const { st, op } = enJamaica();
+    const tropa = [0, 1].map(() => spawnUnit(st, "USA", "occ-1-mbt", "usa-florida"));
+    const t = st.units.find((u) => u.id === op.transports[0]);
+    embark(st, t.id, new Set(tropa.map((u) => u.id)));
+    t.pos = op.cell;
+    Object.assign(op, { phase: "navegar", troops: tropa.map((u) => u.id), landed: undefined, wave: C.AI_LANDING_WAVES });
+    st.time += 1;
+    avanzar(st);
+    check("gastadas las oleadas, la playa queda en manos de la guerra de tierra",
+      !st.countries.USA.aiLanding && tropa.every((u) => u.pos === "jam-jamaica"),
+      `operación ${st.countries.USA.aiLanding?.phase ?? "cerrada"}`);
   }
 
   // --- cancelar con la tropa a bordo ---

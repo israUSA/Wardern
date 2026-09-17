@@ -339,6 +339,14 @@ export const AI_LANDING_COOLDOWN_DAYS = 2;
 // botar el barco y a que llegue la columna, sin dejar la tropa apartada de la
 // guerra en tierra media partida.
 export const AI_LANDING_GATHER_DAYS = 5;
+// Oleadas de una misma operación: la de asalto y UNA de refuerzo. Sin tope, un
+// bot con puerto podía estar alimentando una isla toda la partida mientras su
+// frente de tierra se quedaba sin tropa.
+export const AI_LANDING_WAVES = 2;
+// Días que la operación sigue vigilando la cabeza de playa después de
+// desembarcar. Pasados, se cierra: la tropa ya está en tierra y la guerra la
+// lleva aiMilitary como cualquier otro frente.
+export const AI_BEACHHEAD_DAYS = 6;
 // Horas máximas de travesía del puerto a la playa, por la ruta navegada real
 // (la línea recta engaña: un puerto en el otro océano da la vuelta al continente).
 export const AI_LANDING_SAIL_HOURS = 72;

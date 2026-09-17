@@ -494,7 +494,7 @@ Especificación completa en **docs/AIR-COMBAT.md**. Todo lo de abajo está hecho
 - [x] `aiMilitary` deja fuera la tropa reservada y la embarcada
 - [x] 12 aserciones en `tools/test-naval.mjs` §8 (banco naval: 62 PASS), con el
       escenario completo EEUU → Venezuela (desembarco en Zulia a las 78 h)
-- [ ] Segunda oleada y refuerzo de la cabeza de playa
+- [x] Segunda oleada y refuerzo de la cabeza de playa (hecho en v1.16)
 - [ ] Elegir la playa por su valor (capital, puntos de victoria)
 
 ### v1.13 — Fuego de los bots y encuentros en ruta (2026-09-16) · RELEVO
@@ -607,3 +607,22 @@ Lo que quedaba de la lista de v1.13, medido y cerrado.
       partida
 
 Con esto no queda nada pendiente del relevo de v1.13.
+
+### v1.16 — La segunda oleada: el desembarco ya no se abandona (2026-09-17)
+
+Un bot dejaba tres fichas en una isla y se olvidaba de ellas: la operación se
+cerraba en cuanto tocaban tierra. Ahora sigue viva.
+
+- [x] Fase **cabeza** en `js/engine/ai-landing.js`: al desembarcar, la tropa deja de
+      estar reservada (pelea con `aiMilitary`) pero la operación vigila la playa
+      `AI_BEACHHEAD_DAYS` (6 días)
+- [x] **Segunda oleada** cuando lo que rodea a la cabeza la supera × `attackRatio`,
+      con la misma regla de niebla que al planear (lo que no ve, lo supone). Tope de
+      `AI_LANDING_WAVES` (2) oleadas por operación
+- [x] Si barren la cabeza antes de que llegue el refuerzo, la operación se cierra
+- [x] Medido en escenario (EEUU contra una playa defendida, paz bloqueada):
+      desembarca 2 a las 78 h, pide refuerzo a las 80 y a las **178 h hay 6 unidades
+      en tierra**. Con la paz sin bloquear, el refuerzo se cancela a medio camino,
+      como debe
+- [x] `tools/test-naval.mjs` 69 PASS (5 aserciones nuevas), `test-variants.mjs` 121
+      PASS. Verificado quitando el arreglo

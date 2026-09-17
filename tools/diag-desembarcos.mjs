@@ -14,7 +14,7 @@ const st = newGame("GRL");
 for (const i in st.countries) if (i !== "GRL" && isCoastalCountry(i) && Math.random() < 0.5) st.countries[i].personality = "almirante";
 const last = {};
 const previa = {};   // la última operación vista de cada país, para saber cómo acabó
-const cuenta = { planeadas: 0, navegaron: 0, desembarcaron: 0, canceladas: 0 };
+const cuenta = { planeadas: 0, navegaron: 0, desembarcaron: 0, canceladas: 0, cabezas: 0, oleadas2: 0 };
 for (let t = 0; t < 16 * 48; t++) {
   tick(st, 30);
   for (const [iso, c] of Object.entries(st.countries)) {
@@ -24,7 +24,7 @@ for (let t = 0; t < 16 * 48; t++) {
         // ¿Acabó en la playa o se canceló? Se mira si queda tropa suya, a pie,
         // en territorio del enemigo al que iba.
         const o = previa[iso];
-        const enPlaya = o.troops
+        const enPlaya = (o.troops.length ? o.troops : o.landed || [])
           .map((id) => st.units.find((u) => u.id === id && !u.dead))
           .filter((u) => u && !u.embarked && S.provinces.get(u.pos)?.country === o.enemy).length;
         if (enPlaya) cuenta.desembarcaron++; else cuenta.canceladas++;
@@ -44,11 +44,14 @@ for (let t = 0; t < 16 * 48; t++) {
     if ((t + 1) % 48 === 0 || !last[iso]) console.log(`h${(t+1)/2} ${iso} ${s}`);
     if (!last[iso]) cuenta.planeadas++;
     if (op.phase === "navegar" && last[iso] !== "navegar") cuenta.navegaron++;
+    if (op.phase === "cabeza" && last[iso] !== "cabeza") cuenta.cabezas++;
+    if ((op.wave || 1) > 1 && last[iso] === "cabeza") cuenta.oleadas2++;
     last[iso] = op.phase;
-    previa[iso] = { ...op, troops: [...op.troops] };
+    previa[iso] = { ...op, troops: [...op.troops], landed: [...(op.landed || [])] };
   }
 }
 const vivas = Object.values(last).filter(Boolean).length;
 console.log(`
 RESUMEN 16 días: ${cuenta.planeadas} operaciones planeadas · ${cuenta.navegaron} llegaron a navegar · ` +
-  `${cuenta.desembarcaron} desembarcaron · ${cuenta.canceladas} canceladas · ${vivas} aún en curso al acabar`);
+  `${cuenta.desembarcaron} desembarcaron · ${cuenta.canceladas} canceladas · ${vivas} aún en curso al acabar · ` +
+  `${cuenta.cabezas} cabezas de playa vigiladas · ${cuenta.oleadas2} segundas oleadas`);

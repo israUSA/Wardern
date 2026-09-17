@@ -267,10 +267,31 @@ vecinos de tierra y un desembarco casi nunca tendría sentido.
 | **planear** | Para cada provincia costera enemiga, el puerto propio más cercano (se prueban todos: el de más nivel puede estar en la otra punta). Defensa: la que ve, o `AI_GUESS_PER_PROVINCE` fusileros si no la ve. Se elige la playa más floja y la fuerza mínima que la supere × `attackRatio`, entre `AI_LANDING_MIN` y `AI_LANDING_MAX` (2–6) unidades, **las más cercanas al puerto** y nunca de una provincia en el frente |
 | **reunir** | Transportes (uno por cada 3): reutiliza los libres y construye los que falten en el puerto, comprando en el mercado si hace falta. Todos a la celda del puerto; la fuerza, a la provincia del puerto. Cuando están todos, **embarca solo a la fuerza elegida** (`embark(…, soloIds)`), no a la guarnición |
 | **navegar** | Transportes a la celda de la playa, con hasta `AI_LANDING_ESCORTS` (3) barcos de guerra de escolta, que llegan antes porque son más rápidos. Al llegar, **desembarca**; el combate lo resuelve el motor |
+| **cabeza** | Ya en tierra. La operación **no se cierra**: vigila la cabeza de playa durante `AI_BEACHHEAD_DAYS` (6). Si lo que la rodea la supera × `attackRatio`, sale una **segunda oleada** desde el puerto y se vuelve a "reunir" |
 | **regresar** | Si llega la paz, se pasa de `AI_LANDING_MAX_DAYS` (8) o se queda sin tropa, la operación se cancela: lo que va a bordo vuelve al puerto y desembarca en casa |
 
 Al terminar, `AI_LANDING_COOLDOWN_DAYS` (2) días hasta planear otra. Si no
 encuentra playa, medio día sin volver a mirar.
+
+### La segunda oleada
+
+Desembarcar y olvidarse era lo que hacía que un desembarco de bot se viera tonto:
+tres fichas en una isla, sin nadie detrás, muriéndose solas. Ahora la operación
+sigue viva después de pisar la playa.
+
+- La tropa desembarcada **deja de estar reservada** (pasa a `op.landed`): pelea
+  como cualquier otra unidad, la manda `aiMilitary`. Lo que sigue vivo es la
+  operación, no una correa.
+- En cada chequeo se compara lo que queda en la cabeza con lo que la amenaza: la
+  fuerza enemiga **en la playa, donde esté la tropa y en todo lo que tengan
+  pegado**, con la misma regla de niebla que al planear (lo que no ve, lo supone).
+- Mientras aguante sola, no se manda nada. Si no aguanta, la operación vuelve a
+  "reunir" con tropa nueva del puerto y estrena plazos.
+- **Dos oleadas como mucho** (`AI_LANDING_WAVES`). Sin tope, un bot con puerto se
+  pasaba la partida alimentando una isla mientras su frente de tierra se quedaba
+  sin tropa.
+- Si barren la cabeza antes de que llegue el refuerzo, la operación se cierra: no
+  hay nada que reforzar, y volver a asaltar es decisión de un plan nuevo.
 
 La fuerza reservada queda fuera de `aiMilitary`: si no, las guarniciones se la
 llevaban de vuelta al frente a medio reunir.
@@ -320,11 +341,22 @@ Que solo haya 3 operaciones en 64 días de juego es lo esperado, no un fallo: ca
 todas las guerras son con vecinos, y ahí la tropa llega andando. El desembarco es
 para el enemigo al que no se puede llegar de otra forma.
 
+**La segunda oleada**, en un escenario a propósito (EEUU almirante contra una
+playa venezolana defendida por 4 carros, con la paz bloqueada para que se vea el
+ciclo entero): desembarca 2 unidades a las **78 h**, pide refuerzo a las **80 h**
+—la playa no aguanta—, zarpa la segunda oleada a las 130 y a las **178 h hay 6
+unidades de EEUU en suelo venezolano**. Con las dos oleadas gastadas la operación
+se cierra y la guerra sigue por tierra; tras el descanso, el mismo país planeó
+otro desembarco en otra provincia. Sin este cambio, la cuenta se quedaba en las 2
+primeras y nadie iba detrás.
+
+En partida normal la paz suele llegar antes: en cinco pasadas del mismo escenario
+sin bloquearla, Venezuela pidió la paz entre 20 y 50 h después del desembarco y el
+refuerzo se canceló a medio camino, que es justo lo que debe pasar.
+
 ### Lo que no hace (todavía)
 
 - **Una operación a la vez** por país, de 6 unidades como mucho.
-- **No refuerza la cabeza de playa.** Lo desembarcado pasa a `aiMilitary` como
-  cualquier tropa; si la playa cae, no manda una segunda oleada a propósito.
 - **No elige la playa por su valor** (capital, puntos de victoria): solo por lo
   floja que está y lo cerca que queda.
 - **El carácter no cambia con la partida.** Un conquistador que pierde medio
