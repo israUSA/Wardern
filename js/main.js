@@ -7,7 +7,7 @@ import { startAnnex, startBuilding, startRecruit, startResearch, trade, disbandU
 import { embark, disembark } from "./engine/naval.js";
 import { launchMissile, strikeWeaponsFor } from "./engine/missiles.js";
 import { canShell, shellUnit, artilleryRange, shellDistance } from "./engine/artillery.js";
-import { fireAirWeapon, landOnCarrier, launchFromCarrier, isCarrierCapable } from "./engine/air-combat.js";
+import { fireAirWeapon, landOnCarrier, launchFromCarrier, isCarrierCapable, roeOf } from "./engine/air-combat.js";
 import { aiRespondPeace } from "./engine/ai.js";
 import { MapRenderer, hitProvince, inverseMercY } from "./render/renderer.js";
 import * as UI from "./ui/panels.js";
@@ -381,6 +381,16 @@ const hooks = {
     UI.toast(patrulla
       ? "Patrulla permanente cancelada: al agotarse volverá a base y ahí se queda"
       : "Alto el fuego: la pieza deja de batir el blanco");
+    updateUI();
+  },
+  // Interruptor de fuego automático de una ficha (aire / tierra). Por defecto el
+  // aire va en automático y la tierra a mano: ver ROE_DEFECTO en air-combat.js.
+  onRoe(unitId, campo) {
+    const u = state?.units.find((x) => x.id === unitId && !x.dead);
+    if (!u) return;
+    u.roe = { ...roeOf(u) };
+    u.roe[campo] = !u.roe[campo];
+    UI.toast(`Fuego automático ${campo === "aire" ? "contra aeronaves" : "contra tierra"}: ${u.roe[campo] ? "AUTOMÁTICO" : "MANUAL"}`);
     updateUI();
   },
   onCenter(pid) {

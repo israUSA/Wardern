@@ -736,6 +736,7 @@ try {
   const { newGame, spawnUnit, declareWar, S } = await import("../js/engine/state.js");
   const { orderPatrol, orderMove, orderReturnToBase, tickMovement, tickAirPatrol } = await import("../js/engine/movement.js");
   const { tickStanding, patrolAutoFire } = await import("../js/engine/standing.js");
+  const { roeOf } = await import("../js/engine/air-combat.js");
   const { tickMissiles } = await import("../js/engine/missiles.js");
   const { tickRearm } = await import("../js/engine/air-combat.js");
   const { shellUnit } = await import("../js/engine/artillery.js");
@@ -860,6 +861,38 @@ try {
     check("si el blanco sale del alcance, el fuego se corta solo", !pieza.standing, `en ${blanco.pos}`);
   }
 
+  // --- autonomía: un avión parado fuera de su base gasta depósito ---
+  {
+    const { st, caza } = escenaAerea();
+    orderMove(st, caza, DESTINO); // orden normal, NO de patrulla
+    let vuelta = null;
+    for (let i = 0; i < 400 && vuelta === null; i++) {
+      avanzar(st, 5);
+      if (caza.pos === DESTINO && !caza.edgeLeft && !caza.path.length && caza.task?.kind === "patrol" && vuelta === null) {
+        vuelta = caza.task.minutesLeft; // ya está orbitando: tiene reloj
+      }
+    }
+    check("un avión mandado fuera de su base empieza a gastar autonomía sin orden de patrulla",
+      vuelta !== null && vuelta <= C.AIR_PATROL_MINUTES, `le quedan ${Math.round(vuelta ?? -1)} min`);
+  }
+  {
+    const { st, caza } = escenaAerea();
+    orderMove(st, caza, DESTINO);
+    let enCasa = false;
+    for (let i = 0; i < 700 && !enCasa; i++) {
+      avanzar(st, 5);
+      enCasa = caza.pos === BASE && !caza.edgeLeft && !caza.path.length && !caza.task;
+    }
+    check("al agotarse vuelve sola a base, y ahí se queda (una salida, no una misión)",
+      enCasa && !caza.standing, `en ${caza.pos}, permanente ${caza.standing?.kind ?? "ninguna"}`);
+  }
+  {
+    const { st, caza } = escenaAerea();
+    for (let i = 0; i < 300; i++) avanzar(st, 5);
+    check("posada en su propia base no gasta nada: sin reloj y sin despegar sola",
+      caza.pos === BASE && !caza.task, `tarea ${caza.task?.kind ?? "ninguna"} en ${caza.pos}`);
+  }
+
   // --- tus patrullas disparan solas ---
   {
     const st = newGame("MEX");
@@ -874,6 +907,50 @@ try {
     const patrullando = (st.missiles || []).length;
     check("tus cazas disparan solos SOLO con orden de patrulla, un misil por ciclo",
       aparcado === 0 && patrullando === 1, `aparcado ${aparcado} · patrullando ${patrullando}`);
+  }
+
+  // --- los interruptores de fuego automático de cada ficha ---
+  {
+    const escenaRoe = (tipoBlanco) => {
+      const st = newGame("MEX");
+      st.units = st.units.filter((u) => u.owner !== "MEX" && u.owner !== "GTM");
+      declareWar(st, "MEX", "GTM");
+      // Sobre la provincia enemiga: el Maverick bate a 25 km, que a escala de
+      // teatro es "encima del blanco" (docs/AIR-COMBAT.md)
+      const caza = spawnUnit(st, "MEX", "occ-2-caza", "gtm-alta-verapaz"); // F/A-18E: aire y suelo
+      caza.task = { kind: "patrol", minutesLeft: 400 };
+      spawnUnit(st, "MEX", "occ-1-motorizada", BASE); // ojos: identifica la provincia vecina
+      spawnUnit(st, "GTM", tipoBlanco, "gtm-alta-verapaz");
+      return { st, caza };
+    };
+    // aire
+    {
+      const { st, caza } = escenaRoe("occ-1-caza");
+      caza.roe = { aire: false, tierra: false };
+      patrolAutoFire(st);
+      const conNada = (st.missiles || []).length;
+      caza.roe = { aire: true, tierra: false };
+      patrolAutoFire(st);
+      check("con el interruptor de AIRE en manual no dispara; en automático, sí",
+        conNada === 0 && (st.missiles || []).length === 1, `manual ${conNada} · auto ${(st.missiles || []).length}`);
+    }
+    // tierra
+    {
+      const { st, caza } = escenaRoe("occ-1-mbt");
+      caza.roe = { aire: true, tierra: false }; // el de fábrica: tierra a mano
+      patrolAutoFire(st);
+      const conManual = (st.missiles || []).length;
+      caza.roe = { aire: true, tierra: true };
+      patrolAutoFire(st);
+      check("con TIERRA en manual no gasta un Maverick solo; en automático lo suelta",
+        conManual === 0 && (st.missiles || []).length === 1, `manual ${conManual} · auto ${(st.missiles || []).length}`);
+    }
+    // por defecto
+    {
+      const { st, caza } = escenaRoe("occ-1-mbt");
+      patrolAutoFire(st); // sin tocar nada
+      check("de fábrica: aire en automático y tierra a mano", (st.missiles || []).length === 0);
+    }
   }
 } catch (e) {
   check("órdenes permanentes sin excepciones", false, e.stack);

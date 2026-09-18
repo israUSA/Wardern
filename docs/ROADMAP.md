@@ -655,7 +655,17 @@ que se viera.
       entonces baja de 90 a 24 HP en un día
 - [x] El parte de batalla dice quién apoya y cuánto suma, y a la aeronave le avisa
       de si tiene antiaéreo delante (docs/AIR-COMBAT.md §11b)
-- [ ] **Pendiente**: la autonomía solo corre con orden de patrulla. Un avión mandado
-      con una orden de movimiento normal se queda sobre la batalla para siempre y
-      gratis
+- [x] La autonomía ya corre para cualquier avión parado fuera de su base (v1.19)
 - [ ] **Pendiente**: los bots no mandan aviación a las batallas, solo disparan misiles
+
+### v1.19 — Autonomía para todos, y palancas de fuego automático (2026-09-18)
+
+- [x] **Un avión parado fuera de una base propia gasta depósito**, con orden de
+      patrulla o sin ella: al agotarse vuelve sola. Una orden de movimiento es una
+      salida; `🎯 Patrullar` sigue siendo la misión que se repite sola
+- [x] **Dos interruptores de cabina por ficha** (`u.roe`): AIRE y TIERRA, automático
+      o manual, con el aspecto de las palancas de un panel real. De fábrica, aire en
+      automático y tierra a mano
+- [x] Las palancas mandan sobre `patrolAutoFire`; los bots siguen con las dos en
+      automático. Si el aparato no lleva ese tipo de arma, la palanca sale apagada
+- [x] `tools/test-variants.mjs` 127 PASS (6 aserciones nuevas), `test-naval.mjs` 69 PASS

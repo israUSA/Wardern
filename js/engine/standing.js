@@ -15,7 +15,7 @@ import * as C from "../data/constants.js";
 import { S, unitDef, atWar, log } from "./state.js";
 import { orderPatrol } from "./movement.js";
 import { shellUnit, artilleryRange, shellDistance } from "./artillery.js";
-import { rearmBlocker, rearmStatus, autoEngage, airLoadout } from "./air-combat.js";
+import { rearmBlocker, rearmStatus, autoEngage, airLoadout, roeOf } from "./air-combat.js";
 
 export function tickStanding(state, dt) {
   for (const u of state.units) {
@@ -82,15 +82,22 @@ function tickFireStanding(state, u) {
   shellUnit(state, u, t);
 }
 
-// Las patrullas del JUGADOR disparan solas, con las mismas reglas que las de los
-// bots (js/engine/air-combat.js §IA). Solo las que llevan orden de patrulla: un
-// aparato aparcado en su base no gasta misiles por su cuenta, y uno en tránsito
-// tampoco. Se llama al ritmo del turno de IA, así que es un misil por aparato y
-// por ciclo, igual que para los bots.
+// Las aeronaves del JUGADOR que están EN VUELO disparan solas, con las mismas
+// reglas que las de los bots (js/engine/air-combat.js §IA). "En vuelo" es llevar
+// tarea de patrulla, que desde tickAirPatrol incluye a cualquiera que se quede
+// parado fuera de su base: un aparato posado en pista no gasta misiles por su
+// cuenta, y uno en tránsito tampoco.
+//
+// Qué dispara y qué no lo decide la ficha con sus dos interruptores (roeOf): se
+// puede querer que un caza se defienda solo del aire pero no suelte un Maverick
+// de 2.500 $ sin que se lo mandes. Se llama al ritmo del turno de IA, así que es
+// un misil por aparato y por ciclo, igual que para los bots.
 export function patrolAutoFire(state) {
   for (const u of state.units) {
     if (u.owner !== state.player || u.dead) continue;
     if (u.task?.kind !== "patrol" || !airLoadout(u.type)) continue;
-    autoEngage(state, u);
+    const roe = roeOf(u);
+    if (!roe.aire && !roe.tierra) continue;
+    autoEngage(state, u, roe);
   }
 }

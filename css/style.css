@@ -150,6 +150,28 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 .diplo-pers-desc { color: var(--text-dim); font-size: 11px; line-height: 1.35; margin-top: 2px; }
 .garrison-note { font-size: 12px; color: var(--text-dim); font-style: italic; }
 
+/* ---- Interruptores de cabina (fuego automático de una ficha) ----
+   Palanca real: chapa negra, etiqueta grabada encima, tuerca cromada y varilla
+   con bola. Arriba = automático, abajo = a mano. */
+.roe-panel { display: flex; gap: 8px; background: linear-gradient(#171c22, #0e1216); border: 1px solid #000; box-shadow: inset 0 1px 0 #ffffff14, 0 1px 3px #0008; border-radius: 5px; padding: 8px 6px 6px; }
+.cockpit { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; background: transparent; border: 0; padding: 2px 0 0; cursor: pointer; font-family: var(--font); }
+.cockpit:disabled { cursor: default; opacity: .45; }
+.ck-label { font-size: 9px; letter-spacing: 2px; color: #cfd8e2; text-shadow: 0 1px 0 #000; }
+.ck-body { position: relative; display: block; width: 30px; height: 30px; }
+/* tuerca hexagonal, en el centro: es el eje de la palanca */
+.ck-nut { position: absolute; left: 50%; top: 50%; width: 22px; height: 11px; margin: -5px 0 0 -11px; border-radius: 3px;
+  background: linear-gradient(#eef2f5, #9aa4ad 45%, #5b646c 55%, #2e353b); box-shadow: 0 1px 2px #000b; }
+/* varilla: pivota sobre la tuerca, con su bola en la punta */
+.ck-bat { position: absolute; left: 50%; bottom: 50%; width: 7px; height: 15px; margin-left: -3.5px; border-radius: 3px;
+  transform-origin: 50% 100%; transition: transform .12s ease;
+  background: linear-gradient(90deg, #5a636b, #f4f7f9 40%, #b9c1c8 62%, #4b5359); box-shadow: 0 0 2px #000a; }
+.ck-bat::after { content: ""; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #fff, #c3cad1 45%, #6d757c 75%, #3d444a); box-shadow: 0 1px 2px #000b; }
+.cockpit:not(.on) .ck-bat { transform: rotate(180deg); }
+.ck-state { font-size: 9px; letter-spacing: 1px; color: var(--text-dim); }
+.cockpit.on .ck-state { color: var(--ok); text-shadow: 0 0 6px #5fae6f66; }
+.cockpit:not(.on):not(:disabled) .ck-state { color: var(--accent); }
+
 /* ---- Panel de unidad (ficha seleccionada en el mapa) ---- */
 #map.unit-hover { cursor: pointer; }
 #unit-panel { right: 12px; top: 330px; width: 300px; max-height: calc(100% - 344px); overflow-y: auto; padding: 12px 14px; }

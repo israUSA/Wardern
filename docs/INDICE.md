@@ -47,6 +47,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Por qué mis aviones disparan solos (y cuáles) | `AIR-COMBAT.md` | Patrulla permanente y fuego automático |
 | Apoyo aéreo a una batalla de tierra | `AIR-COMBAT.md` | 11b. Apoyo aéreo cercano |
 | Qué derriba a un avión que apoya una batalla | `AIR-COMBAT.md` | 11b · El antiaéreo es la respuesta |
+| Cuánto aguanta un avión fuera de su base | `AIR-COMBAT.md` | 11b · Autonomía |
+| Que un avión dispare solo (o no) al aire o a tierra | `AIR-COMBAT.md` | 11b · Fuego automático por ficha |
 | Por qué la artillería no muere en primera línea | `UNITS.md` | Tiro a distancia §2 (escudo de retaguardia) |
 | Combate terrestre | `GDD.md` · `UNITS.md` | 6. Combate · Counters |
 | IA de los bots | `GDD.md` · `MISSILES.md` · `AIR-COMBAT.md` | cada uno tiene su sección de IA |

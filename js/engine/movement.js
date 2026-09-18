@@ -375,9 +375,26 @@ function orderMoveAereo(state, unit, targetId) {
 // curso): encadenar los saltos del viaje de ida no gasta horas de patrulla, esas
 // empiezan a correr al llegar. Al agotarse, vuelve a base sola —la misma orden
 // que el botón "Volver a base"— sin que el jugador tenga que vigilar el reloj.
+// ¿Está el aparato posado en una base propia? Es la misma condición que usa
+// orderReturnToBase para elegir destino: provincia bajo su control con pista.
+function enBasePropia(state, u) {
+  const ps = state.provinces[u.pos];
+  return !!ps && controller(ps) === u.owner && (ps.buildings.aerobase || 0) >= 1;
+}
+
 export function tickAirPatrol(state, dt) {
   for (const u of state.units) {
     if (u.dead || u.embarked || u.edgeLeft || u.path.length) continue;
+    // Un avión parado FUERA de una base propia no está aparcado: está dando
+    // vueltas, y eso gasta depósito. Antes la autonomía solo corría con orden de
+    // patrulla, así que mandarlo con una orden de movimiento normal lo dejaba
+    // orbitando sobre el frente para siempre y gratis —apoyando la batalla, ver
+    // docs/AIR-COMBAT.md §11b—. Ahora el que se queda fuera patrulla, con su
+    // reloj: al agotarse vuelve a casa. Sin `standing`: una orden de movimiento
+    // es una salida, no una misión que se repita sola.
+    if (!u.task && AIR_LOADOUTS[u.type] && !enBasePropia(state, u)) {
+      u.task = { kind: "patrol", minutesLeft: C.AIR_PATROL_MINUTES };
+    }
     if (u.task?.kind !== "patrol") continue;
     u.task.minutesLeft -= dt;
     if (u.task.minutesLeft > 0) continue;

@@ -564,6 +564,40 @@ El parte de batalla (`battleSection` en `js/ui/panels.js`) añade:
 - **Los bots no lo usan a propósito**: disparan misiles (`aiAirCombat`) pero no
   mandan aviación a las batallas que ya están peleando.
 
+### Autonomía: el que se queda fuera, vuela (v1.19)
+
+La autonomía (`AIR_PATROL_MINUTES`, 8 h) solo corría para la tarea `patrol`. Un
+avión mandado con una orden de movimiento normal a una provincia sin base propia
+se quedaba **para siempre** orbitando —y apoyando la batalla, §11b— sin gastar
+nada. Ahora `tickAirPatrol` le pone su reloj a cualquier aeronave parada fuera de
+una base propia: al agotarse vuelve sola a casa.
+
+La diferencia con la patrulla de verdad está en la orden permanente: una orden de
+movimiento es **una salida** (vuelve y se queda en pista); `🎯 Patrullar` es una
+**misión** que se repite sola tras repostar (§Patrulla permanente).
+
+Posada en su propia base no cuenta nada, y la aviación embarcada tampoco: su base
+es el buque.
+
+### Fuego automático por ficha: los dos interruptores (v1.19)
+
+Cada aeronave lleva en su panel dos palancas de cabina —`u.roe`, con
+`roeOf()` y `ROE_DEFECTO` en air-combat.js—:
+
+| Palanca | En AUTO | En MANUAL |
+|---|---|---|
+| **AIRE** | dispara sola a las aeronaves enemigas que detecte a tiro | solo disparas tú, desde el panel de radar |
+| **TIERRA** | castiga sola blancos de tierra y barcos que tu país vea | eliges tú blanco y arma |
+
+**De fábrica: aire en automático, tierra a mano.** Un aire-aire es defensa propia
+y no da tiempo a pensarlo; un Maverick cuesta 2.500 $ y a quién se lo tiras es una
+decisión. Si el aparato no lleva armas de ese tipo, la palanca sale apagada y sin
+estado (`—`).
+
+Las dos solo cuentan con el aparato **en vuelo** (`patrolAutoFire`, un misil por
+aparato y por chequeo de IA). Los bots no tienen palancas: van siempre con las dos
+en automático, que es lo que hacía `aiAirCombat` desde siempre.
+
 ## 12. Atacar buques y la defensa antiaérea naval
 
 Hasta aquí **un avión no podía atacar a un barco en absoluto**: ningún arma

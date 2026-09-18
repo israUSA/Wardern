@@ -576,12 +576,20 @@ export function aiAirCombat(state, iso) {
   }
 }
 
+// Reglas de enfrentamiento de una ficha: contra qué abre fuego sola. El jugador
+// las pone con los dos interruptores de su panel (aire y tierra); los bots van
+// siempre con los dos en automático. Por defecto, aire en automático y tierra a
+// mano: un misil aire-aire es defensa propia, pero un Maverick cuesta 2.500 $ y
+// quién se lo lleva es una decisión, no un reflejo.
+export const ROE_DEFECTO = { aire: true, tierra: false };
+export const roeOf = (u) => u.roe || ROE_DEFECTO;
+
 // Un aparato elige blanco y dispara por su cuenta: UN misil por ciclo. Es el
 // corazón del combate aéreo automático, y lo comparten los bots (aiAirCombat) y
 // las patrullas del jugador (js/engine/standing.js): las reglas de detección,
 // alcance y munición son exactamente las mismas para los dos bandos.
 // Devuelve true si ha disparado.
-export function autoEngage(state, u) {
+export function autoEngage(state, u, roe = { aire: true, tierra: true }) {
   if (u.dead || u.edgeLeft || u.embarked) return false;
   const L = AIR_LOADOUTS[u.type];
   if (!L) return false;
@@ -590,7 +598,7 @@ export function autoEngage(state, u) {
   // 1) Amenaza aérea primero: un caza enemigo cerca es lo más urgente.
   // El alcance se calcula ANTES de escanear: un avión con los raíles vacíos no
   // recorre la lista de unidades (barato ahora, imprescindible a 400 unidades).
-  const rAA = maxRange(L, ammo, "aa");
+  const rAA = roe.aire ? maxRange(L, ammo, "aa") : 0;
   if (rAA > 0) {
     const aire = radarContacts(state, u).filter((c) => c.km <= rAA);
     const disparo = aire.length ? mejorDisparo(state, u, ammo, aire, "aa") : null;
@@ -601,7 +609,7 @@ export function autoEngage(state, u) {
   }
 
   // 2) Si no hay aire, castigar superficie
-  const rAS = maxRange(L, ammo, "as");
+  const rAS = roe.tierra ? maxRange(L, ammo, "as") : 0;
   if (rAS > 0) {
     const suelo = groundContacts(state, u).filter((c) => c.km <= rAS);
     const disparo = suelo.length ? mejorDisparo(state, u, ammo, suelo, "as") : null;

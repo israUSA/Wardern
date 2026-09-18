@@ -13,7 +13,7 @@ import { vetLevel, esRetaguardia } from "../engine/combat.js";
 import { strikeWeaponsFor } from "../engine/missiles.js";
 import {
   airLoadout, airWeapons, radarContacts, groundContacts, pkFor, weaponCanTarget,
-  rearmStatus, radarRangeKm, bearingDeg, effRange, rcsOf,
+  rearmStatus, radarRangeKm, bearingDeg, effRange, rcsOf, roeOf,
   isCarrier, carrierCapacity, aircraftAboard, landingOptions, navalAA,
 } from "../engine/air-combat.js";
 import { AIR_WEAPONS } from "../data/air-combat-data.js";
@@ -993,6 +993,8 @@ export function updateUnitPanel(state, ui) {
   if (inBattle(state, u)) html += battleSection(state, u);
   // Aeronaves: sensores y carga de misiles (docs/AIR-COMBAT.md)
   if (airLoadout(u.type)) html += airSection(state, u, mine);
+  // Sus interruptores de fuego automático, solo en las propias
+  if (mine && airLoadout(u.type)) html += roeSection(state, u);
   // Portaviones: cubierta de vuelo con su ala embarcada
   if (isCarrier(u.type)) html += carrierSection(state, u, mine);
 
@@ -1098,6 +1100,9 @@ export function updateUnitPanel(state, ui) {
   panel.querySelectorAll("[data-up-stop]").forEach((b) =>
     b.addEventListener("click", () => hooks.onStop(parseInt(b.dataset.upStop, 10)))
   );
+  panel.querySelectorAll("[data-roe]").forEach((b) =>
+    b.addEventListener("click", () => hooks.onRoe(parseInt(b.dataset.unit, 10), b.dataset.roe))
+  );
   panel.querySelectorAll("[data-up-cease]").forEach((b) =>
     b.addEventListener("click", () => hooks.onCease(parseInt(b.dataset.upCease, 10)))
   );
@@ -1150,6 +1155,32 @@ export function updateUnitPanel(state, ui) {
 // ---- Aeronaves: sensores, armamento y radar (docs/AIR-COMBAT.md) ----
 
 // Bloque de la ficha de unidad: alcance del radar, munición por arma y rearme.
+// Interruptores de cabina: contra qué abre fuego sola esta ficha. Dos palancas,
+// aire y tierra, como las de un panel de verdad — arriba automático, abajo a
+// mano. Es lo que decide qué hace patrolAutoFire con ella cada chequeo.
+function roeSection(state, u) {
+  const roe = roeOf(u);
+  const armas = airWeapons(u); // { weapon, left, total }
+  const tieneAA = armas.some((a) => a.weapon?.tipo === "aa");
+  const tieneAS = armas.some((a) => a.weapon?.tipo === "as");
+  const palanca = (campo, etiqueta, activo, hay, ayuda) => `
+    <button class="cockpit${activo ? " on" : ""}${hay ? "" : " vacia"}" data-roe="${campo}" data-unit="${u.id}"
+      title="${hay ? ayuda : "Esta aeronave no lleva armas de ese tipo"}" ${hay ? "" : "disabled"}>
+      <span class="ck-label">${etiqueta}</span>
+      <span class="ck-body"><span class="ck-bat"></span><span class="ck-nut"></span></span>
+      <span class="ck-state">${!hay ? "—" : activo ? "AUTO" : "MANUAL"}</span>
+    </button>`;
+  return `<div class="pp-section"><h4>Fuego automático</h4>
+    <div class="roe-panel">
+      ${palanca("aire", "AIRE", roe.aire && tieneAA, tieneAA,
+        "AUTO: dispara sola a las aeronaves enemigas que detecte a tiro. MANUAL: solo disparas tú, desde el panel de radar.")}
+      ${palanca("tierra", "TIERRA", roe.tierra && tieneAS, tieneAS,
+        "AUTO: castiga sola blancos de tierra y barcos que tu país vea. MANUAL: eliges tú el blanco y el arma (un Maverick cuesta 2.500 $).")}
+    </div>
+    <div class="garrison-note">Solo dispara sola cuando está EN VUELO: parada en su base, no gasta nada.</div>
+  </div>`;
+}
+
 function airSection(state, u, mine) {
   const armas = airWeapons(u);
   const radar = radarRangeKm(u);
