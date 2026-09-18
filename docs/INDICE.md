@@ -45,6 +45,8 @@ Si añades o renombras un documento, actualiza este índice.
 | Fuego constante: seguir batiendo al mismo blanco | `UNITS.md` | Órdenes permanentes |
 | Patrulla que se relanza sola tras repostar | `AIR-COMBAT.md` | Patrulla permanente y fuego automático |
 | Por qué mis aviones disparan solos (y cuáles) | `AIR-COMBAT.md` | Patrulla permanente y fuego automático |
+| Apoyo aéreo a una batalla de tierra | `AIR-COMBAT.md` | 11b. Apoyo aéreo cercano |
+| Qué derriba a un avión que apoya una batalla | `AIR-COMBAT.md` | 11b · El antiaéreo es la respuesta |
 | Por qué la artillería no muere en primera línea | `UNITS.md` | Tiro a distancia §2 (escudo de retaguardia) |
 | Combate terrestre | `GDD.md` · `UNITS.md` | 6. Combate · Counters |
 | IA de los bots | `GDD.md` · `MISSILES.md` · `AIR-COMBAT.md` | cada uno tiene su sección de IA |

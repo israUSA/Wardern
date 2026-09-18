@@ -512,6 +512,58 @@ dron parado en territorio propio ve unidades enemigas al otro lado de la fronter
 sin entrar y sin declarar nada. Detalle completo, incluido el reconocimiento
 terrestre, en [RECONOCIMIENTO.md](RECONOCIMIENTO.md).
 
+## 11b. Apoyo aéreo cercano (v1.18)
+
+No hay una orden de "apoyo aéreo" ni hace falta: **una aeronave parada sobre una
+provincia en batalla pelea en ella como una ficha más**. `tickCombat` solo deja
+fuera a lo embarcado, a los drones y a lo que va de camino (`edgeLeft`), así que
+un bombardero en órbita entra en el reparto de daño con sus valores de ataque
+contra tierra — y son los más altos del juego: 23 contra infantería, más que un
+carro (13).
+
+Esto existía desde el principio, pero **no lo decía nadie**: se descubría por
+accidente. Ahora el parte de batalla lo canta.
+
+### Lo que cambia tener aviación encima
+
+Medido con `tickCombat` real, dos horas de batalla, mi infantería contra una
+infantería enemiga:
+
+| | Daño al enemigo en 2 h |
+|---|---|
+| Solo infantería | 7,6 HP |
+| Con un bombardero encima | **32,5 HP** |
+
+Cuatro veces más. Y el avión casi no encaja: **0,2 HP en 24 h**, porque la tropa
+de tierra ataca a 1 contra aeronaves.
+
+### El antiaéreo es la respuesta, y la única
+
+El antiaéreo bate aeronaves a **24**, y un bombardero solo se defiende de él a 4.
+El mismo bombardero de arriba, con un antiaéreo enemigo en la provincia, baja de
+90 a **24 HP en un día**. Sin antiaéreo delante, el apoyo aéreo sale casi gratis;
+con él, es una forma cara de perder aviones. Esa es toda la tensión del sistema, y
+por eso el panel lo dice con esas palabras.
+
+### En la ficha
+
+El parte de batalla (`battleSection` en `js/ui/panels.js`) añade:
+
+- **✈ Apoyo aéreo**: cuántas aeronaves apoyan por bando y cuánto suman en HP/h.
+  Se avisa de que el apoyo se acaba si el aparato se va o despega.
+- Con la ficha de la aeronave abierta, lo que le importa a ella: **⚠ Antiaéreo
+  enfrente** con el daño que está encajando, o **🛡 sin antiaéreo enfrente**, que
+  es la licencia para quedarse.
+
+### Lo que NO está resuelto
+
+- **Un avión sin orden de patrulla se queda indefinidamente.** La autonomía
+  (`AIR_PATROL_MINUTES`) solo corre para la tarea `patrol`: si lo mandas con una
+  orden de movimiento normal, orbita sobre la batalla para siempre y sin gastar
+  nada. El combustible debería contar igual.
+- **Los bots no lo usan a propósito**: disparan misiles (`aiAirCombat`) pero no
+  mandan aviación a las batallas que ya están peleando.
+
 ## 12. Atacar buques y la defensa antiaérea naval
 
 Hasta aquí **un avión no podía atacar a un barco en absoluto**: ningún arma

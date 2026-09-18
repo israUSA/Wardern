@@ -763,11 +763,41 @@ function battleSection(state, u) {
     const hp = Math.max(0, Math.round(x.hp));
     const caida = x.dmgInPerH > 0 ? ` · cae en ${horas(x.hp, x.dmgInPerH)}` : "";
     return `<div class="bt-row${x.id === u.id ? " bt-me" : ""}">
-      <span class="bt-name">${flagSpan(x.owner, c.color)}${T?.name || x.type}</span>
+      <span class="bt-name">${flagSpan(x.owner, c.color)}${T?.name || x.type}${T?.air ? " ✈" : ""}</span>
       <span class="bt-bar"><i style="width:${Math.max(0, Math.min(100, hp))}%;background:${hpColor(hp)}"></i></span>
       <span class="bt-val">${hp}<span class="cost">${caida}</span></span>
     </div>`;
   };
+
+  // APOYO AÉREO. Una aeronave parada sobre una batalla pelea en ella como una
+  // ficha más, y pega fuerte (un bombardero bate a infantería a 23, más que un
+  // carro). Eso ya funcionaba, pero no lo decía nadie: había que descubrirlo por
+  // accidente. Aquí se cuenta quién apoya, cuánto suma y —lo que de verdad
+  // decide— si hay antiaéreo enfrente, que es lo único que derriba aviones en
+  // una batalla (ataque 24 contra el 1 de la infantería).
+  const esAire = (x) => !!unitDef(x.type)?.air;
+  const aireMio = propios.filter(esAire);
+  const aireSuyo = enemigos.filter(esAire);
+  const aa = (list) => list.filter((x) => unitDef(x.type)?.category === "antiaereo");
+  let apoyo = "";
+  if (aireMio.length || aireSuyo.length) {
+    const linea = (list, quien) => list.length
+      ? `${quien} <b>${list.length}</b> (${Math.round(suma(list, "dmgOutPerH"))} HP/h)`
+      : "";
+    apoyo += `<div class="bt-line">✈ <b>Apoyo aéreo</b>: ${
+      [linea(aireMio, "tuyo:"), linea(aireSuyo, "enemigo:")].filter(Boolean).join(" · ")
+    }. Una aeronave parada sobre la batalla pelea en ella; si se va o despega, deja de sumar.</div>`;
+  }
+  // Si la ficha abierta es la que apoya, lo que le interesa es si la pueden tocar
+  if (unitDef(u.type)?.air) {
+    const aaSuyo = aa(enemigos);
+    apoyo += aaSuyo.length
+      ? `<div class="bt-line">⚠ <b>Antiaéreo enfrente</b> (${aaSuyo.length}): te bate a
+         ${Math.round(u.dmgInPerH || 0)} HP/h. Es lo único que derriba aviones en una batalla; sal o
+         cállalo con un antirradar.</div>`
+      : `<div class="bt-line">🛡 <b>Sin antiaéreo enfrente</b>: la tropa de tierra apenas puede
+         dispararte (ataque 1 contra aviones), así que apoyas casi sin encajar.</div>`;
+  }
 
   // Escudo de retaguardia (docs/UNITS.md): al jugador hay que DECIRLE por qué su
   // obús encaja poco, o no entiende qué le protege ni cuándo deja de hacerlo.
@@ -784,6 +814,7 @@ function battleSection(state, u) {
 
   return `<div class="pp-section bt-sec"><h4>⚔ Combate en ${provName(u.pos)}</h4>
     ${cobertura}
+    ${apoyo}
     <div class="bt-line">Lleva <b>${etaText(u.battleMinutes || 0)}</b> de pelea.
       El daño es continuo: no hay turnos, las dos partes se desgastan a la vez.</div>
     <div class="bt-line">Esta unidad recibe <b>${Math.round(u.dmgInPerH || 0)} HP/h</b>

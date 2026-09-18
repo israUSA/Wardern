@@ -643,3 +643,19 @@ pantalla. Ahora la caja manda sobre el contenido.
       barra, filas de unidad que no se salen de ancho, panel de 316 px (antes 300)
 - [x] Las obras de una provincia AJENA piden inteligencia fuerte: antes se veía la
       grada de cualquiera sin haber mirado nunca
+
+### v1.18 — El apoyo aéreo, a la vista (2026-09-18)
+
+Resulta que el apoyo aéreo cercano ya estaba en el motor y nadie lo sabía: una
+aeronave parada sobre una batalla pelea en ella desde siempre. Lo que faltaba era
+que se viera.
+
+- [x] Medido: un bombardero encima **cuadruplica** el daño de la batalla (7,6 → 32,5
+      HP en 2 h) y encaja 0,2 HP en 24 h… salvo que haya antiaéreo enfrente, y
+      entonces baja de 90 a 24 HP en un día
+- [x] El parte de batalla dice quién apoya y cuánto suma, y a la aeronave le avisa
+      de si tiene antiaéreo delante (docs/AIR-COMBAT.md §11b)
+- [ ] **Pendiente**: la autonomía solo corre con orden de patrulla. Un avión mandado
+      con una orden de movimiento normal se queda sobre la batalla para siempre y
+      gratis
+- [ ] **Pendiente**: los bots no mandan aviación a las batallas, solo disparan misiles
